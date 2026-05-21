@@ -1,0 +1,65 @@
+project:
+  type: book
+  output-dir: docs
+  preview:
+    port: 4200
+    browser: false
+
+book:
+  title: "Database Management Systems"
+  page-navigation: true
+  date-format: long
+  repo-url: https://github.com/cs2001-dbms/cs2001-dbms.github.io
+  search:
+    location: sidebar
+    type: textbox
+    keyboard-shortcut: f
+    copy-button: true
+  sidebar:
+    title: "DBMS [CS2001]"
+    logo: cover.png
+    search: true
+    collapse-level: 1
+    style: floating
+    sticky-header: true  # Makes the sidebar header sticky as the user scrolls.
+    transition: 0.3s ease  # Smooth transition for sidebar animations
+  chapters:
+    - href: index.qmd
+      text: "Introduction"
+    - part: '**Week-01**'
+      chapters: 
+        - weeks/week_1/intro_to_dbms.qmd
+  favicon: logo.ico
+
+format:
+  html:
+    grid:
+      sidebar-width: 240px
+      body-width: 1020px
+      margin-width: 200px
+      gutter-width: 1.2rem
+    theme:
+      light: flatly
+      dark: darkly    
+    css: style.css
+    animations:
+      hover: true  # Enable smooth hover transitions
+      fade-in: true # Add fade-in effects for content
+    toc: true # table of contents 
+    toc-location: right  
+    toc-collapsible: true
+    toc-title: "**On this page**"
+    toc-indent: 2em
+    number-sections: false  # Disable numbering globally
+    page-layout: full  # Set page layout to full width
+    code:
+      highlight: pygments
+      theme: monokai
+    math: katex
+    smooth-scroll: true
+    scroll-to-top-button: true
+    lazy-load: true # Enable lazy loading
+    image-lazy-loading: true # Enable lazy loading for images
+    optimize-images: true  # Automatically optimize images
+    optimize-assets: true  # Optimize assets like JS and CSS for faster load
+  

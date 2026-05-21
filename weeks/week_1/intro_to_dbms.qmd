@@ -1,0 +1,10 @@
+---
+number-depth: 2
+format: 
+    html:
+        code-fold: true
+    pdf: 
+        toc: true
+---
+
+# Intro to DBMS
