@@ -1,0 +1,89 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Database Management Systems",
+    "section": "",
+    "text": "About this course",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html",
+    "href": "weeks/week_1/intro_to_dbms.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "Purpose of DBMS\nA Database Management System (DBMS) is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently. The collection of structured information relevant to an enterprise is referred to as the database.\nThe earliest form of data management was through the maintenance of physical ledgers and journals, known as Book Keeping. This way of managing data through physical records was susceptible to human errors, external tampering and physical damage. In addition to this, it was also difficult and time consuming to maintain and scale over the years.\nWith the advent of technology came the file-processing system, which stores permanent records in various files, and it needs various application programs to manage and retrieve data from the files. The filesystems posed several disadvantages, such as:",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#purpose-of-dbms",
+    "href": "weeks/week_1/intro_to_dbms.html#purpose-of-dbms",
+    "title": "Introduction",
+    "section": "",
+    "text": "Data Redundancy and Inconsistency : Because individual programmers build distinct files and unique utility scripts over long intervals, records inevitably end up duplicated across separate files.\nDifficulty in Accessing Data : Conventional file layouts do not support flexible data retrieval. If a new data retrieval request is made, that the system’s original developers did not explicitly anticipate, a programmer has to write a completely new script from scratch. This environment is neither convenient nor responsive.\nData Isolation : Because data variables are distributed across disconnected files featuring conflicting data structures and disparate formats, writing new applications to aggregate information remains highly complex.\nIntegrity Problems : Real-world enterprise rules require strict constraints (e.g., a bank or department account balance can never drop below zero). In a file system, these constraints must be explicitly hardcoded inside every single application script. Adding or modifying rules across hundreds of decoupled programs is error-prone.\nAtomicity : Computer hardware is inherently vulnerable to power failures or system crashes. Database operations must be atomic, the transfer must take place in its entirety or not at all. Achieving this is difficult in standard file structures.\nConcurrent-Access Anomalies : To maintain fast response windows and maximize performance, data systems must allow multiple processes or users to modify information simultaneously. In a primitive file-processing system managed by a conventional operating system, there is no centralized coordination engine to safely oversee this. Because separate application programs read and write raw text files independently, overlapping operations inevitably overwrite each other.\nSecurity : In a standard file setup, it is incredibly difficult to enforce granular security constraints (such as field-level or row-level permissions) because the operating system does not understand the internal semantics of the data it is storing.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#history-of-dbms",
+    "href": "weeks/week_1/intro_to_dbms.html#history-of-dbms",
+    "title": "Introduction",
+    "section": "History of DBMS",
+    "text": "History of DBMS\n\n1950s and Early 1960s : Data was stored on sequential-access magnetic tapes and punched card decks, which required sorting input records into a strict, predetermined order.\nLate 1960s and Early 1970s: The widespread introduction of hard disks allowed software applications to fetch any data location in tens of milliseconds, liberating processing from the limits of sequentiality. Programmers utilized network and hierarchical data models, which required them to manually build and manipulate low-level structures like lists and trees on disk. Edgar Codd published a landmark paper in 1970 defining the relational model, which hid physical storage configurations from programmers and earned him the ACM Turing Award.\nLate 1970s and 1980s: Initial performance concerns vanished when IBM Research launched the System R prototype, which pioneered declarative query optimization and led to early commercial database products. Commercial systems like Oracle, IBM DB2, and Berkeley’s Ingres arrived on the market, establishing SQL as the dominant enterprise data framework. The database community initiated parallel processing studies, distributed storage structures, and early object-oriented database implementations.\n1990s: The explosive growth of the World Wide Web forced databases to maintain 24/7 web availability, handle massive concurrent transaction speeds, and integrate with internet user interfaces.\n2000s: Systems evolved past tabular rows to support semi-structured XML or compact JSON formats, spatial navigation data, and graph structures designed for social networking connections. Open-source engines like MySQL and PostgreSQL surged in popularity, alongside “auto-admin” configuration scripts designed to dynamically adapt to shifting data workloads. Modern analytic needs birthed physical “column-store” layouts, scalable map-reduce parallel computation frameworks, and lightweight NoSQL systems that prioritized horizontal scaling over immediate consistency.\n2010s: Lightweight NoSQL databases matured by re-integrating high-level declarative query pathways and stricter consistency configurations to alleviate developer strain. Corporate computing transitioned from localized server rooms toward distributed cloud environments and managed Software as a Service (SaaS) provider models.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#view-of-data",
+    "href": "weeks/week_1/intro_to_dbms.html#view-of-data",
+    "title": "Introduction",
+    "section": "View of Data",
+    "text": "View of Data\n\nData Abstraction\nAbstraction refers to the hiding of implementation details to simplify the user interactions with the system.\n\n\nPhysical level : Describes how the data is actually stored. It describes complex low-level data structures in detail.\nLogical level : Describes what data is stored in the database, along with the relationships that exist between them.\nView level : This is the highest level of abstraction that simplifies the user interaction by describing only the necessary part of the database. The system may provide different views for the same database.\n\n\n\nSchema and Instance\n\nSchema refers to the overall design of the database. Database systems have several schemas, partitioned according to the levels of abstraction:\n\nPhysical schema : Describes the overall physical design of the database at the physical level.\nLogical schema : Describes the overall logical design of the database at the logical level.\n\n\nInstance refers to the collection of information stored in the database at a given point of time. \nPhysical data independence refers to the ability to modify the physical schema without changing the logical schema. This ensures that the different interfaces are defined such that any changes in one of the levels does not seriously influence others.\n\n\n\nData Models\nThe collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints is referred to as a data model. They can be classified into four different categories:\n\nRelational Model : The relational model uses a collection of tables to represent both data and the relationships among those data. Each table has multiple columns, and each column has a unique name. Tables are also known as relations.\nEntity-Relationship Model : The entity-relationship (E-R) data model uses a collection of basic objects, called entities, and relationships among these objects. An entity is a “thing” in the real world that is distinguishable from other objects.\nSemi-structured Data Model : The semi-structured data model permits the specification of data where individual data items of the same type may have different sets of attributes.\nObject-Based Data Model : Most modern software applications are built using Object-Oriented Programming (OOP) languages like Java, C++, or C#. In OOP, developers organize code around “objects” that bundle both data fields (attributes) and the actions that can be performed on them (methods).",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#database-languages",
+    "href": "weeks/week_1/intro_to_dbms.html#database-languages",
+    "title": "Introduction",
+    "section": "Database Languages",
+    "text": "Database Languages\n\nData Definition Language (DDL) :\n\nThe Data-Definition Language is used to specify the database schema and add structural properties or constraints to the data.\nThe processing of DDL statements generates metadata (data about data), which is stored securely in a centralized data dictionary. This directory is a special set of system tables that regular users cannot modify directly; the database system consults it before reading or altering any live data.\nExample:\n\ncreate table department(dept_name char(20),  \n                        building char(15),  \n                        budget numeric(12,2),  \n                        primary key (dept_name));\nData Manipulation Language (DML) :\n\nThe Data-Manipulation Language enables users to access or alter data organized under the schema. DML handles information retrieval (queries), insertions, deletions, and updates.\nExample:\n\nselect instructor.name\nfrom instructor\nwhere instructor.dept_name = 'History';",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#database-design",
+    "href": "weeks/week_1/intro_to_dbms.html#database-design",
+    "title": "Introduction",
+    "section": "Database Design",
+    "text": "Database Design\nDatabase design primarily involves designing the database schema to manage large, interconnected bodies of enterprise information.\n\nUser Requirements Specification : Fully characterize and document the data needs of prospective database users.\nConceptual Design : Translate user requirements into a high-level, detailed conceptual schema of the database, focusing entirely on data modeling rather than physical implementation constraints.\nLogical Design : Map the abstract, high-level conceptual schema onto the system-specific implementation data model of the chosen Database Management System (DBMS).\nPhysical Design : Specify the internal and low-level physical features of the database configuration.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#database-engine",
+    "href": "weeks/week_1/intro_to_dbms.html#database-engine",
+    "title": "Introduction",
+    "section": "Database Engine",
+    "text": "Database Engine\nA database system is partitioned into independent modules that isolate core responsibilities. The database engine can be broadly divided into three main functional segments: the storage manager, the query processor, and the transaction manager.\n\nStorage Manager\nThe storage manager acts as the operating interface between the low-level data stored on disk hardware and the application programs or queries submitted to the system. It handles data sizing challenges that scale from gigabytes up to petabytes, optimizing data movement between disk arrays (HDD/SSD) and main memory to minimize hardware latency.\n\nValidates user access permissions and tests whether newly modified data satisfies established consistency constraints.\nKeeps the global database in a correct state despite hardware crashes and prevents operational conflicts between concurrent tasks.\nDirects the physical allocation of disk space and manages the underlying byte structures used to represent database records.\nCoordinates caching strategies, determining when to fetch data from physical storage into volatile main memory so data pools can scale larger than the computer’s actual RAM capacity.\n\n\n\nQuery Processor\nThe query processor simplifies and facilitates access to data. It abstracts implementation details so developers can manipulate records at the view level using declarative languages, translating logical commands into optimized sequences of lower-level physical operations.\n\n\nParsing and Translation\n\nWhen a user submits a high-level declarative query, the system cannot execute it as raw text. First, the DDL Interpreter handles any structural commands and records schema definitions in the data dictionary.\nFor data-manipulation requests, the DML Compiler parses the syntax to verify correctness against database schemas. It then translates the declarative text into a relational-algebra expression, mapping the query to an initial internal representation consisting of low-level instructions that the system can understand.\n\nOptimization\n\nA single declarative query can usually be mapped to a wide variety of alternative execution strategies, called evaluation plans, which all produce the exact same result but consume drastically different hardware resources.\nThe DML Compiler runs a specialized subsystem known as the Query Optimizer. The optimizer evaluates these alternative paths, estimates the computational cost (disk I/O and CPU time) for each, and programmatically selects the lowest-cost, most efficient evaluation plan from among the alternatives.\n\nEvaluation\n\nOnce the absolute lowest-cost evaluation plan is locked in by the optimizer, it is passed down to the execution layer.\nThe Query Evaluation Engine takes these optimized, low-level instructions and directly executes them against the physical database files, fetching or altering the underlying data records and returning the finalized, clean result table back to the user.\n\n\n\n\nTransaction Management\nA transaction is a collection of separate program operations that perform a single logical function within an application. The transaction manager allows developers to treat multiple database updates as a single unit of work by enforcing the core ACID properties.\n\nMaintains system safety and manages failure recovery. It automatically detects system crashes and uses logging protocols to reverse or restore data back to the clean state that existed prior to the failed transaction.\nSupervised coordination system that prevents transactional race conditions and structural corruption when millions of global users update identical data fields simultaneously.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  }
+]
