@@ -1,0 +1,184 @@
+---
+title: "Advanced SQL Filtering, Sets & Aggregation"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+![Advanced SQL Filtering](advanced_sql_banner.png)
+
+## Advanced Filtering
+
+Sometimes, a simple `=` or `>` isn't enough. What if you only remember that an instructor's name *starts with* an 'M', or you need to check if their salary falls within a specific range?
+
+### 1. String Operations (`LIKE`)
+`LIKE` is SQL's built-in detective. It performs pattern matching on text using two special wildcard characters:
+
+- `%` : Matches **any sequence** of characters (even zero characters).
+
+- `_` : Matches exactly **one** character.
+
+**Examples in Action:**
+
+- `LIKE 'Intro%'` : Matches any string starting with "Intro" (e.g., "Introduction", "Intro to CS").
+
+- `LIKE '%Comp%'` : Matches any string containing "Comp" anywhere inside it (e.g., "Computer", "MyComp").
+
+- `LIKE '___'` (three underscores) : Matches any string of exactly three characters (e.g., "Cat", "Dog").
+
+```sql
+SELECT name
+FROM instructor
+WHERE name LIKE '%dar%'; 
+-- Finds names like 'Mandar', 'Darren', 'Cedar'
+```
+
+### 2. Advanced Predicates (`BETWEEN` and `IN`)
+These are essentially shortcuts (syntax sugar) that save you from writing long, messy `WHERE` clauses.
+
+**`BETWEEN a AND b`**: A clean way to check for a range (inclusive of both `a` and `b`).
+```sql
+-- Instead of: WHERE salary >= 90000 AND salary <= 100000
+SELECT name
+FROM instructor
+WHERE salary BETWEEN 90000 AND 100000;
+```
+
+**`IN`**: A shorthand for multiple `OR` conditions.
+```sql
+-- Instead of: WHERE dept_name = 'Comp Sci' OR dept_name = 'Biology'
+SELECT name
+FROM instructor
+WHERE dept_name IN ('Comp Sci', 'Biology');
+```
+
+---
+
+## Dealing with the Unknown: `NULL`
+
+In databases, what happens when we simply *don't know* a value? For example, a new student hasn't been assigned a dorm yet. We don't enter "0" or "None" because those are actual values. Instead, we use `NULL`.
+
+`NULL` signifies a missing or unknown value. It is **not** empty text, and it is **not** the number zero.
+
+### The `IS` Operator
+Because `NULL` means "unknown", we cannot use standard mathematical operators like `=` or `!=` on it. 
+
+If you ask SQL: `WHERE dorm = NULL`, the result is practically "Unknown = Unknown?", which doesn't make sense! Instead, we must use the special `IS` operator.
+
+```sql
+-- Find students who haven't been assigned a dorm yet
+SELECT name 
+FROM student
+WHERE dorm IS NULL;
+
+-- Find students who HAVE a dorm
+SELECT name 
+FROM student
+WHERE dorm IS NOT NULL;
+```
+
+### Three-Valued Logic
+Because of `NULL`, SQL doesn't just use standard boolean logic (True / False). It uses **Three-Valued Logic**:
+
+1. **True**
+2. **False**
+3. **Unknown** (The result of comparing something to `NULL`)
+
+Here's how `Unknown` impacts your queries:
+
+- **`True AND Unknown`** $\rightarrow$ `Unknown`
+
+- **`False AND Unknown`** $\rightarrow$ `False` (Because False ruins everything in an AND)
+
+- **`True OR Unknown`** $\rightarrow$ `True` (Because True saves everything in an OR)
+
+- **`False OR Unknown`** $\rightarrow$ `Unknown`
+
+> **Critical Rule:** The `WHERE` clause will *only* return rows where the final condition evaluates to exactly **True**. If the condition evaluates to **False** or **Unknown**, the row is thrown out!
+
+---
+
+## Set Operations
+
+Because relational databases are built on mathematical Set Theory, we can perform operations on the results of two different queries!
+
+Imagine Query A returns `[Alice, Bob, Charlie]` and Query B returns `[Bob, Charlie, David]`.
+
+| Operator | Action | Result |
+|---|---|---|
+| **UNION** | Combines both sets, removing duplicates. | `[Alice, Bob, Charlie, David]` |
+| **INTERSECT** | Keeps only what is present in *both* sets. | `[Bob, Charlie]` |
+| **EXCEPT** | Keeps what is in Set A, but *subtracts* anything found in Set B. | `[Alice]` |
+
+> **Note:** By default, these operations remove duplicate rows. If you want to keep duplicates, add the `ALL` keyword (e.g., `UNION ALL`).
+
+---
+
+## Aggregation & Grouping
+
+Often, we don't care about the individual rows. If a university has 50,000 students, we might just want to know the *total* number of students or the *average* GPA.
+
+**Aggregate functions** take a whole column of data, mash it together, and return a single summary value.
+
+- `avg()`: Average value
+
+- `min()`: Minimum value
+
+- `max()`: Maximum value
+
+- `sum()`: Sum of all values
+
+- `count()`: Count of rows
+
+### `GROUP BY`: Sorting into Buckets
+What if we want the average salary *for every single department*? We can't just use `avg(salary)` alone, because that gives us the average of the entire university. 
+
+Instead, we use `GROUP BY`. This tells SQL: "Sort the rows into buckets based on their department. Then, calculate the average for each bucket independently!"
+
+```sql
+SELECT dept_name, avg(salary)
+FROM instructor
+GROUP BY dept_name;
+```
+
+### `HAVING`: The Bouncer for Buckets
+We already learned that `WHERE` filters individual rows. But what if we want to filter the *groups* we just created? For example, "Show me departments where the *average salary* is greater than 42,000."
+
+You cannot use `WHERE avg(salary) > 42000` because `WHERE` happens *before* the buckets are created! 
+
+Instead, we use `HAVING`. If `WHERE` is the bouncer for rows, `HAVING` is the bouncer for groups!
+
+```sql
+SELECT dept_name, avg(salary)
+FROM instructor
+GROUP BY dept_name
+HAVING avg(salary) > 42000;
+```
+
+---
+
+## The SQL Execution Order
+
+When you write a complex SQL query, the database does *not* read it from top to bottom! It processes the clauses in a very specific order. Understanding this order is the ultimate secret to mastering SQL.
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+flowchart TD
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    
+    1["1. FROM"] --> 2["2. WHERE"]
+    2 --> 3["3. GROUP BY"]
+    3 --> 4["4. HAVING"]
+    4 --> 5["5. SELECT"]
+    5 --> 6["6. ORDER BY"]
+```
+
+**Step-by-Step Narrative:**
+
+1. **`FROM`**: The engine goes to the tables to gather the raw data.
+2. **`WHERE`**: It filters out the individual rows that don't meet the criteria.
+3. **`GROUP BY`**: It takes the surviving rows and sorts them into buckets.
+4. **`HAVING`**: It looks at the buckets, calculates the aggregates, and throws away any buckets that fail the test.
+5. **`SELECT`**: It finally decides which columns to show you on the screen.
+6. **`ORDER BY`**: It alphabetizes or sorts the final output for you.

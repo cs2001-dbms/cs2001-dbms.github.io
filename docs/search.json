@@ -85,5 +85,258 @@
       "**Week-01**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
     ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html",
+    "href": "weeks/week_2/01_relational_and_ddl.html",
+    "title": "Relational Model & DDL",
+    "section": "",
+    "text": "What is a Relational Database?\nBefore diving into commands, let’s build some intuition. Imagine a school register. You have a list of students, their roll numbers, and the courses they are taking. In a Relational Database, we store data in structured tables (also called relations). Every row represents a single entity (like one specific student), and every column represents an attribute of that entity (like their name or grade).\nThe true power of relational databases isn’t just storing tables—it’s how we can relate them using Keys, and slice them using mathematical operations!",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#relational-operators",
+    "href": "weeks/week_2/01_relational_and_ddl.html#relational-operators",
+    "title": "Relational Model & DDL",
+    "section": "",
+    "text": "Operator\nSymbol\nPurpose\nEveryday Example\n\n\n\n\nSelect\n\\(\\sigma\\)\nFilters rows based on a condition.\n“Give me all students who got an ‘A’ grade.”\n\n\nProject\n\\(\\pi\\)\nFilters columns (and removes duplicates).\n“Show me only the names and roll numbers of the students.”\n\n\nUnion\n\\(\\cup\\)\nCombines the results of two queries, removing duplicates.\n“Give me the list of students in the morning class PLUS the evening class.”\n\n\nIntersection\n\\(\\cap\\)\nReturns only the items present in both sets.\n“Give me the students who are taking BOTH Physics AND Chemistry.”\n\n\nSet Difference\n\\(-\\)\nReturns items in the first set but NOT in the second.\n“Students taking Physics but NOT taking Chemistry.”\n\n\nCartesian Product\n\\(\\times\\)\nCombines every row of one table with every row of another.\nMatching every color of a shirt with every size available.\n\n\nNatural Join\n\\(\\bowtie\\)\nConnects two tables based on common columns.\nLinking a student’s ID from the Student table to their grades in the Grades table.\n\n\n\n\nVisualizing Select vs. Project\nTo understand the difference between Select (\\(\\sigma\\)) and Project (\\(\\pi\\)), imagine a spreadsheet. Select extracts horizontal slices (rows), while Project extracts vertical slices (columns).\n\n\n\n\n\ngraph LR\n    subgraph Original Table\n        A[Row 1]\n        B[Row 2]\n        C[Row 3]\n    end\n\n    subgraph Select operation\n        S1[Row 1]\n    end\n    \n    subgraph Project operation\n        P1[Column A only]\n    end\n\n    Original Table -- \"&sigma; (filters rows)\" --&gt; Select\n    Original Table -- \"&pi; (filters columns)\" --&gt; Project",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#domain-types-data-types",
+    "href": "weeks/week_2/01_relational_and_ddl.html#domain-types-data-types",
+    "title": "Relational Model & DDL",
+    "section": "Domain Types (Data Types)",
+    "text": "Domain Types (Data Types)\nBefore we can build a database, we must tell the system what kind of data it’s storing. This ensures our data remains clean, predictable, and doesn’t accidentally store a word in a number field.\n\nchar(n): Fixed-length text. If you say char(5) and insert \"Hi\", it will pad the rest with 3 spaces. Good for fixed things like Zip Codes.\nvarchar(n): Variable-length text up to n characters. varchar(50) storing \"Hi\" only takes up 2 spaces. Perfect for names!\nint: A whole number (integer). Example: 25.\nnumeric(p,d): A number with a decimal point.\n\np is the total number of digits.\nd is the number of digits to the right of the decimal.\nExample: numeric(4, 2) means 4 total digits, 2 after the decimal. So 44.22 is valid, but 100.22 is not (that’s 5 digits).",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#ddl-data-definition-language",
+    "href": "weeks/week_2/01_relational_and_ddl.html#ddl-data-definition-language",
+    "title": "Relational Model & DDL",
+    "section": "DDL: Data Definition Language",
+    "text": "DDL: Data Definition Language\nDDL is the set of SQL commands we use to design and modify the “blueprint” (schema) of our database. We aren’t adding the actual user data yet—we are just building the empty shelves to hold it!\n\n1. CREATE\nThe CREATE TABLE command defines a new table and its columns.\nCREATE TABLE student (\n    roll_no varchar(5),\n    name varchar(8),\n    level varchar(8),\n    course varchar(8),\n    term varchar(4),\n    grade varchar(2),\n    primary key (roll_no)\n);\n\nTip for Beginners: Notice primary key (roll_no). This is a special rule guaranteeing that no two students can have the same roll_no. It uniquely identifies each row!\n\n\n\n2. ALTER\nIf you realize later you need a new column (like email), you use ALTER to modify the existing blueprint without destroying it.\n\n\n3. DROP\nIf you made a mistake or no longer need a table, DROP will permanently delete the table and all of its data.\nDROP TABLE student;\n\nWarning: Use DROP very carefully! It wipes out the table structure and everything inside it instantly.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html",
+    "href": "weeks/week_2/02_dml_and_queries.html",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "",
+    "text": "DML: Furnishing the House\nIn the previous section, DDL acted as our architect—building the empty structure of our student table. Now, it’s time for DML (Data Manipulation Language) to move the furniture in! DML handles all the inserting, modifying, and deleting of the actual data rows.\nLet’s start with an empty table:",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html#dml-data-manipulation-language",
+    "href": "weeks/week_2/02_dml_and_queries.html#dml-data-manipulation-language",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "",
+    "text": "1. INSERT\nAdds a new row to your table.\nMethod 1 (Implicit Order): You must provide values for every column in the exact order they were defined in the table.\nINSERT INTO student VALUES ('26f10', 'Pravin', 'Degree', 'DBMS', '27t1', 'S');\nMethod 2 (Explicit Order): You specify the columns, which is much safer and easier to read!\nINSERT INTO student (roll_no, name, level, course, term, grade) \nVALUES ('26f10', 'Pravin', 'Degree', 'DBMS', '27t1', 'S');\n\n\n2. UPDATE\nModifies existing data. Always use a WHERE clause unless you want to update every single row!\nUPDATE student \nSET grade = 'A'\nWHERE roll_no = '26f10';\n\n\n3. DELETE\nRemoves a row from the table.\nDELETE FROM student \nWHERE roll_no = '26f10';",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html#basic-sql-queries",
+    "href": "weeks/week_2/02_dml_and_queries.html#basic-sql-queries",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "Basic SQL Queries",
+    "text": "Basic SQL Queries\nThe core of SQL is asking the database questions (queries). The most fundamental structure consists of three clauses:\nSELECT &lt;attributes&gt;\nFROM &lt;tables&gt;\nWHERE &lt;condition&gt;;\nThink of it like this: - FROM: Where am I getting the data? - WHERE: Which rows do I care about? - SELECT: Which columns do I want to see?\n\nThe SELECT Clause\nThe SELECT clause dictates the final columns returned.\n\n* : Give me all columns.\nDISTINCT : Remove any duplicate answers.\nAS : Rename a column in the output (alias).\nTOP &lt;n&gt; (or LIMIT &lt;n&gt; in some databases): Show only the first n rows.\n\nExample:\nSELECT DISTINCT(name) AS Instructor_Name\nFROM instructor\nWHERE dept_name = 'Biology';\n\n\nThe FROM Clause & Cross Joins\nWhat happens if you list more than one table in the FROM clause?\nSELECT *\nFROM instructor, course;\nThis performs a Cross Join (Cartesian Product). It takes every instructor and matches them with every course! If you have 10 instructors and 10 courses, you will get 100 rows. Usually, this isn’t what we want unless we filter the combinations in the WHERE clause.\n\n\nThe WHERE Clause\nThe WHERE clause is the bouncer of your query. It checks each row and only lets it pass if the condition is true.\nLet’s use WHERE to fix our Cross Join from above, keeping only the rows where the instructor actually teaches the course:\nSELECT *\nFROM instructor AS i, course AS c\nWHERE i.course_id = c.course_id \n  AND i.dept_name = 'Biology' \n  AND salary &gt; 40000;\n(Notice how we used AS i and AS c to give our tables nicknames? This makes our WHERE clause much cleaner!)",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html",
+    "href": "weeks/week_2/03_advanced_sql.html",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "",
+    "text": "Advanced Filtering\nSometimes, a simple = or &gt; isn’t enough. What if you only remember that an instructor’s name starts with an ‘M’, or you need to check if their salary falls within a specific range?",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html#advanced-filtering",
+    "href": "weeks/week_2/03_advanced_sql.html#advanced-filtering",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "",
+    "text": "1. String Operations (LIKE)\nLIKE is SQL’s built-in detective. It performs pattern matching on text using two special wildcard characters:\n\n% : Matches any sequence of characters (even zero characters).\n_ : Matches exactly one character.\n\nExamples in Action:\n\nLIKE 'Intro%' : Matches any string starting with “Intro” (e.g., “Introduction”, “Intro to CS”).\nLIKE '%Comp%' : Matches any string containing “Comp” anywhere inside it (e.g., “Computer”, “MyComp”).\nLIKE '___' (three underscores) : Matches any string of exactly three characters (e.g., “Cat”, “Dog”).\n\nSELECT name\nFROM instructor\nWHERE name LIKE '%dar%'; \n-- Finds names like 'Mandar', 'Darren', 'Cedar'\n\n\n2. Advanced Predicates (BETWEEN and IN)\nThese are essentially shortcuts (syntax sugar) that save you from writing long, messy WHERE clauses.\nBETWEEN a AND b: A clean way to check for a range (inclusive of both a and b).\n-- Instead of: WHERE salary &gt;= 90000 AND salary &lt;= 100000\nSELECT name\nFROM instructor\nWHERE salary BETWEEN 90000 AND 100000;\nIN: A shorthand for multiple OR conditions.\n-- Instead of: WHERE dept_name = 'Comp Sci' OR dept_name = 'Biology'\nSELECT name\nFROM instructor\nWHERE dept_name IN ('Comp Sci', 'Biology');",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html#set-operations",
+    "href": "weeks/week_2/03_advanced_sql.html#set-operations",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "Set Operations",
+    "text": "Set Operations\nBecause relational databases are built on mathematical Set Theory, we can perform operations on the results of two different queries!\nImagine Query A returns [Alice, Bob, Charlie] and Query B returns [Bob, Charlie, David].\n\n\n\n\n\n\n\n\nOperator\nAction\nResult\n\n\n\n\nUNION\nCombines both sets, removing duplicates.\n[Alice, Bob, Charlie, David]\n\n\nINTERSECT\nKeeps only what is present in both sets.\n[Bob, Charlie]\n\n\nEXCEPT\nKeeps what is in Set A, but subtracts anything found in Set B.\n[Alice]\n\n\n\n\nNote: By default, these operations remove duplicate rows. If you want to keep duplicates, add the ALL keyword (e.g., UNION ALL).",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html#aggregation-grouping",
+    "href": "weeks/week_2/03_advanced_sql.html#aggregation-grouping",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "Aggregation & Grouping",
+    "text": "Aggregation & Grouping\nOften, we don’t care about the individual rows. If a university has 50,000 students, we might just want to know the total number of students or the average GPA.\nAggregate functions take a whole column of data, mash it together, and return a single summary value.\n\navg(): Average value\nmin(): Minimum value\nmax(): Maximum value\nsum(): Sum of all values\ncount(): Count of rows\n\n\nGROUP BY: Sorting into Buckets\nWhat if we want the average salary for every single department? We can’t just use avg(salary) alone, because that gives us the average of the entire university.\nInstead, we use GROUP BY. This tells SQL: “Sort the rows into buckets based on their department. Then, calculate the average for each bucket independently!”\nSELECT dept_name, avg(salary)\nFROM instructor\nGROUP BY dept_name;\n\n\nHAVING: The Bouncer for Buckets\nWe already learned that WHERE filters individual rows. But what if we want to filter the groups we just created? For example, “Show me departments where the average salary is greater than 42,000.”\nYou cannot use WHERE avg(salary) &gt; 42000 because WHERE happens before the buckets are created!\nInstead, we use HAVING. If WHERE is the bouncer for rows, HAVING is the bouncer for groups!\nSELECT dept_name, avg(salary)\nFROM instructor\nGROUP BY dept_name\nHAVING avg(salary) &gt; 42000;",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html#the-sql-execution-order",
+    "href": "weeks/week_2/03_advanced_sql.html#the-sql-execution-order",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "The SQL Execution Order",
+    "text": "The SQL Execution Order\nWhen you write a complex SQL query, the database does not read it from top to bottom! It processes the clauses in a very specific order. Understanding this order is the ultimate secret to mastering SQL.\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\nflowchart TD\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    \n    1[\"1. FROM\"] --&gt; 2[\"2. WHERE\"]\n    2 --&gt; 3[\"3. GROUP BY\"]\n    3 --&gt; 4[\"4. HAVING\"]\n    4 --&gt; 5[\"5. SELECT\"]\n    5 --&gt; 6[\"6. ORDER BY\"]\n\n\n\n\n\n\nStep-by-Step Narrative:\n\nFROM: The engine goes to the tables to gather the raw data.\nWHERE: It filters out the individual rows that don’t meet the criteria.\nGROUP BY: It takes the surviving rows and sorts them into buckets.\nHAVING: It looks at the buckets, calculates the aggregates, and throws away any buckets that fail the test.\nSELECT: It finally decides which columns to show you on the screen.\nORDER BY: It alphabetizes or sorts the final output for you.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#relational-operators-slicing-and-dicing",
+    "href": "weeks/week_2/01_relational_and_ddl.html#relational-operators-slicing-and-dicing",
+    "title": "Relational Model & DDL",
+    "section": "Relational Operators: Slicing and Dicing",
+    "text": "Relational Operators: Slicing and Dicing\nRelational Algebra gives us Relational Operators—surgical tools to extract what we need.\n\nThe Big Two: Select vs. Project\n\nSelect (\\(\\sigma\\)): Filters Rows. It scans horizontally. (e.g., “Find all students who got an ‘A’”).\nProject (\\(\\pi\\)): Filters Columns. It scans vertically. (e.g., “I only need to see Names and Roll Numbers”).\n\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    classDef sub fill:#f0f0f0,stroke:#666,stroke-width:2px,color:#000000;\n\n    subgraph original[Original Table]\n        A[\"Row 1, Col X, Col Y\"]\n        B[\"Row 2, Col X, Col Y\"]\n        C[\"Row 3, Col X, Col Y\"]\n    end\n\n    subgraph select_op[Select Operation]\n        S1[\"Row 1, Col X, Col Y\"]\n        desc1[\"(Filters Rows)\"]\n    end\n    \n    subgraph project_op[Project Operation]\n        P1[\"Col X only\"]\n        desc2[\"(Filters Columns)\"]\n    end\n\n    original -- Select --&gt; select_op\n    original -- Project --&gt; project_op\n\n\n\n\n\n\n\n\nOther Important Operators\n\n\n\n\n\n\n\n\n\nOperator\nSymbol\nIntuition\nEveryday Example\n\n\n\n\nUnion\n\\(\\cup\\)\nCombines two sets into one big list.\n“Give me the list of students in the morning class PLUS the evening class.”\n\n\nIntersection\n\\(\\cap\\)\nReturns items present in both sets.\n“Who is taking BOTH Physics AND Chemistry?”\n\n\nSet Difference\n\\(-\\)\nReturns items in the first set but NOT in the second.\n“Students taking Physics but NOT taking Chemistry.”\n\n\nCartesian Product\n\\(\\times\\)\nCombines every row of one table with every row of another.\nMatching every color of a shirt with every size available.\n\n\nNatural Join\n\\(\\bowtie\\)\nConnects two tables seamlessly based on matching columns.\nLinking the Student table to the Grades table.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#domain-types-guarding-your-data",
+    "href": "weeks/week_2/01_relational_and_ddl.html#domain-types-guarding-your-data",
+    "title": "Relational Model & DDL",
+    "section": "Domain Types: Guarding Your Data",
+    "text": "Domain Types: Guarding Your Data\nBefore we can build a database, we must tell the system what kind of data it’s storing. This is called defining the Domain Types (or Data Types).\nWhy do we need this? Imagine a column meant for “Age”. If we don’t restrict it, someone might type \"Twenty\" instead of 20. When you later try to calculate the average age, the database will crash because it can’t do math on the word \"Twenty\". Domain types protect us!\nHere are the most common ones you’ll use:\n\nchar(n): Fixed-length text.\n\nExample: char(5). If you insert \"Hi\", the database secretly pads it with 3 blank spaces: \"Hi   \".\nBest for: Fixed-length codes like Zip Codes or standard IDs.\n\nvarchar(n): Variable-length text up to n characters.\n\nExample: varchar(50). If you insert \"Hi\", it only takes up 2 spaces.\nBest for: Names, emails, addresses.\n\nint: A whole number.\n\nExample: 25.\n\nnumeric(p,d): A precise decimal number.\n\np is the total number of digits.\nd is the number of digits after the decimal.\nExample: numeric(4, 2). You can store 44.22, but you cannot store 100.22 (because that’s 5 total digits, and we only allowed 4!).",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#ddl-building-the-blueprint",
+    "href": "weeks/week_2/01_relational_and_ddl.html#ddl-building-the-blueprint",
+    "title": "Relational Model & DDL",
+    "section": "DDL: Building the Blueprint",
+    "text": "DDL: Building the Blueprint\nIntuition: DDL is the architect. You use DDL to draw the blueprints and set the rules. DDL does not handle the actual data.\n\n1. The CREATE Command\nWe use CREATE TABLE to bring a new table into existence. Let’s create a student table with constraints!\nCREATE TABLE student (\n    roll_no varchar(10),\n    name varchar(50) NOT NULL,\n    age int CHECK (age &gt; 10),\n    email varchar(100) UNIQUE,\n    primary key (roll_no)\n);\nWhat happened here?\n\nname cannot be left blank (NOT NULL).\nage must be greater than 10. If someone tries to insert a 9-year-old, the database will block it!\nemail must be UNIQUE across all students.\nroll_no is our PRIMARY KEY.\n\n\n\n2. The ALTER Command\nWhat if we built our table, but later realized we forgot to add a phone number column? We use ALTER to carefully modify the blueprint without destroying the table.\n-- Adding a new column to an existing table\nALTER TABLE student ADD phone_number varchar(15);\n\n-- Changing the data type of an existing column\nALTER TABLE student ALTER COLUMN name varchar(100);\n\n\n3. The DROP Command\nWhen a table is completely obsolete, we use DROP.\nDROP TABLE student;\n\nWarning: Use DROP very carefully! It wipes out the table structure and everything inside it instantly.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#what-is-sql",
+    "href": "weeks/week_2/01_relational_and_ddl.html#what-is-sql",
+    "title": "Relational Model & DDL",
+    "section": "What is SQL?",
+    "text": "What is SQL?\nWhile Relational Algebra is great for theory, we needed a real, practical language to type into a computer. Enter SQL (Structured Query Language).\nA Brief History: Developed at IBM in the 1970s by Donald Chamberlin and Raymond Boyce, SQL was initially called “SEQUEL”. It was designed to manipulate data stored in IBM’s quasi-relational database management system. Over the decades, it became the undisputed, standardized language for relational databases globally.\nSQL is broadly divided into three main categories:\n\nDDL (Data Definition Language): Used to define the structure (the blueprint).\nDML (Data Manipulation Language): Used to insert, update, and query the actual data (the furniture).\nDCL (Data Control Language): Used to manage permissions and security (the bouncers).",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html#dml-furnishing-the-house",
+    "href": "weeks/week_2/02_dml_and_queries.html#dml-furnishing-the-house",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "",
+    "text": "roll_no\nname\nlevel\ncourse\nterm\ngrade\n\n\n\n\n(empty)\n\n\n\n\n\n\n\n\n\n1. INSERT: Adding New Records\nA new student, Pravin, has just enrolled. We need to add him to our database.\nINSERT INTO student (roll_no, name, level, course, term, grade) \nVALUES ('26f10', 'Pravin', 'Degree', 'DBMS', '27t1', 'S');\n\nTip: You can write an INSERT without listing the column names (e.g., INSERT INTO student VALUES (...)), but specifying the columns as shown above is much safer! It prevents errors if someone later adds a new column to the table.\n\nInserting Multiple Rows at Once: You can also insert several students in a single command by separating the values with commas!\nINSERT INTO student (roll_no, name, level, course, term, grade) \nVALUES \n    ('26f11', 'Alice', 'Degree', 'Math', '27t1', 'B'),\n    ('26f12', 'Bob', 'Diploma', 'Physics', '27t1', 'C');\nOur Table Now:\n\n\n\nroll_no\nname\nlevel\ncourse\nterm\ngrade\n\n\n\n\n26f10\nPravin\nDegree\nDBMS\n27t1\nS\n\n\n\n\n\n2. UPDATE: Modifying Existing Data\nOops! We made a mistake. Pravin actually got an ‘A’ grade, not an ‘S’. We don’t delete his record; we just UPDATE it.\nUPDATE student \nSET grade = 'A'\nWHERE roll_no = '26f10';\n\n[WARNING] Always, always use a WHERE clause with UPDATE!\n\nWhat happens if you forget the WHERE clause? If you simply ran UPDATE student SET grade = 'A';, it would ignore the individual student and change the grade of every single student in the entire database to an ‘A’!\n\n\n\nroll_no\nname\ngrade\n\n\n\n\n26f10\nPravin\nA\n\n\n26f11\nAlice\nA\n\n\n26f12\nBob\nA\n\n\n\n(Oops! Alice and Bob just got free ‘A’ grades because you forgot the WHERE clause!)\nOur Table After Correct Update:\n\n\n\nroll_no\nname\nlevel\ncourse\nterm\ngrade\n\n\n\n\n26f10\nPravin\nDegree\nDBMS\n27t1\nA\n\n\n\n\n\n3. DELETE: Removing Records\nPravin has decided to transfer to another school. We need to remove his record completely.\nDELETE FROM student \nWHERE roll_no = '26f10';\n(Just like UPDATE, forgetting the WHERE clause here would delete everyone!)",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html#the-anatomy-of-a-query",
+    "href": "weeks/week_2/02_dml_and_queries.html#the-anatomy-of-a-query",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "The Anatomy of a Query",
+    "text": "The Anatomy of a Query\nNow that we have data, how do we ask the database questions? We write queries.\nThink of a SQL query like giving instructions to an incredibly fast, but very literal librarian. The fundamental structure requires three clauses:\nSELECT &lt;attributes&gt;\nFROM &lt;tables&gt;\nWHERE &lt;condition&gt;;\nHere is the mental model of how the librarian thinks: 1. FROM: “Which section of the library (tables) should I go to?” 2. WHERE: “Which specific books (rows) should I pull off the shelf?” 3. SELECT: “Which chapters (columns) should I photocopy and give to you?”\n\nThe SELECT Clause in Detail\nThe SELECT clause dictates what the final output looks like.\n\n* : “Give me everything.” (All columns)\nDISTINCT : “Remove any duplicate answers.”\nAS : “Rename this column in the output just to make it look nicer.”\nTOP &lt;n&gt; (or LIMIT): “Only show me the first n results.”\n\nExample:\nSELECT DISTINCT(name) AS Instructor_Name\nFROM instructor\nWHERE dept_name = 'Biology';\n\n\nThe ORDER BY Clause\nBy default, SQL returns rows in whatever internal order it feels like. If you want them sorted, you must explicitly use the ORDER BY clause at the very end of your query.\n\nASC: Ascending order (A-Z, 1-10). This is the default.\nDESC: Descending order (Z-A, 10-1).\n\nExample:\n-- Sort instructors by salary from highest to lowest\nSELECT name, salary\nFROM instructor\nORDER BY salary DESC;",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/02_dml_and_queries.html#the-danger-of-cross-joins",
+    "href": "weeks/week_2/02_dml_and_queries.html#the-danger-of-cross-joins",
+    "title": "Data Manipulation (DML) & Basic Queries",
+    "section": "The Danger of Cross Joins",
+    "text": "The Danger of Cross Joins\nWhat happens if you tell the librarian to get data from two places at once?\nSELECT *\nFROM instructor, course;\nWhen you list multiple tables in the FROM clause without a WHERE condition, SQL performs a Cross Join (Cartesian Product). It pairs every row in the first table with every row in the second table.\nLet’s visualize this: If you have 2 Instructors and 2 Courses:\nInstructors Table:\n\n\n\nid\nname\n\n\n\n\n1\nAlice\n\n\n2\nBob\n\n\n\nCourses Table:\n\n\n\nc_id\ntitle\n\n\n\n\n101\nMath\n\n\n102\nScience\n\n\n\nThe Cross Join Result:\n\n\n\nid\nname\nc_id\ntitle\n\n\n\n\n1\nAlice\n101\nMath\n\n\n1\nAlice\n102\nScience\n\n\n2\nBob\n101\nMath\n\n\n2\nBob\n102\nScience\n\n\n\n(2 instructors × 2 courses = 4 rows!)\nImagine if you had 1,000 instructors and 1,000 courses—you’d instantly generate 1 million rows! Most of these combinations are nonsense (Alice doesn’t teach every single course).\n\nFixing the Cross Join\nTo fix this, we use the WHERE clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):\nSELECT *\nFROM instructor AS i, course AS c\nWHERE i.course_id = c.course_id \n  AND i.dept_name = 'Biology';\n(Notice how we used AS i and AS c to give our tables nicknames? This makes our WHERE clause much easier to read!)",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Data Manipulation (DML) & Basic Queries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#the-concept-of-keys",
+    "href": "weeks/week_2/01_relational_and_ddl.html#the-concept-of-keys",
+    "title": "Relational Model & DDL",
+    "section": "The Concept of Keys",
+    "text": "The Concept of Keys\nIn a database, we need a way to uniquely identify every row so we don’t confuse two students named “John Smith”. We do this using Keys.\n\nSuper Key: Any combination of columns that can uniquely identify a row. For a student, [Roll Number, Name] is a super key, but it’s bulkier than it needs to be.\nCandidate Key: A minimal Super Key. It has no unnecessary columns. Both [Roll Number] and [Email Address] could be candidate keys.\nPrimary Key: The one Candidate Key you officially choose to identify your rows. Once chosen, no two rows can have the same Primary Key, and it cannot be empty.\nSurrogate Key: Sometimes, natural data (like names) makes for bad keys. A Surrogate Key is an artificially generated ID (like an auto-incrementing Student_ID = 1, 2, 3...) created purely to act as the Primary Key.\nForeign Key: This is the literal glue that makes a database “relational”! A Foreign Key is a column in Table A that points exactly to the Primary Key in Table B. It links the two tables together.\n\nExample: The student_id column in the Grades table is a Foreign Key that points to the student_id Primary Key in the Student table.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#relational-queries-the-pure-language",
+    "href": "weeks/week_2/01_relational_and_ddl.html#relational-queries-the-pure-language",
+    "title": "Relational Model & DDL",
+    "section": "Relational Queries & The Pure Language",
+    "text": "Relational Queries & The Pure Language\nHow do we ask a database for information? We use a Query Language.\nThere’s a fundamental difference in how these languages work:\n\nImperative Languages (like Python or Java): You must write step-by-step instructions on how to find the data.\nDeclarative Languages: You simply describe what data you want, and the system figures out the best way to get it.\n\nBefore modern SQL existed, computer scientists created “pure” theoretical languages to prove databases could work. Relational Algebra is one of these pure languages. It uses mathematical symbols to describe exactly how to slice and dice tables.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/01_relational_and_ddl.html#domain-types-integrity-constraints",
+    "href": "weeks/week_2/01_relational_and_ddl.html#domain-types-integrity-constraints",
+    "title": "Relational Model & DDL",
+    "section": "Domain Types & Integrity Constraints",
+    "text": "Domain Types & Integrity Constraints\nBefore building our table, we must set the rules.\n\nDomain Types\nWe must tell the system what kind of data a column stores. This prevents someone from typing “Twenty” into an Age column.\n\n\n\n\n\n\n\n\nType\nDescription\nExample\n\n\n\n\nchar(n)\nFixed-length text. Good for Zip Codes.\nchar(5) pads “Hi” to \"Hi   \"\n\n\nvarchar(n)\nVariable-length text. Good for names.\nvarchar(50) stores “Hi” as \"Hi\"\n\n\nint\nA whole number.\n25\n\n\nnumeric(p,d)\nA decimal number. p is total digits, d is after the decimal.\nnumeric(4,2) allows 44.22 but rejects 100.22\n\n\n\n\n\nIntegrity Constraints\nConstraints are extra rules we apply to columns to ensure the data makes sense.\n\nNOT NULL: The column cannot be left empty.\nUNIQUE: No two rows can have the same value in this column.\nCHECK(condition): Ensures the value meets a specific requirement (e.g., CHECK (age &gt;= 18)).\nPRIMARY KEY: Automatically enforces both UNIQUE and NOT NULL.",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Relational Model & DDL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_2/03_advanced_sql.html#dealing-with-the-unknown-null",
+    "href": "weeks/week_2/03_advanced_sql.html#dealing-with-the-unknown-null",
+    "title": "Advanced SQL Filtering, Sets & Aggregation",
+    "section": "Dealing with the Unknown: NULL",
+    "text": "Dealing with the Unknown: NULL\nIn databases, what happens when we simply don’t know a value? For example, a new student hasn’t been assigned a dorm yet. We don’t enter “0” or “None” because those are actual values. Instead, we use NULL.\nNULL signifies a missing or unknown value. It is not empty text, and it is not the number zero.\n\nThe IS Operator\nBecause NULL means “unknown”, we cannot use standard mathematical operators like = or != on it.\nIf you ask SQL: WHERE dorm = NULL, the result is practically “Unknown = Unknown?”, which doesn’t make sense! Instead, we must use the special IS operator.\n-- Find students who haven't been assigned a dorm yet\nSELECT name \nFROM student\nWHERE dorm IS NULL;\n\n-- Find students who HAVE a dorm\nSELECT name \nFROM student\nWHERE dorm IS NOT NULL;\n\n\nThree-Valued Logic\nBecause of NULL, SQL doesn’t just use standard boolean logic (True / False). It uses Three-Valued Logic:\n\nTrue\nFalse\nUnknown (The result of comparing something to NULL)\n\nHere’s how Unknown impacts your queries:\n\nTrue AND Unknown \\(\\rightarrow\\) Unknown\nFalse AND Unknown \\(\\rightarrow\\) False (Because False ruins everything in an AND)\nTrue OR Unknown \\(\\rightarrow\\) True (Because True saves everything in an OR)\nFalse OR Unknown \\(\\rightarrow\\) Unknown\n\n\nCritical Rule: The WHERE clause will only return rows where the final condition evaluates to exactly True. If the condition evaluates to False or Unknown, the row is thrown out!",
+    "crumbs": [
+      "**Week-02**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
+    ]
   }
 ]

@@ -29,6 +29,11 @@ book:
     - part: '**Week-01**'
       chapters: 
         - weeks/week_1/intro_to_dbms.qmd
+    - part: '**Week-02**'
+      chapters: 
+        - weeks/week_2/01_relational_and_ddl.qmd
+        - weeks/week_2/02_dml_and_queries.qmd
+        - weeks/week_2/03_advanced_sql.qmd
   favicon: logo.ico
 
 format:
