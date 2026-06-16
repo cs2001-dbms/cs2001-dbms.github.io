@@ -25,10 +25,12 @@ book:
     transition: 0.3s ease  # Smooth transition for sidebar animations
   chapters:
     - href: index.qmd
-      text: "Introduction"
+      text: "About the Course"
     - part: '**Week-01**'
       chapters: 
         - weeks/week_1/intro_to_dbms.qmd
+        - weeks/week_1/view_of_data.qmd
+        - weeks/week_1/database_design.qmd
   favicon: logo.ico
 
 format:

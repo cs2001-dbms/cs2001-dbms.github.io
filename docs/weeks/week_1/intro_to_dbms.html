@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,6 +33,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../weeks/week_1/view_of_data.html" rel="next">
 <link href="../../index.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
@@ -349,7 +315,7 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">About the Course</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -366,6 +332,16 @@ window.Quarto = {
   <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_1/view_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">View of Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_1/database_design.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Database Design</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -378,22 +354,8 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#purpose-of-dbms" id="toc-purpose-of-dbms" class="nav-link active" data-scroll-target="#purpose-of-dbms">Purpose of DBMS</a></li>
-  <li><a href="#history-of-dbms" id="toc-history-of-dbms" class="nav-link" data-scroll-target="#history-of-dbms">History of DBMS</a></li>
-  <li><a href="#view-of-data" id="toc-view-of-data" class="nav-link" data-scroll-target="#view-of-data">View of Data</a>
-  <ul class="collapse">
-  <li><a href="#data-abstraction" id="toc-data-abstraction" class="nav-link" data-scroll-target="#data-abstraction">Data Abstraction</a></li>
-  <li><a href="#schema-and-instance" id="toc-schema-and-instance" class="nav-link" data-scroll-target="#schema-and-instance">Schema and Instance</a></li>
-  <li><a href="#data-models" id="toc-data-models" class="nav-link" data-scroll-target="#data-models">Data Models</a></li>
-  </ul></li>
-  <li><a href="#database-languages" id="toc-database-languages" class="nav-link" data-scroll-target="#database-languages">Database Languages</a></li>
-  <li><a href="#database-design" id="toc-database-design" class="nav-link" data-scroll-target="#database-design">Database Design</a></li>
-  <li><a href="#database-engine" id="toc-database-engine" class="nav-link" data-scroll-target="#database-engine">Database Engine</a>
-  <ul class="collapse">
-  <li><a href="#storage-manager" id="toc-storage-manager" class="nav-link" data-scroll-target="#storage-manager">Storage Manager</a></li>
-  <li><a href="#query-processor" id="toc-query-processor" class="nav-link" data-scroll-target="#query-processor">Query Processor</a></li>
-  <li><a href="#transaction-management" id="toc-transaction-management" class="nav-link" data-scroll-target="#transaction-management">Transaction Management</a></li>
-  </ul></li>
+  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
+  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
   </ul>
 </nav>
     </div>
@@ -420,151 +382,34 @@ window.Quarto = {
 </header>
 
 
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently. The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p>
+<section id="key-terminologies" class="level2">
+<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
 <ul>
-<li><p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time.</p></li>
-<li><p><strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p></li>
+<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
+<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
+<li><p><strong>File:</strong> A collection of related records.</p></li>
+<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
 </ul>
-<section id="purpose-of-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="purpose-of-dbms">Purpose of DBMS</h2>
-<p>The earliest form of data management was through the maintenance of physical ledgers and journals, known as <em>Book Keeping</em>. This way of managing data through physical records was susceptible to human errors, external tampering and physical damage. In addition to this, it was also difficult and time consuming to maintain and scale over the years.</p>
-<p>With the advent of technology came the <strong>file-processing system</strong>, which stores permanent records in various files, and it needs various application programs to manage and retrieve data from the files. The filesystems posed several disadvantages, such as:</p>
-<ul>
-<li><p><strong>Data Redundancy and Inconsistency</strong> : Because individual programmers build distinct files and unique utility scripts over long intervals, records inevitably end up duplicated across separate files.</p></li>
-<li><p><strong>Difficulty in Accessing Data</strong> : Conventional file layouts do not support flexible data retrieval. If a new data retrieval request is made, that the system’s original developers did not explicitly anticipate, a programmer has to write a completely new script from scratch. This environment is neither convenient nor responsive.</p></li>
-<li><p><strong>Data Isolation</strong> : Because data variables are distributed across disconnected files featuring conflicting data structures and disparate formats, writing new applications to aggregate information remains highly complex.</p></li>
-<li><p><strong>Integrity Problems</strong> : Real-world enterprise rules require strict constraints (e.g., a bank or department account balance can never drop below zero). In a file system, these constraints must be explicitly hardcoded inside every single application script. Adding or modifying rules across hundreds of decoupled programs is error-prone.</p></li>
-<li><p><strong>Atomicity</strong> : Computer hardware is inherently vulnerable to power failures or system crashes. Database operations must be atomic, the transfer must take place in its entirety or not at all. Achieving this is difficult in standard file structures.</p></li>
-<li><p><strong>Concurrent-Access Anomalies</strong> : To maintain fast response windows and maximize performance, data systems must allow multiple processes or users to modify information simultaneously. In a primitive file-processing system managed by a conventional operating system, there is no centralized coordination engine to safely oversee this. Because separate application programs read and write raw text files independently, overlapping operations inevitably overwrite each other.</p></li>
-<li><p><strong>Security</strong> : In a standard file setup, it is incredibly difficult to enforce granular security constraints (such as field-level or row-level permissions) because the operating system does not understand the internal semantics of the data it is storing.</p></li>
-</ul>
+<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
+<blockquote class="blockquote">
+<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
+</blockquote>
 </section>
-<section id="history-of-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="history-of-dbms">History of DBMS</h2>
+<section id="why-dbms" class="level2">
+<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
+<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
 <ul>
-<li><p><strong>1950s and Early 1960s</strong> : Data was stored on sequential-access magnetic tapes and punched card decks, which required sorting input records into a strict, predetermined order.</p></li>
-<li><p><strong>Late 1960s and Early 1970s</strong>: The widespread introduction of hard disks allowed software applications to fetch any data location in tens of milliseconds, liberating processing from the limits of sequentiality. Programmers utilized network and hierarchical data models, which required them to manually build and manipulate low-level structures like lists and trees on disk. Edgar Codd published a landmark paper in 1970 defining the relational model, which hid physical storage configurations from programmers and earned him the ACM Turing Award.</p></li>
-<li><p><strong>Late 1970s and 1980s</strong>: Initial performance concerns vanished when IBM Research launched the System R prototype, which pioneered declarative query optimization and led to early commercial database products. Commercial systems like Oracle, IBM DB2, and Berkeley’s Ingres arrived on the market, establishing SQL as the dominant enterprise data framework. The database community initiated parallel processing studies, distributed storage structures, and early object-oriented database implementations.</p></li>
-<li><p><strong>1990s</strong>: The explosive growth of the World Wide Web forced databases to maintain 24/7 web availability, handle massive concurrent transaction speeds, and integrate with internet user interfaces.</p></li>
-<li><p><strong>2000s</strong>: Systems evolved past tabular rows to support semi-structured XML or compact JSON formats, spatial navigation data, and graph structures designed for social networking connections. Open-source engines like MySQL and PostgreSQL surged in popularity, alongside “auto-admin” configuration scripts designed to dynamically adapt to shifting data workloads. Modern analytic needs birthed physical “column-store” layouts, scalable map-reduce parallel computation frameworks, and lightweight NoSQL systems that prioritized horizontal scaling over immediate consistency.</p></li>
-<li><p><strong>2010s</strong>: Lightweight NoSQL databases matured by re-integrating high-level declarative query pathways and stricter consistency configurations to alleviate developer strain. Corporate computing transitioned from localized server rooms toward distributed cloud environments and managed Software as a Service (SaaS) provider models.</p></li>
-</ul>
-</section>
-<section id="view-of-data" class="level2">
-<h2 class="anchored" data-anchor-id="view-of-data">View of Data</h2>
-<section id="data-abstraction" class="level3">
-<h3 class="anchored" data-anchor-id="data-abstraction">Data Abstraction</h3>
-<p>Abstraction refers to the hiding of implementation details to simplify the user interactions with the system.</p>
-<p><img src="abstraction_img.png" class="img-fluid"></p>
-<ul>
-<li><p><strong>Physical level</strong> : Describes <em>how</em> the data is actually stored. It describes complex low-level data structures in detail.</p></li>
-<li><p><strong>Logical level</strong> : Describes <em>what</em> data is stored in the database, along with the relationships that exist between them.</p></li>
-<li><p><strong>View level</strong> : This is the highest level of abstraction that simplifies the user interaction by describing only the necessary part of the database. The system may provide different views for the same database.</p></li>
-</ul>
-</section>
-<section id="schema-and-instance" class="level3">
-<h3 class="anchored" data-anchor-id="schema-and-instance">Schema and Instance</h3>
-<ul>
-<li><p><strong><em>Schema</em></strong> refers to the overall design of the database. Database systems have several schemas, partitioned according to the levels of abstraction:</p>
-<ul>
-<li><p><strong>Physical schema</strong> : Describes the overall physical design of the database at the physical level.</p></li>
-<li><p><strong>Logical schema</strong> : Describes the overall logical design of the database at the logical level.</p></li>
-</ul>
-<p><img src="schema_img.png" class="img-fluid"></p></li>
-<li><p><strong><em>Instance</em></strong> refers to the collection of information stored in the database at a given point of time. <img src="instance_img.png" class="img-fluid"></p></li>
-<li><p><strong><em>Physical data independence</em></strong> refers to the ability to modify the physical schema without changing the logical schema. This ensures that the different interfaces are defined such that any changes in one of the levels does not seriously influence others.</p></li>
-</ul>
-</section>
-<section id="data-models" class="level3">
-<h3 class="anchored" data-anchor-id="data-models">Data Models</h3>
-<p>The collection of conceptual tools for describing data, data relationships, data semantics, and consistency constraints is referred to as a data model. They can be classified into four different categories:</p>
-<ul>
-<li><p><strong>Relational Model</strong> : The relational model uses a collection of tables to represent both data and the relationships among those data. Each table has multiple columns, and each column has a unique name. Tables are also known as relations.</p></li>
-<li><p><strong>Entity-Relationship Model</strong> : The entity-relationship (E-R) data model uses a collection of basic objects, called entities, and relationships among these objects. An entity is a “thing” in the real world that is distinguishable from other objects.</p></li>
-<li><p><strong>Semi-structured Data Model</strong> : The semi-structured data model permits the specification of data where individual data items of the same type may have different sets of attributes.</p></li>
-<li><p><strong>Object-Based Data Model</strong> : Most modern software applications are built using Object-Oriented Programming (OOP) languages like Java, C++, or C#. In OOP, developers organize code around “objects” that bundle both data fields (attributes) and the actions that can be performed on them (methods).</p></li>
-</ul>
-</section>
-</section>
-<section id="database-languages" class="level2">
-<h2 class="anchored" data-anchor-id="database-languages">Database Languages</h2>
-<ul>
-<li><strong>Data Definition Language (DDL)</strong> :
-<ul>
-<li>The Data-Definition Language is used to specify the database schema and add structural properties or constraints to the data.</li>
-<li>The processing of DDL statements generates metadata (data about data), which is stored securely in a centralized data dictionary. This directory is a special set of system tables that regular users cannot modify directly; the database system consults it before reading or altering any live data.</li>
-<li>Example:</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> department(dept_name <span class="dt">char</span>(<span class="dv">20</span>),  </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                        building <span class="dt">char</span>(<span class="dv">15</span>),  </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                        budget <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>),  </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                        <span class="kw">primary</span> <span class="kw">key</span> (dept_name));</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><strong>Data Manipulation Language (DML)</strong> :
-<ul>
-<li>The Data-Manipulation Language enables users to access or alter data organized under the schema. DML handles information retrieval (queries), insertions, deletions, and updates.</li>
-<li>Example:</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> instructor.name</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> instructor</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> instructor.dept_name <span class="op">=</span> <span class="st">'History'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-</ul>
-</section>
-<section id="database-design" class="level2">
-<h2 class="anchored" data-anchor-id="database-design">Database Design</h2>
-<p>Database design primarily involves designing the database schema to manage large, interconnected bodies of enterprise information.</p>
-<ul>
-<li><p><strong>User Requirements Specification</strong> : Fully characterize and document the data needs of prospective database users.</p></li>
-<li><p><strong>Conceptual Design</strong> : Translate user requirements into a high-level, detailed conceptual schema of the database, focusing entirely on data modeling rather than physical implementation constraints.</p></li>
-<li><p><strong>Logical Design</strong> : Map the abstract, high-level conceptual schema onto the system-specific implementation data model of the chosen Database Management System (DBMS).</p></li>
-<li><p><strong>Physical Design</strong> : Specify the internal and low-level physical features of the database configuration.</p></li>
-</ul>
-</section>
-<section id="database-engine" class="level2">
-<h2 class="anchored" data-anchor-id="database-engine">Database Engine</h2>
-<p>A database system is partitioned into independent modules that isolate core responsibilities. The database engine can be broadly divided into three main functional segments: the storage manager, the query processor, and the transaction manager.</p>
-<section id="storage-manager" class="level3">
-<h3 class="anchored" data-anchor-id="storage-manager">Storage Manager</h3>
-<p>The storage manager acts as the operating interface between the low-level data stored on disk hardware and the application programs or queries submitted to the system. It handles data sizing challenges that scale from gigabytes up to petabytes, optimizing data movement between disk arrays (HDD/SSD) and main memory to minimize hardware latency.</p>
-<ul>
-<li>Validates user access permissions and tests whether newly modified data satisfies established consistency constraints.</li>
-<li>Keeps the global database in a correct state despite hardware crashes and prevents operational conflicts between concurrent tasks.</li>
-<li>Directs the physical allocation of disk space and manages the underlying byte structures used to represent database records.</li>
-<li>Coordinates caching strategies, determining when to fetch data from physical storage into volatile main memory so data pools can scale larger than the computer’s actual RAM capacity.</li>
-</ul>
-</section>
-<section id="query-processor" class="level3">
-<h3 class="anchored" data-anchor-id="query-processor">Query Processor</h3>
-<p>The query processor simplifies and facilitates access to data. It abstracts implementation details so developers can manipulate records at the view level using declarative languages, translating logical commands into optimized sequences of lower-level physical operations.</p>
-<p><img src="query_processing.png" class="img-fluid"></p>
-<ul>
-<li><strong>Parsing and Translation</strong>
-<ul>
-<li>When a user submits a high-level declarative query, the system cannot execute it as raw text. First, the DDL Interpreter handles any structural commands and records schema definitions in the data dictionary.</li>
-<li>For data-manipulation requests, the DML Compiler parses the syntax to verify correctness against database schemas. It then translates the declarative text into a relational-algebra expression, mapping the query to an initial internal representation consisting of low-level instructions that the system can understand.</li>
-</ul></li>
-<li><strong>Optimization</strong>
-<ul>
-<li>A single declarative query can usually be mapped to a wide variety of alternative execution strategies, called evaluation plans, which all produce the exact same result but consume drastically different hardware resources.</li>
-<li>The DML Compiler runs a specialized subsystem known as the Query Optimizer. The optimizer evaluates these alternative paths, estimates the computational cost (disk I/O and CPU time) for each, and programmatically selects the lowest-cost, most efficient evaluation plan from among the alternatives.</li>
-</ul></li>
-<li><strong>Evaluation</strong>
-<ul>
-<li>Once the absolute lowest-cost evaluation plan is locked in by the optimizer, it is passed down to the execution layer.</li>
-<li>The Query Evaluation Engine takes these optimized, low-level instructions and directly executes them against the physical database files, fetching or altering the underlying data records and returning the finalized, clean result table back to the user.</li>
-</ul></li>
-</ul>
-</section>
-<section id="transaction-management" class="level3">
-<h3 class="anchored" data-anchor-id="transaction-management">Transaction Management</h3>
-<p>A transaction is a collection of separate program operations that perform a single logical function within an application. The transaction manager allows developers to treat multiple database updates as a single unit of work by enforcing the core ACID properties.</p>
-<ul>
-<li>Maintains system safety and manages failure recovery. It automatically detects system crashes and uses logging protocols to reverse or restore data back to the clean state that existed prior to the failed transaction.</li>
-<li>Supervised coordination system that prevents transactional race conditions and structural corruption when millions of global users update identical data fields simultaneously.</li>
+<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
+<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
+<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
+<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
+<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
+<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
+<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
 </ul>
 
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -983,11 +828,14 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="Introduction">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Introduction</span></span>
+      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
+        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

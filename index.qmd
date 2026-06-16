@@ -1,7 +1,41 @@
 ---
-title: "About this Course"
+title: "About the Course"
 
 number-depth: 2
 ---
 
-# About this course
+
+## About the course
+
+
+##  Course Overview
+
+* **Course ID:** BSCS2001
+* **Course Type:** Programming 
+* **Course Credits:** 4 Credits 
+* **Pre-requisites:** None! 
+
+---
+
+##  Course Faculty
+
+###  Faculty Lead
+**Dr. Partha Pratim Das** *Professor, Department of Computer Science and Engineering* **IIT Kharagpur**
+
+###  Course Instructor
+**Manidipa Bhattacharjee** 
+
+---
+
+## Textbook
+
+* **Title:** *Database System Concepts* (7th Edition)
+* **Authors:** Avi Silberschatz, Henry F. Korth, S. Sudarshan
+* **Publisher:** McGraw-Hill
+
+---
+
+##  How to Use This Portal
+
+The content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.
+
