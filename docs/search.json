@@ -4,9 +4,9 @@
     "href": "index.html",
     "title": "Database Management Systems",
     "section": "",
-    "text": "About this course",
+    "text": "About the course",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
     ]
   },
   {
@@ -14,7 +14,7 @@
     "href": "weeks/week_1/intro_to_dbms.html",
     "title": "Introduction",
     "section": "",
-    "text": "Purpose of DBMS\nA Database Management System (DBMS) is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently. The collection of structured information relevant to an enterprise is referred to as the database.\nThe earliest form of data management was through the maintenance of physical ledgers and journals, known as Book Keeping. This way of managing data through physical records was susceptible to human errors, external tampering and physical damage. In addition to this, it was also difficult and time consuming to maintain and scale over the years.\nWith the advent of technology came the file-processing system, which stores permanent records in various files, and it needs various application programs to manage and retrieve data from the files. The filesystems posed several disadvantages, such as:",
+    "text": "Key Terminologies\nA Database Management System (DBMS) is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.",
     "crumbs": [
       "**Week-01**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
@@ -24,8 +24,8 @@
     "objectID": "weeks/week_1/intro_to_dbms.html#purpose-of-dbms",
     "href": "weeks/week_1/intro_to_dbms.html#purpose-of-dbms",
     "title": "Introduction",
-    "section": "",
-    "text": "Data Redundancy and Inconsistency : Because individual programmers build distinct files and unique utility scripts over long intervals, records inevitably end up duplicated across separate files.\nDifficulty in Accessing Data : Conventional file layouts do not support flexible data retrieval. If a new data retrieval request is made, that the system’s original developers did not explicitly anticipate, a programmer has to write a completely new script from scratch. This environment is neither convenient nor responsive.\nData Isolation : Because data variables are distributed across disconnected files featuring conflicting data structures and disparate formats, writing new applications to aggregate information remains highly complex.\nIntegrity Problems : Real-world enterprise rules require strict constraints (e.g., a bank or department account balance can never drop below zero). In a file system, these constraints must be explicitly hardcoded inside every single application script. Adding or modifying rules across hundreds of decoupled programs is error-prone.\nAtomicity : Computer hardware is inherently vulnerable to power failures or system crashes. Database operations must be atomic, the transfer must take place in its entirety or not at all. Achieving this is difficult in standard file structures.\nConcurrent-Access Anomalies : To maintain fast response windows and maximize performance, data systems must allow multiple processes or users to modify information simultaneously. In a primitive file-processing system managed by a conventional operating system, there is no centralized coordination engine to safely oversee this. Because separate application programs read and write raw text files independently, overlapping operations inevitably overwrite each other.\nSecurity : In a standard file setup, it is incredibly difficult to enforce granular security constraints (such as field-level or row-level permissions) because the operating system does not understand the internal semantics of the data it is storing.",
+    "section": "Purpose of DBMS",
+    "text": "Purpose of DBMS\nThe earliest form of data management was through the maintenance of physical ledgers and journals, known as Book Keeping. This way of managing data through physical records was susceptible to human errors, external tampering and physical damage. In addition to this, it was also difficult and time consuming to maintain and scale over the years.\nWith the advent of technology came the file-processing system, which stores permanent records in various files, and it needs various application programs to manage and retrieve data from the files. The filesystems posed several disadvantages, such as:\n\nData Redundancy and Inconsistency : Because individual programmers build distinct files and unique utility scripts over long intervals, records inevitably end up duplicated across separate files.\nDifficulty in Accessing Data : Conventional file layouts do not support flexible data retrieval. If a new data retrieval request is made, that the system’s original developers did not explicitly anticipate, a programmer has to write a completely new script from scratch. This environment is neither convenient nor responsive.\nData Isolation : Because data variables are distributed across disconnected files featuring conflicting data structures and disparate formats, writing new applications to aggregate information remains highly complex.\nIntegrity Problems : Real-world enterprise rules require strict constraints (e.g., a bank or department account balance can never drop below zero). In a file system, these constraints must be explicitly hardcoded inside every single application script. Adding or modifying rules across hundreds of decoupled programs is error-prone.\nAtomicity : Computer hardware is inherently vulnerable to power failures or system crashes. Database operations must be atomic, the transfer must take place in its entirety or not at all. Achieving this is difficult in standard file structures.\nConcurrent-Access Anomalies : To maintain fast response windows and maximize performance, data systems must allow multiple processes or users to modify information simultaneously. In a primitive file-processing system managed by a conventional operating system, there is no centralized coordination engine to safely oversee this. Because separate application programs read and write raw text files independently, overlapping operations inevitably overwrite each other.\nSecurity : In a standard file setup, it is incredibly difficult to enforce granular security constraints (such as field-level or row-level permissions) because the operating system does not understand the internal semantics of the data it is storing.",
     "crumbs": [
       "**Week-01**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
@@ -84,6 +84,122 @@
     "crumbs": [
       "**Week-01**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#key-terminologies",
+    "href": "weeks/week_1/intro_to_dbms.html#key-terminologies",
+    "title": "Introduction",
+    "section": "",
+    "text": "Data: This is just raw, unorganized information without any extra context.\nRecord: A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.\nFile: A collection of related records.\nDatabase: The collection of structured information relevant to an enterprise is referred to as the database.\n\n\n\nA DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. Applications : Sales, Manufacturing, Banking, Airlines, University etc.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/intro_to_dbms.html#why-dbms",
+    "href": "weeks/week_1/intro_to_dbms.html#why-dbms",
+    "title": "Introduction",
+    "section": "Why DBMS?",
+    "text": "Why DBMS?\nHistorically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:\n\nData Redundancy & Inconsistency: Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.\nDifficulty in Accessing Data: Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.\nData Isolation: Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.\nIntegrity Problems: Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.\nAtomicity Issues: Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.\nConcurrent-Access Anomalies: To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.\nSecurity Flaws: Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/view_of_data.html",
+    "href": "weeks/week_1/view_of_data.html",
+    "title": "View of Data",
+    "section": "",
+    "text": "Data Abstraction\nAbstraction refers to the hiding of implementation details to simplify the user interactions with the system.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>View of Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/view_of_data.html#database-languages",
+    "href": "weeks/week_1/view_of_data.html#database-languages",
+    "title": "View of Data",
+    "section": "Database Languages",
+    "text": "Database Languages\n\nData Definition Language (DDL) :\n\nThe Data-Definition Language is used to specify the database schema and add structural properties or constraints to the data.\nThe processing of DDL statements generates metadata (data about data), which is stored securely in a centralized data dictionary. This directory is a special set of system tables that regular users cannot modify directly; the database system consults it before reading or altering any live data.\nExample:\n\ncreate table department(dept_name char(20),  \n                        building char(15),  \n                        budget numeric(12,2),  \n                        primary key (dept_name));\nData Manipulation Language (DML) :\n\nThe Data-Manipulation Language enables users to access or alter data organized under the schema. DML handles information retrieval (queries), insertions, deletions, and updates.\nExample:\n\nselect instructor.name\nfrom instructor\nwhere instructor.dept_name = 'History';",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>View of Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/database_design.html",
+    "href": "weeks/week_1/database_design.html",
+    "title": "Database Design",
+    "section": "",
+    "text": "Database Engine\nDatabase design primarily involves designing the database schema to manage large, interconnected bodies of enterprise information.\nA database system is partitioned into independent modules that isolate core responsibilities. The database engine can be broadly divided into three main functional segments: the storage manager, the query processor, and the transaction manager.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Database Design</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_1/database_design.html#database-engine",
+    "href": "weeks/week_1/database_design.html#database-engine",
+    "title": "Database Design",
+    "section": "",
+    "text": "Storage Manager\nThe storage manager acts as the operating interface between the low-level data stored on disk hardware and the application programs or queries submitted to the system.\n\nValidates user access permissions and tests whether newly modified data satisfies established consistency constraints.\nKeeps the global database in a correct state despite hardware crashes and prevents operational conflicts between concurrent tasks.\nDirects the physical allocation of disk space and manages the underlying byte structures used to represent database records.\nCoordinates caching strategies, determining when to fetch data from physical storage into volatile main memory so data pools can scale larger than the computer’s actual RAM capacity.\n\n\n\nQuery Processor\nThe query processor abstracts execution details so developers can focus on writing high-level declarative commands, translating text into optimized sequences of lower-level physical operations.\n\n\nParsing and Translation : When you submit a query, the system can’t read it as raw text. The DDL Interpreter handles structural commands and updates the data dictionary. For data modifications, the DML Compiler parses your syntax for correctness and translates the declarative text into a relational-algebra expression (an internal mathematical representation the system can work with).\nOptimization : A single query can be executed using many alternative strategies, called evaluation plans. They all give the exact same output, but some consume drastically less hardware resources. The Query Optimizer calculates the estimated computational cost (disk I/O and CPU time) for each plan and programmatically selects the absolute most efficient one.\nEvaluation : The execution layer takes over. The Query Evaluation Engine takes those optimized, low-level instructions, executes them directly against the physical database files, and returns a clean result table back to the user.\n\n\n\nTransaction Management\nA transaction is a collection of separate program operations that perform a single logical function within an application. The transaction manager allows developers to treat multiple database updates as a single unit of work by enforcing the core ACID properties.\n\nMaintains system safety and manages failure recovery. It automatically detects system crashes and uses logging protocols to reverse or restore data back to the clean state that existed prior to the failed transaction.",
+    "crumbs": [
+      "**Week-01**",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Database Design</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#course-overview",
+    "href": "index.html#course-overview",
+    "title": "Database Management Systems",
+    "section": "Course Overview",
+    "text": "Course Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None!",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#course-faculty",
+    "href": "index.html#course-faculty",
+    "title": "Database Management Systems",
+    "section": "Course Faculty",
+    "text": "Course Faculty\n\nFaculty Lead\nDr. Partha Pratim Das Professor, Department of Computer Science and Engineering IIT Kharagpur\n\n\nCourse Instructor\nManidipa Bhattacharjee",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#our-core-guidebook-the-textbook",
+    "href": "index.html#our-core-guidebook-the-textbook",
+    "title": "Database Management Systems",
+    "section": "Our Core Guidebook (The Textbook)",
+    "text": "Our Core Guidebook (The Textbook)\nAll the concepts, engine diagrams, and theoretical structures curated on this site are mapped directly to our official course textbook. If you ever need to read the deeply formal proofs or comprehensive chapters, this is the book to grab:\n\nTitle: Database System Concepts (7th Edition)\nAuthors: Avi Silberschatz, Henry F. Korth, S. Sudarshan\nPublisher: McGraw-Hill",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-this-portal",
+    "href": "index.html#how-to-use-this-portal",
+    "title": "Database Management Systems",
+    "section": "How to Use This Portal",
+    "text": "How to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#textbook",
+    "href": "index.html#textbook",
+    "title": "Database Management Systems",
+    "section": "Textbook",
+    "text": "Textbook\n\nTitle: Database System Concepts (7th Edition)\nAuthors: Avi Silberschatz, Henry F. Korth, S. Sudarshan\nPublisher: McGraw-Hill",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
     ]
   },
   {
