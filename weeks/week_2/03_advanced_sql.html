@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Database Management Systems</title>
+<title>Advanced SQL Filtering, Sets &amp; Aggregation – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_1/view_of_data.html" rel="next">
-<link href="../../index.html" rel="prev">
+<link href="../../weeks/week_2/02_dml_and_queries.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -75,6 +109,9 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -280,7 +317,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/03_advanced_sql.html"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -320,16 +357,16 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -346,13 +383,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-02</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Model &amp; DDL</span></a>
@@ -365,7 +402,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_2/03_advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></a>
+  <a href="../../weeks/week_2/03_advanced_sql.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></a>
   </div>
 </li>
       </ul>
@@ -380,8 +417,23 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
-  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
+  <li><a href="#advanced-filtering" id="toc-advanced-filtering" class="nav-link active" data-scroll-target="#advanced-filtering">Advanced Filtering</a>
+  <ul class="collapse">
+  <li><a href="#string-operations-like" id="toc-string-operations-like" class="nav-link" data-scroll-target="#string-operations-like">1. String Operations (<code>LIKE</code>)</a></li>
+  <li><a href="#advanced-predicates-between-and-in" id="toc-advanced-predicates-between-and-in" class="nav-link" data-scroll-target="#advanced-predicates-between-and-in">2. Advanced Predicates (<code>BETWEEN</code> and <code>IN</code>)</a></li>
+  </ul></li>
+  <li><a href="#dealing-with-the-unknown-null" id="toc-dealing-with-the-unknown-null" class="nav-link" data-scroll-target="#dealing-with-the-unknown-null">Dealing with the Unknown: <code>NULL</code></a>
+  <ul class="collapse">
+  <li><a href="#the-is-operator" id="toc-the-is-operator" class="nav-link" data-scroll-target="#the-is-operator">The <code>IS</code> Operator</a></li>
+  <li><a href="#three-valued-logic" id="toc-three-valued-logic" class="nav-link" data-scroll-target="#three-valued-logic">Three-Valued Logic</a></li>
+  </ul></li>
+  <li><a href="#set-operations" id="toc-set-operations" class="nav-link" data-scroll-target="#set-operations">Set Operations</a></li>
+  <li><a href="#aggregation-grouping" id="toc-aggregation-grouping" class="nav-link" data-scroll-target="#aggregation-grouping">Aggregation &amp; Grouping</a>
+  <ul class="collapse">
+  <li><a href="#group-by-sorting-into-buckets" id="toc-group-by-sorting-into-buckets" class="nav-link" data-scroll-target="#group-by-sorting-into-buckets"><code>GROUP BY</code>: Sorting into Buckets</a></li>
+  <li><a href="#having-the-bouncer-for-buckets" id="toc-having-the-bouncer-for-buckets" class="nav-link" data-scroll-target="#having-the-bouncer-for-buckets"><code>HAVING</code>: The Bouncer for Buckets</a></li>
+  </ul></li>
+  <li><a href="#the-sql-execution-order" id="toc-the-sql-execution-order" class="nav-link" data-scroll-target="#the-sql-execution-order">The SQL Execution Order</a></li>
   </ul>
 </nav>
     </div>
@@ -389,9 +441,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/03_advanced_sql.html"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></h1>
 </div>
 
 
@@ -408,31 +460,191 @@ window.Quarto = {
 </header>
 
 
-<section id="key-terminologies" class="level2">
-<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="advanced_sql_banner.png" class="img-fluid figure-img"></p>
+<figcaption>Advanced SQL Filtering</figcaption>
+</figure>
+</div>
+<section id="advanced-filtering" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-filtering">Advanced Filtering</h2>
+<p>Sometimes, a simple <code>=</code> or <code>&gt;</code> isn’t enough. What if you only remember that an instructor’s name <em>starts with</em> an ‘M’, or you need to check if their salary falls within a specific range?</p>
+<section id="string-operations-like" class="level3">
+<h3 class="anchored" data-anchor-id="string-operations-like">1. String Operations (<code>LIKE</code>)</h3>
+<p><code>LIKE</code> is SQL’s built-in detective. It performs pattern matching on text using two special wildcard characters:</p>
 <ul>
-<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
-<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
-<li><p><strong>File:</strong> A collection of related records.</p></li>
-<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
+<li><p><code>%</code> : Matches <strong>any sequence</strong> of characters (even zero characters).</p></li>
+<li><p><code>_</code> : Matches exactly <strong>one</strong> character.</p></li>
 </ul>
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
-<blockquote class="blockquote">
-<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
-</blockquote>
+<p><strong>Examples in Action:</strong></p>
+<ul>
+<li><p><code>LIKE 'Intro%'</code> : Matches any string starting with “Intro” (e.g., “Introduction”, “Intro to CS”).</p></li>
+<li><p><code>LIKE '%Comp%'</code> : Matches any string containing “Comp” anywhere inside it (e.g., “Computer”, “MyComp”).</p></li>
+<li><p><code>LIKE '___'</code> (three underscores) : Matches any string of exactly three characters (e.g., “Cat”, “Dog”).</p></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'%dar%'</span>; </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Finds names like 'Mandar', 'Darren', 'Cedar'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="why-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
-<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
+<section id="advanced-predicates-between-and-in" class="level3">
+<h3 class="anchored" data-anchor-id="advanced-predicates-between-and-in">2. Advanced Predicates (<code>BETWEEN</code> and <code>IN</code>)</h3>
+<p>These are essentially shortcuts (syntax sugar) that save you from writing long, messy <code>WHERE</code> clauses.</p>
+<p><strong><code>BETWEEN a AND b</code></strong>: A clean way to check for a range (inclusive of both <code>a</code> and <code>b</code>).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Instead of: WHERE salary &gt;= 90000 AND salary &lt;= 100000</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> salary <span class="kw">BETWEEN</span> <span class="dv">90000</span> <span class="kw">AND</span> <span class="dv">100000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong><code>IN</code></strong>: A shorthand for multiple <code>OR</code> conditions.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Instead of: WHERE dept_name = 'Comp Sci' OR dept_name = 'Biology'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dept_name <span class="kw">IN</span> (<span class="st">'Comp Sci'</span>, <span class="st">'Biology'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="dealing-with-the-unknown-null" class="level2">
+<h2 class="anchored" data-anchor-id="dealing-with-the-unknown-null">Dealing with the Unknown: <code>NULL</code></h2>
+<p>In databases, what happens when we simply <em>don’t know</em> a value? For example, a new student hasn’t been assigned a dorm yet. We don’t enter “0” or “None” because those are actual values. Instead, we use <code>NULL</code>.</p>
+<p><code>NULL</code> signifies a missing or unknown value. It is <strong>not</strong> empty text, and it is <strong>not</strong> the number zero.</p>
+<section id="the-is-operator" class="level3">
+<h3 class="anchored" data-anchor-id="the-is-operator">The <code>IS</code> Operator</h3>
+<p>Because <code>NULL</code> means “unknown”, we cannot use standard mathematical operators like <code>=</code> or <code>!=</code> on it.</p>
+<p>If you ask SQL: <code>WHERE dorm = NULL</code>, the result is practically “Unknown = Unknown?”, which doesn’t make sense! Instead, we must use the special <code>IS</code> operator.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Find students who haven't been assigned a dorm yet</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> student</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dorm <span class="kw">IS</span> <span class="kw">NULL</span>;</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">-- Find students who HAVE a dorm</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> student</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dorm <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="three-valued-logic" class="level3">
+<h3 class="anchored" data-anchor-id="three-valued-logic">Three-Valued Logic</h3>
+<p>Because of <code>NULL</code>, SQL doesn’t just use standard boolean logic (True / False). It uses <strong>Three-Valued Logic</strong>:</p>
+<ol type="1">
+<li><strong>True</strong></li>
+<li><strong>False</strong></li>
+<li><strong>Unknown</strong> (The result of comparing something to <code>NULL</code>)</li>
+</ol>
+<p>Here’s how <code>Unknown</code> impacts your queries:</p>
 <ul>
-<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
-<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
-<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
-<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
-<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
-<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
-<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
+<li><p><strong><code>True AND Unknown</code></strong> <span class="math inline">\(\rightarrow\)</span> <code>Unknown</code></p></li>
+<li><p><strong><code>False AND Unknown</code></strong> <span class="math inline">\(\rightarrow\)</span> <code>False</code> (Because False ruins everything in an AND)</p></li>
+<li><p><strong><code>True OR Unknown</code></strong> <span class="math inline">\(\rightarrow\)</span> <code>True</code> (Because True saves everything in an OR)</p></li>
+<li><p><strong><code>False OR Unknown</code></strong> <span class="math inline">\(\rightarrow\)</span> <code>Unknown</code></p></li>
 </ul>
+<blockquote class="blockquote">
+<p><strong>Critical Rule:</strong> The <code>WHERE</code> clause will <em>only</em> return rows where the final condition evaluates to exactly <strong>True</strong>. If the condition evaluates to <strong>False</strong> or <strong>Unknown</strong>, the row is thrown out!</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="set-operations" class="level2">
+<h2 class="anchored" data-anchor-id="set-operations">Set Operations</h2>
+<p>Because relational databases are built on mathematical Set Theory, we can perform operations on the results of two different queries!</p>
+<p>Imagine Query A returns <code>[Alice, Bob, Charlie]</code> and Query B returns <code>[Bob, Charlie, David]</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operator</th>
+<th>Action</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>UNION</strong></td>
+<td>Combines both sets, removing duplicates.</td>
+<td><code>[Alice, Bob, Charlie, David]</code></td>
+</tr>
+<tr class="even">
+<td><strong>INTERSECT</strong></td>
+<td>Keeps only what is present in <em>both</em> sets.</td>
+<td><code>[Bob, Charlie]</code></td>
+</tr>
+<tr class="odd">
+<td><strong>EXCEPT</strong></td>
+<td>Keeps what is in Set A, but <em>subtracts</em> anything found in Set B.</td>
+<td><code>[Alice]</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> By default, these operations remove duplicate rows. If you want to keep duplicates, add the <code>ALL</code> keyword (e.g., <code>UNION ALL</code>).</p>
+</blockquote>
+<hr>
+</section>
+<section id="aggregation-grouping" class="level2">
+<h2 class="anchored" data-anchor-id="aggregation-grouping">Aggregation &amp; Grouping</h2>
+<p>Often, we don’t care about the individual rows. If a university has 50,000 students, we might just want to know the <em>total</em> number of students or the <em>average</em> GPA.</p>
+<p><strong>Aggregate functions</strong> take a whole column of data, mash it together, and return a single summary value.</p>
+<ul>
+<li><p><code>avg()</code>: Average value</p></li>
+<li><p><code>min()</code>: Minimum value</p></li>
+<li><p><code>max()</code>: Maximum value</p></li>
+<li><p><code>sum()</code>: Sum of all values</p></li>
+<li><p><code>count()</code>: Count of rows</p></li>
+</ul>
+<section id="group-by-sorting-into-buckets" class="level3">
+<h3 class="anchored" data-anchor-id="group-by-sorting-into-buckets"><code>GROUP BY</code>: Sorting into Buckets</h3>
+<p>What if we want the average salary <em>for every single department</em>? We can’t just use <code>avg(salary)</code> alone, because that gives us the average of the entire university.</p>
+<p>Instead, we use <code>GROUP BY</code>. This tells SQL: “Sort the rows into buckets based on their department. Then, calculate the average for each bucket independently!”</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> dept_name;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="having-the-bouncer-for-buckets" class="level3">
+<h3 class="anchored" data-anchor-id="having-the-bouncer-for-buckets"><code>HAVING</code>: The Bouncer for Buckets</h3>
+<p>We already learned that <code>WHERE</code> filters individual rows. But what if we want to filter the <em>groups</em> we just created? For example, “Show me departments where the <em>average salary</em> is greater than 42,000.”</p>
+<p>You cannot use <code>WHERE avg(salary) &gt; 42000</code> because <code>WHERE</code> happens <em>before</em> the buckets are created!</p>
+<p>Instead, we use <code>HAVING</code>. If <code>WHERE</code> is the bouncer for rows, <code>HAVING</code> is the bouncer for groups!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> dept_name</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> <span class="fu">avg</span>(salary) <span class="op">&gt;</span> <span class="dv">42000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="the-sql-execution-order" class="level2">
+<h2 class="anchored" data-anchor-id="the-sql-execution-order">The SQL Execution Order</h2>
+<p>When you write a complex SQL query, the database does <em>not</em> read it from top to bottom! It processes the clauses in a very specific order. Understanding this order is the ultimate secret to mastering SQL.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
+flowchart TD
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    
+    1["1. FROM"] --&gt; 2["2. WHERE"]
+    2 --&gt; 3["3. GROUP BY"]
+    3 --&gt; 4["4. HAVING"]
+    4 --&gt; 5["5. SELECT"]
+    5 --&gt; 6["6. ORDER BY"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Step-by-Step Narrative:</strong></p>
+<ol type="1">
+<li><strong><code>FROM</code></strong>: The engine goes to the tables to gather the raw data.</li>
+<li><strong><code>WHERE</code></strong>: It filters out the individual rows that don’t meet the criteria.</li>
+<li><strong><code>GROUP BY</code></strong>: It takes the surviving rows and sorts them into buckets.</li>
+<li><strong><code>HAVING</code></strong>: It looks at the buckets, calculates the aggregates, and throws away any buckets that fail the test.</li>
+<li><strong><code>SELECT</code></strong>: It finally decides which columns to show you on the screen.</li>
+<li><strong><code>ORDER BY</code></strong>: It alphabetizes or sorts the final output for you.</li>
+</ol>
 
 
 
@@ -854,14 +1066,11 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
+      <a href="../../weeks/week_2/02_dml_and_queries.html" class="pagination-link" aria-label="Data Manipulation (DML) &amp; Basic Queries">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
-        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

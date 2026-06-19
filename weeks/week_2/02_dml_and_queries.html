@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Database Management Systems</title>
+<title>Data Manipulation (DML) &amp; Basic Queries – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_1/view_of_data.html" rel="next">
-<link href="../../index.html" rel="prev">
+<link href="../../weeks/week_2/03_advanced_sql.html" rel="next">
+<link href="../../weeks/week_2/01_relational_and_ddl.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -280,7 +315,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/02_dml_and_queries.html"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -320,16 +355,16 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -346,13 +381,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-02</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Model &amp; DDL</span></a>
@@ -360,7 +395,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_2/02_dml_and_queries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a>
+  <a href="../../weeks/week_2/02_dml_and_queries.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -380,8 +415,21 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
-  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
+  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a>
+  <ul class="collapse">
+  <li><a href="#insert-adding-new-records" id="toc-insert-adding-new-records" class="nav-link" data-scroll-target="#insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</a></li>
+  <li><a href="#update-modifying-existing-data" id="toc-update-modifying-existing-data" class="nav-link" data-scroll-target="#update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</a></li>
+  <li><a href="#delete-removing-records" id="toc-delete-removing-records" class="nav-link" data-scroll-target="#delete-removing-records">3. <code>DELETE</code>: Removing Records</a></li>
+  </ul></li>
+  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a>
+  <ul class="collapse">
+  <li><a href="#the-select-clause-in-detail" id="toc-the-select-clause-in-detail" class="nav-link" data-scroll-target="#the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</a></li>
+  <li><a href="#the-order-by-clause" id="toc-the-order-by-clause" class="nav-link" data-scroll-target="#the-order-by-clause">The <code>ORDER BY</code> Clause</a></li>
+  </ul></li>
+  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a>
+  <ul class="collapse">
+  <li><a href="#fixing-the-cross-join" id="toc-fixing-the-cross-join" class="nav-link" data-scroll-target="#fixing-the-cross-join">Fixing the Cross Join</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -389,9 +437,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/02_dml_and_queries.html"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></h1>
 </div>
 
 
@@ -408,34 +456,278 @@ window.Quarto = {
 </header>
 
 
-<section id="key-terminologies" class="level2">
-<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
-<ul>
-<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
-<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
-<li><p><strong>File:</strong> A collection of related records.</p></li>
-<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
-</ul>
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="dml_banner.png" class="img-fluid figure-img"></p>
+<figcaption>DML Operations</figcaption>
+</figure>
+</div>
+<section id="dml-furnishing-the-house" class="level2">
+<h2 class="anchored" data-anchor-id="dml-furnishing-the-house">DML: Furnishing the House</h2>
+<p>In the previous section, DDL acted as our architect—building the empty structure of our <code>student</code> table. Now, it’s time for <strong>DML (Data Manipulation Language)</strong> to move the furniture in! DML handles all the inserting, modifying, and deleting of the <em>actual data rows</em>.</p>
+<p>Let’s start with an empty table:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>roll_no</th>
+<th>name</th>
+<th>level</th>
+<th>course</th>
+<th>term</th>
+<th>grade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>(empty)</em></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<section id="insert-adding-new-records" class="level3">
+<h3 class="anchored" data-anchor-id="insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</h3>
+<p>A new student, Pravin, has just enrolled. We need to add him to our database.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
-<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
+<p><strong>Tip:</strong> You <em>can</em> write an <code>INSERT</code> without listing the column names (e.g., <code>INSERT INTO student VALUES (...)</code>), but specifying the columns as shown above is much safer! It prevents errors if someone later adds a new column to the table.</p>
 </blockquote>
+<p><strong>Inserting Multiple Rows at Once:</strong> You can also insert several students in a single command by separating the values with commas!</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Our Table Now:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>roll_no</th>
+<th>name</th>
+<th>level</th>
+<th>course</th>
+<th>term</th>
+<th>grade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>26f10</td>
+<td>Pravin</td>
+<td>Degree</td>
+<td>DBMS</td>
+<td>27t1</td>
+<td>S</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="why-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
-<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
+<section id="update-modifying-existing-data" class="level3">
+<h3 class="anchored" data-anchor-id="update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</h3>
+<p>Oops! We made a mistake. Pravin actually got an ‘A’ grade, not an ‘S’. We don’t delete his record; we just <code>UPDATE</code> it.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> student </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p><strong>[WARNING]</strong> Always, <em>always</em> use a <code>WHERE</code> clause with <code>UPDATE</code>!</p>
+</blockquote>
+<p><strong>What happens if you forget the <code>WHERE</code> clause?</strong> If you simply ran <code>UPDATE student SET grade = 'A';</code>, it would ignore the individual student and change the grade of <strong>every single student</strong> in the entire database to an ‘A’!</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>roll_no</th>
+<th>name</th>
+<th>grade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>26f10</td>
+<td>Pravin</td>
+<td><strong>A</strong></td>
+</tr>
+<tr class="even">
+<td>26f11</td>
+<td>Alice</td>
+<td><strong>A</strong></td>
+</tr>
+<tr class="odd">
+<td>26f12</td>
+<td>Bob</td>
+<td><strong>A</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>(Oops! Alice and Bob just got free ‘A’ grades because you forgot the WHERE clause!)</em></p>
+<p><strong>Our Table After Correct Update:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>roll_no</th>
+<th>name</th>
+<th>level</th>
+<th>course</th>
+<th>term</th>
+<th>grade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>26f10</td>
+<td>Pravin</td>
+<td>Degree</td>
+<td>DBMS</td>
+<td>27t1</td>
+<td><strong>A</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="delete-removing-records" class="level3">
+<h3 class="anchored" data-anchor-id="delete-removing-records">3. <code>DELETE</code>: Removing Records</h3>
+<p>Pravin has decided to transfer to another school. We need to remove his record completely.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Just like <code>UPDATE</code>, forgetting the <code>WHERE</code> clause here would delete everyone!)</em></p>
+<hr>
+</section>
+</section>
+<section id="the-anatomy-of-a-query" class="level2">
+<h2 class="anchored" data-anchor-id="the-anatomy-of-a-query">The Anatomy of a Query</h2>
+<p>Now that we have data, how do we ask the database questions? We write queries.</p>
+<p>Think of a SQL query like giving instructions to an incredibly fast, but very literal librarian. The fundamental structure requires three clauses:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Here is the mental model of how the librarian thinks: 1. <strong><code>FROM</code></strong>: <em>“Which section of the library (tables) should I go to?”</em> 2. <strong><code>WHERE</code></strong>: <em>“Which specific books (rows) should I pull off the shelf?”</em> 3. <strong><code>SELECT</code></strong>: <em>“Which chapters (columns) should I photocopy and give to you?”</em></p>
+<section id="the-select-clause-in-detail" class="level3">
+<h3 class="anchored" data-anchor-id="the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</h3>
+<p>The <code>SELECT</code> clause dictates what the final output looks like.</p>
 <ul>
-<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
-<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
-<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
-<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
-<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
-<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
-<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
+<li><p><code>*</code> : “Give me everything.” (All columns)</p></li>
+<li><p><code>DISTINCT</code> : “Remove any duplicate answers.”</p></li>
+<li><p><code>AS</code> : “Rename this column in the output just to make it look nicer.”</p></li>
+<li><p><code>TOP &lt;n&gt;</code> (or <code>LIMIT</code>): “Only show me the first <code>n</code> results.”</p></li>
 </ul>
+<p><strong>Example:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="the-order-by-clause" class="level3">
+<h3 class="anchored" data-anchor-id="the-order-by-clause">The <code>ORDER BY</code> Clause</h3>
+<p>By default, SQL returns rows in whatever internal order it feels like. If you want them sorted, you must explicitly use the <code>ORDER BY</code> clause at the very end of your query.</p>
+<ul>
+<li><code>ASC</code>: Ascending order (A-Z, 1-10). This is the default.</li>
+<li><code>DESC</code>: Descending order (Z-A, 10-1).</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name, salary</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="the-danger-of-cross-joins" class="level2">
+<h2 class="anchored" data-anchor-id="the-danger-of-cross-joins">The Danger of Cross Joins</h2>
+<p>What happens if you tell the librarian to get data from <em>two</em> places at once?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When you list multiple tables in the <code>FROM</code> clause without a <code>WHERE</code> condition, SQL performs a <strong>Cross Join</strong> (Cartesian Product). It pairs <em>every</em> row in the first table with <em>every</em> row in the second table.</p>
+<p><strong>Let’s visualize this:</strong> If you have 2 Instructors and 2 Courses:</p>
+<p><em>Instructors Table:</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>id</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Alice</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Bob</td>
+</tr>
+</tbody>
+</table>
+<p><em>Courses Table:</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>c_id</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>101</td>
+<td>Math</td>
+</tr>
+<tr class="even">
+<td>102</td>
+<td>Science</td>
+</tr>
+</tbody>
+</table>
+<p><em>The Cross Join Result:</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>id</th>
+<th>name</th>
+<th>c_id</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Alice</td>
+<td>101</td>
+<td>Math</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Alice</td>
+<td>102</td>
+<td>Science</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Bob</td>
+<td>101</td>
+<td>Math</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Bob</td>
+<td>102</td>
+<td>Science</td>
+</tr>
+</tbody>
+</table>
+<p><em>(2 instructors × 2 courses = 4 rows!)</em></p>
+<p>Imagine if you had 1,000 instructors and 1,000 courses—you’d instantly generate <strong>1 million rows</strong>! Most of these combinations are nonsense (Alice doesn’t teach every single course).</p>
+<section id="fixing-the-cross-join" class="level3">
+<h3 class="anchored" data-anchor-id="fixing-the-cross-join">Fixing the Cross Join</h3>
+<p>To fix this, we use the <code>WHERE</code> clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Notice how we used <code>AS i</code> and <code>AS c</code> to give our tables nicknames? This makes our <code>WHERE</code> clause much easier to read!)</em></p>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -854,13 +1146,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
+      <a href="../../weeks/week_2/01_relational_and_ddl.html" class="pagination-link" aria-label="Relational Model &amp; DDL">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Model &amp; DDL</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
-        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_2/03_advanced_sql.html" class="pagination-link" aria-label="Advanced SQL Filtering, Sets &amp; Aggregation">
+        <span class="nav-page-text"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
