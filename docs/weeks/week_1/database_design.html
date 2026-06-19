@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Database Management Systems</title>
+<title>Database Design – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,29 +26,29 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./weeks/week_1/intro_to_dbms.html" rel="next">
-<link href="./logo.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-30fc46dadd577348ec80e1991eb2af07.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-b4c7a4f69edfafbf11eb1cb7a3d4c574.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-30fc46dadd577348ec80e1991eb2af07.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../weeks/week_1/view_of_data.html" rel="prev">
+<link href="../../logo.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-30fc46dadd577348ec80e1991eb2af07.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-b4c7a4f69edfafbf11eb1cb7a3d4c574.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-30fc46dadd577348ec80e1991eb2af07.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -105,7 +105,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../../style.css">
 </head>
 
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,7 +279,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">About the Course</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/database_design.html"><span class="chapter-title">Database Design</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -293,12 +293,12 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      <img src="./cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
-      <img src="./cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="../../cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">DBMS [CS2001]</a> 
+      <a href="../../">DBMS [CS2001]</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -314,31 +314,31 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">About the Course</span></a>
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">About the Course</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./weeks/week_1/view_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">View of Data</span></a>
+  <a href="../../weeks/week_1/view_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">View of Data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./weeks/week_1/database_design.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Database Design</span></a>
+  <a href="../../weeks/week_1/database_design.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Database Design</span></a>
   </div>
 </li>
       </ul>
@@ -353,15 +353,12 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#about-the-course" id="toc-about-the-course" class="nav-link active" data-scroll-target="#about-the-course">About the course</a></li>
-  <li><a href="#course-overview" id="toc-course-overview" class="nav-link" data-scroll-target="#course-overview">Course Overview</a></li>
-  <li><a href="#course-faculty" id="toc-course-faculty" class="nav-link" data-scroll-target="#course-faculty">Course Faculty</a>
+  <li><a href="#database-engine" id="toc-database-engine" class="nav-link active" data-scroll-target="#database-engine">Database Engine</a>
   <ul class="collapse">
-  <li><a href="#faculty-lead" id="toc-faculty-lead" class="nav-link" data-scroll-target="#faculty-lead">Faculty Lead</a></li>
-  <li><a href="#course-instructor" id="toc-course-instructor" class="nav-link" data-scroll-target="#course-instructor">Course Instructor</a></li>
+  <li><a href="#storage-manager" id="toc-storage-manager" class="nav-link" data-scroll-target="#storage-manager">Storage Manager</a></li>
+  <li><a href="#query-processor" id="toc-query-processor" class="nav-link" data-scroll-target="#query-processor">Query Processor</a></li>
+  <li><a href="#transaction-management" id="toc-transaction-management" class="nav-link" data-scroll-target="#transaction-management">Transaction Management</a></li>
   </ul></li>
-  <li><a href="#textbook" id="toc-textbook" class="nav-link" data-scroll-target="#textbook">Textbook</a></li>
-  <li><a href="#how-to-use-this-portal" id="toc-how-to-use-this-portal" class="nav-link" data-scroll-target="#how-to-use-this-portal">How to Use This Portal</a></li>
   </ul>
 </nav>
     </div>
@@ -369,9 +366,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/database_design.html"><span class="chapter-title">Database Design</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Database Management Systems</h1>
+<h1 class="title"><span class="chapter-title">Database Design</span></h1>
 </div>
 
 
@@ -388,46 +385,46 @@ window.Quarto = {
 </header>
 
 
-<section id="about-the-course" class="level2">
-<h2 class="anchored" data-anchor-id="about-the-course">About the course</h2>
-</section>
-<section id="course-overview" class="level2">
-<h2 class="anchored" data-anchor-id="course-overview">Course Overview</h2>
+<p>Database design primarily involves designing the database schema to manage large, interconnected bodies of enterprise information.</p>
 <ul>
-<li><strong>Course ID:</strong> BSCS2001</li>
-<li><strong>Course Type:</strong> Programming</li>
-<li><strong>Course Credits:</strong> 4 Credits</li>
-<li><strong>Pre-requisites:</strong> None!</li>
+<li><p><strong>User Requirements Specification</strong> : Fully characterize and document the data needs of prospective database users.</p></li>
+<li><p><strong>Conceptual Design</strong> : Translate user requirements into a high-level, detailed conceptual schema of the database, focusing entirely on data modeling rather than physical implementation constraints.</p></li>
+<li><p><strong>Logical Design</strong> : Map the abstract, high-level conceptual schema onto the system-specific implementation data model of the chosen Database Management System (DBMS).</p></li>
+<li><p><strong>Physical Design</strong> : Specify the internal and low-level physical features of the database configuration.</p></li>
 </ul>
-<hr>
-</section>
-<section id="course-faculty" class="level2">
-<h2 class="anchored" data-anchor-id="course-faculty">Course Faculty</h2>
-<section id="faculty-lead" class="level3">
-<h3 class="anchored" data-anchor-id="faculty-lead">Faculty Lead</h3>
-<p><strong>Dr.&nbsp;Partha Pratim Das</strong> <em>Professor, Department of Computer Science and Engineering</em> <strong>IIT Kharagpur</strong></p>
-</section>
-<section id="course-instructor" class="level3">
-<h3 class="anchored" data-anchor-id="course-instructor">Course Instructor</h3>
-<p><strong>Manidipa Bhattacharjee</strong></p>
-<hr>
-</section>
-</section>
-<section id="textbook" class="level2">
-<h2 class="anchored" data-anchor-id="textbook">Textbook</h2>
+<section id="database-engine" class="level2">
+<h2 class="anchored" data-anchor-id="database-engine">Database Engine</h2>
+<p>A database system is partitioned into independent modules that isolate core responsibilities. The database engine can be broadly divided into three main functional segments: the storage manager, the query processor, and the transaction manager.</p>
+<section id="storage-manager" class="level3">
+<h3 class="anchored" data-anchor-id="storage-manager">Storage Manager</h3>
+<p>The storage manager acts as the operating interface between the low-level data stored on disk hardware and the application programs or queries submitted to the system.</p>
 <ul>
-<li><strong>Title:</strong> <em>Database System Concepts</em> (7th Edition)</li>
-<li><strong>Authors:</strong> Avi Silberschatz, Henry F. Korth, S. Sudarshan</li>
-<li><strong>Publisher:</strong> McGraw-Hill</li>
+<li>Validates user access permissions and tests whether newly modified data satisfies established consistency constraints.</li>
+<li>Keeps the global database in a correct state despite hardware crashes and prevents operational conflicts between concurrent tasks.</li>
+<li>Directs the physical allocation of disk space and manages the underlying byte structures used to represent database records.</li>
+<li>Coordinates caching strategies, determining when to fetch data from physical storage into volatile main memory so data pools can scale larger than the computer’s actual RAM capacity.</li>
 </ul>
-<hr>
 </section>
-<section id="how-to-use-this-portal" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-use-this-portal">How to Use This Portal</h2>
-<p>The content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.</p>
+<section id="query-processor" class="level3">
+<h3 class="anchored" data-anchor-id="query-processor">Query Processor</h3>
+<p>The query processor abstracts execution details so developers can focus on writing high-level declarative commands, translating text into optimized sequences of lower-level physical operations.</p>
+<p><img src="query_processing.png" class="img-fluid"></p>
+<ul>
+<li><p><strong>Parsing and Translation</strong> : When you submit a query, the system can’t read it as raw text. The DDL Interpreter handles structural commands and updates the data dictionary. For data modifications, the DML Compiler parses your syntax for correctness and translates the declarative text into a relational-algebra expression (an internal mathematical representation the system can work with).</p></li>
+<li><p><strong>Optimization</strong> : A single query can be executed using many alternative strategies, called evaluation plans. They all give the exact same output, but some consume drastically less hardware resources. The Query Optimizer calculates the estimated computational cost (disk I/O and CPU time) for each plan and programmatically selects the absolute most efficient one.</p></li>
+<li><p><strong>Evaluation</strong> : The execution layer takes over. The Query Evaluation Engine takes those optimized, low-level instructions, executes them directly against the physical database files, and returns a clean result table back to the user.</p></li>
+</ul>
+</section>
+<section id="transaction-management" class="level3">
+<h3 class="anchored" data-anchor-id="transaction-management">Transaction Management</h3>
+<p>A transaction is a collection of separate program operations that perform a single logical function within an application. The transaction manager allows developers to treat multiple database updates as a single unit of work by enforcing the core ACID properties.</p>
+<ul>
+<li>Maintains system safety and manages failure recovery. It automatically detects system crashes and uses logging protocols to reverse or restore data back to the clean state that existed prior to the failed transaction.</li>
+</ul>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -846,11 +843,11 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
+      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">View of Data</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./weeks/week_1/intro_to_dbms.html" class="pagination-link" aria-label="Introduction">
-        <span class="nav-page-text"><span class="chapter-title">Introduction</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -858,5 +855,5 @@ window.Quarto = {
 
 
 
-<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
