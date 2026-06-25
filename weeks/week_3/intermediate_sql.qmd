@@ -1,0 +1,374 @@
+---
+title: "Intermediate SQL"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+## Views
+
+### Why Views?
+
+Not everyone should see the full picture. Suppose someone needs an employee's name and department, but **not** their salary. Instead of trusting every query to remember to hide the salary column, define it once:
+
+```sql
+select id, name, dept_name from employee;
+```
+
+A **view** is exactly this — a saved query that behaves like a "virtual table." It's not real stored data; it's a name attached to a query expression that gets substituted in wherever the view is used.
+
+### Creating a View
+
+```sql
+create view v as <query expression>;
+```
+
+```sql
+-- A view of employees without salary
+create view staff_directory as
+select id, name, dept_name from employee;
+
+-- Use it like a table
+select name from staff_directory where dept_name = 'Marketing';
+
+-- A view with computed columns
+create view dept_salary_totals(dept_name, total_salary) as
+select dept_name, sum(salary)
+from employee
+group by dept_name;
+```
+
+### Views Built on Views
+
+Views can refer other views, not just base tables:
+
+```sql
+create view marketing_2025_projects as
+select project.project_id, lead_emp_id, building, room_number
+from project, assignment
+where project.project_id = assignment.project_id
+  and project.dept_name = 'Marketing'
+  and assignment.year = 2025;
+
+create view marketing_2025_tower_b as
+select project_id, room_number
+from marketing_2025_projects
+where building = 'Tower B';
+```
+
+- `v1` **depends directly on** `v2` if `v2` appears in `v1`'s definition.
+- `v1` **depends on** `v2` if there's any chain of dependency leading from `v1` to `v2`.
+- A view is **recursive** if it depends on itself.
+
+### View Expansion
+
+To understand what a nested view *really* means, SQL conceptually **expands** it: repeatedly replace each view name with its underlying query, until only base tables remain.
+
+```
+repeat:
+    find a view reference v_i in the expression
+    replace v_i with v_i's defining query
+until no view references remain
+```
+
+This terminates as long as no view is recursive.
+
+### Updating Views
+
+Inserting into a view secretly inserts into the underlying table:
+
+```sql
+insert into staff_directory values ('E501', 'Lee', 'Design');
+-- Translates to:
+-- insert into employee values ('E501', 'Lee', 'Design', null);
+```
+
+**But this only works cleanly for *simple* views** — most databases require:
+
+- `from` clause has exactly **one** base table
+- `select` lists plain column names only (no expressions, aggregates, or `distinct`)
+- Any column left out of the `select` can default to `null`
+- No `group by` or `having`
+
+If a view joins multiple tables, an insert can be **ambiguous** (e.g., which department's row gets the new value if several departments share a building?) — and some inserts that satisfy the view's *output* can violate its `where` clause entirely, making the update meaningless to translate.
+
+### Materialized Views
+
+A **materialized view** physically stores the view's result as a real table, instead of recomputing it on every query — faster to read, but it goes **stale** the moment the underlying tables change. Keeping it correct requires actively **maintaining** it (refreshing it) whenever the source data updates.
+
+| View Type | Storage | Speed | Freshness |
+|---|---|---|---|
+| **Regular View** | None (just a saved query) | Recomputed every time | Always current |
+| **Materialized View** | Physical table | Fast to read | Needs manual/scheduled refresh |
+
+
+## Transactions
+
+A **transaction** is a unit of work — a group of one or more SQL statements that should succeed or fail *as a whole*.
+
+- **Atomic**: either the *entire* transaction completes, or none of it does (rolled back as if it never happened).
+- **Isolated**: a transaction shouldn't see the messy, half-finished state of another transaction running at the same time.
+- Transactions begin **implicitly**, and end with either:
+  - `commit work` — make all changes permanent
+  - `rollback work` — undo everything since the transaction began
+
+---
+
+## Integrity Constraints
+
+Constraints stop *valid-looking but wrong* changes from silently corrupting the database — e.g., "an employee's salary must be at least $15/hour" or "every customer must have a phone number."
+
+### On a Single Relation
+
+| Constraint | Purpose |
+|---|---|
+| `not null` | Column can never be empty |
+| `primary key` | Uniquely identifies each row; implies `not null` + `unique` |
+| `unique (A1, ..., Am)` | Columns form a **candidate key** — but unlike primary keys, candidate keys *can* be null |
+| `check(P)` | Row must satisfy predicate `P` |
+
+```sql
+-- not null
+name varchar(20) not null,
+budget numeric(12,2) not null
+
+-- check: restrict allowed values
+create table project (
+    project_id varchar(8),
+    status varchar(10),
+    primary key (project_id),
+    check (status in ('Active', 'On Hold', 'Completed', 'Cancelled'))
+);
+```
+
+---
+
+## Referential Integrity
+
+Ensures a value referenced in one table **actually exists** in the table it points to. If `'Design'` appears as a department name in `employee`, there must be a matching row for `'Design'` in `department`.
+
+> **Formal definition:** If `A` is the primary key of relation `S`, then `A` is a **foreign key** of relation `R` if every value of `A` appearing in `R` also appears in `S`.
+
+### Cascading Actions
+
+What should happen when a referenced row is deleted or updated?
+
+```sql
+create table project (
+    project_id char(5) primary key,
+    title varchar(20),
+    dept_name varchar(20) references department
+);
+
+-- with explicit cascading behavior
+create table project (
+    ...
+    dept_name varchar(20),
+    foreign key (dept_name) references department
+        on delete cascade
+        on update cascade,
+    ...
+);
+```
+
+| Action | Effect when referenced row is deleted/updated |
+|---|---|
+| `cascade` | Automatically delete/update matching rows too |
+| `no action` | Block the delete/update if references exist (default) |
+| `set null` | Set the foreign key to `null` |
+| `set default` | Set the foreign key to its default value |
+
+### The Chicken-and-Egg Problem
+
+Self-referencing constraints can deadlock a single insert. Consider:
+
+```sql
+create table employee (
+    id char(10),
+    name char(40),
+    manager_id char(10),
+    primary key (id),
+    foreign key (manager_id) references employee
+);
+```
+
+How do you insert the very first employee if their manager must already exist? Three options:
+
+1. Insert the manager *before* the employee who reports to them.
+2. Set `manager_id` to `null` initially, then `update` it later (impossible if the column is `not null`).
+3. **Defer** constraint checking until the transaction commits (covered in advanced topics).
+
+---
+
+## SQL Data Types and Schemas
+
+### Built-in Date/Time Types
+
+| Type | Stores | Example |
+|---|---|---|
+| `date` | Year, month, day | `date '2025-7-27'` |
+| `time` | Hours, minutes, seconds | `time '09:00:30'` |
+| `timestamp` | Date + time together | `timestamp '2025-7-27 09:00:30.75'` |
+| `interval` | A span of time | `interval '1' day` |
+
+> 💡 Subtracting two dates/times gives you an `interval`; adding an `interval` to a date/time shifts it forward or backward.
+
+### Indexes
+
+An **index** is a shortcut structure that lets the database jump straight to matching rows instead of scanning the whole table.
+
+```sql
+create table student (
+    id varchar(5),
+    name varchar(20) not null,
+    dept_name varchar(20),
+    tot_cred numeric(3,0) default 0,
+    primary key (id)
+);
+
+create index student_id_index on student(id);
+```
+
+```sql
+select * from student where id = '12345';
+-- with the index above, this skips a full table scan
+```
+
+### User-Defined Types (UDT)
+
+Like a `typedef` in C — gives a meaningful name to an existing type.
+
+```sql
+create type dollars as numeric(12,2) final;
+
+create table department (
+    dept_name varchar(20),
+    building varchar(15),
+    budget dollars
+);
+```
+
+### Domains
+
+Similar to UDTs, but domains can carry their own **constraints**.
+
+```sql
+create domain person_name char(20) not null;
+
+create domain degree_level varchar(10)
+    constraint degree_level_test
+    check (value in ('Bachelors', 'Masters', 'Doctorate'));
+```
+
+### Large Object Types
+
+For storing big, unstructured content like photos, videos, or files:
+
+| Type | Stores |
+|---|---|
+| `blob` | **B**inary **L**arge **OB**ject — raw binary data |
+| `clob` | **C**haracter **L**arge **OB**ject — large character data |
+
+> 📌 A query returns a **pointer** to a large object, not the object itself — the actual data is fetched separately.
+
+---
+
+## Authorization
+
+### Forms of Authorization
+
+**On data:**
+
+| Privilege | Allows |
+|---|---|
+| `read` | Viewing data only |
+| `insert` | Adding new rows |
+| `update` | Modifying existing rows |
+| `delete` | Removing rows |
+
+**On schema:**
+
+| Privilege | Allows |
+|---|---|
+| `index` | Creating/dropping indices |
+| `resources` | Creating new relations |
+| `alteration` | Adding/removing columns |
+| `drop` | Deleting relations entirely |
+
+### Granting Privileges
+
+```sql
+grant <privilege list> on <relation or view> to <user list>;
+```
+
+`<user list>` can be a specific user, `public` (everyone), or a **role**.
+
+```sql
+grant select on employee to U1, U2, U3;
+grant insert, update on project to U1;
+grant all privileges on department to admin_user;
+```
+
+> 📌 The grantor must already **hold** the privilege themselves (or be the DBA). Granting a privilege on a *view* does **not** automatically grant privileges on the tables underneath it.
+
+### Revoking Privileges
+
+```sql
+revoke <privilege list> on <relation or view> from <user list>;
+```
+
+```sql
+revoke select on department from U1, U2, U3;
+```
+
+- `revoke all from ...` removes every privilege the user holds.
+- Revoking from `public` removes the privilege from everyone **except** users who were granted it explicitly elsewhere.
+- If the same privilege was granted by **two different** grantors, revoking from one grantor may leave the privilege intact (granted by the other).
+- Revoking a privilege also revokes any privileges that **depended** on it.
+
+### Roles
+
+Roles bundle privileges so you don't have to grant the same set repeatedly.
+
+```sql
+create role instructor;
+grant select on takes to instructor;
+grant instructor to amit;       -- amit inherits the privileges of 'instructor'
+
+-- Roles can inherit from other roles
+create role teaching_assistant;
+grant teaching_assistant to instructor;   -- instructor now also gets TA's privileges
+
+-- Chains of roles
+create role dean;
+grant instructor to dean;
+grant dean to satoshi;          -- satoshi inherits dean → instructor → TA
+```
+
+### Authorization on Views
+
+```sql
+create view geo_employees as
+    (select * from employee where dept_name = 'Geology');
+
+grant select on geo_employees to geo_staff;
+```
+
+If `geo_staff` queries `geo_employees`, it works even if `geo_staff` has **no** direct permission on the underlying `employee` table — the view's permissions are what matter, not the creator's original access (though if the view's *creator* lacked permission on `employee`, the view itself couldn't have been created correctly in the first place).
+
+### Other Authorization Features
+
+```sql
+-- 'references' privilege needed to create a foreign key pointing at someone else's table
+grant references (dept_name) on department to mariano;
+
+-- Transferable privileges
+grant select on department to amit with grant option;
+
+-- Revoking with dependency handling
+revoke select on department from amit, satoshi cascade;   -- also revokes anything amit/satoshi granted onward
+revoke select on department from amit, satoshi restrict;  -- blocks the revoke if dependents exist
+```
+
+> 💡 The `references` privilege exists because a foreign key constraint can restrict what the *referenced* table's owner is allowed to do (e.g., blocking a delete due to `on delete no action`) — so creating that link requires explicit permission.
