@@ -312,5 +312,16 @@
       "**Week-02**",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Advanced SQL Filtering, Sets & Aggregation</span>"
     ]
+  },
+  {
+    "objectID": "sql_playground.html",
+    "href": "sql_playground.html",
+    "title": "SQL Playground",
+    "section": "",
+    "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      A-\n      16px\n      A+\n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        Schema",
+    "crumbs": [
+      "**Playground**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>SQL Playground</span>"
+    ]
   }
 ]
