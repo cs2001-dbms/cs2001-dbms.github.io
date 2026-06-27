@@ -4,6 +4,8 @@ project:
   preview:
     port: 4200
     browser: false
+  resources:
+    - "datasets/*.sql"
 
 book:
   title: "Database Management Systems"
@@ -36,6 +38,9 @@ book:
         - weeks/week_2/01_relational_and_ddl.qmd
         - weeks/week_2/02_dml_and_queries.qmd
         - weeks/week_2/03_advanced_sql.qmd
+    - part: '**Playground**'
+      chapters: 
+        - sql_playground.qmd
   favicon: logo.ico
 
 format:
