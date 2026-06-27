@@ -312,7 +312,6 @@ body.quarto-dark .key-fk { background-color: rgba(191, 219, 254, 0.2); color: #9
   font-weight: 700;
   text-align: left;
   color: #1e293b;
-  text-transform: uppercase;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   z-index: 10;
@@ -761,7 +760,7 @@ async function runQuery() {
   try {
     if (currentDataset !== "test_db") await db.exec("SET SESSION ROLE readonly_user;");
     else await db.exec("RESET ROLE;");
-    var resArray = [await db.query(query)];
+    var resArray = [await db.query(query, [], { rowMode: 'array' })];
     loading.style.display = "none";
     if (currentDataset === "test_db") await refreshSchema();
     if (!resArray || resArray.length === 0) { rc.innerHTML = '<p style="padding:1rem;color:var(--pg-primary)">Query executed successfully (no results).</p>'; return; }
@@ -794,19 +793,59 @@ async function runQuery() {
       var thead = document.createElement("thead");
       var hr = document.createElement("tr");
       
-      var fields = res.fields.map(function(f) { return f.name; });
-      fields.forEach(function(f) { 
+      var customHeaders = null;
+      var selMatch = query.match(/select\s+(.+?)\s+from\s+/is);
+      if (selMatch) {
+        var str = selMatch[1];
+        var cols = [];
+        var current = "";
+        var parenCount = 0;
+        for (var i = 0; i < str.length; i++) {
+          var char = str[i];
+          if (char === '(') parenCount++;
+          else if (char === ')') parenCount--;
+          else if (char === ',' && parenCount === 0) {
+            cols.push(current.trim());
+            current = "";
+            continue;
+          }
+          current += char;
+        }
+        cols.push(current.trim());
+        if (cols.length === res.fields.length) {
+          customHeaders = cols.map(function(c) {
+            var hasAs = c.match(/\s+as\s+/i);
+            if (hasAs) {
+               var parts = c.split(/\s+as\s+/i);
+               return parts[parts.length-1].trim();
+            }
+            return c;
+          });
+        }
+      }
+
+      var fields = res.fields.map(function(f, idx) { 
+        return (customHeaders && customHeaders[idx]) ? customHeaders[idx] : f.name; 
+      });
+      
+      fields.forEach(function(f, colIdx) { 
         var th = document.createElement("th"); 
         var info = null;
-        if (mainTable && globalSchema[mainTable] && globalSchema[mainTable][f]) {
-          info = globalSchema[mainTable][f];
+        var rawColName = res.fields[colIdx].name;
+
+        if (mainTable && globalSchema[mainTable] && globalSchema[mainTable][rawColName]) {
+          info = globalSchema[mainTable][rawColName];
+        } else {
+          for (var t in globalSchema) {
+            if (globalSchema[t][rawColName]) {
+               info = globalSchema[t][rawColName];
+               break;
+            }
+          }
         }
 
         if (info) {
-          var badges = "";
-          if (info.pk) badges += '<span class="key-badge key-pk" title="Primary Key">PK</span>';
-          if (info.fk) badges += '<span class="key-badge key-fk" title="'+info.fkTitle+'">FK</span>';
-          th.innerHTML = f + badges + '<br><span class="th-datatype">' + info.type + '</span>';
+          th.innerHTML = f + '<br><span class="th-datatype">' + info.type + '</span>';
         } else {
           th.textContent = f; 
         }
@@ -817,9 +856,9 @@ async function runQuery() {
       var tbody = document.createElement("tbody");
       res.rows.forEach(function(row) {
         var tr = document.createElement("tr");
-        fields.forEach(function(f) {
+        fields.forEach(function(f, idx) {
           var td = document.createElement("td");
-          var val = row[f];
+          var val = row[idx];
           if (val instanceof Date) val = fmtDate(val);
           td.textContent = val !== null ? val : "NULL";
           if (val === null) td.classList.add("null-cell");
