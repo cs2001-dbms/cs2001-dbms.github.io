@@ -314,6 +314,270 @@
     ]
   },
   {
+    "objectID": "weeks/week_3/nested_subqueries.html",
+    "href": "weeks/week_3/nested_subqueries.html",
+    "title": "Nested Subqueries",
+    "section": "",
+    "text": "Nested Subqueries\nA subquery is simply a select-from-where block placed inside another query. SQL lets you nest subqueries in the WHERE, FROM, and SELECT clauses.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/nested_subqueries.html#nested-subqueries",
+    "href": "weeks/week_3/nested_subqueries.html#nested-subqueries",
+    "title": "Nested Subqueries",
+    "section": "",
+    "text": "select : Must return a single scalar value.\nfrom : Can return any valid relation (table).\nwhere : Used in expressions like Attribute &lt;operation&gt; (subquery).",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/nested_subqueries.html#subqueries-in-the-where-clause",
+    "href": "weeks/week_3/nested_subqueries.html#subqueries-in-the-where-clause",
+    "title": "Nested Subqueries",
+    "section": "Subqueries in the WHERE Clause",
+    "text": "Subqueries in the WHERE Clause\nTypically used to test set membership, set comparison, and set cardinality.\n\nSet Membership: IN / NOT IN\nExample: Find employees who worked on Project A and Project B.\nselect distinct emp_id\nfrom assignment\nwhere project = 'Project A' and\n      emp_id in (select emp_id\n                 from assignment\n                 where project = 'Project B');\n\nSwap in for not in to find employees on Project A but not Project B.\n\n\n\nSet Comparison: SOME and ALL\n\n\n\n\n\n\n\n\nClause\nMeaning\nLogic\n\n\n\n\nsome\nTrue if comparison holds for at least one row in subquery\n\\(\\exists\\, t \\in r : F \\langle\\text{comp}\\rangle\\, t\\)\n\n\nall\nTrue if comparison holds for every row in subquery\n\\(\\forall\\, t \\in r : F \\langle\\text{comp}\\rangle\\, t\\)\n\n\n\n\n📌 &lt;comp&gt; can be: &lt;, ≤, &gt;, ≥, =, ≠\n\nExample: Employees earning more than some employee in Sales:\nselect name\nfrom employee\nwhere salary &gt; some (select salary\n                      from employee\n                      where dept_name = 'Sales');\nExample: Employees earning more than all employees in Sales:\nselect name\nfrom employee\nwhere salary &gt; all (select salary\n                     from employee\n                     where dept_name = 'Sales');\n\n\nTest for Empty Sets: EXISTS\n\nexists r is true if r is non-empty.\nnot exists r is true if r is empty.\n\nExample: Find projects active in both Q1 2025 and Q2 2025, using a correlated subquery (inner query refers to the outer query’s variable).\nselect project_id\nfrom timeline as S\nwhere quarter = 'Q1' and year = 2025 and\n      exists (select *\n              from timeline as T\n              where quarter = 'Q2' and year = 2025\n                    and S.project_id = T.project_id);\n\nS is the correlation name (outer query variable)\nThe inner query referencing S is the correlated subquery\n\nExample: Find employees who have worked on all projects in the Marketing department (uses not exists + set difference logic):\nselect distinct S.emp_id, S.name\nfrom employee as S\nwhere not exists (\n    (select project_id from project where dept_name = 'Marketing')\n    except\n    (select T.project_id from assignment as T where S.emp_id = T.emp_id)\n);\n\n\nTest for Duplicates: UNIQUE\nunique (subquery) is true if the subquery’s result has no duplicate rows.\nselect T.project_id\nfrom project as T\nwhere unique (select R.project_id\n              from assignment as R\n              where T.project_id = R.project_id and R.year = 2025);\n(Finds projects staffed by at most one employee in 2025.)",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/nested_subqueries.html#subqueries-in-the-from-clause",
+    "href": "weeks/week_3/nested_subqueries.html#subqueries-in-the-from-clause",
+    "title": "Nested Subqueries",
+    "section": "Subqueries in the FROM Clause",
+    "text": "Subqueries in the FROM Clause\nA subquery can stand in for a table, letting you filter on an aggregate without HAVING.\nExample: Average salary of departments where average salary exceeds $60,000:\nselect dept_name, avg_salary\nfrom (select dept_name, avg(salary) as avg_salary\n      from employee\n      group by dept_name) as dept_avg\nwhere avg_salary &gt; 60000;\n\nThe WITH Clause\nwith defines a temporary, named result (like a scratchpad table) visible only to the query that follows.\nExample: Find the name of the department that has the maximum budget.\nwith max_budget(value) as\n    (select max(budget) from department)\nselect department.name\nfrom department, max_budget\nwhere department.budget = max_budget.value;\nMultiple with blocks can be chained for multi-step logic:\nExample: Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.\nwith dept_total(dept_name, value) as\n    (select dept_name, sum(salary)\n     from employee\n     group by dept_name),\ndept_total_avg(value) as\n    (select avg(value) from dept_total)\nselect dept_name\nfrom dept_total, dept_total_avg\nwhere dept_total.value &gt; dept_total_avg.value;",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/nested_subqueries.html#subqueries-in-the-select-clause",
+    "href": "weeks/week_3/nested_subqueries.html#subqueries-in-the-select-clause",
+    "title": "Nested Subqueries",
+    "section": "Subqueries in the SELECT Clause",
+    "text": "Subqueries in the SELECT Clause\nA scalar subquery returns exactly one value, used wherever a single value is expected.\nselect dept_name,\n       (select count(*)\n        from employee\n        where department.dept_name = employee.dept_name) as num_employees\nfrom department;\n\n⚠️ If the subquery returns more than one row, this causes a runtime error.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/nested_subqueries.html#modifying-the-database",
+    "href": "weeks/week_3/nested_subqueries.html#modifying-the-database",
+    "title": "Nested Subqueries",
+    "section": "Modifying the Database",
+    "text": "Modifying the Database\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    M[\"Database Modification\"] --&gt; D[\"DELETE — remove tuples\"]\n    M --&gt; I[\"INSERT — add tuples\"]\n    M --&gt; U[\"UPDATE — change values\"]\n\n\n\n\n\n\n\nDeletion\n-- Delete all employees\ndelete from employee;\n\n-- Delete employees from one department\ndelete from employee where dept_name = 'Finance';\n\n-- Delete employees in departments located in a specific building\ndelete from employee\nwhere dept_name in (select dept_name\n                     from department\n                     where building = 'Tower B');\nTricky case: Delete employees earning less than the average salary.\ndelete from employee\nwhere salary &lt; (select avg(salary) from employee);\n\n⚠️ As rows are deleted, the average changes! Solution: (1) computing the average and identifying all rows to delete first, then (2) deleting them — without recomputing mid-way.\n\n\n\nInsertion\ninsert into course\nvalues ('CS-437', 'Database Systems', 'Comp. Sci.', 4);\n\n-- with tot_creds set to null\ninsert into student\nvalues ('3003', 'Green', 'Finance', null);\n\n-- insert from another query's results\ninsert into student\nselect id, name, dept_name, 0\nfrom employee;\n\n📌 The entire select-from-where is evaluated before any row is inserted — otherwise insert into table1 select * from table1 would loop infinitely.\n\n\n\nUpdates\nConditional updates — give a 3% raise above $100K, 5% below (order matters!):\nupdate employee set salary = salary * 1.03 where salary &gt; 100000;\nupdate employee set salary = salary * 1.05 where salary &lt;= 100000;\nCleaner with a case statement (single pass, no ordering issues):\nupdate employee\nset salary = case\n    when salary &lt;= 100000 then salary * 1.05\n    else salary * 1.03\nend;\nUpdates with scalar subqueries — recompute total credits per student:\nupdate student S\nset tot_creds = (select sum(credits)\n                  from takes, course\n                  where takes.course_id = course.course_id and\n                        S.id = takes.id and\n                        takes.grade &lt;&gt; 'F' and\n                        takes.grade is not null);\n(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Nested Subqueries</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html",
+    "href": "weeks/week_3/joins.html",
+    "title": "Joins",
+    "section": "",
+    "text": "Sample Data\nA join takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that’s then filtered down to only the pairs that actually make sense together.\nTo see the difference between join types, imagine two small tables:\nmovie\nreview\nNotice: Dune (M3) has no review, and the review for M4 doesn’t match any movie. This mismatch is exactly what different join types handle differently.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html#sample-data",
+    "href": "weeks/week_3/joins.html#sample-data",
+    "title": "Joins",
+    "section": "",
+    "text": "movie_id\ntitle\n\n\n\n\nM1\nInception\n\n\nM2\nArrival\n\n\nM3\nDune\n\n\n\n\n\n\n\nmovie_id\nrating\n\n\n\n\nM1\n9\n\n\nM2\n8\n\n\nM4\n7",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html#cross-join",
+    "href": "weeks/week_3/joins.html#cross-join",
+    "title": "Joins",
+    "section": "Cross Join",
+    "text": "Cross Join\nReturns the full Cartesian product — every row of one table paired with every row of the other, no filtering at all.\n-- Explicit\nselect * from movie cross join review;\n\n-- Implicit (comma syntax)\nselect * from movie, review;\nWith 3 movies and 3 reviews, this produces 9 rows — almost all of them meaningless pairings.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html#inner-join",
+    "href": "weeks/week_3/joins.html#inner-join",
+    "title": "Joins",
+    "section": "Inner Join",
+    "text": "Inner Join\nKeeps only the rows where the join condition is satisfied on both sides.\n\n\n\n\n\n\n\n\nJoin Type\nCondition\nResult\n\n\n\n\nEqui-Join\nExplicit equality condition (on a.x = b.x)\nBoth x columns kept\n\n\nNatural Join\nEquality assumed on same-named columns\nDuplicate column auto-dropped\n\n\n\n-- Equi-join\nselect * from movie inner join review\non movie.movie_id = review.movie_id;\n\n-- Natural join (same result, but movie_id appears once)\nselect * from movie natural join review;\nResult (only matching movie_ids survive):\n\n\n\nmovie_id\ntitle\nrating\n\n\n\n\nM1\nInception\n9\n\n\nM2\nArrival\n8\n\n\n\nM3 (no review) and M4 (no movie) both disappear — this is the information loss outer joins solve.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html#outer-join",
+    "href": "weeks/week_3/joins.html#outer-join",
+    "title": "Joins",
+    "section": "Outer Join",
+    "text": "Outer Join\nOuter joins keep the inner join result plus the unmatched rows from one or both sides, filling missing columns with null.\n\nLeft Outer Join\nKeeps all rows from the left table, even unmatched ones.\nselect * from movie natural left outer join review;\n\n\n\nmovie_id\ntitle\nrating\n\n\n\n\nM1\nInception\n9\n\n\nM2\nArrival\n8\n\n\nM3\nDune\nnull\n\n\n\n\n\nRight Outer Join\nKeeps all rows from the right table, even unmatched ones.\nselect * from movie natural right outer join review;\n\n\n\nmovie_id\ntitle\nrating\n\n\n\n\nM1\nInception\n9\n\n\nM2\nArrival\n8\n\n\nM4\nnull\n7\n\n\n\n\n\nFull Outer Join\nKeeps everything from both sides — the union of left and right outer joins.\nselect * from movie natural full outer join review;\n\n\n\nmovie_id\ntitle\nrating\n\n\n\n\nM1\nInception\n9\n\n\nM2\nArrival\n8\n\n\nM3\nDune\nnull\n\n\nM4\nnull\n7\n\n\n\n\n\nUsing Explicit Conditions\nJoins can also use on (any condition) or using (shared column names), instead of natural:\n-- Explicit condition\nselect * from movie left outer join review\non movie.movie_id = review.movie_id;\n\n-- Shared column shorthand\nselect * from movie full outer join review\nusing (movie_id);\n\n💡 on works with any condition (even inequality!). natural and using both rely on matching column names — using lets you name exactly which shared column(s) to join on, while natural matches on all identically-named columns.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/joins.html#quick-reference-join-types",
+    "href": "weeks/week_3/joins.html#quick-reference-join-types",
+    "title": "Joins",
+    "section": "Quick Reference: Join Types",
+    "text": "Quick Reference: Join Types\n\n\n\nJoin\nUnmatched left rows kept?\nUnmatched right rows kept?\n\n\n\n\nCross Join\nn/a (no matching)\nn/a\n\n\nInner Join\n❌\n❌\n\n\nLeft Outer\n✅\n❌\n\n\nRight Outer\n❌\n✅\n\n\nFull Outer\n✅\n✅",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html",
+    "href": "weeks/week_3/intermediate_sql.html",
+    "title": "Intermediate SQL",
+    "section": "",
+    "text": "Views",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#views",
+    "href": "weeks/week_3/intermediate_sql.html#views",
+    "title": "Intermediate SQL",
+    "section": "",
+    "text": "Why Views?\nNot everyone should see the full picture. Suppose someone needs an employee’s name and department, but not their salary. Instead of trusting every query to remember to hide the salary column, define it once:\nselect id, name, dept_name from employee;\nA view is exactly this — a saved query that behaves like a “virtual table.” It’s not real stored data; it’s a name attached to a query expression that gets substituted in wherever the view is used.\n\n\nCreating a View\ncreate view v as &lt;query expression&gt;;\n-- A view of employees without salary\ncreate view staff_directory as\nselect id, name, dept_name from employee;\n\n-- Use it like a table\nselect name from staff_directory where dept_name = 'Marketing';\n\n-- A view with computed columns\ncreate view dept_salary_totals(dept_name, total_salary) as\nselect dept_name, sum(salary)\nfrom employee\ngroup by dept_name;\n\n\nViews Built on Views\nViews can refer other views, not just base tables:\ncreate view marketing_2025_projects as\nselect project.project_id, lead_emp_id, building, room_number\nfrom project, assignment\nwhere project.project_id = assignment.project_id\n  and project.dept_name = 'Marketing'\n  and assignment.year = 2025;\n\ncreate view marketing_2025_tower_b as\nselect project_id, room_number\nfrom marketing_2025_projects\nwhere building = 'Tower B';\n\nv1 depends directly on v2 if v2 appears in v1’s definition.\nv1 depends on v2 if there’s any chain of dependency leading from v1 to v2.\nA view is recursive if it depends on itself.\n\n\n\nView Expansion\nTo understand what a nested view really means, SQL conceptually expands it: repeatedly replace each view name with its underlying query, until only base tables remain.\nrepeat:\n    find a view reference v_i in the expression\n    replace v_i with v_i's defining query\nuntil no view references remain\nThis terminates as long as no view is recursive.\n\n\nUpdating Views\nInserting into a view secretly inserts into the underlying table:\ninsert into staff_directory values ('E501', 'Lee', 'Design');\n-- Translates to:\n-- insert into employee values ('E501', 'Lee', 'Design', null);\nBut this only works cleanly for simple views — most databases require:\n\nfrom clause has exactly one base table\nselect lists plain column names only (no expressions, aggregates, or distinct)\nAny column left out of the select can default to null\nNo group by or having\n\nIf a view joins multiple tables, an insert can be ambiguous (e.g., which department’s row gets the new value if several departments share a building?) — and some inserts that satisfy the view’s output can violate its where clause entirely, making the update meaningless to translate.\n\n\nMaterialized Views\nA materialized view physically stores the view’s result as a real table, instead of recomputing it on every query — faster to read, but it goes stale the moment the underlying tables change. Keeping it correct requires actively maintaining it (refreshing it) whenever the source data updates.\n\n\n\n\n\n\n\n\n\nView Type\nStorage\nSpeed\nFreshness\n\n\n\n\nRegular View\nNone (just a saved query)\nRecomputed every time\nAlways current\n\n\nMaterialized View\nPhysical table\nFast to read\nNeeds manual/scheduled refresh",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#transactions",
+    "href": "weeks/week_3/intermediate_sql.html#transactions",
+    "title": "Intermediate SQL",
+    "section": "Transactions",
+    "text": "Transactions\nA transaction is a unit of work — a group of one or more SQL statements that should succeed or fail as a whole.\n\nAtomic: either the entire transaction completes, or none of it does (rolled back as if it never happened).\nIsolated: a transaction shouldn’t see the messy, half-finished state of another transaction running at the same time.\nTransactions begin implicitly, and end with either:\n\ncommit work — make all changes permanent\nrollback work — undo everything since the transaction began",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#integrity-constraints",
+    "href": "weeks/week_3/intermediate_sql.html#integrity-constraints",
+    "title": "Intermediate SQL",
+    "section": "Integrity Constraints",
+    "text": "Integrity Constraints\nConstraints stop valid-looking but wrong changes from silently corrupting the database — e.g., “an employee’s salary must be at least $15/hour” or “every customer must have a phone number.”\n\nOn a Single Relation\n\n\n\n\n\n\n\nConstraint\nPurpose\n\n\n\n\nnot null\nColumn can never be empty\n\n\nprimary key\nUniquely identifies each row; implies not null + unique\n\n\nunique (A1, ..., Am)\nColumns form a candidate key — but unlike primary keys, candidate keys can be null\n\n\ncheck(P)\nRow must satisfy predicate P\n\n\n\n-- not null\nname varchar(20) not null,\nbudget numeric(12,2) not null\n\n-- check: restrict allowed values\ncreate table project (\n    project_id varchar(8),\n    status varchar(10),\n    primary key (project_id),\n    check (status in ('Active', 'On Hold', 'Completed', 'Cancelled'))\n);",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#referential-integrity",
+    "href": "weeks/week_3/intermediate_sql.html#referential-integrity",
+    "title": "Intermediate SQL",
+    "section": "Referential Integrity",
+    "text": "Referential Integrity\nEnsures a value referenced in one table actually exists in the table it points to. If 'Design' appears as a department name in employee, there must be a matching row for 'Design' in department.\n\nFormal definition: If A is the primary key of relation S, then A is a foreign key of relation R if every value of A appearing in R also appears in S.\n\n\nCascading Actions\nWhat should happen when a referenced row is deleted or updated?\ncreate table project (\n    project_id char(5) primary key,\n    title varchar(20),\n    dept_name varchar(20) references department\n);\n\n-- with explicit cascading behavior\ncreate table project (\n    ...\n    dept_name varchar(20),\n    foreign key (dept_name) references department\n        on delete cascade\n        on update cascade,\n    ...\n);\n\n\n\nAction\nEffect when referenced row is deleted/updated\n\n\n\n\ncascade\nAutomatically delete/update matching rows too\n\n\nno action\nBlock the delete/update if references exist (default)\n\n\nset null\nSet the foreign key to null\n\n\nset default\nSet the foreign key to its default value\n\n\n\n\n\nThe Chicken-and-Egg Problem\nSelf-referencing constraints can deadlock a single insert. Consider:\ncreate table employee (\n    id char(10),\n    name char(40),\n    manager_id char(10),\n    primary key (id),\n    foreign key (manager_id) references employee\n);\nHow do you insert the very first employee if their manager must already exist? Three options:\n\nInsert the manager before the employee who reports to them.\nSet manager_id to null initially, then update it later (impossible if the column is not null).\nDefer constraint checking until the transaction commits (covered in advanced topics).",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#sql-data-types-and-schemas",
+    "href": "weeks/week_3/intermediate_sql.html#sql-data-types-and-schemas",
+    "title": "Intermediate SQL",
+    "section": "SQL Data Types and Schemas",
+    "text": "SQL Data Types and Schemas\n\nBuilt-in Date/Time Types\n\n\n\n\n\n\n\n\nType\nStores\nExample\n\n\n\n\ndate\nYear, month, day\ndate '2025-7-27'\n\n\ntime\nHours, minutes, seconds\ntime '09:00:30'\n\n\ntimestamp\nDate + time together\ntimestamp '2025-7-27 09:00:30.75'\n\n\ninterval\nA span of time\ninterval '1' day\n\n\n\n\n💡 Subtracting two dates/times gives you an interval; adding an interval to a date/time shifts it forward or backward.\n\n\n\nIndexes\nAn index is a shortcut structure that lets the database jump straight to matching rows instead of scanning the whole table.\ncreate table student (\n    id varchar(5),\n    name varchar(20) not null,\n    dept_name varchar(20),\n    tot_cred numeric(3,0) default 0,\n    primary key (id)\n);\n\ncreate index student_id_index on student(id);\nselect * from student where id = '12345';\n-- with the index above, this skips a full table scan\n\n\nUser-Defined Types (UDT)\nLike a typedef in C — gives a meaningful name to an existing type.\ncreate type dollars as numeric(12,2) final;\n\ncreate table department (\n    dept_name varchar(20),\n    building varchar(15),\n    budget dollars\n);\n\n\nDomains\nSimilar to UDTs, but domains can carry their own constraints.\ncreate domain person_name char(20) not null;\n\ncreate domain degree_level varchar(10)\n    constraint degree_level_test\n    check (value in ('Bachelors', 'Masters', 'Doctorate'));\n\n\nLarge Object Types\nFor storing big, unstructured content like photos, videos, or files:\n\n\n\nType\nStores\n\n\n\n\nblob\nBinary Large OBject — raw binary data\n\n\nclob\nCharacter Large OBject — large character data\n\n\n\n\n📌 A query returns a pointer to a large object, not the object itself — the actual data is fetched separately.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/intermediate_sql.html#authorization",
+    "href": "weeks/week_3/intermediate_sql.html#authorization",
+    "title": "Intermediate SQL",
+    "section": "Authorization",
+    "text": "Authorization\n\nForms of Authorization\nOn data:\n\n\n\nPrivilege\nAllows\n\n\n\n\nread\nViewing data only\n\n\ninsert\nAdding new rows\n\n\nupdate\nModifying existing rows\n\n\ndelete\nRemoving rows\n\n\n\nOn schema:\n\n\n\nPrivilege\nAllows\n\n\n\n\nindex\nCreating/dropping indices\n\n\nresources\nCreating new relations\n\n\nalteration\nAdding/removing columns\n\n\ndrop\nDeleting relations entirely\n\n\n\n\n\nGranting Privileges\ngrant &lt;privilege list&gt; on &lt;relation or view&gt; to &lt;user list&gt;;\n&lt;user list&gt; can be a specific user, public (everyone), or a role.\ngrant select on employee to U1, U2, U3;\ngrant insert, update on project to U1;\ngrant all privileges on department to admin_user;\n\n📌 The grantor must already hold the privilege themselves (or be the DBA). Granting a privilege on a view does not automatically grant privileges on the tables underneath it.\n\n\n\nRevoking Privileges\nrevoke &lt;privilege list&gt; on &lt;relation or view&gt; from &lt;user list&gt;;\nrevoke select on department from U1, U2, U3;\n\nrevoke all from ... removes every privilege the user holds.\nRevoking from public removes the privilege from everyone except users who were granted it explicitly elsewhere.\nIf the same privilege was granted by two different grantors, revoking from one grantor may leave the privilege intact (granted by the other).\nRevoking a privilege also revokes any privileges that depended on it.\n\n\n\nRoles\nRoles bundle privileges so you don’t have to grant the same set repeatedly.\ncreate role instructor;\ngrant select on takes to instructor;\ngrant instructor to amit;       -- amit inherits the privileges of 'instructor'\n\n-- Roles can inherit from other roles\ncreate role teaching_assistant;\ngrant teaching_assistant to instructor;   -- instructor now also gets TA's privileges\n\n-- Chains of roles\ncreate role dean;\ngrant instructor to dean;\ngrant dean to satoshi;          -- satoshi inherits dean → instructor → TA\n\n\nAuthorization on Views\ncreate view geo_employees as\n    (select * from employee where dept_name = 'Geology');\n\ngrant select on geo_employees to geo_staff;\nIf geo_staff queries geo_employees, it works even if geo_staff has no direct permission on the underlying employee table — the view’s permissions are what matter, not the creator’s original access (though if the view’s creator lacked permission on employee, the view itself couldn’t have been created correctly in the first place).\n\n\nOther Authorization Features\n-- 'references' privilege needed to create a foreign key pointing at someone else's table\ngrant references (dept_name) on department to mariano;\n\n-- Transferable privileges\ngrant select on department to amit with grant option;\n\n-- Revoking with dependency handling\nrevoke select on department from amit, satoshi cascade;   -- also revokes anything amit/satoshi granted onward\nrevoke select on department from amit, satoshi restrict;  -- blocks the revoke if dependents exist\n\n💡 The references privilege exists because a foreign key constraint can restrict what the referenced table’s owner is allowed to do (e.g., blocking a delete due to on delete no action) — so creating that link requires explicit permission.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Intermediate SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/advanced_sql.html",
+    "href": "weeks/week_3/advanced_sql.html",
+    "title": "Advanced SQL",
+    "section": "",
+    "text": "Why Go Beyond Plain SQL?\nSQL is declarative — great for describing what you want, clumsy for how to compute it step by step. Sometimes you need loops, conditionals, and reusable logic. SQL:1999 added functions, procedures, and control-flow constructs to bridge that gap, turning SQL into something closer to a general-purpose language.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Advanced SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/advanced_sql.html#sql-functions",
+    "href": "weeks/week_3/advanced_sql.html#sql-functions",
+    "title": "Advanced SQL",
+    "section": "SQL Functions",
+    "text": "SQL Functions\nA function returns a single value, and can be written in SQL itself — or in an external language (useful for specialized types like images or geometry, e.g. “do these two polygons overlap?”).\ncreate function emp_count(dname varchar(20))\nreturns integer\nbegin\n    declare e_count integer;\n    select count(*) into e_count\n    from employee\n    where employee.dept_name = dname;\n    return e_count;\nend\nUse it just like any expression:\nselect dept_name, budget\nfrom department\nwhere emp_count(dept_name) &gt; 12;\n\n\n\n\n\n\n\nKeyword\nMeaning\n\n\n\n\nbegin ... end\nA compound statement — holds multiple SQL statements together\n\n\nreturns\nDeclares the type of the result (e.g., integer)\n\n\nreturn\nSpecifies the actual value sent back when the function finishes\n\n\n\n\n💡 Think of SQL functions as parameterized views — a view that generalizes by accepting arguments.\n\n\nTable Functions\nAdded in SQL:2003 — instead of returning one value, a table function returns an entire relation.\ncreate function employees_in(dname varchar(20))\nreturns table (\n    id varchar(5),\n    name varchar(20),\n    dept_name varchar(20),\n    salary numeric(8,2)\n)\nreturn table\n    (select id, name, dept_name, salary\n     from employee\n     where employee.dept_name = employees_in.dname);\nselect * from table(employees_in('Marketing'));\n\n\nProcedures\nWhere a function returns a value via return, a procedure passes results back through out parameters.\ncreate procedure emp_count_proc(\n    in dname varchar(20),\n    out e_count integer)\nbegin\n    select count(*) into e_count\n    from employee\n    where employee.dept_name = emp_count_proc.dname;\nend\ndeclare e_count integer;\ncall emp_count_proc('Design', e_count);\n\n📌 SQL:1999 allows overloading — multiple functions/procedures can share a name as long as their parameter count or types differ.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Advanced SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/advanced_sql.html#procedural-language-constructs",
+    "href": "weeks/week_3/advanced_sql.html#procedural-language-constructs",
+    "title": "Advanced SQL",
+    "section": "Procedural Language Constructs",
+    "text": "Procedural Language Constructs\n\n⚠️ Most databases implement their own dialect of these — syntax varies across systems.\n\n\nLoops\n-- while: check condition before each iteration\nwhile boolean_expression do\n    sequence_of_statements;\nend while;\n\n-- repeat: check condition after each iteration (always runs once)\nrepeat\n    sequence_of_statements;\nuntil boolean_expression\nend repeat;\n\n-- for: iterate directly over query results\ndeclare total integer default 0;\nfor r as\n    select budget from department\ndo\n    set total = total + r.budget;\nend for;\n\n\nConditionals\n-- if / elseif / else\nif boolean_expression then\n    sequence_of_statements;\nelseif boolean_expression then\n    sequence_of_statements;\nelse\n    sequence_of_statements;\nend if;\n-- simple case: match a variable against fixed values\ncase dept_name\n    when 'Sales' then ...\n    when 'Design' then ...\n    else ...\nend case;\n\n-- searched case: match arbitrary expressions\ncase\n    when salary &gt; 100000 then ...\n    when salary &gt; 50000 then ...\n    else ...\nend case;\n\n\nException Handling\ndeclare seat_unavailable condition;\ndeclare exit handler for seat_unavailable\nbegin\n    ...\n    signal seat_unavailable;\n    ...\nend\nThe exit handler terminates the enclosing begin...end block when the condition fires. Other handler behaviors are also possible (e.g., continue instead of exit).",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Advanced SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/advanced_sql.html#triggers",
+    "href": "weeks/week_3/advanced_sql.html#triggers",
+    "title": "Advanced SQL",
+    "section": "Triggers",
+    "text": "Triggers\nA trigger is code that fires automatically in response to an insert, update, or delete on a table — no one has to remember to call it.\nDefining a trigger means specifying three things:\n\nEvent — insert / update / delete\nTiming — BEFORE or AFTER the event\nAction — what to actually do\n\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    E[\"Event: INSERT / UPDATE / DELETE\"] --&gt; T1[\"BEFORE trigger — validate or modify values first\"]\n    E --&gt; OP[\"Database operation executes\"]\n    OP --&gt; T2[\"AFTER trigger — update other tables, audit, alert\"]\n\n\n\n\n\n\n\nBEFORE vs. AFTER\n\n\n\n\n\n\n\nTiming\nTypical use\n\n\n\n\nBEFORE\nClean up or validate incoming values before they’re written (e.g., normalize blanks to null); raise errors before a delete proceeds\n\n\nAFTER\nUpdate other tables to stay in sync, maintain audit trails, enforce cross-table integrity, trigger alerts/notifications\n\n\n\n\n\nRow-Level vs. Statement-Level\n\n\n\n\n\n\n\nType\nBehavior\n\n\n\n\nRow-level\nFires once per affected row. A 10% raise across 100 employees fires the trigger 100 times.\n\n\nStatement-level\nFires once per statement, regardless of how many rows were touched — uses referencing old table / referencing new table to access all affected rows at once via transition tables. More efficient for bulk updates.\n\n\n\n\n\nExample: BEFORE trigger (data cleanup)\nConvert blank grades to null before they’re written:\ncreate trigger setnull_trigger before update of takes\nreferencing new row as nrow\nfor each row\nwhen (nrow.grade = ' ')\nbegin atomic\n    set nrow.grade = null;\nend;\n\n\nExample: AFTER trigger (cross-table maintenance)\nUpdate a student’s earned credits whenever a failing/blank grade turns into a pass:\ncreate trigger credits_earned after update of grade on (takes)\nreferencing new row as nrow\nreferencing old row as orow\nfor each row\nwhen nrow.grade &lt;&gt; 'F' and nrow.grade is not null\n     and (orow.grade = 'F' or orow.grade is null)\nbegin atomic\n    update student\n    set tot_cred = tot_cred +\n        (select credits from course where course.course_id = nrow.course_id)\n    where student.id = nrow.id;\nend;\n\nreferencing old row as — access pre-update values (deletes & updates)\nreferencing new row as — access post-update values (inserts & updates)\nTriggers can be scoped to specific columns: after update of grade on takes",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Advanced SQL</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_3/advanced_sql.html#using-triggers-wisely",
+    "href": "weeks/week_3/advanced_sql.html#using-triggers-wisely",
+    "title": "Advanced SQL",
+    "section": "Using Triggers Wisely",
+    "text": "Using Triggers Wisely\n\n✅ Good Uses\n\nLogging changes to a history/audit table\nRecording metadata an application can’t see (who ran it, when, from where)\nSimple, self-contained validation\nKeeping denormalized or derived values in sync\n\n\n\n❌ Danger Signs\n\n\n\n\n\n\n\nRisk\nWhy it hurts\n\n\n\n\nToo many triggers\nHard to trace why something changed\n\n\nComplex trigger logic\nBusiness logic buried where developers won’t look\n\n\nCross-server triggers\nNetwork calls hidden inside what looks like a simple update\n\n\nTriggers calling triggers\nCascading side effects, hard to predict\n\n\nRecursive triggers enabled\nCan spiral — off by default for a reason\n\n\nViews/procedures/functions nested inside triggers\nPerformance black box\n\n\nIteration inside triggers\nRow-by-row processing at scale = slow\n\n\n\nRule of thumb: triggers are best for short, simple, self-contained operations — not as a substitute for your application’s business logic.",
+    "crumbs": [
+      "**Week-03**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Advanced SQL</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -321,7 +585,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      A-\n      16px\n      A+\n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   }
 ]

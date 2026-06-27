@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Intermediate SQL – Database Management Systems</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../weeks/week_3/advanced_sql.html" rel="next">
+<link href="../../weeks/week_3/joins.html" rel="prev">
+<link href="../../logo.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-4a3ee7e1ea6f4eca5f14e96bc3166cc9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../style.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/intermediate_sql.html"><span class="chapter-title">Intermediate SQL</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="../../index.html" class="sidebar-logo-link">
+      <img src="../../cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">DBMS [CS2001]</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">About the Course</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Week-01</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_1/view_of_data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">View of Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_1/database_design.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Database Design</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Week-02</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Model &amp; DDL</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_2/02_dml_and_queries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_2/03_advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Week-03</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nested Subqueries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/joins.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Joins</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/intermediate_sql.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Intermediate SQL</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title"><strong>On this page</strong></h2>
+   
+  <ul>
+  <li><a href="#views" id="toc-views" class="nav-link active" data-scroll-target="#views">Views</a>
+  <ul class="collapse">
+  <li><a href="#why-views" id="toc-why-views" class="nav-link" data-scroll-target="#why-views">Why Views?</a></li>
+  <li><a href="#creating-a-view" id="toc-creating-a-view" class="nav-link" data-scroll-target="#creating-a-view">Creating a View</a></li>
+  <li><a href="#views-built-on-views" id="toc-views-built-on-views" class="nav-link" data-scroll-target="#views-built-on-views">Views Built on Views</a></li>
+  <li><a href="#view-expansion" id="toc-view-expansion" class="nav-link" data-scroll-target="#view-expansion">View Expansion</a></li>
+  <li><a href="#updating-views" id="toc-updating-views" class="nav-link" data-scroll-target="#updating-views">Updating Views</a></li>
+  <li><a href="#materialized-views" id="toc-materialized-views" class="nav-link" data-scroll-target="#materialized-views">Materialized Views</a></li>
+  </ul></li>
+  <li><a href="#transactions" id="toc-transactions" class="nav-link" data-scroll-target="#transactions">Transactions</a></li>
+  <li><a href="#integrity-constraints" id="toc-integrity-constraints" class="nav-link" data-scroll-target="#integrity-constraints">Integrity Constraints</a>
+  <ul class="collapse">
+  <li><a href="#on-a-single-relation" id="toc-on-a-single-relation" class="nav-link" data-scroll-target="#on-a-single-relation">On a Single Relation</a></li>
+  </ul></li>
+  <li><a href="#referential-integrity" id="toc-referential-integrity" class="nav-link" data-scroll-target="#referential-integrity">Referential Integrity</a>
+  <ul class="collapse">
+  <li><a href="#cascading-actions" id="toc-cascading-actions" class="nav-link" data-scroll-target="#cascading-actions">Cascading Actions</a></li>
+  <li><a href="#the-chicken-and-egg-problem" id="toc-the-chicken-and-egg-problem" class="nav-link" data-scroll-target="#the-chicken-and-egg-problem">The Chicken-and-Egg Problem</a></li>
+  </ul></li>
+  <li><a href="#sql-data-types-and-schemas" id="toc-sql-data-types-and-schemas" class="nav-link" data-scroll-target="#sql-data-types-and-schemas">SQL Data Types and Schemas</a>
+  <ul class="collapse">
+  <li><a href="#built-in-datetime-types" id="toc-built-in-datetime-types" class="nav-link" data-scroll-target="#built-in-datetime-types">Built-in Date/Time Types</a></li>
+  <li><a href="#indexes" id="toc-indexes" class="nav-link" data-scroll-target="#indexes">Indexes</a></li>
+  <li><a href="#user-defined-types-udt" id="toc-user-defined-types-udt" class="nav-link" data-scroll-target="#user-defined-types-udt">User-Defined Types (UDT)</a></li>
+  <li><a href="#domains" id="toc-domains" class="nav-link" data-scroll-target="#domains">Domains</a></li>
+  <li><a href="#large-object-types" id="toc-large-object-types" class="nav-link" data-scroll-target="#large-object-types">Large Object Types</a></li>
+  </ul></li>
+  <li><a href="#authorization" id="toc-authorization" class="nav-link" data-scroll-target="#authorization">Authorization</a>
+  <ul class="collapse">
+  <li><a href="#forms-of-authorization" id="toc-forms-of-authorization" class="nav-link" data-scroll-target="#forms-of-authorization">Forms of Authorization</a></li>
+  <li><a href="#granting-privileges" id="toc-granting-privileges" class="nav-link" data-scroll-target="#granting-privileges">Granting Privileges</a></li>
+  <li><a href="#revoking-privileges" id="toc-revoking-privileges" class="nav-link" data-scroll-target="#revoking-privileges">Revoking Privileges</a></li>
+  <li><a href="#roles" id="toc-roles" class="nav-link" data-scroll-target="#roles">Roles</a></li>
+  <li><a href="#authorization-on-views" id="toc-authorization-on-views" class="nav-link" data-scroll-target="#authorization-on-views">Authorization on Views</a></li>
+  <li><a href="#other-authorization-features" id="toc-other-authorization-features" class="nav-link" data-scroll-target="#other-authorization-features">Other Authorization Features</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/intermediate_sql.html"><span class="chapter-title">Intermediate SQL</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Intermediate SQL</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="views" class="level2">
+<h2 class="anchored" data-anchor-id="views">Views</h2>
+<section id="why-views" class="level3">
+<h3 class="anchored" data-anchor-id="why-views">Why Views?</h3>
+<p>Not everyone should see the full picture. Suppose someone needs an employee’s name and department, but <strong>not</strong> their salary. Instead of trusting every query to remember to hide the salary column, define it once:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> employee;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <strong>view</strong> is exactly this — a saved query that behaves like a “virtual table.” It’s not real stored data; it’s a name attached to a query expression that gets substituted in wherever the view is used.</p>
+</section>
+<section id="creating-a-view" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-view">Creating a View</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> v <span class="kw">as</span> <span class="op">&lt;</span><span class="kw">query</span> expression<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- A view of employees without salary</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> staff_directory <span class="kw">as</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> employee;</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Use it like a table</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> name <span class="kw">from</span> staff_directory <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Marketing'</span>;</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- A view with computed columns</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> dept_salary_totals(dept_name, total_salary) <span class="kw">as</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> dept_name, <span class="fu">sum</span>(salary)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> employee</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">group</span> <span class="kw">by</span> dept_name;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="views-built-on-views" class="level3">
+<h3 class="anchored" data-anchor-id="views-built-on-views">Views Built on Views</h3>
+<p>Views can refer other views, not just base tables:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> marketing_2025_projects <span class="kw">as</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> project.project_id, lead_emp_id, building, room_number</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> project, assignment</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> project.project_id <span class="op">=</span> assignment.project_id</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">and</span> project.dept_name <span class="op">=</span> <span class="st">'Marketing'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">and</span> assignment.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span>;</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> marketing_2025_tower_b <span class="kw">as</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> project_id, room_number</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> marketing_2025_projects</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> building <span class="op">=</span> <span class="st">'Tower B'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>v1</code> <strong>depends directly on</strong> <code>v2</code> if <code>v2</code> appears in <code>v1</code>’s definition.</li>
+<li><code>v1</code> <strong>depends on</strong> <code>v2</code> if there’s any chain of dependency leading from <code>v1</code> to <code>v2</code>.</li>
+<li>A view is <strong>recursive</strong> if it depends on itself.</li>
+</ul>
+</section>
+<section id="view-expansion" class="level3">
+<h3 class="anchored" data-anchor-id="view-expansion">View Expansion</h3>
+<p>To understand what a nested view <em>really</em> means, SQL conceptually <strong>expands</strong> it: repeatedly replace each view name with its underlying query, until only base tables remain.</p>
+<pre><code>repeat:
+    find a view reference v_i in the expression
+    replace v_i with v_i's defining query
+until no view references remain</code></pre>
+<p>This terminates as long as no view is recursive.</p>
+</section>
+<section id="updating-views" class="level3">
+<h3 class="anchored" data-anchor-id="updating-views">Updating Views</h3>
+<p>Inserting into a view secretly inserts into the underlying table:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">insert</span> <span class="kw">into</span> staff_directory <span class="kw">values</span> (<span class="st">'E501'</span>, <span class="st">'Lee'</span>, <span class="st">'Design'</span>);</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- Translates to:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- insert into employee values ('E501', 'Lee', 'Design', null);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>But this only works cleanly for <em>simple</em> views</strong> — most databases require:</p>
+<ul>
+<li><code>from</code> clause has exactly <strong>one</strong> base table</li>
+<li><code>select</code> lists plain column names only (no expressions, aggregates, or <code>distinct</code>)</li>
+<li>Any column left out of the <code>select</code> can default to <code>null</code></li>
+<li>No <code>group by</code> or <code>having</code></li>
+</ul>
+<p>If a view joins multiple tables, an insert can be <strong>ambiguous</strong> (e.g., which department’s row gets the new value if several departments share a building?) — and some inserts that satisfy the view’s <em>output</em> can violate its <code>where</code> clause entirely, making the update meaningless to translate.</p>
+</section>
+<section id="materialized-views" class="level3">
+<h3 class="anchored" data-anchor-id="materialized-views">Materialized Views</h3>
+<p>A <strong>materialized view</strong> physically stores the view’s result as a real table, instead of recomputing it on every query — faster to read, but it goes <strong>stale</strong> the moment the underlying tables change. Keeping it correct requires actively <strong>maintaining</strong> it (refreshing it) whenever the source data updates.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>View Type</th>
+<th>Storage</th>
+<th>Speed</th>
+<th>Freshness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Regular View</strong></td>
+<td>None (just a saved query)</td>
+<td>Recomputed every time</td>
+<td>Always current</td>
+</tr>
+<tr class="even">
+<td><strong>Materialized View</strong></td>
+<td>Physical table</td>
+<td>Fast to read</td>
+<td>Needs manual/scheduled refresh</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="transactions" class="level2">
+<h2 class="anchored" data-anchor-id="transactions">Transactions</h2>
+<p>A <strong>transaction</strong> is a unit of work — a group of one or more SQL statements that should succeed or fail <em>as a whole</em>.</p>
+<ul>
+<li><strong>Atomic</strong>: either the <em>entire</em> transaction completes, or none of it does (rolled back as if it never happened).</li>
+<li><strong>Isolated</strong>: a transaction shouldn’t see the messy, half-finished state of another transaction running at the same time.</li>
+<li>Transactions begin <strong>implicitly</strong>, and end with either:
+<ul>
+<li><code>commit work</code> — make all changes permanent</li>
+<li><code>rollback work</code> — undo everything since the transaction began</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="integrity-constraints" class="level2">
+<h2 class="anchored" data-anchor-id="integrity-constraints">Integrity Constraints</h2>
+<p>Constraints stop <em>valid-looking but wrong</em> changes from silently corrupting the database — e.g., “an employee’s salary must be at least $15/hour” or “every customer must have a phone number.”</p>
+<section id="on-a-single-relation" class="level3">
+<h3 class="anchored" data-anchor-id="on-a-single-relation">On a Single Relation</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Constraint</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>not null</code></td>
+<td>Column can never be empty</td>
+</tr>
+<tr class="even">
+<td><code>primary key</code></td>
+<td>Uniquely identifies each row; implies <code>not null</code> + <code>unique</code></td>
+</tr>
+<tr class="odd">
+<td><code>unique (A1, ..., Am)</code></td>
+<td>Columns form a <strong>candidate key</strong> — but unlike primary keys, candidate keys <em>can</em> be null</td>
+</tr>
+<tr class="even">
+<td><code>check(P)</code></td>
+<td>Row must satisfy predicate <code>P</code></td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- not null</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>budget <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>) <span class="kw">not</span> <span class="kw">null</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- check: restrict allowed values</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    project_id <span class="dt">varchar</span>(<span class="dv">8</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    status <span class="dt">varchar</span>(<span class="dv">10</span>),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">primary</span> <span class="kw">key</span> (project_id),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">check</span> (status <span class="kw">in</span> (<span class="st">'Active'</span>, <span class="st">'On Hold'</span>, <span class="st">'Completed'</span>, <span class="st">'Cancelled'</span>))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="referential-integrity" class="level2">
+<h2 class="anchored" data-anchor-id="referential-integrity">Referential Integrity</h2>
+<p>Ensures a value referenced in one table <strong>actually exists</strong> in the table it points to. If <code>'Design'</code> appears as a department name in <code>employee</code>, there must be a matching row for <code>'Design'</code> in <code>department</code>.</p>
+<blockquote class="blockquote">
+<p><strong>Formal definition:</strong> If <code>A</code> is the primary key of relation <code>S</code>, then <code>A</code> is a <strong>foreign key</strong> of relation <code>R</code> if every value of <code>A</code> appearing in <code>R</code> also appears in <code>S</code>.</p>
+</blockquote>
+<section id="cascading-actions" class="level3">
+<h3 class="anchored" data-anchor-id="cascading-actions">Cascading Actions</h3>
+<p>What should happen when a referenced row is deleted or updated?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    project_id <span class="dt">char</span>(<span class="dv">5</span>) <span class="kw">primary</span> <span class="kw">key</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    title <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">references</span> department</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- with explicit cascading behavior</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">..</span>.</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (dept_name) <span class="kw">references</span> department</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">on</span> <span class="kw">delete</span> <span class="kw">cascade</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">on</span> <span class="kw">update</span> <span class="kw">cascade</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">..</span>.</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Action</th>
+<th>Effect when referenced row is deleted/updated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cascade</code></td>
+<td>Automatically delete/update matching rows too</td>
+</tr>
+<tr class="even">
+<td><code>no action</code></td>
+<td>Block the delete/update if references exist (default)</td>
+</tr>
+<tr class="odd">
+<td><code>set null</code></td>
+<td>Set the foreign key to <code>null</code></td>
+</tr>
+<tr class="even">
+<td><code>set default</code></td>
+<td>Set the foreign key to its default value</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-chicken-and-egg-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-chicken-and-egg-problem">The Chicken-and-Egg Problem</h3>
+<p>Self-referencing constraints can deadlock a single insert. Consider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> employee (</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">id</span> <span class="dt">char</span>(<span class="dv">10</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    name <span class="dt">char</span>(<span class="dv">40</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    manager_id <span class="dt">char</span>(<span class="dv">10</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">primary</span> <span class="kw">key</span> (<span class="kw">id</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (manager_id) <span class="kw">references</span> employee</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>How do you insert the very first employee if their manager must already exist? Three options:</p>
+<ol type="1">
+<li>Insert the manager <em>before</em> the employee who reports to them.</li>
+<li>Set <code>manager_id</code> to <code>null</code> initially, then <code>update</code> it later (impossible if the column is <code>not null</code>).</li>
+<li><strong>Defer</strong> constraint checking until the transaction commits (covered in advanced topics).</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="sql-data-types-and-schemas" class="level2">
+<h2 class="anchored" data-anchor-id="sql-data-types-and-schemas">SQL Data Types and Schemas</h2>
+<section id="built-in-datetime-types" class="level3">
+<h3 class="anchored" data-anchor-id="built-in-datetime-types">Built-in Date/Time Types</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Stores</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>date</code></td>
+<td>Year, month, day</td>
+<td><code>date '2025-7-27'</code></td>
+</tr>
+<tr class="even">
+<td><code>time</code></td>
+<td>Hours, minutes, seconds</td>
+<td><code>time '09:00:30'</code></td>
+</tr>
+<tr class="odd">
+<td><code>timestamp</code></td>
+<td>Date + time together</td>
+<td><code>timestamp '2025-7-27 09:00:30.75'</code></td>
+</tr>
+<tr class="even">
+<td><code>interval</code></td>
+<td>A span of time</td>
+<td><code>interval '1' day</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>💡 Subtracting two dates/times gives you an <code>interval</code>; adding an <code>interval</code> to a date/time shifts it forward or backward.</p>
+</blockquote>
+</section>
+<section id="indexes" class="level3">
+<h3 class="anchored" data-anchor-id="indexes">Indexes</h3>
+<p>An <strong>index</strong> is a shortcut structure that lets the database jump straight to matching rows instead of scanning the whole table.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> student (</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">id</span> <span class="dt">varchar</span>(<span class="dv">5</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    tot_cred <span class="dt">numeric</span>(<span class="dv">3</span>,<span class="dv">0</span>) <span class="kw">default</span> <span class="dv">0</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">primary</span> <span class="kw">key</span> (<span class="kw">id</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">index</span> student_id_index <span class="kw">on</span> student(<span class="kw">id</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> student <span class="kw">where</span> <span class="kw">id</span> <span class="op">=</span> <span class="st">'12345'</span>;</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- with the index above, this skips a full table scan</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="user-defined-types-udt" class="level3">
+<h3 class="anchored" data-anchor-id="user-defined-types-udt">User-Defined Types (UDT)</h3>
+<p>Like a <code>typedef</code> in C — gives a meaningful name to an existing type.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">type</span> dollars <span class="kw">as</span> <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>) final;</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">table</span> department (</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    building <span class="dt">varchar</span>(<span class="dv">15</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    budget dollars</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="domains" class="level3">
+<h3 class="anchored" data-anchor-id="domains">Domains</h3>
+<p>Similar to UDTs, but domains can carry their own <strong>constraints</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">domain</span> person_name <span class="dt">char</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>;</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">domain</span> degree_level <span class="dt">varchar</span>(<span class="dv">10</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">constraint</span> degree_level_test</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">check</span> (<span class="fu">value</span> <span class="kw">in</span> (<span class="st">'Bachelors'</span>, <span class="st">'Masters'</span>, <span class="st">'Doctorate'</span>));</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="large-object-types" class="level3">
+<h3 class="anchored" data-anchor-id="large-object-types">Large Object Types</h3>
+<p>For storing big, unstructured content like photos, videos, or files:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Stores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>blob</code></td>
+<td><strong>B</strong>inary <strong>L</strong>arge <strong>OB</strong>ject — raw binary data</td>
+</tr>
+<tr class="even">
+<td><code>clob</code></td>
+<td><strong>C</strong>haracter <strong>L</strong>arge <strong>OB</strong>ject — large character data</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>📌 A query returns a <strong>pointer</strong> to a large object, not the object itself — the actual data is fetched separately.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="authorization" class="level2">
+<h2 class="anchored" data-anchor-id="authorization">Authorization</h2>
+<section id="forms-of-authorization" class="level3">
+<h3 class="anchored" data-anchor-id="forms-of-authorization">Forms of Authorization</h3>
+<p><strong>On data:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Privilege</th>
+<th>Allows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>read</code></td>
+<td>Viewing data only</td>
+</tr>
+<tr class="even">
+<td><code>insert</code></td>
+<td>Adding new rows</td>
+</tr>
+<tr class="odd">
+<td><code>update</code></td>
+<td>Modifying existing rows</td>
+</tr>
+<tr class="even">
+<td><code>delete</code></td>
+<td>Removing rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>On schema:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Privilege</th>
+<th>Allows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>index</code></td>
+<td>Creating/dropping indices</td>
+</tr>
+<tr class="even">
+<td><code>resources</code></td>
+<td>Creating new relations</td>
+</tr>
+<tr class="odd">
+<td><code>alteration</code></td>
+<td>Adding/removing columns</td>
+</tr>
+<tr class="even">
+<td><code>drop</code></td>
+<td>Deleting relations entirely</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="granting-privileges" class="level3">
+<h3 class="anchored" data-anchor-id="granting-privileges">Granting Privileges</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">to</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>&lt;user list&gt;</code> can be a specific user, <code>public</code> (everyone), or a <strong>role</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> employee <span class="kw">to</span> U1, U2, U3;</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">insert</span>, <span class="kw">update</span> <span class="kw">on</span> project <span class="kw">to</span> U1;</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">all</span> <span class="kw">privileges</span> <span class="kw">on</span> department <span class="kw">to</span> admin_user;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>📌 The grantor must already <strong>hold</strong> the privilege themselves (or be the DBA). Granting a privilege on a <em>view</em> does <strong>not</strong> automatically grant privileges on the tables underneath it.</p>
+</blockquote>
+</section>
+<section id="revoking-privileges" class="level3">
+<h3 class="anchored" data-anchor-id="revoking-privileges">Revoking Privileges</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">revoke</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">from</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> U1, U2, U3;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>revoke all from ...</code> removes every privilege the user holds.</li>
+<li>Revoking from <code>public</code> removes the privilege from everyone <strong>except</strong> users who were granted it explicitly elsewhere.</li>
+<li>If the same privilege was granted by <strong>two different</strong> grantors, revoking from one grantor may leave the privilege intact (granted by the other).</li>
+<li>Revoking a privilege also revokes any privileges that <strong>depended</strong> on it.</li>
+</ul>
+</section>
+<section id="roles" class="level3">
+<h3 class="anchored" data-anchor-id="roles">Roles</h3>
+<p>Roles bundle privileges so you don’t have to grant the same set repeatedly.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">role</span> instructor;</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> takes <span class="kw">to</span> instructor;</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> instructor <span class="kw">to</span> amit;       <span class="co">-- amit inherits the privileges of 'instructor'</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Roles can inherit from other roles</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">role</span> teaching_assistant;</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> teaching_assistant <span class="kw">to</span> instructor;   <span class="co">-- instructor now also gets TA's privileges</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- Chains of roles</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">role</span> dean;</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> instructor <span class="kw">to</span> dean;</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> dean <span class="kw">to</span> satoshi;          <span class="co">-- satoshi inherits dean → instructor → TA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="authorization-on-views" class="level3">
+<h3 class="anchored" data-anchor-id="authorization-on-views">Authorization on Views</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">create</span> <span class="kw">view</span> geo_employees <span class="kw">as</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> employee <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Geology'</span>);</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> geo_employees <span class="kw">to</span> geo_staff;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If <code>geo_staff</code> queries <code>geo_employees</code>, it works even if <code>geo_staff</code> has <strong>no</strong> direct permission on the underlying <code>employee</code> table — the view’s permissions are what matter, not the creator’s original access (though if the view’s <em>creator</em> lacked permission on <code>employee</code>, the view itself couldn’t have been created correctly in the first place).</p>
+</section>
+<section id="other-authorization-features" class="level3">
+<h3 class="anchored" data-anchor-id="other-authorization-features">Other Authorization Features</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- 'references' privilege needed to create a foreign key pointing at someone else's table</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">references</span> (dept_name) <span class="kw">on</span> department <span class="kw">to</span> mariano;</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Transferable privileges</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">to</span> amit <span class="kw">with</span> <span class="kw">grant</span> <span class="kw">option</span>;</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Revoking with dependency handling</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> amit, satoshi <span class="kw">cascade</span>;   <span class="co">-- also revokes anything amit/satoshi granted onward</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> amit, satoshi <span class="kw">restrict</span>;  <span class="co">-- blocks the revoke if dependents exist</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 The <code>references</code> privilege exists because a foreign key constraint can restrict what the <em>referenced</em> table’s owner is allowed to do (e.g., blocking a delete due to <code>on delete no action</code>) — so creating that link requires explicit permission.</p>
+</blockquote>
+
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="../../weeks/week_3/joins.html" class="pagination-link" aria-label="Joins">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Joins</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../weeks/week_3/advanced_sql.html" class="pagination-link" aria-label="Advanced SQL">
+        <span class="nav-page-text"><span class="chapter-title">Advanced SQL</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data Manipulation (DML) &amp; Basic Queries – Database Management Systems</title>
+<title>Nested Subqueries – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -68,8 +68,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_2/03_advanced_sql.html" rel="next">
-<link href="../../weeks/week_2/01_relational_and_ddl.html" rel="prev">
+<link href="../../weeks/week_3/joins.html" rel="next">
+<link href="../../weeks/week_2/03_advanced_sql.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -110,6 +110,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -315,7 +318,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/02_dml_and_queries.html"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><span class="chapter-title">Nested Subqueries</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -381,13 +384,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-02</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Model &amp; DDL</span></a>
@@ -395,7 +398,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_2/02_dml_and_queries.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a>
+  <a href="../../weeks/week_2/02_dml_and_queries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -407,16 +410,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-03</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nested Subqueries</span></a>
+  <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Nested Subqueries</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -462,20 +465,24 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a>
+  <li><a href="#nested-subqueries" id="toc-nested-subqueries" class="nav-link active" data-scroll-target="#nested-subqueries">Nested Subqueries</a></li>
+  <li><a href="#subqueries-in-the-where-clause" id="toc-subqueries-in-the-where-clause" class="nav-link" data-scroll-target="#subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</a>
   <ul class="collapse">
-  <li><a href="#insert-adding-new-records" id="toc-insert-adding-new-records" class="nav-link" data-scroll-target="#insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</a></li>
-  <li><a href="#update-modifying-existing-data" id="toc-update-modifying-existing-data" class="nav-link" data-scroll-target="#update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</a></li>
-  <li><a href="#delete-removing-records" id="toc-delete-removing-records" class="nav-link" data-scroll-target="#delete-removing-records">3. <code>DELETE</code>: Removing Records</a></li>
+  <li><a href="#set-membership-in-not-in" id="toc-set-membership-in-not-in" class="nav-link" data-scroll-target="#set-membership-in-not-in">Set Membership: <code>IN</code> / <code>NOT IN</code></a></li>
+  <li><a href="#set-comparison-some-and-all" id="toc-set-comparison-some-and-all" class="nav-link" data-scroll-target="#set-comparison-some-and-all">Set Comparison: <code>SOME</code> and <code>ALL</code></a></li>
+  <li><a href="#test-for-empty-sets-exists" id="toc-test-for-empty-sets-exists" class="nav-link" data-scroll-target="#test-for-empty-sets-exists">Test for Empty Sets: <code>EXISTS</code></a></li>
+  <li><a href="#test-for-duplicates-unique" id="toc-test-for-duplicates-unique" class="nav-link" data-scroll-target="#test-for-duplicates-unique">Test for Duplicates: <code>UNIQUE</code></a></li>
   </ul></li>
-  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a>
+  <li><a href="#subqueries-in-the-from-clause" id="toc-subqueries-in-the-from-clause" class="nav-link" data-scroll-target="#subqueries-in-the-from-clause">Subqueries in the FROM Clause</a>
   <ul class="collapse">
-  <li><a href="#the-select-clause-in-detail" id="toc-the-select-clause-in-detail" class="nav-link" data-scroll-target="#the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</a></li>
-  <li><a href="#the-order-by-clause" id="toc-the-order-by-clause" class="nav-link" data-scroll-target="#the-order-by-clause">The <code>ORDER BY</code> Clause</a></li>
+  <li><a href="#the-with-clause" id="toc-the-with-clause" class="nav-link" data-scroll-target="#the-with-clause">The <code>WITH</code> Clause</a></li>
   </ul></li>
-  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a>
+  <li><a href="#subqueries-in-the-select-clause" id="toc-subqueries-in-the-select-clause" class="nav-link" data-scroll-target="#subqueries-in-the-select-clause">Subqueries in the SELECT Clause</a></li>
+  <li><a href="#modifying-the-database" id="toc-modifying-the-database" class="nav-link" data-scroll-target="#modifying-the-database">Modifying the Database</a>
   <ul class="collapse">
-  <li><a href="#fixing-the-cross-join" id="toc-fixing-the-cross-join" class="nav-link" data-scroll-target="#fixing-the-cross-join">Fixing the Cross Join</a></li>
+  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
+  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
+  <li><a href="#updates" id="toc-updates" class="nav-link" data-scroll-target="#updates">Updates</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -484,9 +491,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/02_dml_and_queries.html"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><span class="chapter-title">Nested Subqueries</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></h1>
+<h1 class="title"><span class="chapter-title">Nested Subqueries</span></h1>
 </div>
 
 
@@ -503,274 +510,236 @@ window.Quarto = {
 </header>
 
 
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="dml_banner.png" class="img-fluid figure-img"></p>
-<figcaption>DML Operations</figcaption>
-</figure>
+<section id="nested-subqueries" class="level2">
+<h2 class="anchored" data-anchor-id="nested-subqueries">Nested Subqueries</h2>
+<p>A <strong>subquery</strong> is simply a <code>select-from-where</code> block placed <em>inside</em> another query. SQL lets you nest subqueries in the <code>WHERE</code>, <code>FROM</code>, and <code>SELECT</code> clauses.</p>
+<ul>
+<li><code>select</code> : Must return a single scalar value.</li>
+<li><code>from</code> : Can return any valid relation (table).</li>
+<li><code>where</code> : Used in expressions like <code>Attribute &lt;operation&gt; (subquery)</code>.</li>
+</ul>
+<hr>
+</section>
+<section id="subqueries-in-the-where-clause" class="level2">
+<h2 class="anchored" data-anchor-id="subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</h2>
+<p>Typically used to test <strong>set membership</strong>, <strong>set comparison</strong>, and <strong>set cardinality</strong>.</p>
+<section id="set-membership-in-not-in" class="level3">
+<h3 class="anchored" data-anchor-id="set-membership-in-not-in">Set Membership: <code>IN</code> / <code>NOT IN</code></h3>
+<p><em>Example:</em> Find employees who worked on Project A <strong>and</strong> Project B.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">distinct</span> emp_id</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> assignment</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> project <span class="op">=</span> <span class="st">'Project A'</span> <span class="kw">and</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      emp_id <span class="kw">in</span> (<span class="kw">select</span> emp_id</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">from</span> assignment</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">where</span> project <span class="op">=</span> <span class="st">'Project B'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>Swap <code>in</code> for <code>not in</code> to find employees on Project A <strong>but not</strong> Project B.</p>
+</blockquote>
+</section>
+<section id="set-comparison-some-and-all" class="level3">
+<h3 class="anchored" data-anchor-id="set-comparison-some-and-all">Set Comparison: <code>SOME</code> and <code>ALL</code></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Clause</th>
+<th>Meaning</th>
+<th>Logic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>some</code></strong></td>
+<td>True if comparison holds for <strong>at least one</strong> row in subquery</td>
+<td><span class="math inline">\(\exists\, t \in r : F \langle\text{comp}\rangle\, t\)</span></td>
+</tr>
+<tr class="even">
+<td><strong><code>all</code></strong></td>
+<td>True if comparison holds for <strong>every</strong> row in subquery</td>
+<td><span class="math inline">\(\forall\, t \in r : F \langle\text{comp}\rangle\, t\)</span></td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>📌 &lt;comp&gt; can be: &lt;, ≤, &gt;, ≥, =, ≠</p>
+</blockquote>
+<p><em>Example:</em> Employees earning more than <strong>some</strong> employee in Sales:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> name</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> employee</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> salary <span class="op">&gt;</span> <span class="kw">some</span> (<span class="kw">select</span> salary</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                      <span class="kw">from</span> employee</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                      <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Sales'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Example:</em> Employees earning more than <strong>all</strong> employees in Sales:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> name</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> employee</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> salary <span class="op">&gt;</span> <span class="kw">all</span> (<span class="kw">select</span> salary</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     <span class="kw">from</span> employee</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                     <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Sales'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="test-for-empty-sets-exists" class="level3">
+<h3 class="anchored" data-anchor-id="test-for-empty-sets-exists">Test for Empty Sets: <code>EXISTS</code></h3>
+<ul>
+<li><code>exists r</code> is true if <code>r</code> is non-empty.</li>
+<li><code>not exists r</code> is true if <code>r</code> is empty.</li>
+</ul>
+<p><em>Example:</em> Find projects active in both Q1 2025 and Q2 2025, using a <strong>correlated subquery</strong> (inner query refers to the outer query’s variable).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> project_id</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> timeline <span class="kw">as</span> S</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> quarter <span class="op">=</span> <span class="st">'Q1'</span> <span class="kw">and</span> <span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span> <span class="kw">and</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">exists</span> (<span class="kw">select</span> <span class="op">*</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>              <span class="kw">from</span> timeline <span class="kw">as</span> T</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>              <span class="kw">where</span> quarter <span class="op">=</span> <span class="st">'Q2'</span> <span class="kw">and</span> <span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                    <span class="kw">and</span> S.project_id <span class="op">=</span> T.project_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>S</code> is the <strong>correlation name</strong> (outer query variable)</li>
+<li>The inner query referencing <code>S</code> is the <strong>correlated subquery</strong></li>
+</ul>
+<p><em>Example:</em> Find employees who have worked on <strong>all</strong> projects in the Marketing department (uses <code>not exists</code> + set difference logic):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">distinct</span> S.emp_id, S.name</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> employee <span class="kw">as</span> S</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">not</span> <span class="kw">exists</span> (</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> project_id <span class="kw">from</span> project <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Marketing'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">except</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> T.project_id <span class="kw">from</span> assignment <span class="kw">as</span> T <span class="kw">where</span> S.emp_id <span class="op">=</span> T.emp_id)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="test-for-duplicates-unique" class="level3">
+<h3 class="anchored" data-anchor-id="test-for-duplicates-unique">Test for Duplicates: <code>UNIQUE</code></h3>
+<p><code>unique (subquery)</code> is true if the subquery’s result has <strong>no duplicate rows</strong>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> T.project_id</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> project <span class="kw">as</span> T</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> <span class="kw">unique</span> (<span class="kw">select</span> R.project_id</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>              <span class="kw">from</span> assignment <span class="kw">as</span> R</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>              <span class="kw">where</span> T.project_id <span class="op">=</span> R.project_id <span class="kw">and</span> R.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Finds projects staffed by at most one employee in 2025.)</em></p>
+<hr>
+</section>
+</section>
+<section id="subqueries-in-the-from-clause" class="level2">
+<h2 class="anchored" data-anchor-id="subqueries-in-the-from-clause">Subqueries in the FROM Clause</h2>
+<p>A subquery can stand in for a table, letting you filter on an <strong>aggregate</strong> without <code>HAVING</code>.</p>
+<p><em>Example:</em> Average salary of departments where average salary exceeds $60,000:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> dept_name, avg_salary</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> (<span class="kw">select</span> dept_name, <span class="fu">avg</span>(salary) <span class="kw">as</span> avg_salary</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      <span class="kw">from</span> employee</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">group</span> <span class="kw">by</span> dept_name) <span class="kw">as</span> dept_avg</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> avg_salary <span class="op">&gt;</span> <span class="dv">60000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="the-with-clause" class="level3">
+<h3 class="anchored" data-anchor-id="the-with-clause">The <code>WITH</code> Clause</h3>
+<p><code>with</code> defines a <strong>temporary, named result</strong> (like a scratchpad table) visible only to the query that follows.</p>
+<p><em>Example:</em> Find the name of the department that has the maximum budget.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">with</span> max_budget(<span class="fu">value</span>) <span class="kw">as</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> <span class="fu">max</span>(budget) <span class="kw">from</span> department)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> department.name</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> department, max_budget</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> department.budget <span class="op">=</span> max_budget.<span class="fu">value</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Multiple <code>with</code> blocks can be chained for multi-step logic:</p>
+<p><em>Example:</em> Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">with</span> dept_total(dept_name, <span class="fu">value</span>) <span class="kw">as</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> dept_name, <span class="fu">sum</span>(salary)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="kw">from</span> employee</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="kw">group</span> <span class="kw">by</span> dept_name),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>dept_total_avg(<span class="fu">value</span>) <span class="kw">as</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">select</span> <span class="fu">avg</span>(<span class="fu">value</span>) <span class="kw">from</span> dept_total)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> dept_name</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> dept_total, dept_total_avg</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> dept_total.<span class="fu">value</span> <span class="op">&gt;</span> dept_total_avg.<span class="fu">value</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="subqueries-in-the-select-clause" class="level2">
+<h2 class="anchored" data-anchor-id="subqueries-in-the-select-clause">Subqueries in the SELECT Clause</h2>
+<p>A <strong>scalar subquery</strong> returns exactly one value, used wherever a single value is expected.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> dept_name,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>       (<span class="kw">select</span> <span class="fu">count</span>(<span class="op">*</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">from</span> employee</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">where</span> department.dept_name <span class="op">=</span> employee.dept_name) <span class="kw">as</span> num_employees</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> department;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>⚠️ If the subquery returns more than one row, this causes a <strong>runtime error</strong>.</p>
+</blockquote>
+<hr>
+</section>
+<section id="modifying-the-database" class="level2">
+<h2 class="anchored" data-anchor-id="modifying-the-database">Modifying the Database</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    M["Database Modification"] --&gt; D["DELETE — remove tuples"]
+    M --&gt; I["INSERT — add tuples"]
+    M --&gt; U["UPDATE — change values"]
+</pre>
 </div>
-<section id="dml-furnishing-the-house" class="level2">
-<h2 class="anchored" data-anchor-id="dml-furnishing-the-house">DML: Furnishing the House</h2>
-<p>In the previous section, DDL acted as our architect—building the empty structure of our <code>student</code> table. Now, it’s time for <strong>DML (Data Manipulation Language)</strong> to move the furniture in! DML handles all the inserting, modifying, and deleting of the <em>actual data rows</em>.</p>
-<p>Let’s start with an empty table:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>roll_no</th>
-<th>name</th>
-<th>level</th>
-<th>course</th>
-<th>term</th>
-<th>grade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><em>(empty)</em></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<section id="insert-adding-new-records" class="level3">
-<h3 class="anchored" data-anchor-id="insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</h3>
-<p>A new student, Pravin, has just enrolled. We need to add him to our database.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="deletion" class="level3">
+<h3 class="anchored" data-anchor-id="deletion">Deletion</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Delete all employees</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">delete</span> <span class="kw">from</span> employee;</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Delete employees from one department</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">delete</span> <span class="kw">from</span> employee <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Finance'</span>;</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- Delete employees in departments located in a specific building</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">delete</span> <span class="kw">from</span> employee</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> dept_name <span class="kw">in</span> (<span class="kw">select</span> dept_name</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                     <span class="kw">from</span> department</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                     <span class="kw">where</span> building <span class="op">=</span> <span class="st">'Tower B'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Tricky case:</strong> Delete employees earning less than the average salary.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">delete</span> <span class="kw">from</span> employee</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">where</span> salary <span class="op">&lt;</span> (<span class="kw">select</span> <span class="fu">avg</span>(salary) <span class="kw">from</span> employee);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
-<p><strong>Tip:</strong> You <em>can</em> write an <code>INSERT</code> without listing the column names (e.g., <code>INSERT INTO student VALUES (...)</code>), but specifying the columns as shown above is much safer! It prevents errors if someone later adds a new column to the table.</p>
+<p>⚠️ As rows are deleted, the average changes! Solution: <strong>(1)</strong> computing the average and identifying all rows to delete <em>first</em>, then <strong>(2)</strong> deleting them — without recomputing mid-way.</p>
 </blockquote>
-<p><strong>Inserting Multiple Rows at Once:</strong> You can also insert several students in a single command by separating the values with commas!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Our Table Now:</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>roll_no</th>
-<th>name</th>
-<th>level</th>
-<th>course</th>
-<th>term</th>
-<th>grade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>26f10</td>
-<td>Pravin</td>
-<td>Degree</td>
-<td>DBMS</td>
-<td>27t1</td>
-<td>S</td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="update-modifying-existing-data" class="level3">
-<h3 class="anchored" data-anchor-id="update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</h3>
-<p>Oops! We made a mistake. Pravin actually got an ‘A’ grade, not an ‘S’. We don’t delete his record; we just <code>UPDATE</code> it.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> student </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="insertion" class="level3">
+<h3 class="anchored" data-anchor-id="insertion">Insertion</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">insert</span> <span class="kw">into</span> course</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">values</span> (<span class="st">'CS-437'</span>, <span class="st">'Database Systems'</span>, <span class="st">'Comp. Sci.'</span>, <span class="dv">4</span>);</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- with tot_creds set to null</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">insert</span> <span class="kw">into</span> student</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">values</span> (<span class="st">'3003'</span>, <span class="st">'Green'</span>, <span class="st">'Finance'</span>, <span class="kw">null</span>);</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">-- insert from another query's results</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="kw">insert</span> <span class="kw">into</span> student</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name, <span class="dv">0</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="kw">from</span> employee;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
-<p><strong>[WARNING]</strong> Always, <em>always</em> use a <code>WHERE</code> clause with <code>UPDATE</code>!</p>
+<p>📌 The entire <code>select-from-where</code> is evaluated <strong>before</strong> any row is inserted — otherwise <code>insert into table1 select * from table1</code> would loop infinitely.</p>
 </blockquote>
-<p><strong>What happens if you forget the <code>WHERE</code> clause?</strong> If you simply ran <code>UPDATE student SET grade = 'A';</code>, it would ignore the individual student and change the grade of <strong>every single student</strong> in the entire database to an ‘A’!</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>roll_no</th>
-<th>name</th>
-<th>grade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>26f10</td>
-<td>Pravin</td>
-<td><strong>A</strong></td>
-</tr>
-<tr class="even">
-<td>26f11</td>
-<td>Alice</td>
-<td><strong>A</strong></td>
-</tr>
-<tr class="odd">
-<td>26f12</td>
-<td>Bob</td>
-<td><strong>A</strong></td>
-</tr>
-</tbody>
-</table>
-<p><em>(Oops! Alice and Bob just got free ‘A’ grades because you forgot the WHERE clause!)</em></p>
-<p><strong>Our Table After Correct Update:</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>roll_no</th>
-<th>name</th>
-<th>level</th>
-<th>course</th>
-<th>term</th>
-<th>grade</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>26f10</td>
-<td>Pravin</td>
-<td>Degree</td>
-<td>DBMS</td>
-<td>27t1</td>
-<td><strong>A</strong></td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="delete-removing-records" class="level3">
-<h3 class="anchored" data-anchor-id="delete-removing-records">3. <code>DELETE</code>: Removing Records</h3>
-<p>Pravin has decided to transfer to another school. We need to remove his record completely.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>(Just like <code>UPDATE</code>, forgetting the <code>WHERE</code> clause here would delete everyone!)</em></p>
-<hr>
-</section>
-</section>
-<section id="the-anatomy-of-a-query" class="level2">
-<h2 class="anchored" data-anchor-id="the-anatomy-of-a-query">The Anatomy of a Query</h2>
-<p>Now that we have data, how do we ask the database questions? We write queries.</p>
-<p>Think of a SQL query like giving instructions to an incredibly fast, but very literal librarian. The fundamental structure requires three clauses:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Here is the mental model of how the librarian thinks: 1. <strong><code>FROM</code></strong>: <em>“Which section of the library (tables) should I go to?”</em> 2. <strong><code>WHERE</code></strong>: <em>“Which specific books (rows) should I pull off the shelf?”</em> 3. <strong><code>SELECT</code></strong>: <em>“Which chapters (columns) should I photocopy and give to you?”</em></p>
-<section id="the-select-clause-in-detail" class="level3">
-<h3 class="anchored" data-anchor-id="the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</h3>
-<p>The <code>SELECT</code> clause dictates what the final output looks like.</p>
-<ul>
-<li><p><code>*</code> : “Give me everything.” (All columns)</p></li>
-<li><p><code>DISTINCT</code> : “Remove any duplicate answers.”</p></li>
-<li><p><code>AS</code> : “Rename this column in the output just to make it look nicer.”</p></li>
-<li><p><code>TOP &lt;n&gt;</code> (or <code>LIMIT</code>): “Only show me the first <code>n</code> results.”</p></li>
-</ul>
-<p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="the-order-by-clause" class="level3">
-<h3 class="anchored" data-anchor-id="the-order-by-clause">The <code>ORDER BY</code> Clause</h3>
-<p>By default, SQL returns rows in whatever internal order it feels like. If you want them sorted, you must explicitly use the <code>ORDER BY</code> clause at the very end of your query.</p>
-<ul>
-<li><code>ASC</code>: Ascending order (A-Z, 1-10). This is the default.</li>
-<li><code>DESC</code>: Descending order (Z-A, 10-1).</li>
-</ul>
-<p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name, salary</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="the-danger-of-cross-joins" class="level2">
-<h2 class="anchored" data-anchor-id="the-danger-of-cross-joins">The Danger of Cross Joins</h2>
-<p>What happens if you tell the librarian to get data from <em>two</em> places at once?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>When you list multiple tables in the <code>FROM</code> clause without a <code>WHERE</code> condition, SQL performs a <strong>Cross Join</strong> (Cartesian Product). It pairs <em>every</em> row in the first table with <em>every</em> row in the second table.</p>
-<p><strong>Let’s visualize this:</strong> If you have 2 Instructors and 2 Courses:</p>
-<p><em>Instructors Table:</em></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>id</th>
-<th>name</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>Alice</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>Bob</td>
-</tr>
-</tbody>
-</table>
-<p><em>Courses Table:</em></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>c_id</th>
-<th>title</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>101</td>
-<td>Math</td>
-</tr>
-<tr class="even">
-<td>102</td>
-<td>Science</td>
-</tr>
-</tbody>
-</table>
-<p><em>The Cross Join Result:</em></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>id</th>
-<th>name</th>
-<th>c_id</th>
-<th>title</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>Alice</td>
-<td>101</td>
-<td>Math</td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td>Alice</td>
-<td>102</td>
-<td>Science</td>
-</tr>
-<tr class="odd">
-<td>2</td>
-<td>Bob</td>
-<td>101</td>
-<td>Math</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>Bob</td>
-<td>102</td>
-<td>Science</td>
-</tr>
-</tbody>
-</table>
-<p><em>(2 instructors × 2 courses = 4 rows!)</em></p>
-<p>Imagine if you had 1,000 instructors and 1,000 courses—you’d instantly generate <strong>1 million rows</strong>! Most of these combinations are nonsense (Alice doesn’t teach every single course).</p>
-<section id="fixing-the-cross-join" class="level3">
-<h3 class="anchored" data-anchor-id="fixing-the-cross-join">Fixing the Cross Join</h3>
-<p>To fix this, we use the <code>WHERE</code> clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>(Notice how we used <code>AS i</code> and <code>AS c</code> to give our tables nicknames? This makes our <code>WHERE</code> clause much easier to read!)</em></p>
+<section id="updates" class="level3">
+<h3 class="anchored" data-anchor-id="updates">Updates</h3>
+<p><strong>Conditional updates</strong> — give a 3% raise above $100K, 5% below (order matters!):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">update</span> employee <span class="kw">set</span> salary <span class="op">=</span> salary <span class="op">*</span> <span class="fl">1.03</span> <span class="kw">where</span> salary <span class="op">&gt;</span> <span class="dv">100000</span>;</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">update</span> employee <span class="kw">set</span> salary <span class="op">=</span> salary <span class="op">*</span> <span class="fl">1.05</span> <span class="kw">where</span> salary <span class="op">&lt;=</span> <span class="dv">100000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cleaner with a <strong><code>case</code></strong> statement (single pass, no ordering issues):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">update</span> employee</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> salary <span class="op">=</span> <span class="cf">case</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">when</span> salary <span class="op">&lt;=</span> <span class="dv">100000</span> <span class="cf">then</span> salary <span class="op">*</span> <span class="fl">1.05</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> salary <span class="op">*</span> <span class="fl">1.03</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Updates with scalar subqueries</strong> — recompute total credits per student:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">update</span> student S</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> tot_creds <span class="op">=</span> (<span class="kw">select</span> <span class="fu">sum</span>(credits)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">from</span> takes, course</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">where</span> takes.course_id <span class="op">=</span> course.course_id <span class="kw">and</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                        S.<span class="kw">id</span> <span class="op">=</span> takes.<span class="kw">id</span> <span class="kw">and</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                        takes.grade <span class="op">&lt;&gt;</span> <span class="st">'F'</span> <span class="kw">and</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                        takes.grade <span class="kw">is</span> <span class="kw">not</span> <span class="kw">null</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)</em></p>
 
 
 
@@ -1193,13 +1162,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_2/01_relational_and_ddl.html" class="pagination-link" aria-label="Relational Model &amp; DDL">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Model &amp; DDL</span></span>
+      <a href="../../weeks/week_2/03_advanced_sql.html" class="pagination-link" aria-label="Advanced SQL Filtering, Sets &amp; Aggregation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_2/03_advanced_sql.html" class="pagination-link" aria-label="Advanced SQL Filtering, Sets &amp; Aggregation">
-        <span class="nav-page-text"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_3/joins.html" class="pagination-link" aria-label="Joins">
+        <span class="nav-page-text"><span class="chapter-title">Joins</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
