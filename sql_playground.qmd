@@ -1,0 +1,894 @@
+---
+title: "SQL Playground"
+page-layout: full
+---
+
+````{=html}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+
+<style>
+:root {
+  --pg-radius-lg: 12px;
+  --pg-radius-md: 8px;
+  --pg-radius-sm: 6px;
+  --pg-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --pg-border-color: rgba(0, 0, 0, 0.1);
+  --pg-bg-surface: #ffffff;
+  --pg-bg-subtle: #f9fafb;
+  --pg-text-main: #111827;
+  --pg-text-muted: #6b7280;
+  --pg-primary: #2563eb;
+  --pg-primary-hover: #1d4ed8;
+}
+
+body.quarto-dark {
+  --pg-border-color: rgba(255, 255, 255, 0.15);
+  --pg-bg-surface: #1f2937;
+  --pg-bg-subtle: #111827;
+  --pg-text-main: #f9fafb;
+  --pg-text-muted: #9ca3af;
+  --pg-primary: #3b82f6;
+  --pg-primary-hover: #60a5fa;
+}
+
+.playground-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--pg-text-main);
+  min-height: calc(100vh - 120px);
+}
+
+.playground-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--pg-bg-surface);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--pg-radius-lg);
+  box-shadow: var(--pg-shadow-sm);
+  border: 1px solid var(--pg-border-color);
+}
+
+.playground-header select {
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--pg-radius-md);
+  border: 1px solid var(--pg-border-color);
+  font-size: 0.85rem;
+  background-color: var(--pg-bg-subtle);
+  color: var(--pg-text-main);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 200px;
+}
+.playground-header select:focus {
+  border-color: var(--pg-primary);
+}
+
+.playground-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  position: relative;
+  min-height: 0;
+}
+
+.playground-main {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: calc(300px + 1.2rem);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.playground-main.collapsed-sidebar {
+  right: calc(50px + 1.2rem);
+}
+
+.resizer-y {
+  height: 16px;
+  background-color: transparent;
+  cursor: row-resize;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  z-index: 20;
+}
+.resizer-y::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 4px;
+  background-color: var(--pg-border-color);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+.resizer-y:hover::after, .resizer-y.dragging::after {
+  background-color: var(--pg-primary);
+}
+
+/* Schema Sidebar */
+.schema-sidebar {
+  width: 300px;
+  border: 1px solid var(--pg-border-color);
+  border-radius: var(--pg-radius-lg);
+  background-color: var(--pg-bg-surface);
+  box-shadow: var(--pg-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+  resize: vertical;
+  min-height: calc(100vh - 120px);
+}
+.schema-sidebar.collapsed {
+  width: 50px;
+}
+.schema-sidebar.collapsed .schema-content,
+.schema-sidebar.collapsed #schema-title {
+  display: none;
+}
+.schema-sidebar.collapsed .schema-header {
+  justify-content: center;
+}
+.schema-header {
+  padding: 0.6rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--pg-border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--pg-bg-subtle);
+}
+
+/* Font size controls */
+.font-size-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  border: 1px solid var(--pg-border-color);
+  border-radius: var(--pg-radius-md);
+  padding: 0.15rem;
+  background: var(--pg-bg-subtle);
+}
+.font-size-controls button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--pg-text-main);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.font-size-controls button:hover {
+  background: var(--pg-border-color);
+}
+.font-size-label {
+  font-size: 0.75rem;
+  color: var(--pg-text-muted);
+  min-width: 28px;
+  text-align: center;
+  user-select: none;
+}
+.schema-content {
+  padding: 0.6rem;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 0.82rem;
+}
+.schema-table-item {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: var(--pg-radius-sm);
+  transition: background-color 0.15s;
+  font-size: 0.85rem;
+}
+.schema-table-item:hover {
+  background-color: var(--pg-bg-subtle);
+  color: var(--pg-primary);
+}
+.schema-columns {
+  list-style: none;
+  padding-left: 1.2rem;
+  margin: 0 0 0.2rem 0;
+  display: none;
+}
+.schema-columns.expanded {
+  display: block;
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.schema-column {
+  font-weight: 400;
+  color: var(--pg-text-main);
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 0;
+  border-bottom: 1px dashed var(--pg-border-color);
+  font-size: 0.8rem;
+}
+.schema-column:last-child { border-bottom: none; }
+.schema-type {
+  font-size: 0.75em;
+  color: var(--pg-text-muted);
+  font-family: monospace;
+  background: var(--pg-bg-subtle);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+/* Key Badges */
+.key-badge {
+  font-size: 0.7em;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 4px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.key-pk { background-color: #fef08a; color: #854d0e; }
+.key-fk { background-color: #bfdbfe; color: #1e3a8a; }
+body.quarto-dark .key-pk { background-color: rgba(254, 240, 138, 0.2); color: #fde047; }
+body.quarto-dark .key-fk { background-color: rgba(191, 219, 254, 0.2); color: #93c5fd; }
+.key-fk-link {
+  font-size: 0.85em;
+  color: var(--pg-text-muted);
+  margin-left: 4px;
+  font-family: monospace;
+}
+
+/* Editor */
+.editor-section {
+  flex: 1;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--pg-border-color);
+  border-radius: var(--pg-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--pg-shadow-sm);
+}
+
+#sql-editor {
+  flex: 1;
+  width: 100%;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+
+/* Results */
+.result-section {
+  flex: 1;
+  min-height: 0;
+  background-color: var(--pg-bg-surface);
+  border: 1px solid var(--pg-border-color);
+  border-radius: var(--pg-radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--pg-shadow-sm);
+}
+.result-section-inner {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.75rem;
+}
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.result-table th, .result-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--pg-border-color);
+}
+.result-table th {
+  background-color: #f1f5f9;
+  position: sticky;
+  top: 0;
+  font-weight: 700;
+  text-align: left;
+  color: #1e293b;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  z-index: 10;
+  box-shadow: 0 1px 0 var(--pg-border-color);
+  border-bottom: 1px solid var(--pg-border-color);
+}
+body.quarto-dark .result-table th {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+.th-datatype {
+  color: #059669;
+  font-weight: normal;
+  text-transform: lowercase;
+  font-size: 0.75em;
+}
+body.quarto-dark .th-datatype {
+  color: #34d399;
+}
+
+.result-table tr:hover {
+  background-color: var(--pg-bg-subtle);
+}
+.result-table td {
+  color: var(--pg-text-main);
+}
+.null-cell {
+  color: var(--pg-text-muted) !important;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Buttons */
+.pg-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--pg-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.82rem;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  line-height: 1;
+}
+.pg-btn-primary {
+  background-color: var(--pg-primary);
+  color: white;
+  box-shadow: 0 1px 3px rgb(37 99 235 / 0.2);
+}
+.pg-btn-primary:hover {
+  background-color: var(--pg-primary-hover);
+  transform: translateY(-1px);
+}
+.pg-btn-secondary {
+  background-color: var(--pg-bg-subtle);
+  color: var(--pg-text-main);
+  border: 1px solid var(--pg-border-color);
+}
+.pg-btn-secondary:hover {
+  background-color: var(--pg-border-color);
+}
+.pg-btn-icon {
+  padding: 0.35rem;
+  border-radius: var(--pg-radius-md);
+  background: transparent;
+  border: 1px solid var(--pg-border-color);
+  color: var(--pg-text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+.pg-btn-icon:hover {
+  background: var(--pg-bg-subtle);
+  color: var(--pg-text-main);
+}
+
+/* Error */
+.error-msg {
+  color: #dc2626;
+  background-color: #fef2f2;
+  padding: 0.75rem;
+  border-radius: var(--pg-radius-md);
+  border: 1px solid #fca5a5;
+  margin-bottom: 0.75rem;
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: 0.88rem;
+}
+body.quarto-dark .error-msg {
+  background-color: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #fca5a5;
+}
+
+#loading-indicator {
+  font-weight: 500;
+  color: var(--pg-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--pg-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.shortcut-hint {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--pg-text-muted);
+}
+.shortcut-hint kbd {
+  background: var(--pg-bg-subtle);
+  border: 1px solid var(--pg-border-color);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+@media (max-width: 900px) {
+  .playground-body {
+    flex-direction: column;
+  }
+  .playground-main {
+    position: relative;
+    right: auto !important;
+    height: 60vh;
+  }
+  .schema-sidebar {
+    width: 100% !important;
+    min-height: 300px;
+  }
+  .schema-sidebar.collapsed {
+    height: 50px;
+    min-height: 50px;
+    overflow: hidden;
+  }
+  .shortcut-hint { display: none; }
+}
+</style>
+
+<div class="playground-container">
+  <div class="playground-header">
+    <select id="dataset-select">
+      <option value="flis" selected>FLIS Database (Read-Only)</option>
+      <option value="lis">LIS Database (Read-Only)</option>
+      <option value="eshop">eShop Database (Read-Only)</option>
+      <option value="university">University Database (Read-Only)</option>
+      <option value="test_db">My Workspace (Persistent)</option>
+    </select>
+    <button id="run-btn" class="pg-btn pg-btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      Run Query
+    </button>
+    <button id="reset-btn" class="pg-btn pg-btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+      Reset
+    </button>
+    <div class="font-size-controls">
+      <button id="font-dec" title="Decrease font size">A-</button>
+      <span id="font-size-label" class="font-size-label">16px</span>
+      <button id="font-inc" title="Increase font size">A+</button>
+    </div>
+    <span class="shortcut-hint"><kbd>Ctrl</kbd>+<kbd>/</kbd> comment &nbsp; <kbd>Ctrl</kbd>+<kbd>Enter</kbd> run</span>
+  </div>
+
+  <div class="playground-body">
+    <div class="playground-main" id="playground-main">
+      <div class="editor-section" id="editor-section">
+        <div id="sql-editor"></div>
+      </div>
+      <div class="resizer-y" id="resizer-y" title="Drag to resize"></div>
+      <div class="result-section" id="result-section">
+        <div class="result-section-inner">
+          <div id="loading-indicator" style="display: none;"><div class="spinner"></div> Running...</div>
+          <div id="error-message" class="error-msg" style="display: none;"></div>
+          <div id="result-table-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="schema-sidebar" id="schema-sidebar">
+      <div class="schema-header">
+        <span id="schema-title">Schema</span>
+        <button id="toggle-schema-btn" class="pg-btn-icon" title="Toggle Sidebar">
+          <svg id="icon-collapse" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <svg id="icon-expand" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+      </div>
+      <div class="schema-content" id="schema-content"></div>
+    </div>
+  </div>
+</div>
+
+<script id="playground-data" type="application/json">
+{
+  "iconFolder": "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'></path></svg>",
+  "iconFolderOpen": "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 19a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2 2h4a2 2 0 0 1 2 2v1M5 19h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2z'></path></svg>"
+}
+</script>
+
+<script type="module">
+import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+
+let db;
+let currentDataset = "";
+
+const iconsData = JSON.parse(document.getElementById("playground-data").textContent);
+const iconFolder = iconsData.iconFolder;
+const iconFolderOpen = iconsData.iconFolderOpen;
+
+const editor = ace.edit("sql-editor");
+editor.setTheme("ace/theme/textmate");
+editor.session.setMode("ace/mode/pgsql");
+editor.setOptions({ 
+  showPrintMargin: false, 
+  wrap: true,
+  enableBasicAutocompletion: true,
+  enableLiveAutocompletion: true,
+  useSoftTabs: true,
+  tabSize: 2,
+  fontSize: "16px"
+});
+document.getElementById('sql-editor').addEventListener('keydown', function(e) {
+  if (e.key === 'Tab') {
+    e.stopPropagation();
+  }
+}, true);
+
+function syncTheme() {
+  if (document.body.classList.contains("quarto-dark")) {
+    editor.setTheme("ace/theme/tomorrow_night");
+  } else {
+    editor.setTheme("ace/theme/textmate");
+  }
+}
+syncTheme();
+new MutationObserver(syncTheme).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+function fmtDate(d) {
+  if (!(d instanceof Date) || isNaN(d)) return d;
+  var iso = d.toISOString();
+  return iso.endsWith("T00:00:00.000Z") ? iso.split("T")[0] : iso.replace("T", " ").substring(0, 19);
+}
+
+function sanitizeSQL(sql) {
+  var lines = sql.split("\n");
+  var cleaned = [];
+  var copyMode = null;
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    if (copyMode) {
+      if (line.trim() === "\\.") {
+        copyMode = null;
+        continue;
+      }
+      var values = line.split("\t").map(function(v) {
+        if (v === "\\N") return "NULL";
+        return "'" + v.replace(/'/g, "''") + "'";
+      });
+      cleaned.push("INSERT INTO " + copyMode.table + " " + copyMode.cols + " VALUES (" + values.join(", ") + ");");
+      continue;
+    }
+
+    var trimmed = line.trim();
+    if (trimmed.match(/^\\[a-zA-Z]/)) continue;
+    if (trimmed.match(/^SET\s/i)) continue;
+    if (trimmed.match(/^SELECT\s+pg_catalog/i)) continue;
+    if (trimmed.match(/OWNER TO/i)) continue;
+    if (trimmed.match(/^(REVOKE|GRANT)\s/i) && trimmed.match(/(ON SCHEMA|ON DATABASE|FROM |TO )/i)) continue;
+    if (trimmed.match(/^CREATE EXTENSION/i)) continue;
+    if (trimmed.match(/^-- (Dumped from|Dumped by|Name:.*Owner:)/)) continue;
+
+    var copyMatch = line.match(/^COPY\s+(?:public\.)?(\w+)\s*(\([^)]+\))\s+FROM\s+stdin;/i);
+    if (copyMatch) {
+      copyMode = { table: copyMatch[1], cols: copyMatch[2] };
+      continue;
+    }
+
+    line = line.replace(/public\./g, "");
+    cleaned.push(line);
+  }
+  return cleaned.join("\n");
+}
+
+// Font size management
+var currentFontSize = 16;
+function updateFontSize(newSize) {
+  if (newSize < 10) newSize = 10;
+  if (newSize > 28) newSize = 28;
+  currentFontSize = newSize;
+  editor.setFontSize(newSize + "px");
+  var label = document.getElementById("font-size-label");
+  if (label) label.textContent = newSize + "px";
+}
+
+let globalSchema = {};
+
+async function refreshSchema() {
+  if (!db) return;
+  globalSchema = {};
+  var el = document.getElementById("schema-content");
+  el.innerHTML = '<div style="text-align:center;color:var(--pg-text-muted);margin-top:1rem"><div class="spinner" style="display:inline-block;margin-right:5px;border-color:var(--pg-text-muted);border-top-color:transparent"></div>Loading...</div>';
+  try {
+    if (currentDataset !== "test_db") await db.exec("RESET ROLE;");
+    
+    var arr = await db.exec("SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, ordinal_position;");
+    var res = arr[arr.length - 1];
+    if (!res || res.rows.length === 0) { el.innerHTML = '<p style="padding:0.5rem;color:var(--pg-text-muted)">No tables found.</p>'; return; }
+    
+    var constArr = await db.exec("SELECT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
+    var constraints = {};
+    if (constArr.length > 0 && constArr[constArr.length - 1].rows) {
+      constArr[constArr.length - 1].rows.forEach(function(r) {
+        var t = r.table_name;
+        var c = r.column_name;
+        if (!constraints[t]) constraints[t] = {};
+        if (!constraints[t][c]) constraints[t][c] = [];
+        if (r.constraint_type === 'PRIMARY KEY') constraints[t][c].push({ type: 'PK' });
+        else if (r.constraint_type === 'FOREIGN KEY') constraints[t][c].push({ type: 'FK', toTable: r.foreign_table_name, toCol: r.foreign_column_name });
+      });
+    }
+
+    var tables = {};
+    res.rows.forEach(function(r) { if (!tables[r.table_name]) tables[r.table_name] = []; tables[r.table_name].push({ name: r.column_name, type: r.data_type }); });
+    el.innerHTML = "";
+    Object.keys(tables).forEach(function(tbl) {
+      var div = document.createElement("div");
+      var hdr = document.createElement("div");
+      hdr.className = "schema-table-item";
+      hdr.innerHTML = '<span class="tbl-icon">' + iconFolder + '</span> <span>' + tbl + '</span>';
+      var ul = document.createElement("ul");
+      ul.className = "schema-columns";
+      tables[tbl].forEach(function(c) {
+        var li = document.createElement("li");
+        li.className = "schema-column";
+        var dt = c.type;
+        if (dt === "character varying") dt = "varchar";
+        if (dt === "integer") dt = "int";
+        
+        var keyHtml = "";
+        var keyTitle = "";
+        var isPk = false;
+        var isFk = false;
+        if (constraints[tbl] && constraints[tbl][c.name]) {
+          constraints[tbl][c.name].forEach(function(k) {
+            if (k.type === 'PK') { keyHtml += '<span class="key-badge key-pk" title="Primary Key">PK</span>'; isPk = true; }
+            if (k.type === 'FK') { keyTitle = "FK to " + k.toTable + "." + k.toCol; keyHtml += '<span class="key-badge key-fk" title="' + keyTitle + '">FK</span><span class="key-fk-link" title="'+keyTitle+'">&rarr; '+k.toTable+'</span>'; isFk = true; }
+          });
+        }
+        
+        if (!globalSchema[tbl]) globalSchema[tbl] = {};
+        globalSchema[tbl][c.name] = { type: dt, pk: isPk, fk: isFk, fkTitle: keyTitle };
+
+        li.innerHTML = '<span title="' + keyTitle + '">' + c.name + keyHtml + '</span> <span class="schema-type">' + dt + '</span>';
+        ul.appendChild(li);
+      });
+      hdr.addEventListener("click", function() {
+        var exp = ul.classList.toggle("expanded");
+        hdr.querySelector(".tbl-icon").innerHTML = exp ? iconFolderOpen : iconFolder;
+      });
+      div.appendChild(hdr);
+      div.appendChild(ul);
+      el.appendChild(div);
+    });
+  } catch(e) {
+    el.innerHTML = '<p style="padding:0.5rem;color:#dc2626">Failed to load schema.</p>';
+    console.error(e);
+  }
+}
+
+async function initDB(dsId) {
+  var loading = document.getElementById("loading-indicator");
+  var errEl = document.getElementById("error-message");
+  var rc = document.getElementById("result-table-container");
+  currentDataset = dsId;
+  loading.style.display = "flex";
+  errEl.style.display = "none";
+  rc.innerHTML = "";
+  try {
+    if (db) { await db.close(); db = null; }
+    if (dsId === "test_db") {
+      db = new PGlite("idb://playground-test-db");
+      if (!editor.getValue().trim()) {
+        editor.setValue("-- Welcome to your persistent workspace.\n-- Tables and data you create here will be saved across reloads.\n\n", -1);
+      }
+      rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Workspace ready. Write a query and click Run Query.</p>';
+      loading.style.display = "none";
+      await refreshSchema();
+      return;
+    }
+    db = new PGlite();
+    try {
+      var r = await fetch("datasets/" + dsId + ".sql");
+      if (r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await db.exec(sql); } }
+      else throw new Error("Failed to load dataset: " + r.statusText);
+    } catch(fe) { console.warn("Could not fetch dataset", fe); }
+    await db.exec("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'readonly_user') THEN CREATE ROLE readonly_user; END IF; END $$;");
+    await db.exec("GRANT USAGE ON SCHEMA public TO readonly_user;");
+    await db.exec("GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly_user;");
+    await db.exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_user;");
+    if (!editor.getValue().trim()) {
+      var eq = "";
+      if (dsId === "eshop") eq = "";
+      else if (dsId === "flis" || dsId === "lis") eq = "";
+    }
+    rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Database initialized (Read-Only). Write a query and click Run Query.</p>';
+    loading.style.display = "none";
+    await refreshSchema();
+  } catch(err) {
+    loading.style.display = "none";
+    errEl.style.display = "block";
+    errEl.textContent = "Error initializing database:\n" + err.message;
+  }
+}
+
+async function runQuery() {
+  var query = editor.getSelectedText();
+  if (!query || !query.trim()) query = editor.getValue();
+  
+  var loading = document.getElementById("loading-indicator");
+  var errEl = document.getElementById("error-message");
+  var rc = document.getElementById("result-table-container");
+  if (!query.trim()) return;
+  loading.style.display = "flex";
+  errEl.style.display = "none";
+  rc.innerHTML = "";
+  try {
+    if (currentDataset !== "test_db") await db.exec("SET SESSION ROLE readonly_user;");
+    else await db.exec("RESET ROLE;");
+    var resArray = [await db.query(query)];
+    loading.style.display = "none";
+    if (currentDataset === "test_db") await refreshSchema();
+    if (!resArray || resArray.length === 0) { rc.innerHTML = '<p style="padding:1rem;color:var(--pg-primary)">Query executed successfully (no results).</p>'; return; }
+    
+    // Extract main table from query for PK/FK matching (fallback for multi-queries)
+    var match = query.match(/(?:from|join|into|table)\s+([a-zA-Z0-9_]+)/i);
+    var mainTable = match ? match[1].toLowerCase() : null;
+
+    resArray.forEach(function(res, idx) {
+      if (!res || !res.rows) { 
+        var p = document.createElement("p");
+        p.style.cssText = "padding:1rem;color:var(--pg-primary)";
+        p.textContent = "Query " + (idx+1) + " executed successfully (no rows returned).";
+        rc.appendChild(p);
+        return; 
+      }
+      if (res.rows.length === 0) { 
+        var p = document.createElement("p");
+        p.style.cssText = "padding:1rem;color:var(--pg-text-muted)";
+        p.textContent = "Query " + (idx+1) + " executed successfully. 0 rows returned.";
+        rc.appendChild(p);
+        return; 
+      }
+      
+      var container = document.createElement("div");
+      container.style.marginBottom = "2rem";
+      
+      var table = document.createElement("table");
+      table.className = "result-table";
+      var thead = document.createElement("thead");
+      var hr = document.createElement("tr");
+      
+      var fields = res.fields.map(function(f) { return f.name; });
+      fields.forEach(function(f) { 
+        var th = document.createElement("th"); 
+        var info = null;
+        if (mainTable && globalSchema[mainTable] && globalSchema[mainTable][f]) {
+          info = globalSchema[mainTable][f];
+        }
+
+        if (info) {
+          var badges = "";
+          if (info.pk) badges += '<span class="key-badge key-pk" title="Primary Key">PK</span>';
+          if (info.fk) badges += '<span class="key-badge key-fk" title="'+info.fkTitle+'">FK</span>';
+          th.innerHTML = f + badges + '<br><span class="th-datatype">' + info.type + '</span>';
+        } else {
+          th.textContent = f; 
+        }
+        hr.appendChild(th); 
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      var tbody = document.createElement("tbody");
+      res.rows.forEach(function(row) {
+        var tr = document.createElement("tr");
+        fields.forEach(function(f) {
+          var td = document.createElement("td");
+          var val = row[f];
+          if (val instanceof Date) val = fmtDate(val);
+          td.textContent = val !== null ? val : "NULL";
+          if (val === null) td.classList.add("null-cell");
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      container.appendChild(table);
+      rc.appendChild(container);
+    });
+  } catch(err) {
+    loading.style.display = "none";
+    errEl.style.display = "block";
+    errEl.textContent = err.message;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var sel = document.getElementById("dataset-select");
+  var runBtn = document.getElementById("run-btn");
+  var resetBtn = document.getElementById("reset-btn");
+  var toggleBtn = document.getElementById("toggle-schema-btn");
+  var sidebar = document.getElementById("schema-sidebar");
+  var icC = document.getElementById("icon-collapse");
+  var icE = document.getElementById("icon-expand");
+  sel.addEventListener("change", function(e) { initDB(e.target.value); });
+  resetBtn.addEventListener("click", function() { initDB(sel.value); });
+  runBtn.addEventListener("click", runQuery);
+  toggleBtn.addEventListener("click", function() {
+    var c = sidebar.classList.toggle("collapsed");
+    mainSec.classList.toggle("collapsed-sidebar", c);
+    icC.style.display = c ? "none" : "block";
+    icE.style.display = c ? "block" : "none";
+  });
+  document.getElementById("font-inc").addEventListener("click", function() { updateFontSize(currentFontSize + 1); });
+  document.getElementById("font-dec").addEventListener("click", function() { updateFontSize(currentFontSize - 1); });
+  editor.commands.addCommand({ name: "runQuery", bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" }, exec: function() { runQuery(); }, readOnly: true });
+
+  // Resizer Logic
+  var resizer = document.getElementById('resizer-y');
+  var editorSec = document.getElementById('editor-section');
+  var mainSec = document.getElementById('playground-main');
+  var isDragging = false;
+  resizer.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    resizer.classList.add('dragging');
+    document.body.style.cursor = 'row-resize';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    var containerRect = mainSec.getBoundingClientRect();
+    var newHeight = e.clientY - containerRect.top;
+    if (newHeight < 100) newHeight = 100;
+    if (newHeight > containerRect.height - 100) newHeight = containerRect.height - 100;
+    editorSec.style.flex = '0 0 ' + newHeight + 'px';
+    editor.resize();
+  });
+  document.addEventListener('mouseup', function(e) {
+    if (isDragging) {
+      isDragging = false;
+      resizer.classList.remove('dragging');
+      document.body.style.cursor = '';
+      editor.resize();
+    }
+  });
+
+  initDB(sel.value);
+});
+</script>
+````
