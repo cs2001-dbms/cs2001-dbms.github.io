@@ -1,0 +1,261 @@
+---
+title: "Nested Subqueries"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+## Nested Subqueries
+
+A **subquery** is simply a `select-from-where` block placed *inside* another query. SQL lets you nest subqueries in the `WHERE`, `FROM`, and `SELECT` clauses.
+
+- `select`  :  Must return a single scalar value.
+- `from`  :  Can return any valid relation (table).
+- `where`  :  Used in expressions like `Attribute <operation> (subquery)`.
+
+---
+
+## Subqueries in the `WHERE` Clause
+
+Typically used to test **set membership**, **set comparison**, and **set cardinality**.
+
+### Set Membership: `IN` / `NOT IN`
+
+*Example:* Find employees who worked on Project A **and** Project B.
+
+```sql
+select distinct emp_id
+from assignment
+where project = 'Project A' and
+      emp_id in (select emp_id
+                 from assignment
+                 where project = 'Project B');
+```
+
+> Swap `in` for `not in` to find employees on Project A **but not** Project B.
+
+### Set Comparison: `SOME` and `ALL`
+
+| Clause | Meaning | Logic |
+|---|---|---|
+| **`some`** | True if comparison holds for **at least one** row in subquery | $\exists\, t \in r : F \langle\text{comp}\rangle\, t$ |
+| **`all`** | True if comparison holds for **every** row in subquery | $\forall\, t \in r : F \langle\text{comp}\rangle\, t$ |
+
+> 📌 \<comp\> can be: <, ≤, >, ≥, =, ≠
+
+*Example:* Employees earning more than **some** employee in Sales:
+
+```sql
+select name
+from employee
+where salary > some (select salary
+                      from employee
+                      where dept_name = 'Sales');
+```
+
+*Example:* Employees earning more than **all** employees in Sales:
+
+```sql
+select name
+from employee
+where salary > all (select salary
+                     from employee
+                     where dept_name = 'Sales');
+```
+
+### Test for Empty Sets: `EXISTS`
+
+- `exists r` is true if `r` is non-empty.
+- `not exists r` is true if `r` is empty.
+
+*Example:* Find projects active in both Q1 2025 and Q2 2025, using a **correlated subquery** (inner query refers to the outer query's variable).
+
+```sql
+select project_id
+from timeline as S
+where quarter = 'Q1' and year = 2025 and
+      exists (select *
+              from timeline as T
+              where quarter = 'Q2' and year = 2025
+                    and S.project_id = T.project_id);
+```
+
+- `S` is the **correlation name** (outer query variable)
+- The inner query referencing `S` is the **correlated subquery**
+
+*Example:* Find employees who have worked on **all** projects in the Marketing department (uses `not exists` + set difference logic):
+
+```sql
+select distinct S.emp_id, S.name
+from employee as S
+where not exists (
+    (select project_id from project where dept_name = 'Marketing')
+    except
+    (select T.project_id from assignment as T where S.emp_id = T.emp_id)
+);
+```
+
+### Test for Duplicates: `UNIQUE`
+
+`unique (subquery)` is true if the subquery's result has **no duplicate rows**.
+
+```sql
+select T.project_id
+from project as T
+where unique (select R.project_id
+              from assignment as R
+              where T.project_id = R.project_id and R.year = 2025);
+```
+*(Finds projects staffed by at most one employee in 2025.)*
+
+---
+
+## Subqueries in the FROM Clause
+
+A subquery can stand in for a table, letting you filter on an **aggregate** without `HAVING`.
+
+*Example:* Average salary of departments where average salary exceeds $60,000:
+
+```sql
+select dept_name, avg_salary
+from (select dept_name, avg(salary) as avg_salary
+      from employee
+      group by dept_name) as dept_avg
+where avg_salary > 60000;
+```
+
+### The `WITH` Clause
+
+`with` defines a **temporary, named result** (like a scratchpad table) visible only to the query that follows.
+
+*Example:* Find the name of the department that has the maximum budget.
+
+```sql
+with max_budget(value) as
+    (select max(budget) from department)
+select department.name
+from department, max_budget
+where department.budget = max_budget.value;
+```
+
+Multiple `with` blocks can be chained for multi-step logic:
+
+*Example:* Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.
+
+```sql
+with dept_total(dept_name, value) as
+    (select dept_name, sum(salary)
+     from employee
+     group by dept_name),
+dept_total_avg(value) as
+    (select avg(value) from dept_total)
+select dept_name
+from dept_total, dept_total_avg
+where dept_total.value > dept_total_avg.value;
+```
+
+---
+
+## Subqueries in the SELECT Clause
+
+A **scalar subquery** returns exactly one value, used wherever a single value is expected.
+
+```sql
+select dept_name,
+       (select count(*)
+        from employee
+        where department.dept_name = employee.dept_name) as num_employees
+from department;
+```
+
+> ⚠️ If the subquery returns more than one row, this causes a **runtime error**.
+
+---
+
+## Modifying the Database
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    M["Database Modification"] --> D["DELETE — remove tuples"]
+    M --> I["INSERT — add tuples"]
+    M --> U["UPDATE — change values"]
+```
+
+### Deletion
+
+```sql
+-- Delete all employees
+delete from employee;
+
+-- Delete employees from one department
+delete from employee where dept_name = 'Finance';
+
+-- Delete employees in departments located in a specific building
+delete from employee
+where dept_name in (select dept_name
+                     from department
+                     where building = 'Tower B');
+```
+
+**Tricky case:** Delete employees earning less than the average salary.
+
+```sql
+delete from employee
+where salary < (select avg(salary) from employee);
+```
+
+> ⚠️ As rows are deleted, the average changes! Solution: **(1)** computing the average and identifying all rows to delete *first*, then **(2)** deleting them — without recomputing mid-way.
+
+### Insertion
+
+```sql
+insert into course
+values ('CS-437', 'Database Systems', 'Comp. Sci.', 4);
+
+-- with tot_creds set to null
+insert into student
+values ('3003', 'Green', 'Finance', null);
+
+-- insert from another query's results
+insert into student
+select id, name, dept_name, 0
+from employee;
+```
+
+> 📌 The entire `select-from-where` is evaluated **before** any row is inserted — otherwise `insert into table1 select * from table1` would loop infinitely.
+
+### Updates
+
+**Conditional updates** — give a 3% raise above $100K, 5% below (order matters!):
+
+```sql
+update employee set salary = salary * 1.03 where salary > 100000;
+update employee set salary = salary * 1.05 where salary <= 100000;
+```
+
+Cleaner with a **`case`** statement (single pass, no ordering issues):
+
+```sql
+update employee
+set salary = case
+    when salary <= 100000 then salary * 1.05
+    else salary * 1.03
+end;
+```
+
+**Updates with scalar subqueries** — recompute total credits per student:
+
+```sql
+update student S
+set tot_creds = (select sum(credits)
+                  from takes, course
+                  where takes.course_id = course.course_id and
+                        S.id = takes.id and
+                        takes.grade <> 'F' and
+                        takes.grade is not null);
+```
+*(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)*
+

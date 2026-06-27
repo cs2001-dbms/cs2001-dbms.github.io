@@ -1,0 +1,174 @@
+---
+title: "Joins"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+A **join** takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that's then *filtered* down to only the pairs that actually make sense together.
+
+
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    J["Join"] --> C["Cross Join — no condition, full Cartesian product"]
+    J --> I["Inner Join — keep only matching rows"]
+    I --> EQ["Equi-Join — match on equality"]
+    EQ --> N["Natural Join — equi-join + auto-drop duplicate column"]
+    J --> O["Outer Join — keep unmatched rows too, fill with null"]
+    O --> L["Left Outer"]
+    O --> R["Right Outer"]
+    O --> F["Full Outer"]
+```
+
+---
+
+## Sample Data
+
+To see the difference between join types, imagine two small tables:
+
+**`movie`**
+
+| movie_id | title |
+|---|---|
+| M1 | Inception |
+| M2 | Arrival |
+| M3 | Dune |
+
+**`review`**
+
+| movie_id | rating |
+|---|---|
+| M1 | 9 |
+| M2 | 8 |
+| M4 | 7 |
+
+Notice: `Dune (M3)` has no review, and the review for `M4` doesn't match any movie. This mismatch is exactly what different join types handle differently.
+
+---
+
+## Cross Join
+
+Returns the **full Cartesian product** — every row of one table paired with every row of the other, no filtering at all.
+
+```sql
+-- Explicit
+select * from movie cross join review;
+
+-- Implicit (comma syntax)
+select * from movie, review;
+```
+
+With 3 movies and 3 reviews, this produces **9 rows** — almost all of them meaningless pairings.
+
+---
+
+## Inner Join
+
+Keeps only the rows where the join condition is satisfied on **both sides**.
+
+| Join Type | Condition | Result |
+|---|---|---|
+| **Equi-Join** | Explicit equality condition (`on a.x = b.x`) | Both `x` columns kept |
+| **Natural Join** | Equality assumed on same-named columns | Duplicate column auto-dropped |
+
+```sql
+-- Equi-join
+select * from movie inner join review
+on movie.movie_id = review.movie_id;
+
+-- Natural join (same result, but movie_id appears once)
+select * from movie natural join review;
+```
+
+**Result** (only matching `movie_id`s survive):
+
+| movie_id | title | rating |
+|---|---|---|
+| M1 | Inception | 9 |
+| M2 | Arrival | 8 |
+
+`M3` (no review) and `M4` (no movie) both **disappear** — this is the information loss outer joins solve.
+
+---
+
+## Outer Join
+
+Outer joins keep the inner join result **plus** the unmatched rows from one or both sides, filling missing columns with `null`.
+
+### Left Outer Join
+
+Keeps **all rows from the left table**, even unmatched ones.
+
+```sql
+select * from movie natural left outer join review;
+```
+
+| movie_id | title | rating |
+|---|---|---|
+| M1 | Inception | 9 |
+| M2 | Arrival | 8 |
+| M3 | Dune | null |
+
+### Right Outer Join
+
+Keeps **all rows from the right table**, even unmatched ones.
+
+```sql
+select * from movie natural right outer join review;
+```
+
+| movie_id | title | rating |
+|---|---|---|
+| M1 | Inception | 9 |
+| M2 | Arrival | 8 |
+| M4 | null | 7 |
+
+### Full Outer Join
+
+Keeps **everything from both sides** — the union of left and right outer joins.
+
+```sql
+select * from movie natural full outer join review;
+```
+
+| movie_id | title | rating |
+|---|---|---|
+| M1 | Inception | 9 |
+| M2 | Arrival | 8 |
+| M3 | Dune | null |
+| M4 | null | 7 |
+
+### Using Explicit Conditions
+
+Joins can also use `on` (any condition) or `using` (shared column names), instead of `natural`:
+
+```sql
+-- Explicit condition
+select * from movie left outer join review
+on movie.movie_id = review.movie_id;
+
+-- Shared column shorthand
+select * from movie full outer join review
+using (movie_id);
+```
+
+> 💡 `on` works with *any* condition (even inequality!). `natural` and `using` both rely on matching column names — `using` lets you name exactly which shared column(s) to join on, while `natural` matches on **all** identically-named columns.
+
+---
+
+## Quick Reference: Join Types
+
+| Join | Unmatched left rows kept? | Unmatched right rows kept? |
+|---|:---:|:---:|
+| Cross Join | n/a (no matching) | n/a |
+| Inner Join | ❌ | ❌ |
+| Left Outer | ✅ | ❌ |
+| Right Outer | ❌ | ✅ |
+| Full Outer | ✅ | ✅ |
+
+---
+

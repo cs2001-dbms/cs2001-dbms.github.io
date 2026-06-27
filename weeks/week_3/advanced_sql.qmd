@@ -1,0 +1,258 @@
+---
+title: "Advanced SQL"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+## Why Go Beyond Plain SQL?
+
+SQL is **declarative** — great for describing *what* you want, clumsy for *how* to compute it step by step. Sometimes you need loops, conditionals, and reusable logic. SQL:1999 added **functions, procedures, and control-flow constructs** to bridge that gap, turning SQL into something closer to a general-purpose language.
+
+---
+
+## SQL Functions
+
+A **function** returns a single value, and can be written in SQL itself — or in an external language (useful for specialized types like images or geometry, e.g. "do these two polygons overlap?").
+
+```sql
+create function emp_count(dname varchar(20))
+returns integer
+begin
+    declare e_count integer;
+    select count(*) into e_count
+    from employee
+    where employee.dept_name = dname;
+    return e_count;
+end
+```
+
+Use it just like any expression:
+
+```sql
+select dept_name, budget
+from department
+where emp_count(dept_name) > 12;
+```
+
+| Keyword | Meaning |
+|---|---|
+| `begin ... end` | A **compound statement** — holds multiple SQL statements together |
+| `returns` | Declares the *type* of the result (e.g., `integer`) |
+| `return` | Specifies the *actual value* sent back when the function finishes |
+
+> 💡 Think of SQL functions as **parameterized views** — a view that generalizes by accepting arguments.
+
+### Table Functions
+
+Added in SQL:2003 — instead of returning one value, a table function returns an **entire relation**.
+
+```sql
+create function employees_in(dname varchar(20))
+returns table (
+    id varchar(5),
+    name varchar(20),
+    dept_name varchar(20),
+    salary numeric(8,2)
+)
+return table
+    (select id, name, dept_name, salary
+     from employee
+     where employee.dept_name = employees_in.dname);
+```
+
+```sql
+select * from table(employees_in('Marketing'));
+```
+
+### Procedures
+
+Where a function returns a value via `return`, a **procedure** passes results back through `out` parameters.
+
+```sql
+create procedure emp_count_proc(
+    in dname varchar(20),
+    out e_count integer)
+begin
+    select count(*) into e_count
+    from employee
+    where employee.dept_name = emp_count_proc.dname;
+end
+```
+
+```sql
+declare e_count integer;
+call emp_count_proc('Design', e_count);
+```
+
+> 📌 SQL:1999 allows **overloading** — multiple functions/procedures can share a name as long as their parameter count or types differ.
+
+---
+
+## Procedural Language Constructs
+
+> ⚠️ Most databases implement their own dialect of these — syntax varies across systems.
+
+### Loops
+
+```sql
+-- while: check condition before each iteration
+while boolean_expression do
+    sequence_of_statements;
+end while;
+
+-- repeat: check condition after each iteration (always runs once)
+repeat
+    sequence_of_statements;
+until boolean_expression
+end repeat;
+
+-- for: iterate directly over query results
+declare total integer default 0;
+for r as
+    select budget from department
+do
+    set total = total + r.budget;
+end for;
+```
+
+### Conditionals
+
+```sql
+-- if / elseif / else
+if boolean_expression then
+    sequence_of_statements;
+elseif boolean_expression then
+    sequence_of_statements;
+else
+    sequence_of_statements;
+end if;
+```
+
+```sql
+-- simple case: match a variable against fixed values
+case dept_name
+    when 'Sales' then ...
+    when 'Design' then ...
+    else ...
+end case;
+
+-- searched case: match arbitrary expressions
+case
+    when salary > 100000 then ...
+    when salary > 50000 then ...
+    else ...
+end case;
+```
+
+### Exception Handling
+
+```sql
+declare seat_unavailable condition;
+declare exit handler for seat_unavailable
+begin
+    ...
+    signal seat_unavailable;
+    ...
+end
+```
+
+The `exit` handler terminates the enclosing `begin...end` block when the condition fires. Other handler behaviors are also possible (e.g., continue instead of exit).
+
+---
+
+## Triggers
+
+A **trigger** is code that fires automatically in response to an `insert`, `update`, or `delete` on a table — no one has to remember to call it.
+
+Defining a trigger means specifying three things:
+
+1. **Event** — insert / update / delete
+2. **Timing** — `BEFORE` or `AFTER` the event
+3. **Action** — what to actually do
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    E["Event: INSERT / UPDATE / DELETE"] --> T1["BEFORE trigger — validate or modify values first"]
+    E --> OP["Database operation executes"]
+    OP --> T2["AFTER trigger — update other tables, audit, alert"]
+```
+
+### BEFORE vs. AFTER
+
+| Timing | Typical use |
+|---|---|
+| **BEFORE** | Clean up or validate incoming values before they're written (e.g., normalize blanks to `null`); raise errors before a delete proceeds |
+| **AFTER** | Update *other* tables to stay in sync, maintain audit trails, enforce cross-table integrity, trigger alerts/notifications |
+
+### Row-Level vs. Statement-Level
+
+| Type | Behavior |
+|---|---|
+| **Row-level** | Fires once **per affected row**. A 10% raise across 100 employees fires the trigger 100 times. |
+| **Statement-level** | Fires **once per statement**, regardless of how many rows were touched — uses `referencing old table` / `referencing new table` to access all affected rows at once via transition tables. More efficient for bulk updates. |
+
+### Example: BEFORE trigger (data cleanup)
+
+Convert blank grades to `null` before they're written:
+
+```sql
+create trigger setnull_trigger before update of takes
+referencing new row as nrow
+for each row
+when (nrow.grade = ' ')
+begin atomic
+    set nrow.grade = null;
+end;
+```
+
+### Example: AFTER trigger (cross-table maintenance)
+
+Update a student's earned credits whenever a failing/blank grade turns into a pass:
+
+```sql
+create trigger credits_earned after update of grade on (takes)
+referencing new row as nrow
+referencing old row as orow
+for each row
+when nrow.grade <> 'F' and nrow.grade is not null
+     and (orow.grade = 'F' or orow.grade is null)
+begin atomic
+    update student
+    set tot_cred = tot_cred +
+        (select credits from course where course.course_id = nrow.course_id)
+    where student.id = nrow.id;
+end;
+```
+
+- `referencing old row as` — access pre-update values (deletes & updates)
+- `referencing new row as` — access post-update values (inserts & updates)
+- Triggers can be scoped to specific columns: `after update of grade on takes`
+
+---
+
+## Using Triggers Wisely
+
+### ✅ Good Uses
+
+- Logging changes to a history/audit table
+- Recording metadata an application can't see (who ran it, when, from where)
+- Simple, self-contained validation
+- Keeping denormalized or derived values in sync
+
+### ❌ Danger Signs
+
+| Risk | Why it hurts |
+|---|---|
+| Too many triggers | Hard to trace *why* something changed |
+| Complex trigger logic | Business logic buried where developers won't look |
+| Cross-server triggers | Network calls hidden inside what looks like a simple `update` |
+| Triggers calling triggers | Cascading side effects, hard to predict |
+| Recursive triggers enabled | Can spiral — off by default for a reason |
+| Views/procedures/functions nested inside triggers | Performance black box |
+| Iteration inside triggers | Row-by-row processing at scale = slow |
+
+**Rule of thumb:** triggers are best for short, simple, self-contained operations — not as a substitute for your application's business logic.
