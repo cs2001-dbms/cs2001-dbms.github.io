@@ -1,0 +1,7 @@
+/* Adjust the size of the logo */
+img[src*="cover.png"] {
+    width: 70px;
+    /* Adjust the width */
+    height: 70px;
+    /* Keep the aspect ratio */
+}

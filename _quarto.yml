@@ -44,6 +44,11 @@ book:
         - weeks/week_3/joins.qmd
         - weeks/week_3/intermediate_sql.qmd
         - weeks/week_3/advanced_sql.qmd
+    - part: '**Week-04**'
+      chapters:
+        - weeks/week_4/01_relational_algebra_and_calculus.qmd
+        - weeks/week_4/02_entity_relationship_model.qmd
+        - weeks/week_4/03_advanced_er_concepts.qmd
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd
