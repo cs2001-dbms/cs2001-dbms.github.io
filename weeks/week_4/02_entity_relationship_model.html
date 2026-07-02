@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Joins – Database Management Systems</title>
+<title>Entity-Relationship Model – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,8 +33,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_3/intermediate_sql.html" rel="next">
-<link href="../../weeks/week_3/nested_subqueries.html" rel="prev">
+<link href="../../weeks/week_4/03_advanced_er_concepts.html" rel="next">
+<link href="../../weeks/week_4/01_relational_algebra_and_calculus.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -110,9 +75,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -318,7 +280,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/joins.html"><span class="chapter-title">Joins</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/02_entity_relationship_model.html"><span class="chapter-title">Entity-Relationship Model</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -410,13 +372,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-03</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nested Subqueries</span></a>
@@ -424,7 +386,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_3/joins.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Joins</span></a>
+  <a href="../../weeks/week_3/joins.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Joins</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -441,13 +403,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-04</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Algebra and Calculus</span></a>
@@ -455,7 +417,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_4/02_entity_relationship_model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Entity-Relationship Model</span></a>
+  <a href="../../weeks/week_4/02_entity_relationship_model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Entity-Relationship Model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -491,17 +453,28 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#sample-data" id="toc-sample-data" class="nav-link active" data-scroll-target="#sample-data">Sample Data</a></li>
-  <li><a href="#cross-join" id="toc-cross-join" class="nav-link" data-scroll-target="#cross-join">Cross Join</a></li>
-  <li><a href="#inner-join" id="toc-inner-join" class="nav-link" data-scroll-target="#inner-join">Inner Join</a></li>
-  <li><a href="#outer-join" id="toc-outer-join" class="nav-link" data-scroll-target="#outer-join">Outer Join</a>
+  <li><a href="#introduction-to-entity-sets" id="toc-introduction-to-entity-sets" class="nav-link active" data-scroll-target="#introduction-to-entity-sets">Introduction to Entity Sets</a>
   <ul class="collapse">
-  <li><a href="#left-outer-join" id="toc-left-outer-join" class="nav-link" data-scroll-target="#left-outer-join">Left Outer Join</a></li>
-  <li><a href="#right-outer-join" id="toc-right-outer-join" class="nav-link" data-scroll-target="#right-outer-join">Right Outer Join</a></li>
-  <li><a href="#full-outer-join" id="toc-full-outer-join" class="nav-link" data-scroll-target="#full-outer-join">Full Outer Join</a></li>
-  <li><a href="#using-explicit-conditions" id="toc-using-explicit-conditions" class="nav-link" data-scroll-target="#using-explicit-conditions">Using Explicit Conditions</a></li>
+  <li><a href="#strong-entity-set" id="toc-strong-entity-set" class="nav-link" data-scroll-target="#strong-entity-set">Strong Entity Set</a></li>
+  <li><a href="#weak-entity-set" id="toc-weak-entity-set" class="nav-link" data-scroll-target="#weak-entity-set">Weak Entity Set</a>
+  <ul class="collapse">
+  <li><a href="#characteristics-of-weak-entity-sets" id="toc-characteristics-of-weak-entity-sets" class="nav-link" data-scroll-target="#characteristics-of-weak-entity-sets">Characteristics of Weak Entity Sets</a></li>
   </ul></li>
-  <li><a href="#quick-reference-join-types" id="toc-quick-reference-join-types" class="nav-link" data-scroll-target="#quick-reference-join-types">Quick Reference: Join Types</a></li>
+  </ul></li>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a>
+  <ul class="collapse">
+  <li><a href="#types-of-attributes" id="toc-types-of-attributes" class="nav-link" data-scroll-target="#types-of-attributes">Types of Attributes</a></li>
+  </ul></li>
+  <li><a href="#entity-relationship-er-diagrams" id="toc-entity-relationship-er-diagrams" class="nav-link" data-scroll-target="#entity-relationship-er-diagrams">Entity-Relationship (ER) Diagrams</a></li>
+  <li><a href="#mapping-cardinalities-relationship-types" id="toc-mapping-cardinalities-relationship-types" class="nav-link" data-scroll-target="#mapping-cardinalities-relationship-types">Mapping Cardinalities (Relationship Types)</a>
+  <ul class="collapse">
+  <li><a href="#one-to-one-11-relationship" id="toc-one-to-one-11-relationship" class="nav-link" data-scroll-target="#one-to-one-11-relationship">One-to-One (1:1) Relationship</a></li>
+  <li><a href="#one-to-many-1n-relationship" id="toc-one-to-many-1n-relationship" class="nav-link" data-scroll-target="#one-to-many-1n-relationship">One-to-Many (1:N) Relationship</a></li>
+  <li><a href="#many-to-one-n1-relationship" id="toc-many-to-one-n1-relationship" class="nav-link" data-scroll-target="#many-to-one-n1-relationship">Many-to-One (N:1) Relationship</a></li>
+  <li><a href="#many-to-many-mn-relationship" id="toc-many-to-many-mn-relationship" class="nav-link" data-scroll-target="#many-to-many-mn-relationship">Many-to-Many (M:N) Relationship</a></li>
+  </ul></li>
+  <li><a href="#total-and-partial-participation" id="toc-total-and-partial-participation" class="nav-link" data-scroll-target="#total-and-partial-participation">Total and Partial Participation</a></li>
+  <li><a href="#expressing-weak-entity-sets-in-er-diagrams" id="toc-expressing-weak-entity-sets-in-er-diagrams" class="nav-link" data-scroll-target="#expressing-weak-entity-sets-in-er-diagrams">Expressing Weak Entity Sets in ER Diagrams</a></li>
   </ul>
 </nav>
     </div>
@@ -509,9 +482,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/joins.html"><span class="chapter-title">Joins</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/02_entity_relationship_model.html"><span class="chapter-title">Entity-Relationship Model</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Joins</span></h1>
+<h1 class="title"><span class="chapter-title">Entity-Relationship Model</span></h1>
 </div>
 
 
@@ -528,309 +501,162 @@ window.Quarto = {
 </header>
 
 
-<p>A <strong>join</strong> takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that’s then <em>filtered</em> down to only the pairs that actually make sense together.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    J["Join"] --&gt; C["Cross Join — no condition, full Cartesian product"]
-    J --&gt; I["Inner Join — keep only matching rows"]
-    I --&gt; EQ["Equi-Join — match on equality"]
-    EQ --&gt; N["Natural Join — equi-join + auto-drop duplicate column"]
-    J --&gt; O["Outer Join — keep unmatched rows too, fill with null"]
-    O --&gt; L["Left Outer"]
-    O --&gt; R["Right Outer"]
-    O --&gt; F["Full Outer"]
-</pre>
+<p><img src="thumb_er.png" class="img-fluid"></p>
+<section id="introduction-to-entity-sets" class="level1">
+<h1>Introduction to Entity Sets</h1>
+<p>The Entity-Relationship (ER) model is a high-level conceptual data model that helps in designing the schema of a database. It allows us to describe the data involved in a real-world enterprise in terms of objects and their relationships.</p>
+<ul>
+<li><strong>Entity</strong>: An entity is an object that exists and is distinguishable from other objects. For example, a specific student named “Alice” is an entity.</li>
+<li><strong>Entity Set</strong>: An entity set is a collection of entities of the same type that share the same properties or attributes. For example, the set of all students in a university forms an entity set.</li>
+</ul>
+<section id="strong-entity-set" class="level2">
+<h2 class="anchored" data-anchor-id="strong-entity-set">Strong Entity Set</h2>
+<ul>
+<li>A strong entity set is an entity set that contains sufficient attributes to uniquely identify all its entities.</li>
+<li>A strong entity set always has a <strong>Primary Key</strong>.</li>
+</ul>
+</section>
+<section id="weak-entity-set" class="level2">
+<h2 class="anchored" data-anchor-id="weak-entity-set">Weak Entity Set</h2>
+<ul>
+<li>A weak entity set is an entity set that does not contain sufficient attributes to uniquely identify its entities on its own.</li>
+<li>A primary key does not exist for a weak entity set.</li>
+<li>Instead, it contains a partial key called a <strong>Discriminator</strong>. The discriminator is represented in an ER diagram by underlining the attribute with a <strong>dashed line</strong>.</li>
+</ul>
+<section id="characteristics-of-weak-entity-sets" class="level3">
+<h3 class="anchored" data-anchor-id="characteristics-of-weak-entity-sets">Characteristics of Weak Entity Sets</h3>
+<ul>
+<li>A weak entity set cannot exist independently since it doesn’t have a primary key. It depends on a strong entity set.</li>
+<li>It features in the model in relationship with a strong entity set. This dependency is called an <strong>identifying relationship</strong>.</li>
+<li>The primary key of a weak entity set is formed by combining its discriminator with the primary key of the strong entity set it depends on.</li>
+<li><strong>Primary key of weak entity set = Discriminator + Primary key of Strong entity set</strong>.</li>
+<li>A weak entity set must have <strong>total participation</strong> in its identifying relationship.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="attributes" class="level1">
+<h1>Attributes</h1>
+<p>An attribute is a property or characteristic associated with an entity set. For example, the <code>Student</code> entity set might have attributes like <code>Name</code>, <code>Age</code>, and <code>Roll Number</code>.</p>
+<section id="types-of-attributes" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-attributes">Types of Attributes</h3>
+<ul>
+<li><strong>Simple attribute</strong>: An attribute that cannot be divided into smaller sub-parts (e.g., <code>Age</code>).</li>
+<li><strong>Composite attribute</strong>: An attribute that can be divided into smaller sub-parts. For example, a <code>Name</code> attribute can be divided into <code>First Name</code>, <code>Middle Name</code>, and <code>Last Name</code>.</li>
+<li><strong>Single-valued attribute</strong>: An attribute that holds a single value for a specific entity (e.g., <code>Roll Number</code>).</li>
+<li><strong>Multivalued attribute</strong>: An attribute that can hold multiple values for a specific entity. For example, a student might have multiple phone numbers (<code>{phone_numbers}</code>).</li>
+<li><strong>Derived attribute</strong>: An attribute whose value is calculated (derived) from the value of another attribute. For example, <code>Age()</code> can be derived from the <code>Date of Birth</code> attribute.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="attributes.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption>Types of Attributes</figcaption>
+</figure>
 </div>
-<p></p></figure><p></p>
+<hr>
+</section>
+</section>
+<section id="entity-relationship-er-diagrams" class="level1">
+<h1>Entity-Relationship (ER) Diagrams</h1>
+<p>An ER diagram is a visual representation of the ER model. The standard notation involves:</p>
+<ul>
+<li><strong>Rectangles</strong>: Represent entity sets.</li>
+<li><strong>Ellipses</strong>: Attributes are listed inside ellipses and connected to the entity set.</li>
+<li><strong>Solid Underline</strong>: Indicates a primary key attribute.</li>
+<li><strong>Diamonds</strong>: Represent relationship sets.</li>
+<li><strong>Double Lines</strong>: Indicate total participation of an entity in a relationship.</li>
+<li><strong>Double Rectangles</strong>: Represent weak entity sets.</li>
+<li><strong>Double Diamonds</strong>: Represent identifying relationship sets for weak entity sets.</li>
+</ul>
+<hr>
+</section>
+<section id="mapping-cardinalities-relationship-types" class="level1">
+<h1>Mapping Cardinalities (Relationship Types)</h1>
+<p>Mapping cardinalities express the number of entities to which another entity can be associated via a relationship set.</p>
+<section id="one-to-one-11-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="one-to-one-11-relationship">One-to-One (1:1) Relationship</h2>
+<ul>
+<li>Each entity in <span class="math inline">\(A\)</span> is associated with at most one entity in <span class="math inline">\(B\)</span>.</li>
+<li>Each entity in <span class="math inline">\(B\)</span> is associated with at most one entity in <span class="math inline">\(A\)</span>.</li>
+<li><em>Example</em>: Each instructor has at most one student, and each student has at most one instructor.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>One to One</figcaption>
+</figure>
 </div>
+</section>
+<section id="one-to-many-1n-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="one-to-many-1n-relationship">One-to-Many (1:N) Relationship</h2>
+<ul>
+<li>Each entity in <span class="math inline">\(A\)</span> can be associated with one or many entities in <span class="math inline">\(B\)</span>.</li>
+<li>Each entity in <span class="math inline">\(B\)</span> is associated with at most one entity in <span class="math inline">\(A\)</span>.</li>
+<li><em>Example</em>: An instructor can advise multiple students, but each student has only one instructor.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="1-many.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>One to Many</figcaption>
+</figure>
 </div>
+</section>
+<section id="many-to-one-n1-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="many-to-one-n1-relationship">Many-to-One (N:1) Relationship</h2>
+<ul>
+<li>Each entity in <span class="math inline">\(A\)</span> is associated with at most one entity in <span class="math inline">\(B\)</span>.</li>
+<li>Each entity in <span class="math inline">\(B\)</span> can be associated with one or many entities in <span class="math inline">\(A\)</span>.</li>
+<li><em>Example</em>: Many students can be advised by the same instructor, but each student has at most one instructor.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="many-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Many to One</figcaption>
+</figure>
+</div>
+</section>
+<section id="many-to-many-mn-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="many-to-many-mn-relationship">Many-to-Many (M:N) Relationship</h2>
+<ul>
+<li>Each entity in <span class="math inline">\(A\)</span> can be associated with one or many entities in <span class="math inline">\(B\)</span>.</li>
+<li>Each entity in <span class="math inline">\(B\)</span> can be associated with one or many entities in <span class="math inline">\(A\)</span>.</li>
+<li><em>Example</em>: An instructor can advise multiple students, and a student can have multiple instructors.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="many-many.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Many to Many</figcaption>
+</figure>
 </div>
 <hr>
-<section id="sample-data" class="level2">
-<h2 class="anchored" data-anchor-id="sample-data">Sample Data</h2>
-<p>To see the difference between join types, imagine two small tables:</p>
-<p><strong><code>movie</code></strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-</tr>
-<tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-</tr>
-</tbody>
-</table>
-<p><strong><code>review</code></strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>8</td>
-</tr>
-<tr class="odd">
-<td>M4</td>
-<td>7</td>
-</tr>
-</tbody>
-</table>
-<p>Notice: <code>Dune (M3)</code> has no review, and the review for <code>M4</code> doesn’t match any movie. This mismatch is exactly what different join types handle differently.</p>
+</section>
+</section>
+<section id="total-and-partial-participation" class="level1">
+<h1>Total and Partial Participation</h1>
+<p>Participation constraints dictate whether the existence of an entity depends on its being related to another entity via the relationship type.</p>
+<ul>
+<li><strong>Total Participation</strong>: Every entity in the entity set must participate in at least one relationship in the relationship set. Indicated by a double line.</li>
+<li><strong>Partial Participation</strong>: Some entities may not participate in any relationship in the relationship set. Indicated by a single line.</li>
+</ul>
+<p><em>Example</em>: If every student <em>must</em> have an instructor, the <code>Student</code> entity set has total participation. If an instructor <em>may or may not</em> have a student, the <code>Instructor</code> entity set has partial participation.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="total_participation.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Total and Partial Participation</figcaption>
+</figure>
+</div>
 <hr>
 </section>
-<section id="cross-join" class="level2">
-<h2 class="anchored" data-anchor-id="cross-join">Cross Join</h2>
-<p>Returns the <strong>full Cartesian product</strong> — every row of one table paired with every row of the other, no filtering at all.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Explicit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">cross</span> <span class="kw">join</span> review;</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Implicit (comma syntax)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie, review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>With 3 movies and 3 reviews, this produces <strong>9 rows</strong> — almost all of them meaningless pairings.</p>
-<hr>
-</section>
-<section id="inner-join" class="level2">
-<h2 class="anchored" data-anchor-id="inner-join">Inner Join</h2>
-<p>Keeps only the rows where the join condition is satisfied on <strong>both sides</strong>.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Join Type</th>
-<th>Condition</th>
-<th>Result</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Equi-Join</strong></td>
-<td>Explicit equality condition (<code>on a.x = b.x</code>)</td>
-<td>Both <code>x</code> columns kept</td>
-</tr>
-<tr class="even">
-<td><strong>Natural Join</strong></td>
-<td>Equality assumed on same-named columns</td>
-<td>Duplicate column auto-dropped</td>
-</tr>
-</tbody>
-</table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Equi-join</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">inner</span> <span class="kw">join</span> review</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Natural join (same result, but movie_id appears once)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Result</strong> (only matching <code>movie_id</code>s survive):</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
-</tr>
-</tbody>
-</table>
-<p><code>M3</code> (no review) and <code>M4</code> (no movie) both <strong>disappear</strong> — this is the information loss outer joins solve.</p>
-<hr>
-</section>
-<section id="outer-join" class="level2">
-<h2 class="anchored" data-anchor-id="outer-join">Outer Join</h2>
-<p>Outer joins keep the inner join result <strong>plus</strong> the unmatched rows from one or both sides, filling missing columns with <code>null</code>.</p>
-<section id="left-outer-join" class="level3">
-<h3 class="anchored" data-anchor-id="left-outer-join">Left Outer Join</h3>
-<p>Keeps <strong>all rows from the left table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
-</tr>
-<tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-<td>null</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="right-outer-join" class="level3">
-<h3 class="anchored" data-anchor-id="right-outer-join">Right Outer Join</h3>
-<p>Keeps <strong>all rows from the right table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
-</tr>
-<tr class="odd">
-<td>M4</td>
-<td>null</td>
-<td>7</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="full-outer-join" class="level3">
-<h3 class="anchored" data-anchor-id="full-outer-join">Full Outer Join</h3>
-<p>Keeps <strong>everything from both sides</strong> — the union of left and right outer joins.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
-</tr>
-<tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-<td>null</td>
-</tr>
-<tr class="even">
-<td>M4</td>
-<td>null</td>
-<td>7</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="using-explicit-conditions" class="level3">
-<h3 class="anchored" data-anchor-id="using-explicit-conditions">Using Explicit Conditions</h3>
-<p>Joins can also use <code>on</code> (any condition) or <code>using</code> (shared column names), instead of <code>natural</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Explicit condition</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Shared column shorthand</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> (movie_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>💡 <code>on</code> works with <em>any</em> condition (even inequality!). <code>natural</code> and <code>using</code> both rely on matching column names — <code>using</code> lets you name exactly which shared column(s) to join on, while <code>natural</code> matches on <strong>all</strong> identically-named columns.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="quick-reference-join-types" class="level2">
-<h2 class="anchored" data-anchor-id="quick-reference-join-types">Quick Reference: Join Types</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Join</th>
-<th style="text-align: center;">Unmatched left rows kept?</th>
-<th style="text-align: center;">Unmatched right rows kept?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Cross Join</td>
-<td style="text-align: center;">n/a (no matching)</td>
-<td style="text-align: center;">n/a</td>
-</tr>
-<tr class="even">
-<td>Inner Join</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
-</tr>
-<tr class="odd">
-<td>Left Outer</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">❌</td>
-</tr>
-<tr class="even">
-<td>Right Outer</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">✅</td>
-</tr>
-<tr class="odd">
-<td>Full Outer</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">✅</td>
-</tr>
-</tbody>
-</table>
-<hr>
+<section id="expressing-weak-entity-sets-in-er-diagrams" class="level1">
+<h1>Expressing Weak Entity Sets in ER Diagrams</h1>
+<p>As discussed earlier, a weak entity set does not have a primary key and depends on a strong entity set. In an ER diagram, we denote the weak entity set with a double rectangle, its identifying relationship with a double diamond, and its discriminator attribute with a dashed underline.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="weak_entity.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Weak Entity Set Notation</figcaption>
+</figure>
+</div>
 
 
 
@@ -1252,13 +1078,13 @@ graph TD
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_3/nested_subqueries.html" class="pagination-link" aria-label="Nested Subqueries">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Nested Subqueries</span></span>
+      <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="pagination-link" aria-label="Relational Algebra and Calculus">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Algebra and Calculus</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_3/intermediate_sql.html" class="pagination-link" aria-label="Intermediate SQL">
-        <span class="nav-page-text"><span class="chapter-title">Intermediate SQL</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
+        <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

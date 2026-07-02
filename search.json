@@ -578,6 +578,171 @@
     ]
   },
   {
+    "objectID": "weeks/week_4/01_relational_algebra_and_calculus.html",
+    "href": "weeks/week_4/01_relational_algebra_and_calculus.html",
+    "title": "Relational Algebra and Calculus",
+    "section": "",
+    "text": "Introduction to Query Languages\nQuery languages in DBMS are broadly classified into two categories:",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Relational Algebra and Calculus</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/01_relational_algebra_and_calculus.html#examples",
+    "href": "weeks/week_4/01_relational_algebra_and_calculus.html#examples",
+    "title": "Relational Algebra and Calculus",
+    "section": "Examples",
+    "text": "Examples\n1. Find all the names of students whose age is greater than 25, or who are enrolled in Maths\nSchema: - Students(RollNo, Name, Age, Subject)\nFirst, we filter the Students table using the Selection (\\(\\sigma\\)) operation for the condition Age &gt; 25 OR Subject = 'Maths'. Then, we use the Projection (\\(\\pi\\)) operation to only retrieve the Name attribute.\n\\[ \\pi_{Name}(\\sigma_{Age&gt;25 \\space \\lor \\space Subject='Maths'}(Students)) \\]\n2. Find the name and sports of the student whose age is less than 25 and awards is greater than 3\nSchema: - Students(RollNo, Name, Age) - Activity(RollNo, Sports, Awards)\nHere we need data from two different domains (the Students and Activity tables). We use a Natural Join (\\(⋈\\)) to combine them on their common attribute (RollNo), filter the result, and project the specific columns.\n\\[ \\pi_{Name, Sports}(\\sigma_{Age&lt;25 \\space \\land \\space Awards&gt;3}(Students ⋈ Activity)) \\]",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Relational Algebra and Calculus</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/01_relational_algebra_and_calculus.html#division-operation",
+    "href": "weeks/week_4/01_relational_algebra_and_calculus.html#division-operation",
+    "title": "Relational Algebra and Calculus",
+    "section": "Division Operation",
+    "text": "Division Operation\nThe Division (\\(r \\div s\\)) operation is used in queries that involve the word “every” or “all”. For example, “Find students who have taken all courses offered in the Biology department.”\nSuppose we have two relations: \\(r(A, B, C)\\) and \\(s(B, C)\\). The result of \\(r \\div s\\) will be a relation with the attribute \\(A\\), containing values of \\(A\\) that match with all the tuples present in \\(s\\).\n\n\n\nDivision Operation Example\n\n\nIn the mathematical example from the notes, if we perform \\(r \\div s\\):\n\n\n\nA\nB\nC\n\n\n\n\n\\(\\alpha\\)\na\n\\(\\gamma\\)\n\n\n\\(\\gamma\\)\na\n\\(\\gamma\\)\n\n\n\nThe output would be the values in column A (\\(\\alpha\\) and \\(\\gamma\\)) that are associated with all tuples of the divisor.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Relational Algebra and Calculus</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/01_relational_algebra_and_calculus.html#trc-examples",
+    "href": "weeks/week_4/01_relational_algebra_and_calculus.html#trc-examples",
+    "title": "Relational Algebra and Calculus",
+    "section": "TRC Examples",
+    "text": "TRC Examples\n1. Find the name of the students whose age is 21\n\\[ \\{t \\space | \\space \\exists \\space s \\in students (t.name=s.name \\land s.age=21) \\} \\]\nIntuition: We are looking for a tuple \\(t\\) such that there exists (\\(\\exists\\)) a tuple \\(s\\) in the students relation where the name in our result matches the name in the student record, and the student’s age is 21.\n2. Find the name of the employees who work in the ‘Manufacturing’ department\nSchema: - employee(id, name, salary) - department(id, d_id, name, building)\n\\[ \\{M \\space | \\space \\exists \\space E \\in employee \\space \\exists \\space D \\in department ( E.id=D.id \\land D.name='Manufacturing' \\land M.name=E.name) \\} \\]\nIntuition: We want a tuple \\(M\\) such that there exists an employee \\(E\\) and a department \\(D\\) where their IDs match, the department name is ‘Manufacturing’, and our result tuple \\(M\\) takes the name of that employee \\(E\\).",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Relational Algebra and Calculus</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/01_relational_algebra_and_calculus.html#drc-examples",
+    "href": "weeks/week_4/01_relational_algebra_and_calculus.html#drc-examples",
+    "title": "Relational Algebra and Calculus",
+    "section": "DRC Examples",
+    "text": "DRC Examples\n1. Find the name of the students whose age is 21\nSchema: - student(name, age, marks)\n\\[ \\{&lt;a&gt; | \\space \\exists \\space b \\space (&lt;a,b,c&gt; \\in students \\space \\land \\space b=21)  \\} \\]\nIntuition: We want to output a single domain variable \\(a\\) (which represents the name), such that there exists some marks variable \\(c\\) where the tuple \\(&lt;a, b, c&gt;\\) exists in the students relation, and the age variable \\(b = 21\\).\n2. Find the name of the employees who work in the ‘Manufacturing’ department\nSchema: - employee(id, name, salary) - department(id, d_id, name, building)\n\\[ \\{ &lt;b&gt; |\\space \\exists \\space a,c  \\space (&lt;a, b, c&gt; \\in employee) \\space \\land \\space \\exists \\space x,y,z \\space (&lt;a, x, y, z&gt; \\in department \\space \\land y='Manufacturing') \\} \\]\n(Note: The notes had a slight variable mismatch. I corrected it here to ensure variable \\(a\\) maps to id, \\(b\\) maps to name, \\(c\\) maps to salary, and in the department relation, the first variable \\(a\\) corresponds to id, ensuring the join condition.)\nIntuition: We want to output variable \\(b\\) (employee name). To do this, we assert that the tuple \\(&lt;a, b, c&gt;\\) must exist in employee. Additionally, we assert that the tuple \\(&lt;a, x, y, z&gt;\\) must exist in department where the variable \\(y\\) (department name) is exactly ‘Manufacturing’. The shared variable \\(a\\) (the ID) effectively joins the two relations.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>Relational Algebra and Calculus</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html",
+    "href": "weeks/week_4/02_entity_relationship_model.html",
+    "title": "Entity-Relationship Model",
+    "section": "",
+    "text": "Introduction to Entity Sets\nThe Entity-Relationship (ER) model is a high-level conceptual data model that helps in designing the schema of a database. It allows us to describe the data involved in a real-world enterprise in terms of objects and their relationships.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#strong-entity-set",
+    "href": "weeks/week_4/02_entity_relationship_model.html#strong-entity-set",
+    "title": "Entity-Relationship Model",
+    "section": "Strong Entity Set",
+    "text": "Strong Entity Set\n\nA strong entity set is an entity set that contains sufficient attributes to uniquely identify all its entities.\nA strong entity set always has a Primary Key.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#weak-entity-set",
+    "href": "weeks/week_4/02_entity_relationship_model.html#weak-entity-set",
+    "title": "Entity-Relationship Model",
+    "section": "Weak Entity Set",
+    "text": "Weak Entity Set\n\nA weak entity set is an entity set that does not contain sufficient attributes to uniquely identify its entities on its own.\nA primary key does not exist for a weak entity set.\nInstead, it contains a partial key called a Discriminator. The discriminator is represented in an ER diagram by underlining the attribute with a dashed line.\n\n\nCharacteristics of Weak Entity Sets\n\nA weak entity set cannot exist independently since it doesn’t have a primary key. It depends on a strong entity set.\nIt features in the model in relationship with a strong entity set. This dependency is called an identifying relationship.\nThe primary key of a weak entity set is formed by combining its discriminator with the primary key of the strong entity set it depends on.\nPrimary key of weak entity set = Discriminator + Primary key of Strong entity set.\nA weak entity set must have total participation in its identifying relationship.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#one-to-one-11-relationship",
+    "href": "weeks/week_4/02_entity_relationship_model.html#one-to-one-11-relationship",
+    "title": "Entity-Relationship Model",
+    "section": "One-to-One (1:1) Relationship",
+    "text": "One-to-One (1:1) Relationship\n\nEach entity in \\(A\\) is associated with at most one entity in \\(B\\).\nEach entity in \\(B\\) is associated with at most one entity in \\(A\\).\nExample: Each instructor has at most one student, and each student has at most one instructor.\n\n\n\n\nOne to One",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#one-to-many-1n-relationship",
+    "href": "weeks/week_4/02_entity_relationship_model.html#one-to-many-1n-relationship",
+    "title": "Entity-Relationship Model",
+    "section": "One-to-Many (1:N) Relationship",
+    "text": "One-to-Many (1:N) Relationship\n\nEach entity in \\(A\\) can be associated with one or many entities in \\(B\\).\nEach entity in \\(B\\) is associated with at most one entity in \\(A\\).\nExample: An instructor can advise multiple students, but each student has only one instructor.\n\n\n\n\nOne to Many",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#many-to-one-n1-relationship",
+    "href": "weeks/week_4/02_entity_relationship_model.html#many-to-one-n1-relationship",
+    "title": "Entity-Relationship Model",
+    "section": "Many-to-One (N:1) Relationship",
+    "text": "Many-to-One (N:1) Relationship\n\nEach entity in \\(A\\) is associated with at most one entity in \\(B\\).\nEach entity in \\(B\\) can be associated with one or many entities in \\(A\\).\nExample: Many students can be advised by the same instructor, but each student has at most one instructor.\n\n\n\n\nMany to One",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/02_entity_relationship_model.html#many-to-many-mn-relationship",
+    "href": "weeks/week_4/02_entity_relationship_model.html#many-to-many-mn-relationship",
+    "title": "Entity-Relationship Model",
+    "section": "Many-to-Many (M:N) Relationship",
+    "text": "Many-to-Many (M:N) Relationship\n\nEach entity in \\(A\\) can be associated with one or many entities in \\(B\\).\nEach entity in \\(B\\) can be associated with one or many entities in \\(A\\).\nExample: An instructor can advise multiple students, and a student can have multiple instructors.\n\n\n\n\nMany to Many",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Entity-Relationship Model</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/03_advanced_er_concepts.html",
+    "href": "weeks/week_4/03_advanced_er_concepts.html",
+    "title": "Advanced ER Concepts",
+    "section": "",
+    "text": "Ternary Relationships\nAs databases grow in complexity, the standard Entity-Relationship model may not be sufficient to capture intricate real-world constraints and relationships. To address this, extended ER features are used.\nA Ternary Relationship is a relationship that exists among three entity sets simultaneously. Instead of linking two entity sets (binary), a single diamond connects three rectangles.\nExample: Consider a scenario where Instructors assign Projects to Students. This cannot be accurately captured by breaking it into binary relationships because a specific student is assigned a specific project by a specific instructor. Thus, the relationship involves all three entities at once.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Advanced ER Concepts</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/03_advanced_er_concepts.html#disjointness-constraints",
+    "href": "weeks/week_4/03_advanced_er_concepts.html#disjointness-constraints",
+    "title": "Advanced ER Concepts",
+    "section": "Disjointness Constraints",
+    "text": "Disjointness Constraints\n\nDisjoint: An entity can belong to at most one lower-level entity set (subclass).\nOverlapping: An entity can belong to more than one lower-level entity set simultaneously.",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Advanced ER Concepts</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_4/03_advanced_er_concepts.html#completeness-constraints",
+    "href": "weeks/week_4/03_advanced_er_concepts.html#completeness-constraints",
+    "title": "Advanced ER Concepts",
+    "section": "Completeness Constraints",
+    "text": "Completeness Constraints\n\nComplete (Total): Every entity in the higher-level entity set (superclass) must belong to at least one lower-level entity set.\nPartial: Some entities in the higher-level entity set might not belong to any lower-level entity set.\n\nLet’s look at the combinations of these constraints:\n\n1. Overlapping and Partial\n\nOverlapping: An entity can belong to multiple subclasses.\nPartial: An entity does not have to belong to any subclass.\n\nExample: A Person can be a Student, a Faculty member, or both (Overlapping). Also, there may be persons (like staff or guests) who are neither students nor faculty (Partial).\n\n\n\nOverlapping and Partial\n\n\n\n\n2. Disjoint and Partial\n\nDisjoint: An entity can belong to at most one subclass.\nPartial: An entity does not have to belong to any subclass.\n\nExample: A Student can be either an UG_Student (Undergraduate) or a PG_Student (Postgraduate), but they cannot be both at the same time (Disjoint). Furthermore, there might be some students (e.g., diploma or visiting students) who are neither UG nor PG students (Partial).\n\n\n\nDisjoint and Partial\n\n\n\n\n3. Disjoint and Complete\n\nDisjoint: An entity can belong to at most one subclass.\nComplete: Every entity must belong to a subclass.\n\nExample: Every physical Part in a factory must be classified as either a Purchased_Part or a Manufactured_Part (Complete). A part cannot be both purchased and manufactured simultaneously (Disjoint).\n\n\n\nDisjoint and Complete\n\n\n(Note: The fourth combination, Overlapping and Complete, implies an entity must belong to at least one subclass and can belong to multiple. It is less common but conceptually possible.)",
+    "crumbs": [
+      "**Week-04**",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Advanced ER Concepts</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -585,7 +750,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      A-\n      16px\n      A+\n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>12</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   }
 ]
