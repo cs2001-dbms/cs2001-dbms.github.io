@@ -52,6 +52,7 @@ book:
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd
+        - python_playground.qmd
   favicon: logo.ico
 
 format:
