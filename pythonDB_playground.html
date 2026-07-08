@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>SQL Playground – Database Management Systems</title>
+<title>Python-DB Playground – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./pythonDB_playground.html" rel="next">
-<link href="./weeks/week_4/03_advanced_er_concepts.html" rel="prev">
+<link href="./sql_playground.html" rel="prev">
 <link href="./logo.ico" rel="icon">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -280,7 +279,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sql_playground.html"><strong>Playground</strong></a></li><li class="breadcrumb-item"><a href="./sql_playground.html"><span class="chapter-title">SQL Playground</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sql_playground.html"><strong>Playground</strong></a></li><li class="breadcrumb-item"><a href="./pythonDB_playground.html"><span class="chapter-title">Python-DB Playground</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -438,12 +437,12 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sql_playground.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">SQL Playground</span></a>
+  <a href="./sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pythonDB_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Python-DB Playground</span></a>
+  <a href="./pythonDB_playground.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Python-DB Playground</span></a>
   </div>
 </li>
       </ul>
@@ -460,9 +459,9 @@ window.Quarto = {
 <main class="content column-page-right" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sql_playground.html"><strong>Playground</strong></a></li><li class="breadcrumb-item"><a href="./sql_playground.html"><span class="chapter-title">SQL Playground</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sql_playground.html"><strong>Playground</strong></a></li><li class="breadcrumb-item"><a href="./pythonDB_playground.html"><span class="chapter-title">Python-DB Playground</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">SQL Playground</span></h1>
+<h1 class="title"><span class="chapter-title">Python-DB Playground</span></h1>
 </div>
 
 
@@ -480,6 +479,7 @@ window.Quarto = {
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 
 <style>
 :root {
@@ -527,22 +527,6 @@ body.quarto-dark {
   border-radius: var(--pg-radius-lg);
   box-shadow: var(--pg-shadow-sm);
   border: 1px solid var(--pg-border-color);
-}
-
-.playground-header #dataset-select {
-  padding: 0.35rem 0.5rem;
-  border-radius: var(--pg-radius-md);
-  border: 1px solid var(--pg-border-color);
-  font-size: 0.75rem;
-  background-color: var(--pg-bg-subtle);
-  color: var(--pg-text-main);
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s;
-  min-width: 180px;
-}
-.playground-header #dataset-select:focus {
-  border-color: var(--pg-primary);
 }
 
 .playground-body {
@@ -610,7 +594,7 @@ body.quarto-dark {
   width: 50px;
 }
 .schema-sidebar.collapsed .schema-content,
-.schema-sidebar.collapsed #schema-title {
+.schema-sidebar.collapsed .schema-select {
   display: none;
 }
 .schema-sidebar.collapsed .schema-header {
@@ -625,6 +609,23 @@ body.quarto-dark {
   justify-content: space-between;
   align-items: center;
   background-color: var(--pg-bg-subtle);
+  gap: 0.4rem;
+}
+.schema-select {
+  padding: 0.25rem 0.4rem;
+  border-radius: var(--pg-radius-sm);
+  border: 1px solid var(--pg-border-color);
+  font-size: 0.8rem;
+  background-color: var(--pg-bg-surface);
+  color: var(--pg-text-main);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+  flex: 1;
+  min-width: 0;
+}
+.schema-select:focus {
+  border-color: var(--pg-primary);
 }
 
 /* Editor controls wrapper */
@@ -766,7 +767,7 @@ body.quarto-dark .key-fk { background-color: rgba(191, 219, 254, 0.2); color: #9
   box-shadow: var(--pg-shadow-sm);
 }
 
-#sql-editor {
+#python-editor {
   flex: 1;
   width: 100%;
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
@@ -836,6 +837,23 @@ body.quarto-dark .th-datatype {
   color: var(--pg-text-muted) !important;
   font-style: italic;
   opacity: 0.7;
+}
+
+/* Console output area */
+.console-output-area {
+  color: var(--pg-text-main);
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 0.85rem;
+  padding: 0.75rem;
+  border-radius: var(--pg-radius-md);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 0.75rem;
+  max-height: 300px;
+  overflow: auto;
+}
+body.quarto-dark .console-output-area {
+  color: var(--pg-text-main);
 }
 
 /* Buttons */
@@ -967,20 +985,10 @@ body.quarto-dark .error-msg {
 
 <div class="playground-container">
   <div class="playground-header">
-    <select id="dataset-select">
-      <option value="flis" selected="">FLIS Database (Read-Only)</option>
-      <option value="lis">LIS Database (Read-Only)</option>
-      <option value="eshop">eShop Database (Read-Only)</option>
-      <option value="university">University Database (Read-Only)</option>
-      <option value="test_db">My Workspace (Persistent)</option>
-    </select>
+
     <button id="run-btn" class="pg-btn pg-btn-primary">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-      Run Query
-    </button>
-    <button id="reset-btn" class="pg-btn pg-btn-secondary">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
-      Reset
+      Run
     </button>
     <div class="editor-controls">
       <select id="theme-select" class="theme-select" title="Editor Theme">
@@ -1043,7 +1051,7 @@ body.quarto-dark .error-msg {
   <div class="playground-body">
     <div class="playground-main" id="playground-main">
       <div class="editor-section" id="editor-section">
-        <div id="sql-editor"></div>
+        <div id="python-editor"></div>
       </div>
       <div class="resizer-y" id="resizer-y" title="Drag to resize"></div>
       <div class="result-section" id="result-section">
@@ -1057,7 +1065,13 @@ body.quarto-dark .error-msg {
 
     <div class="schema-sidebar" id="schema-sidebar">
       <div class="schema-header">
-        <span id="schema-title">Schema</span>
+        <select id="schema-select" class="schema-select">
+          <option value="flis" selected="">FLIS (flis)</option>
+          <option value="lis">LIS (lis)</option>
+          <option value="eshop">eShop (eshop)</option>
+          <option value="university">University (university)</option>
+          <option value="test_db">My Workspace (test_db)</option>
+        </select>
         <button id="toggle-schema-btn" class="pg-btn-icon" title="Toggle Sidebar">
           <svg id="icon-collapse" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           <svg id="icon-expand" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -1071,37 +1085,43 @@ body.quarto-dark .error-msg {
 <script id="playground-data" type="application/json">
 {
   "iconFolder": "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'></path></svg>",
-  "iconFolderOpen": "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 19a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2 2h4a2 2 0 0 1 2 2v1M5 19h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2z'></path></svg>"
+  "iconFolderOpen": "<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 19a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4l2 2h4a2 2 0 0 1 2 2v1M5 19h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2z'></path></svg>",
+  "defaultCode": "",
+  "mockPsycopg2": "import sys\nimport os\n\nos.environ['PGUSER'] = 'postgres'\nos.environ['PGPASSWORD'] = 'password'\nos.environ['PGHOST'] = '127.0.0.1'\nos.environ['PGPORT'] = '5432'\n\nclass psycopg2:\n    DatabaseError = Exception\n    Error = Exception\n    _last_db = 'flis'\n    _VALID_DBS = {'flis', 'lis', 'eshop', 'university', 'test_db'}\n    _REQUIRED_KEYS = {'database', 'user', 'password', 'host', 'port'}\n\n    class MockCursor:\n        def __init__(self):\n            self.results = []\n            self.rowcount = -1\n        \n        async def execute(self, query):\n            import js\n            from pyodide.ffi import to_js\n            from js import Object\n            opts = Object.new()\n            opts.rowMode = 'array'\n            res = await js.db.query(query, to_js([]), opts)\n            if hasattr(res, 'rows'):\n                self.results = [tuple(row) for row in res.rows]\n                self.rowcount = len(self.results)\n            else:\n                self.results = []\n                self.rowcount = 0\n            return self\n\n        async def fetchall(self):\n            res = self.results\n            self.results = []\n            return res\n        \n        async def fetchone(self):\n            if self.results:\n                return self.results.pop(0)\n            return None\n\n        async def fetchmany(self, size=None):\n            if size is None:\n                size = 1\n            res = self.results[:size]\n            self.results = self.results[size:]\n            return res\n\n        async def close(self):\n            pass\n\n    class MockConnection:\n        def __init__(self, dbname):\n            self._dbname = dbname\n\n        async def cursor(self):\n            return psycopg2.MockCursor()\n        \n        async def commit(self):\n            pass\n\n        async def rollback(self):\n            pass\n\n        async def close(self):\n            pass\n\n    @staticmethod\n    async def connect(**kwargs):\n        import js\n        _bad_keys = set(kwargs.keys()) - psycopg2._REQUIRED_KEYS\n        if _bad_keys:\n            raise psycopg2.DatabaseError('Unrecognized parameter(s): ' + ', '.join(sorted(_bad_keys)))\n        dbname = kwargs.get('database', None)\n        if dbname is None:\n            raise psycopg2.DatabaseError('Missing required parameter: database.\\nAvailable databases: ' + ', '.join(sorted(psycopg2._VALID_DBS)))\n        if dbname not in psycopg2._VALID_DBS:\n            raise psycopg2.DatabaseError('Unknown database: \"' + str(dbname) + '\"\\nAvailable databases: ' + ', '.join(sorted(psycopg2._VALID_DBS)))\n        psycopg2._last_db = dbname\n        await js.getDB(dbname)\n        if dbname != 'test_db':\n            await js.db.exec('SET SESSION ROLE readonly_user;')\n        else:\n            await js.db.exec('RESET ROLE;')\n        return psycopg2.MockConnection(dbname)\n\nsys.modules['psycopg2'] = psycopg2\n\ndel psycopg2\ndel sys\ndel os\n"
 }
 </script>
 
 <script type="module">
 import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
 
-let db;
+let databases = {};
+let pyodide = null;
 let currentDataset = "";
+let pyodideReady = false;
 
-const iconsData = JSON.parse(document.getElementById("playground-data").textContent);
-const iconFolder = iconsData.iconFolder;
-const iconFolderOpen = iconsData.iconFolderOpen;
+var playgroundData = JSON.parse(document.getElementById("playground-data").textContent);
+var iconFolder = playgroundData.iconFolder;
+var iconFolderOpen = playgroundData.iconFolderOpen;
 
-const editor = ace.edit("sql-editor");
+var editor = ace.edit("python-editor");
 editor.setTheme("ace/theme/textmate");
-editor.session.setMode("ace/mode/pgsql");
+editor.session.setMode("ace/mode/python");
 editor.setOptions({ 
   showPrintMargin: false, 
   wrap: true,
   enableBasicAutocompletion: true,
   enableLiveAutocompletion: true,
   useSoftTabs: true,
-  tabSize: 2,
+  tabSize: 4,
   fontSize: "16px"
 });
-document.getElementById('sql-editor').addEventListener('keydown', function(e) {
+document.getElementById('python-editor').addEventListener('keydown', function(e) {
   if (e.key === 'Tab') {
     e.stopPropagation();
   }
 }, true);
+
+editor.setValue(playgroundData.defaultCode, -1);
 
 function syncTheme() {
   var isDark = document.body.classList.contains("quarto-dark");
@@ -1127,19 +1147,6 @@ document.getElementById("theme-select").addEventListener("change", function(e) {
   }
   syncTheme();
 });
-
-// Font size management
-var currentFontSize = parseInt(localStorage.getItem("playgroundFontSize")) || 16;
-function updateFontSize(newSize) {
-  if (newSize < 10) newSize = 10;
-  if (newSize > 28) newSize = 28;
-  currentFontSize = newSize;
-  localStorage.setItem("playgroundFontSize", newSize);
-  editor.setFontSize(newSize + "px");
-  var label = document.getElementById("font-size-label");
-  if (label) label.textContent = newSize + "px";
-}
-updateFontSize(currentFontSize);
 
 function fmtDate(d) {
   if (!(d instanceof Date) || isNaN(d)) return d;
@@ -1177,7 +1184,7 @@ function sanitizeSQL(sql) {
     if (trimmed.match(/^CREATE EXTENSION/i)) continue;
     if (trimmed.match(/^-- (Dumped from|Dumped by|Name:.*Owner:)/)) continue;
 
-    var copyMatch = line.match(/^COPY\s+(?:public\.)?(\w+)\s*(\([^)]+\))\s+FROM\s+stdin;/i);
+    var copyMatch = line.match(/^COPY\s+(?:public\.)?([\w]+)\s*(\([^)]+\))\s+FROM\s+stdin;/i);
     if (copyMatch) {
       copyMode = { table: copyMatch[1], cols: copyMatch[2] };
       continue;
@@ -1189,21 +1196,43 @@ function sanitizeSQL(sql) {
   return cleaned.join("\n");
 }
 
+// Font size management
+var currentFontSize = parseInt(localStorage.getItem("playgroundFontSize")) || 16;
+function updateFontSize(newSize) {
+  if (newSize < 10) newSize = 10;
+  if (newSize > 28) newSize = 28;
+  currentFontSize = newSize;
+  localStorage.setItem("playgroundFontSize", newSize);
+  editor.setFontSize(newSize + "px");
+  var label = document.getElementById("font-size-label");
+  if (label) label.textContent = newSize + "px";
+}
+updateFontSize(currentFontSize);
+
 let globalSchema = {};
 
-async function refreshSchema() {
-  if (!db) return;
+async function refreshSchema(dsId) {
+  if (!dsId) dsId = currentDataset || "flis";
+  var targetDb;
+  try {
+    targetDb = await getDB(dsId);
+  } catch(e) { return; }
   globalSchema = {};
   var el = document.getElementById("schema-content");
   el.innerHTML = '<div style="text-align:center;color:var(--pg-text-muted);margin-top:1rem"><div class="spinner" style="display:inline-block;margin-right:5px;border-color:var(--pg-text-muted);border-top-color:transparent"></div>Loading...</div>';
+  
+  var errEl = document.getElementById("error-message");
+  var rc = document.getElementById("result-table-container");
+  if (errEl) errEl.style.display = "none";
+  if (rc) rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Python Environment initialized. Write a script and click Run Script.</p>';
   try {
-    if (currentDataset !== "test_db") await db.exec("RESET ROLE;");
+    if (dsId !== "test_db") await targetDb.exec("RESET ROLE;");
     
-    var arr = await db.exec("SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, ordinal_position;");
+    var arr = await targetDb.exec("SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, ordinal_position;");
     var res = arr[arr.length - 1];
     if (!res || res.rows.length === 0) { el.innerHTML = '<p style="padding:0.5rem;color:var(--pg-text-muted)">No tables found.</p>'; return; }
     
-    var constArr = await db.exec("SELECT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
+    var constArr = await targetDb.exec("SELECT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
     var constraints = {};
     if (constArr.length > 0 && constArr[constArr.length - 1].rows) {
       constArr[constArr.length - 1].rows.forEach(function(r) {
@@ -1267,193 +1296,130 @@ async function refreshSchema() {
   }
 }
 
-async function initDB(dsId) {
-  var loading = document.getElementById("loading-indicator");
-  var errEl = document.getElementById("error-message");
-  var rc = document.getElementById("result-table-container");
-  currentDataset = dsId;
-  loading.style.display = "flex";
-  errEl.style.display = "none";
-  rc.innerHTML = "";
-  try {
-    if (db) { await db.close(); db = null; }
-    if (dsId === "test_db") {
-      db = new PGlite("idb://playground-test-db");
-      if (!editor.getValue().trim()) {
-        editor.setValue("-- Welcome to your persistent workspace.\n-- Tables and data you create here will be saved across reloads.\n\n", -1);
-      }
-      rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Workspace ready. Write a query and click Run Query.</p>';
-      loading.style.display = "none";
-      await refreshSchema();
-      return;
-    }
-    db = new PGlite();
+window.getDB = getDB;
+async function getDB(dsId) {
+  if (databases[dsId]) {
+    window.db = databases[dsId];
+    return databases[dsId];
+  }
+  if (dsId === "test_db") {
+    databases[dsId] = new PGlite("idb://playground-test-db");
+  } else {
+    databases[dsId] = new PGlite();
     try {
       var r = await fetch("datasets/" + dsId + ".sql");
-      if (r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await db.exec(sql); } }
+      if (r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await databases[dsId].exec(sql); } }
       else throw new Error("Failed to load dataset: " + r.statusText);
     } catch(fe) { console.warn("Could not fetch dataset", fe); }
-    await db.exec("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'readonly_user') THEN CREATE ROLE readonly_user; END IF; END $$;");
-    await db.exec("GRANT USAGE ON SCHEMA public TO readonly_user;");
-    await db.exec("GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly_user;");
-    await db.exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_user;");
-    if (!editor.getValue().trim()) {
-      var eq = "";
-      if (dsId === "eshop") eq = "";
-      else if (dsId === "flis" || dsId === "lis") eq = "";
-    }
-    rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Database initialized (Read-Only). Write a query and click Run Query.</p>';
+    await databases[dsId].exec("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'readonly_user') THEN CREATE ROLE readonly_user; END IF; END $$;");
+    await databases[dsId].exec("GRANT USAGE ON SCHEMA public TO readonly_user;");
+    await databases[dsId].exec("GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly_user;");
+    await databases[dsId].exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_user;");
+  }
+  window.db = databases[dsId];
+  return databases[dsId];
+}
+
+async function initDB(dsId) {
+  currentDataset = dsId;
+  await refreshSchema(dsId);
+}
+
+async function initPyodide() {
+  var loading = document.getElementById("loading-indicator");
+  loading.style.display = "flex";
+  loading.innerHTML = '<div class="spinner"></div> Initializing (first load may take a moment)...';
+  try {
+    pyodide = await loadPyodide();
+    // Inject the mock psycopg2 module
+    await pyodide.runPythonAsync(playgroundData.mockPsycopg2);
+    pyodideReady = true;
     loading.style.display = "none";
-    await refreshSchema();
   } catch(err) {
     loading.style.display = "none";
+    var errEl = document.getElementById("error-message");
     errEl.style.display = "block";
-    errEl.textContent = "Error initializing database:\n" + err.message;
+    errEl.textContent = "Error initializing Pyodide:\n" + err.message;
   }
 }
 
-async function runQuery() {
-  var query = editor.getSelectedText();
-  if (!query || !query.trim()) query = editor.getValue();
+async function runPython() {
+  var code = editor.getValue();
   
   var loading = document.getElementById("loading-indicator");
   var errEl = document.getElementById("error-message");
   var rc = document.getElementById("result-table-container");
-  if (!query.trim()) return;
+  if (!code.trim()) return;
   loading.style.display = "flex";
+  loading.innerHTML = '<div class="spinner"></div> Running...';
   errEl.style.display = "none";
   rc.innerHTML = "";
+
+  // Initialize Pyodide on first run if not ready yet
+  if (!pyodideReady) {
+    loading.innerHTML = '<div class="spinner"></div> Initializing (first load may take a moment)...';
+    await initPyodide();
+    if (!pyodideReady) return;
+    loading.innerHTML = '<div class="spinner"></div> Running...';
+  }
   try {
-    if (currentDataset !== "test_db") await db.exec("SET SESSION ROLE readonly_user;");
-    else await db.exec("RESET ROLE;");
-    var resArray = [await db.query(query, [], { rowMode: 'array' })];
-    loading.style.display = "none";
-    if (currentDataset === "test_db") await refreshSchema();
-    if (!resArray || resArray.length === 0) { rc.innerHTML = '<p style="padding:1rem;color:var(--pg-primary)">Query executed successfully (no results).</p>'; return; }
+    // Transform synchronous psycopg2 calls to async awaits
+    var transformedCode = code
+      .replace(/\bpsycopg2\.connect\s*\(/g, "await psycopg2.connect(")
+      .replace(/\b(\w+)\.cursor\s*\(\s*\)/g, "await $1.cursor()")
+      .replace(/\b(\w+)\.execute\s*\(/g, "await $1.execute(")
+      .replace(/\b(\w+)\.fetchall\s*\(\s*\)/g, "await $1.fetchall()")
+      .replace(/\b(\w+)\.fetchone\s*\(\s*\)/g, "await $1.fetchone()")
+      .replace(/\b(\w+)\.fetchmany\s*\((.*?)\)/g, "await $1.fetchmany($2)")
+      .replace(/\b(\w+)\.commit\s*\(\s*\)/g, "await $1.commit()")
+      .replace(/\b(\w+)\.rollback\s*\(\s*\)/g, "await $1.rollback()")
+      .replace(/\b(\w+)\.close\s*\(\s*\)/g, "await $1.close()");
     
-    // Extract main table from query for PK/FK matching (fallback for multi-queries)
-    var match = query.match(/(?:from|join|into|table)\s+([a-zA-Z0-9_]+)/i);
-    var mainTable = match ? match[1].toLowerCase() : null;
+    // Avoid double-awaiting
+    transformedCode = transformedCode.replace(/await\s+await\s+/g, "await ");
 
-    resArray.forEach(function(res, idx) {
-      if (!res || !res.rows) { 
-        var p = document.createElement("p");
-        p.style.cssText = "padding:1rem;color:var(--pg-primary)";
-        p.textContent = "Query " + (idx+1) + " executed successfully (no rows returned).";
-        rc.appendChild(p);
-        return; 
-      }
-      if (res.rows.length === 0) { 
-        var p = document.createElement("p");
-        p.style.cssText = "padding:1rem;color:var(--pg-text-muted)";
-        p.textContent = "Query " + (idx+1) + " executed successfully. 0 rows returned.";
-        rc.appendChild(p);
-        return; 
-      }
-      
-      var container = document.createElement("div");
-      container.style.marginBottom = "2rem";
-      
-      var table = document.createElement("table");
-      table.className = "result-table";
-      var thead = document.createElement("thead");
-      var hr = document.createElement("tr");
-      
-      var customHeaders = null;
-      var selMatch = query.match(/select\s+(.+?)\s+from\s+/is);
-      if (selMatch) {
-        var str = selMatch[1];
-        var cols = [];
-        var current = "";
-        var parenCount = 0;
-        for (var i = 0; i < str.length; i++) {
-          var char = str[i];
-          if (char === '(') parenCount++;
-          else if (char === ')') parenCount--;
-          else if (char === ',' && parenCount === 0) {
-            cols.push(current.trim());
-            current = "";
-            continue;
-          }
-          current += char;
-        }
-        cols.push(current.trim());
-        if (cols.length === res.fields.length) {
-          customHeaders = cols.map(function(c) {
-            var hasAs = c.match(/\s+as\s+/i);
-            if (hasAs) {
-               var parts = c.split(/\s+as\s+/i);
-               return parts[parts.length-1].trim();
-            }
-            return c;
-          });
-        }
-      }
+    // Clear globals and capture stdout
+    var captureSetup = "for k in list(globals().keys()): globals().pop(k) if k not in ['__builtins__', '__name__', '__doc__', '__package__', '__loader__', '__spec__'] else None\nimport io as _io, sys as _sys\n_capture_buf = _io.StringIO()\n_old_stdout = _sys.stdout\n_sys.stdout = _capture_buf\n";
+    var captureEnd = "\n_sys.stdout = _old_stdout\n_captured_output = _capture_buf.getvalue()\n_capture_buf.close()\n_captured_output";
 
-      var fields = res.fields.map(function(f, idx) { 
-        return (customHeaders && customHeaders[idx]) ? customHeaders[idx] : f.name; 
-      });
-      
-      fields.forEach(function(f, colIdx) { 
-        var th = document.createElement("th"); 
-        var info = null;
-        var rawColName = res.fields[colIdx].name;
+    var result = await pyodide.runPythonAsync(captureSetup + transformedCode + captureEnd);
+    
+    loading.style.display = "none";
 
-        if (mainTable && globalSchema[mainTable] && globalSchema[mainTable][rawColName]) {
-          info = globalSchema[mainTable][rawColName];
-        } else {
-          for (var t in globalSchema) {
-            if (globalSchema[t][rawColName]) {
-               info = globalSchema[t][rawColName];
-               break;
-            }
-          }
-        }
-
-        if (info) {
-          th.innerHTML = f + '<br><span class="th-datatype">' + info.type + '</span>';
-        } else {
-          th.textContent = f; 
-        }
-        hr.appendChild(th); 
-      });
-      thead.appendChild(hr);
-      table.appendChild(thead);
-      var tbody = document.createElement("tbody");
-      res.rows.forEach(function(row) {
-        var tr = document.createElement("tr");
-        fields.forEach(function(f, idx) {
-          var td = document.createElement("td");
-          var val = row[idx];
-          if (val instanceof Date) val = fmtDate(val);
-          td.textContent = val !== null ? val : "NULL";
-          if (val === null) td.classList.add("null-cell");
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-      container.appendChild(table);
-      rc.appendChild(container);
-    });
+    // Display output
+    var output = result ? result.toString() : "";
+    if (output.trim().length > 0) {
+      var pre = document.createElement("div");
+      pre.className = "console-output-area";
+      pre.textContent = output;
+      rc.appendChild(pre);
+    } else {
+      rc.innerHTML = '<p style="padding:1rem;color:var(--pg-primary)">Code executed successfully (no output).</p>';
+    }
   } catch(err) {
     loading.style.display = "none";
     errEl.style.display = "block";
-    errEl.textContent = err.message;
+    
+    // Fix Pyodide traceback line numbers and filename
+    var msg = err.message;
+    msg = msg.replace(/File "<exec>", line (\d+)/g, function(match, p1) {
+      var realLine = parseInt(p1) - 5; // Subtract lines from captureSetup
+      return 'File "<stdin>", line ' + Math.max(1, realLine);
+    });
+    
+    errEl.textContent = msg;
   }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  var sel = document.getElementById("dataset-select");
   var runBtn = document.getElementById("run-btn");
-  var resetBtn = document.getElementById("reset-btn");
   var toggleBtn = document.getElementById("toggle-schema-btn");
   var sidebar = document.getElementById("schema-sidebar");
   var icC = document.getElementById("icon-collapse");
   var icE = document.getElementById("icon-expand");
-  sel.addEventListener("change", function(e) { initDB(e.target.value); });
-  resetBtn.addEventListener("click", function() { initDB(sel.value); });
-  runBtn.addEventListener("click", runQuery);
+  var schemaSelect = document.getElementById("schema-select");
+  schemaSelect.addEventListener("change", function(e) { refreshSchema(e.target.value); });
+  runBtn.addEventListener("click", runPython);
   toggleBtn.addEventListener("click", function() {
     var c = sidebar.classList.toggle("collapsed");
     mainSec.classList.toggle("collapsed-sidebar", c);
@@ -1462,7 +1428,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   document.getElementById("font-inc").addEventListener("click", function() { updateFontSize(currentFontSize + 1); });
   document.getElementById("font-dec").addEventListener("click", function() { updateFontSize(currentFontSize - 1); });
-  editor.commands.addCommand({ name: "runQuery", bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" }, exec: function() { runQuery(); }, readOnly: true });
+  editor.commands.addCommand({ name: "runPython", bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" }, exec: function() { runPython(); }, readOnly: true });
 
   // Resizer Logic
   var resizer = document.getElementById('resizer-y');
@@ -1493,7 +1459,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  initDB(sel.value);
+  // Load schema for default DB, Pyodide lazily on first run
+  refreshSchema("flis");
 });
 </script>
 
@@ -1916,14 +1883,11 @@ document.addEventListener("DOMContentLoaded", function() {
   </script>
 <nav class="page-navigation column-page-right">
   <div class="nav-page nav-page-previous">
-      <a href="./weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span>
+      <a href="./sql_playground.html" class="pagination-link" aria-label="SQL Playground">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">SQL Playground</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./pythonDB_playground.html" class="pagination-link" aria-label="Python-DB Playground">
-        <span class="nav-page-text"><span class="chapter-title">Python-DB Playground</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
