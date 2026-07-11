@@ -5,3 +5,13 @@ img[src*="cover.png"] {
     height: 70px;
     /* Keep the aspect ratio */
 }
+
+/* Monospace Font for Code Blocks */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+
+pre,
+code,
+.CodeMirror {
+    font-family: 'Fira Code', monospace !important;
+    font-variant-ligatures: contextual;
+}

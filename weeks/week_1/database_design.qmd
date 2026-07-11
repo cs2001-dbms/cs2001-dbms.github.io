@@ -1,3 +1,9 @@
+---
+format:
+  pdf: default
+  html: default
+---
+
 ## Database Design
 
 Database design primarily involves designing the database schema to manage large, interconnected bodies of enterprise information.

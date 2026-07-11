@@ -2,6 +2,7 @@
 title: "Nested Subqueries"
 number-depth: 2
 format: 
+    pdf: default
     html:
         code-fold: false
 ---

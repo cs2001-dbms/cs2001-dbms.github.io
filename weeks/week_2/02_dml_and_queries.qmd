@@ -2,6 +2,7 @@
 title: "Data Manipulation (DML) & Basic Queries"
 number-depth: 2
 format: 
+    pdf: default
     html:
         code-fold: false
 ---

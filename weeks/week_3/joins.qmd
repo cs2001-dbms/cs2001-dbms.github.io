@@ -2,6 +2,7 @@
 title: "Joins"
 number-depth: 2
 format: 
+    pdf: default
     html:
         code-fold: false
 ---

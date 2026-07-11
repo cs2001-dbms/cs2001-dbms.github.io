@@ -1,41 +1,55 @@
 ---
-title: "About the Course"
-
-number-depth: 2
+title: "Database Management Systems"
+page-layout: full
+about:
+  template: solana
+  image-width: 15em
+  image-shape: rounded
+  links:
+    - icon: book
+      text: Start Course
+      href: weeks/week_1/intro_to_dbms.qmd
+    - icon: terminal
+      text: SQL Playground
+      href: sql_playground.qmd
+    - icon: terminal
+      text: Python Playground
+      href: pythonDB_playground.qmd
 ---
 
+### Welcome to DBMS (CS2001) Course
 
-## About the course
+This portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.
 
 
-##  Course Overview
+#### Course Overview
+- **Course ID:** BSCS2001
+- **Course Type:** Programming 
+- **Course Credits:** 4 Credits 
+- **Pre-requisites:** None
 
-* **Course ID:** BSCS2001
-* **Course Type:** Programming 
-* **Course Credits:** 4 Credits 
-* **Pre-requisites:** None! 
 
----
+#### Textbook
+- **Title:** *Database System Concepts* (7th Ed.)
+- **Authors:** Silberschatz, Korth, Sudarshan
+- **Publisher:** McGraw-Hill
 
-##  Course Faculty
-
-###  Faculty Lead
-**Dr. Partha Pratim Das** *Professor, Department of Computer Science and Engineering* **IIT Kharagpur**
-
-###  Course Instructor
-**Manidipa Bhattacharjee** 
 
 ---
 
-## Textbook
+### Course Faculty
 
-* **Title:** *Database System Concepts* (7th Edition)
-* **Authors:** Avi Silberschatz, Henry F. Korth, S. Sudarshan
-* **Publisher:** McGraw-Hill
+**Dr. Partha Pratim Das**  
+*Professor, Department of Computer Science and Engineering, IIT Kharagpur*
+
+### Course Instructors:
+
+**Manidipa Bhattacharjee**
+
+**Pravin Sankar**
 
 ---
 
-##  How to Use This Portal
+### How to Use This Portal
 
-The content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.
-
+The content is organized chronologically. Just expand the navigation menu on the left sidebar or click **Start Course** above to jump into specific topics.

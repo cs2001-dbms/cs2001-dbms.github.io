@@ -1,3 +1,9 @@
+---
+format:
+  pdf: default
+  html: default
+---
+
 ## View of Data
 
 ### Data Abstraction

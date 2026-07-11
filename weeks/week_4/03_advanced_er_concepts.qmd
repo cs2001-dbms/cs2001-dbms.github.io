@@ -1,6 +1,7 @@
 ---
 title: "Advanced ER Concepts"
 format:
+  pdf: default
   html:
     toc: true
 ---
