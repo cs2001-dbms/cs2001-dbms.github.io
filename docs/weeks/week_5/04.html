@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Algebra and Calculus – Database Management Systems</title>
+<title>Lossless Join Decomposition &amp; Dependency Preservation – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_4/02_entity_relationship_model.html" rel="next">
-<link href="../../weeks/week_3/advanced_sql.html" rel="prev">
+<link href="../../sql_playground.html" rel="next">
+<link href="../../weeks/week_5/03.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -280,7 +280,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/04.html"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -403,16 +403,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-04</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Relational Algebra and Calculus</span></a>
+  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Algebra and Calculus</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -429,31 +429,31 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-05</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Good Relational Design</span></a>
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory &amp; Normal Forms</span></a>
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms for Functional Dependencies</span></a>
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/04.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></a>
+  <a href="../../weeks/week_5/04.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></a>
   </div>
 </li>
       </ul>
@@ -489,19 +489,26 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#introduction-to-query-languages" id="toc-introduction-to-query-languages" class="nav-link active" data-scroll-target="#introduction-to-query-languages">Introduction to Query Languages</a></li>
-  <li><a href="#relational-algebra-ra" id="toc-relational-algebra-ra" class="nav-link" data-scroll-target="#relational-algebra-ra">Relational Algebra (RA)</a>
+  <li><a href="#lossless-join-decomposition" id="toc-lossless-join-decomposition" class="nav-link active" data-scroll-target="#lossless-join-decomposition">Lossless Join Decomposition</a>
   <ul class="collapse">
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
-  <li><a href="#division-operation" id="toc-division-operation" class="nav-link" data-scroll-target="#division-operation">Division Operation</a></li>
+  <li><a href="#example-supplier-parts-lossy" id="toc-example-supplier-parts-lossy" class="nav-link" data-scroll-target="#example-supplier-parts-lossy">Example: Supplier-Parts (Lossy)</a></li>
+  <li><a href="#example-supplier-parts-lossless" id="toc-example-supplier-parts-lossless" class="nav-link" data-scroll-target="#example-supplier-parts-lossless">Example: Supplier-Parts (Lossless)</a></li>
+  <li><a href="#example-two-decompositions-different-outcomes" id="toc-example-two-decompositions-different-outcomes" class="nav-link" data-scroll-target="#example-two-decompositions-different-outcomes">Example: Two Decompositions, Different Outcomes</a></li>
   </ul></li>
-  <li><a href="#tuple-relational-calculus-trc" id="toc-tuple-relational-calculus-trc" class="nav-link" data-scroll-target="#tuple-relational-calculus-trc">Tuple Relational Calculus (TRC)</a>
+  <li><a href="#dependency-preservation" id="toc-dependency-preservation" class="nav-link" data-scroll-target="#dependency-preservation">Dependency Preservation</a>
   <ul class="collapse">
-  <li><a href="#trc-examples" id="toc-trc-examples" class="nav-link" data-scroll-target="#trc-examples">TRC Examples</a></li>
+  <li><a href="#worked-example-cyclic-fds" id="toc-worked-example-cyclic-fds" class="nav-link" data-scroll-target="#worked-example-cyclic-fds">Worked Example (Cyclic FDs)</a></li>
+  <li><a href="#testing-polynomial-method-preferred" id="toc-testing-polynomial-method-preferred" class="nav-link" data-scroll-target="#testing-polynomial-method-preferred">Testing (Polynomial Method — Preferred)</a></li>
+  <li><a href="#worked-example-polynomial-method" id="toc-worked-example-polynomial-method" class="nav-link" data-scroll-target="#worked-example-polynomial-method">Worked Example (Polynomial Method)</a></li>
   </ul></li>
-  <li><a href="#domain-relational-calculus-drc" id="toc-domain-relational-calculus-drc" class="nav-link" data-scroll-target="#domain-relational-calculus-drc">Domain Relational Calculus (DRC)</a>
+  <li><a href="#superkey-calculation-formulas" id="toc-superkey-calculation-formulas" class="nav-link" data-scroll-target="#superkey-calculation-formulas">Superkey Calculation Formulas</a>
   <ul class="collapse">
-  <li><a href="#drc-examples" id="toc-drc-examples" class="nav-link" data-scroll-target="#drc-examples">DRC Examples</a></li>
+  <li><a href="#case-1-only-1-candidate-key-single-attribute" id="toc-case-1-only-1-candidate-key-single-attribute" class="nav-link" data-scroll-target="#case-1-only-1-candidate-key-single-attribute">Case 1: Only 1 Candidate Key (Single Attribute)</a></li>
+  <li><a href="#case-2-only-1-candidate-key-composite-key" id="toc-case-2-only-1-candidate-key-composite-key" class="nav-link" data-scroll-target="#case-2-only-1-candidate-key-composite-key">Case 2: Only 1 Candidate Key (Composite Key)</a></li>
+  <li><a href="#case-3-every-single-attribute-is-a-candidate-key" id="toc-case-3-every-single-attribute-is-a-candidate-key" class="nav-link" data-scroll-target="#case-3-every-single-attribute-is-a-candidate-key">Case 3: Every Single Attribute is a Candidate Key</a></li>
+  <li><a href="#case-4-two-distinct-candidate-keys" id="toc-case-4-two-distinct-candidate-keys" class="nav-link" data-scroll-target="#case-4-two-distinct-candidate-keys">Case 4: Two Distinct Candidate Keys</a></li>
+  <li><a href="#generic-set-formula" id="toc-generic-set-formula" class="nav-link" data-scroll-target="#generic-set-formula">Generic Set Formula</a></li>
+  <li><a href="#mathematical-representation" id="toc-mathematical-representation" class="nav-link" data-scroll-target="#mathematical-representation">Mathematical Representation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -510,9 +517,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/04.html"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Algebra and Calculus</span></h1>
+<h1 class="title"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></h1>
 </div>
 
 
@@ -529,111 +536,160 @@ window.Quarto = {
 </header>
 
 
-<p><img src="thumb_ra.png" class="img-fluid"></p>
-<section id="introduction-to-query-languages" class="level1">
-<h1>Introduction to Query Languages</h1>
-<p>Query languages in DBMS are broadly classified into two categories:</p>
-<ol type="1">
-<li><strong>Procedural Query Languages</strong>: The user specifies <em>what</em> data is needed and <em>how</em> to get it. Relational Algebra is a procedural language.</li>
-<li><strong>Non-Procedural (Declarative) Query Languages</strong>: The user specifies <em>what</em> data is needed without specifying <em>how</em> to get it. Relational Calculus is a non-procedural language.</li>
-</ol>
-<hr>
-</section>
-<section id="relational-algebra-ra" class="level1">
-<h1>Relational Algebra (RA)</h1>
-<p>Relational Algebra is a procedural query language that takes one or two relations as input and produces a new relation as a result. The fundamental operations include:</p>
+<section id="lossless-join-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="lossless-join-decomposition">Lossless Join Decomposition</h2>
+<p>For <span class="math inline">\(R\)</span> decomposed into <span class="math inline">\(R_1, R_2\)</span>, we require that for every legal relation <span class="math inline">\(r\)</span> on <span class="math inline">\(R\)</span>:</p>
+<p><span class="math display">\[r = \pi_{R_1}(r) \bowtie \pi_{R_2}(r)\]</span></p>
+<p><strong>Sufficient condition:</strong> the decomposition is lossless if at least one of these is in <span class="math inline">\(F^+\)</span>:</p>
+<p><span class="math display">\[R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2\]</span></p>
+<blockquote class="blockquote">
+<p>⚠️ This is sufficient, but only <em>necessary</em> when all constraints are FDs (other constraint types can change the picture).</p>
+</blockquote>
+<p><strong>Full check:</strong></p>
 <ul>
-<li><span class="math inline">\(\sigma\)</span> - <strong>Select</strong>: Filters rows based on a given condition.</li>
-<li><span class="math inline">\(\pi\)</span> - <strong>Project</strong>: Selects specific columns from a relation.</li>
-<li><span class="math inline">\(\neg\)</span> - <strong>Negation (Not)</strong></li>
-<li><span class="math inline">\(\cup\)</span> - <strong>Union</strong>: Combines rows of two relations.</li>
-<li><span class="math inline">\(\cap\)</span> - <strong>Intersection</strong>: Finds common rows between two relations.</li>
-<li><span class="math inline">\(\times\)</span> - <strong>Cartesian Product</strong>: Combines each row of the first relation with each row of the second.</li>
-<li><span class="math inline">\(-\)</span> - <strong>Set Difference (Except)</strong>: Finds rows present in the first relation but not in the second.</li>
-<li><span class="math inline">\(⋈\)</span> - <strong>Natural Join</strong>: Combines two relations based on matching values in common attributes.</li>
+<li><span class="math inline">\(R_1 \cup R_2 = R\)</span></li>
+<li><span class="math inline">\(R_1 \cap R_2 \neq \phi\)</span></li>
+<li><span class="math inline">\(R_1 \cap R_2 \rightarrow R_1\)</span> or <span class="math inline">\(R_1 \cap R_2 \rightarrow R_2\)</span></li>
 </ul>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p><strong>1. Find all the names of students whose age is greater than 25, or who are enrolled in Maths</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age, Subject)</code></p>
-<p>First, we filter the <code>Students</code> table using the Selection (<span class="math inline">\(\sigma\)</span>) operation for the condition <code>Age &gt; 25 OR Subject = 'Maths'</code>. Then, we use the Projection (<span class="math inline">\(\pi\)</span>) operation to only retrieve the <code>Name</code> attribute.</p>
-<p><span class="math display">\[ \pi_{Name}(\sigma_{Age&gt;25 \space \lor \space Subject='Maths'}(Students)) \]</span></p>
-<p><strong>2. Find the name and sports of the student whose age is less than 25 and awards is greater than 3</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age)</code> - <code>Activity(RollNo, Sports, Awards)</code></p>
-<p>Here we need data from two different domains (the <code>Students</code> and <code>Activity</code> tables). We use a Natural Join (<span class="math inline">\(⋈\)</span>) to combine them on their common attribute (<code>RollNo</code>), filter the result, and project the specific columns.</p>
-<p><span class="math display">\[ \pi_{Name, Sports}(\sigma_{Age&lt;25 \space \land \space Awards&gt;3}(Students ⋈ Activity)) \]</span></p>
+<section id="example-supplier-parts-lossy" class="level3">
+<h3 class="anchored" data-anchor-id="example-supplier-parts-lossy">Example: Supplier-Parts (Lossy)</h3>
+<p><code>Supplier_Parts(S#, Sname, City, P#, Qty)</code>, with <code>S# → Sname, City</code> and <code>(S#, P#) → Qty</code>.</p>
+<p><strong>Bad decomposition:</strong> <code>Supplier(S#, Sname, City, Qty)</code>, <code>Parts(P#, Qty)</code></p>
+<p>Common attribute is <code>Qty</code> — not a superkey of either side. Joining back produces <strong>extra tuples</strong>: lossy. It also fails to preserve <code>(S#, P#) → Qty</code>.</p>
 </section>
-<section id="division-operation" class="level2">
-<h2 class="anchored" data-anchor-id="division-operation">Division Operation</h2>
-<p>The <strong>Division (<span class="math inline">\(r \div s\)</span>)</strong> operation is used in queries that involve the word “every” or “all”. For example, “Find students who have taken <em>all</em> courses offered in the Biology department.”</p>
-<p>Suppose we have two relations: <span class="math inline">\(r(A, B, C)\)</span> and <span class="math inline">\(s(B, C)\)</span>. The result of <span class="math inline">\(r \div s\)</span> will be a relation with the attribute <span class="math inline">\(A\)</span>, containing values of <span class="math inline">\(A\)</span> that match with <em>all</em> the tuples present in <span class="math inline">\(s\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="division.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption>Division Operation Example</figcaption>
-</figure>
-</div>
-<p>In the mathematical example from the notes, if we perform <span class="math inline">\(r \div s\)</span>:</p>
+<section id="example-supplier-parts-lossless" class="level3">
+<h3 class="anchored" data-anchor-id="example-supplier-parts-lossless">Example: Supplier-Parts (Lossless)</h3>
+<p><strong>Good decomposition:</strong> <code>Supplier(S#, Sname, City)</code>, <code>Parts(S#, P#, Qty)</code></p>
+<p>Common attribute is <code>S#</code>, a superkey of <code>Supplier</code>. Joining back reconstructs the original exactly: lossless, and all dependencies preserved.</p>
+</section>
+<section id="example-two-decompositions-different-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="example-two-decompositions-different-outcomes">Example: Two Decompositions, Different Outcomes</h3>
+<p><span class="math inline">\(R = (A,B,C)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C\}\)</span></p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>C</th>
+<th>Decomposition</th>
+<th>Lossless?</th>
+<th>Dependency Preserving?</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\alpha\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(R_1=(A,B),\ R_2=(B,C)\)</span></td>
+<td>Yes — <span class="math inline">\(R_1 \cap R_2 = \{B\}\)</span>, <span class="math inline">\(B \rightarrow BC\)</span></td>
+<td>Yes</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\gamma\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
+<td><span class="math inline">\(R_1=(A,B),\ R_2=(A,C)\)</span></td>
+<td>Yes — <span class="math inline">\(R_1 \cap R_2 = \{A\}\)</span>, <span class="math inline">\(A \rightarrow AB\)</span></td>
+<td><strong>No</strong> — <span class="math inline">\(B \rightarrow C\)</span> can’t be checked without joining</td>
 </tr>
 </tbody>
 </table>
-<p>The output would be the values in column <code>A</code> (<span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span>) that are associated with all tuples of the divisor.</p>
+<p>Same relation, same FDs — the <em>choice</em> of split determines whether both properties hold.</p>
 <hr>
 </section>
 </section>
-<section id="tuple-relational-calculus-trc" class="level1">
-<h1>Tuple Relational Calculus (TRC)</h1>
-<p>Tuple Relational Calculus is a <strong>non-procedural</strong> query language. Instead of writing operations to fetch data, we write mathematical predicates that define the resulting tuples.</p>
-<p>A basic TRC query is of the form:</p>
-<p><span class="math display">\[ \{t \space | \space P(t)\} \]</span></p>
-<p>Where: - <span class="math inline">\(t\)</span> = The resulting tuple(s) - <span class="math inline">\(P(t)\)</span> = The predicate (a condition that evaluates to true or false for tuple <span class="math inline">\(t\)</span>)</p>
-<section id="trc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="trc-examples">TRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p><span class="math display">\[ \{t \space | \space \exists \space s \in students (t.name=s.name \land s.age=21) \} \]</span></p>
-<p><em>Intuition:</em> We are looking for a tuple <span class="math inline">\(t\)</span> such that there exists (<span class="math inline">\(\exists\)</span>) a tuple <span class="math inline">\(s\)</span> in the <code>students</code> relation where the name in our result matches the name in the student record, and the student’s age is 21.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{M \space | \space \exists \space E \in employee \space \exists \space D \in department ( E.id=D.id \land D.name='Manufacturing' \land M.name=E.name) \} \]</span></p>
-<p><em>Intuition:</em> We want a tuple <span class="math inline">\(M\)</span> such that there exists an employee <span class="math inline">\(E\)</span> and a department <span class="math inline">\(D\)</span> where their IDs match, the department name is ‘Manufacturing’, and our result tuple <span class="math inline">\(M\)</span> takes the name of that employee <span class="math inline">\(E\)</span>.</p>
-<hr>
+<section id="dependency-preservation" class="level2">
+<h2 class="anchored" data-anchor-id="dependency-preservation">Dependency Preservation</h2>
+<p>Let <span class="math inline">\(F_i\)</span> be the set of dependencies of <span class="math inline">\(F^+\)</span> to only the attributes in <span class="math inline">\(R_i\)</span>. A decomposition into <span class="math inline">\(R_1, ..., R_n\)</span> is <strong>dependency preserving</strong> if:</p>
+<p><span class="math display">\[(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+\]</span></p>
+<p>If not, checking updates for FD violations requires an expensive join.</p>
+<section id="worked-example-cyclic-fds" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-cyclic-fds">Worked Example (Cyclic FDs)</h3>
+<p><span class="math inline">\(R(A,B,C,D)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}\)</span></p>
+<p>Decomposition: <span class="math inline">\(R_1(A,B),\ R_2(B,C),\ R_3(C,D)\)</span></p>
+<p><code>A→B</code>, <code>B→C</code>, <code>C→D</code> are trivially preserved (each lives entirely inside one <span class="math inline">\(R_i\)</span>). The only one to check is <code>D→A</code>:</p>
+<p><span class="math display">\[D \rightarrow C \ (R_3) \Rightarrow C \rightarrow B\ (R_2) \Rightarrow B \rightarrow A\ (R_1) \Rightarrow D \rightarrow A \text{ by transitivity}\]</span></p>
+<p>All dependencies preserved.</p>
+</section>
+<section id="testing-polynomial-method-preferred" class="level3">
+<h3 class="anchored" data-anchor-id="testing-polynomial-method-preferred">Testing (Polynomial Method — Preferred)</h3>
+<pre><code>result ← α
+while (result changes) do
+    for each Ri in the decomposition:
+        t = (result ∩ Ri)+ ∩ Ri      -- closure computed w.r.t. F, restricted to Ri
+        result ← result ∪ t
+-- α → β is preserved iff β ⊆ result</code></pre>
+<p>Apply this test to every FD in <span class="math inline">\(F\)</span> to confirm the whole decomposition preserves dependencies.</p>
+</section>
+<section id="worked-example-polynomial-method" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-polynomial-method">Worked Example (Polynomial Method)</h3>
+<p><span class="math inline">\(R(A,B,C,D,E,F)\)</span>, <span class="math inline">\(F = \{A \rightarrow BCD,\ A \rightarrow EF,\ BC \rightarrow AD,\ BC \rightarrow E,\ BC \rightarrow F,\ B \rightarrow F,\ D \rightarrow E\}\)</span></p>
+<p>Decomposition: <span class="math inline">\(R_1(A,B,C,D),\ R_2(B,F),\ R_3(D,E)\)</span></p>
+<p><code>A→BCD</code>, <code>BC→AD</code> (both fully inside <span class="math inline">\(R_1\)</span>), <code>B→F</code> (inside <span class="math inline">\(R_2\)</span>), <code>D→E</code> (inside <span class="math inline">\(R_3\)</span>) are automatically preserved. Remaining to check: <code>A→E</code>, <code>A→F</code>, <code>BC→E</code>, <code>BC→F</code>.</p>
+<p><strong>Checking <code>A → EF</code>:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Round</th>
+<th>Apply</th>
+<th>Result grows to</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Start</td>
+<td>—</td>
+<td><code>{A}</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R_1\)</span></td>
+<td><span class="math inline">\((A)^+ \cap R_1\)</span></td>
+<td><code>{A,B,C,D}</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(R_2\)</span></td>
+<td><span class="math inline">\((ABCD)^+ \cap R_2\)</span></td>
+<td><code>{...,F}</code> (via <code>B→F</code>)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R_3\)</span></td>
+<td><span class="math inline">\((ABCDF)^+ \cap R_3\)</span></td>
+<td><code>{...,E}</code> (via <code>D→E</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Result contains <code>E,F</code> ⇒ <code>A→EF</code> preserved.</p>
+<p><strong>Checking <code>BC → E, F</code>:</strong> same process starting from <code>{B,C}</code> — reaches <code>A,D</code> via <span class="math inline">\(R_1\)</span> (<code>BC→AD</code>), then <code>F</code> via <span class="math inline">\(R_2\)</span> (<code>B→F</code>), then <code>E</code> via <span class="math inline">\(R_3\)</span> (<code>D→E</code>). Both preserved.</p>
+<p>All dependencies preserved — this decomposition is dependency preserving.</p>
 </section>
 </section>
-<section id="domain-relational-calculus-drc" class="level1">
-<h1>Domain Relational Calculus (DRC)</h1>
-<p>Domain Relational Calculus is another non-procedural query language, equivalent in expressive power to Tuple Relational Calculus. However, instead of using whole tuples as variables, DRC uses variables that take values from domains (individual attributes/columns).</p>
-<p>A basic DRC query is of the form:</p>
-<p><span class="math display">\[ \{ &lt;x_1, x_2, ... ,x_n&gt; \space | \space P(x_1, x_2, ... , x_n)\} \]</span></p>
-<p>Where: - <span class="math inline">\(&lt;x_1, x_2, ... , x_n&gt;\)</span> represents domain variables (e.g., individual columns like name, age, etc.) - <span class="math inline">\(P\)</span> represents a predicate formula similar to TRC.</p>
-<section id="drc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="drc-examples">DRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p>Schema: - <code>student(name, age, marks)</code></p>
-<p><span class="math display">\[ \{&lt;a&gt; | \space \exists \space b \space (&lt;a,b,c&gt; \in students \space \land \space b=21)  \} \]</span></p>
-<p><em>Intuition:</em> We want to output a single domain variable <span class="math inline">\(a\)</span> (which represents the name), such that there exists some marks variable <span class="math inline">\(c\)</span> where the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> exists in the <code>students</code> relation, and the age variable <span class="math inline">\(b = 21\)</span>.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{ &lt;b&gt; |\space \exists \space a,c  \space (&lt;a, b, c&gt; \in employee) \space \land \space \exists \space x,y,z \space (&lt;a, x, y, z&gt; \in department \space \land y='Manufacturing') \} \]</span></p>
-<p><em>(Note: The notes had a slight variable mismatch. I corrected it here to ensure variable <span class="math inline">\(a\)</span> maps to <code>id</code>, <span class="math inline">\(b\)</span> maps to <code>name</code>, <span class="math inline">\(c\)</span> maps to <code>salary</code>, and in the department relation, the first variable <span class="math inline">\(a\)</span> corresponds to <code>id</code>, ensuring the join condition.)</em></p>
-<p><em>Intuition:</em> We want to output variable <span class="math inline">\(b\)</span> (employee name). To do this, we assert that the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> must exist in <code>employee</code>. Additionally, we assert that the tuple <span class="math inline">\(&lt;a, x, y, z&gt;\)</span> must exist in <code>department</code> where the variable <span class="math inline">\(y\)</span> (department name) is exactly ‘Manufacturing’. The shared variable <span class="math inline">\(a\)</span> (the ID) effectively joins the two relations.</p>
+<section id="superkey-calculation-formulas" class="level2">
+<h2 class="anchored" data-anchor-id="superkey-calculation-formulas">Superkey Calculation Formulas</h2>
+<p>Given a relation with <span class="math inline">\(N\)</span> total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.</p>
+<section id="case-1-only-1-candidate-key-single-attribute" class="level3">
+<h3 class="anchored" data-anchor-id="case-1-only-1-candidate-key-single-attribute">Case 1: Only 1 Candidate Key (Single Attribute)</h3>
+<p>If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = <span class="math inline">\(\{A_1\}\)</span>): <span class="math display">\[\text{Total Superkeys} = 2^{N-1}\]</span></p>
+</section>
+<section id="case-2-only-1-candidate-key-composite-key" class="level3">
+<h3 class="anchored" data-anchor-id="case-2-only-1-candidate-key-composite-key">Case 2: Only 1 Candidate Key (Composite Key)</h3>
+<p>If the relation has only one candidate key, and that key is a composite key formed by <span class="math inline">\(k\)</span> attributes: <span class="math display">\[\text{Total Superkeys} = 2^{N-k}\]</span></p>
+</section>
+<section id="case-3-every-single-attribute-is-a-candidate-key" class="level3">
+<h3 class="anchored" data-anchor-id="case-3-every-single-attribute-is-a-candidate-key">Case 3: Every Single Attribute is a Candidate Key</h3>
+<p>If the relation has <span class="math inline">\(N\)</span> candidate keys (meaning every single attribute in the relation is its own independent candidate key): <span class="math display">\[\text{Total Superkeys} = 2^N - 1\]</span></p>
+</section>
+<section id="case-4-two-distinct-candidate-keys" class="level3">
+<h3 class="anchored" data-anchor-id="case-4-two-distinct-candidate-keys">Case 4: Two Distinct Candidate Keys</h3>
+<p>When a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the <strong>Principle of Inclusion-Exclusion</strong> to avoid double-counting the superkeys that contain both keys.</p>
+</section>
+<section id="generic-set-formula" class="level3">
+<h3 class="anchored" data-anchor-id="generic-set-formula">Generic Set Formula</h3>
+<p><span class="math display">\[\text{Max Superkeys} = (\text{Superkeys with } A_1) + (\text{Superkeys with } A_2) - (\text{Superkeys with both } A_1 \text{ and } A_2)\]</span></p>
+</section>
+<section id="mathematical-representation" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-representation">Mathematical Representation</h3>
+<p>Let <span class="math inline">\(m\)</span> be the number of attributes forming the first candidate key, and <span class="math inline">\(n\)</span> be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:</p>
+<p><span class="math display">\[\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\]</span></p>
+<blockquote class="blockquote">
+<p>📌 <strong>Note:</strong> If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from <span class="math inline">\((m+n)\)</span> to the number of attributes in their absolute union: <span class="math inline">\(|\text{Key}_1 \cup \text{Key}_2|\)</span>.</p>
+</blockquote>
 
 
 
@@ -1056,13 +1112,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_3/advanced_sql.html" class="pagination-link" aria-label="Advanced SQL">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced SQL</span></span>
+      <a href="../../weeks/week_5/03.html" class="pagination-link" aria-label="Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_4/02_entity_relationship_model.html" class="pagination-link" aria-label="Entity-Relationship Model">
-        <span class="nav-page-text"><span class="chapter-title">Entity-Relationship Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../sql_playground.html" class="pagination-link" aria-label="SQL Playground">
+        <span class="nav-page-text"><span class="chapter-title">SQL Playground</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

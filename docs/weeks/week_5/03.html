@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Algebra and Calculus – Database Management Systems</title>
+<title>Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_4/02_entity_relationship_model.html" rel="next">
-<link href="../../weeks/week_3/advanced_sql.html" rel="prev">
+<link href="../../weeks/week_5/04.html" rel="next">
+<link href="../../weeks/week_5/02.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -280,7 +280,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/03.html"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -403,16 +403,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-04</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Relational Algebra and Calculus</span></a>
+  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Algebra and Calculus</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -429,26 +429,26 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-05</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Good Relational Design</span></a>
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory &amp; Normal Forms</span></a>
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms for Functional Dependencies</span></a>
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -489,20 +489,20 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#introduction-to-query-languages" id="toc-introduction-to-query-languages" class="nav-link active" data-scroll-target="#introduction-to-query-languages">Introduction to Query Languages</a></li>
-  <li><a href="#relational-algebra-ra" id="toc-relational-algebra-ra" class="nav-link" data-scroll-target="#relational-algebra-ra">Relational Algebra (RA)</a>
+  <li><a href="#extraneous-attributes" id="toc-extraneous-attributes" class="nav-link active" data-scroll-target="#extraneous-attributes">Extraneous Attributes</a>
   <ul class="collapse">
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
-  <li><a href="#division-operation" id="toc-division-operation" class="nav-link" data-scroll-target="#division-operation">Division Operation</a></li>
+  <li><a href="#worked-examples" id="toc-worked-examples" class="nav-link" data-scroll-target="#worked-examples">Worked Examples</a></li>
+  <li><a href="#testing-for-extraneous-attributes" id="toc-testing-for-extraneous-attributes" class="nav-link" data-scroll-target="#testing-for-extraneous-attributes">Testing for Extraneous Attributes</a></li>
   </ul></li>
-  <li><a href="#tuple-relational-calculus-trc" id="toc-tuple-relational-calculus-trc" class="nav-link" data-scroll-target="#tuple-relational-calculus-trc">Tuple Relational Calculus (TRC)</a>
+  <li><a href="#equivalence-of-fd-sets" id="toc-equivalence-of-fd-sets" class="nav-link" data-scroll-target="#equivalence-of-fd-sets">Equivalence of FD Sets</a></li>
+  <li><a href="#canonical-cover" id="toc-canonical-cover" class="nav-link" data-scroll-target="#canonical-cover">Canonical Cover</a>
   <ul class="collapse">
-  <li><a href="#trc-examples" id="toc-trc-examples" class="nav-link" data-scroll-target="#trc-examples">TRC Examples</a></li>
+  <li><a href="#trimming-the-right-hand-side-rhs" id="toc-trimming-the-right-hand-side-rhs" class="nav-link" data-scroll-target="#trimming-the-right-hand-side-rhs">Trimming the Right-Hand Side (RHS)</a></li>
+  <li><a href="#trimming-the-left-hand-side-lhs" id="toc-trimming-the-left-hand-side-lhs" class="nav-link" data-scroll-target="#trimming-the-left-hand-side-lhs">Trimming the Left-Hand Side (LHS)</a></li>
+  <li><a href="#algorithm-to-compute-a-canonical-cover" id="toc-algorithm-to-compute-a-canonical-cover" class="nav-link" data-scroll-target="#algorithm-to-compute-a-canonical-cover">Algorithm to Compute a Canonical Cover</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example">Worked Example</a></li>
   </ul></li>
-  <li><a href="#domain-relational-calculus-drc" id="toc-domain-relational-calculus-drc" class="nav-link" data-scroll-target="#domain-relational-calculus-drc">Domain Relational Calculus (DRC)</a>
-  <ul class="collapse">
-  <li><a href="#drc-examples" id="toc-drc-examples" class="nav-link" data-scroll-target="#drc-examples">DRC Examples</a></li>
-  </ul></li>
+  <li><a href="#prime-and-non-prime-attributes" id="toc-prime-and-non-prime-attributes" class="nav-link" data-scroll-target="#prime-and-non-prime-attributes">Prime and Non-Prime Attributes:</a></li>
   </ul>
 </nav>
     </div>
@@ -510,9 +510,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/03.html"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Algebra and Calculus</span></h1>
+<h1 class="title"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></h1>
 </div>
 
 
@@ -529,115 +529,116 @@ window.Quarto = {
 </header>
 
 
-<p><img src="thumb_ra.png" class="img-fluid"></p>
-<section id="introduction-to-query-languages" class="level1">
-<h1>Introduction to Query Languages</h1>
-<p>Query languages in DBMS are broadly classified into two categories:</p>
-<ol type="1">
-<li><strong>Procedural Query Languages</strong>: The user specifies <em>what</em> data is needed and <em>how</em> to get it. Relational Algebra is a procedural language.</li>
-<li><strong>Non-Procedural (Declarative) Query Languages</strong>: The user specifies <em>what</em> data is needed without specifying <em>how</em> to get it. Relational Calculus is a non-procedural language.</li>
-</ol>
+<p>We already have <strong>attribute closure</strong> (<span class="math inline">\(\alpha^+\)</span>) as our cheap, go-to tool for testing superkeys and individual FDs. Now we use it to answer a sharper question: <em>does every FD in our set actually earn its place, in full?</em> This leads us to <strong>extraneous attributes</strong> and, ultimately, the <strong>canonical cover</strong> — the leanest possible version of a set of FDs.</p>
 <hr>
-</section>
-<section id="relational-algebra-ra" class="level1">
-<h1>Relational Algebra (RA)</h1>
-<p>Relational Algebra is a procedural query language that takes one or two relations as input and produces a new relation as a result. The fundamental operations include:</p>
+<section id="extraneous-attributes" class="level2">
+<h2 class="anchored" data-anchor-id="extraneous-attributes">Extraneous Attributes</h2>
+<p>Some FD sets carry dead weight — attributes on either side of an FD that don’t actually contribute anything. An attribute is <strong>extraneous</strong> if we can remove it without losing any information from the FD set.</p>
 <ul>
-<li><span class="math inline">\(\sigma\)</span> - <strong>Select</strong>: Filters rows based on a given condition.</li>
-<li><span class="math inline">\(\pi\)</span> - <strong>Project</strong>: Selects specific columns from a relation.</li>
-<li><span class="math inline">\(\neg\)</span> - <strong>Negation (Not)</strong></li>
-<li><span class="math inline">\(\cup\)</span> - <strong>Union</strong>: Combines rows of two relations.</li>
-<li><span class="math inline">\(\cap\)</span> - <strong>Intersection</strong>: Finds common rows between two relations.</li>
-<li><span class="math inline">\(\times\)</span> - <strong>Cartesian Product</strong>: Combines each row of the first relation with each row of the second.</li>
-<li><span class="math inline">\(-\)</span> - <strong>Set Difference (Except)</strong>: Finds rows present in the first relation but not in the second.</li>
-<li><span class="math inline">\(⋈\)</span> - <strong>Natural Join</strong>: Combines two relations based on matching values in common attributes.</li>
+<li><p><strong>Extraneous on the left (<span class="math inline">\(\alpha\)</span>):</strong> Attribute <span class="math inline">\(A \in \alpha\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if <span class="math inline">\(F\)</span> still logically implies <span class="math inline">\((\alpha - A) \rightarrow \beta\)</span> — i.e., dropping <span class="math inline">\(A\)</span> makes the FD <em>stronger</em> (broader left side removed) but the same conclusion still holds.</p>
+<p><em>Simpler Rule:</em> An attribute on the left is dead weight if the remaining attributes on the left are already powerful enough to find the right side.</p></li>
+<li><p><strong>Extraneous on the right (<span class="math inline">\(\beta\)</span>):</strong> Attribute <span class="math inline">\(A \in \beta\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if the <em>remaining</em> set of FDs — with <span class="math inline">\(A\)</span> dropped from <span class="math inline">\(\beta\)</span> — still logically implies the original <span class="math inline">\(\alpha \rightarrow \beta\)</span> (i.e., <span class="math inline">\(A\)</span> was derivable anyway).</p>
+<p><em>Simpler Rule:</em> An attribute on the right is dead weight if you can already figure it out by playing a chain-reaction game with the other rules in your system.</p></li>
 </ul>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p><strong>1. Find all the names of students whose age is greater than 25, or who are enrolled in Maths</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age, Subject)</code></p>
-<p>First, we filter the <code>Students</code> table using the Selection (<span class="math inline">\(\sigma\)</span>) operation for the condition <code>Age &gt; 25 OR Subject = 'Maths'</code>. Then, we use the Projection (<span class="math inline">\(\pi\)</span>) operation to only retrieve the <code>Name</code> attribute.</p>
-<p><span class="math display">\[ \pi_{Name}(\sigma_{Age&gt;25 \space \lor \space Subject='Maths'}(Students)) \]</span></p>
-<p><strong>2. Find the name and sports of the student whose age is less than 25 and awards is greater than 3</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age)</code> - <code>Activity(RollNo, Sports, Awards)</code></p>
-<p>Here we need data from two different domains (the <code>Students</code> and <code>Activity</code> tables). We use a Natural Join (<span class="math inline">\(⋈\)</span>) to combine them on their common attribute (<code>RollNo</code>), filter the result, and project the specific columns.</p>
-<p><span class="math display">\[ \pi_{Name, Sports}(\sigma_{Age&lt;25 \space \land \space Awards&gt;3}(Students ⋈ Activity)) \]</span></p>
+<section id="worked-examples" class="level3">
+<h3 class="anchored" data-anchor-id="worked-examples">Worked Examples</h3>
+<p><strong>Example 1 — extraneous on the left:</strong> <span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow C\}\)</span></p>
+<ul>
+<li><span class="math inline">\(B\)</span> is extraneous in <span class="math inline">\(AB \rightarrow C\)</span>, because <span class="math inline">\(A^+ = AC\)</span> already — meaning <span class="math inline">\(A \rightarrow C\)</span> holds on its own, without needing <span class="math inline">\(B\)</span> at all.</li>
+</ul>
+<p><strong>Example 2 — extraneous on the right:</strong> <span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow CD\}\)</span></p>
+<ul>
+<li><span class="math inline">\(C\)</span> is extraneous in <span class="math inline">\(AB \rightarrow CD\)</span>, because dropping it leaves <span class="math inline">\(\{A \rightarrow C,\ AB \rightarrow D\}\)</span>, and <span class="math inline">\(AB^+ = ABCD\)</span> in this reduced set — so <span class="math inline">\(C\)</span> was always derivable anyway.</li>
+</ul>
 </section>
-<section id="division-operation" class="level2">
-<h2 class="anchored" data-anchor-id="division-operation">Division Operation</h2>
-<p>The <strong>Division (<span class="math inline">\(r \div s\)</span>)</strong> operation is used in queries that involve the word “every” or “all”. For example, “Find students who have taken <em>all</em> courses offered in the Biology department.”</p>
-<p>Suppose we have two relations: <span class="math inline">\(r(A, B, C)\)</span> and <span class="math inline">\(s(B, C)\)</span>. The result of <span class="math inline">\(r \div s\)</span> will be a relation with the attribute <span class="math inline">\(A\)</span>, containing values of <span class="math inline">\(A\)</span> that match with <em>all</em> the tuples present in <span class="math inline">\(s\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="division.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption>Division Operation Example</figcaption>
-</figure>
-</div>
-<p>In the mathematical example from the notes, if we perform <span class="math inline">\(r \div s\)</span>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>A</th>
-<th>B</th>
-<th>C</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(\alpha\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(\gamma\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
-</tr>
-</tbody>
-</table>
-<p>The output would be the values in column <code>A</code> (<span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span>) that are associated with all tuples of the divisor.</p>
+<section id="testing-for-extraneous-attributes" class="level3">
+<h3 class="anchored" data-anchor-id="testing-for-extraneous-attributes">Testing for Extraneous Attributes</h3>
+<p><strong>To test if <span class="math inline">\(A \in \alpha\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span>:</strong> Cover up <span class="math inline">\(A\)</span>. Compute the attribute closure of whatever is left on the left side: <span class="math inline">\((\alpha - A)^+\)</span>. If your target <span class="math inline">\(\beta\)</span> is inside that result set, <span class="math inline">\(A\)</span> is extraneous.</p>
+<p><strong>To test if <span class="math inline">\(A \in \beta\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span>:</strong> Hide <span class="math inline">\(A\)</span> from the right side of that specific dependency. Using this modified set of rules, compute the attribute closure of the left side: <span class="math inline">\(\alpha^+\)</span>. If <span class="math inline">\(A\)</span> still pops up in the final result, it means the other rules already had it covered. <span class="math inline">\(A\)</span> is extraneous.</p>
 <hr>
 </section>
 </section>
-<section id="tuple-relational-calculus-trc" class="level1">
-<h1>Tuple Relational Calculus (TRC)</h1>
-<p>Tuple Relational Calculus is a <strong>non-procedural</strong> query language. Instead of writing operations to fetch data, we write mathematical predicates that define the resulting tuples.</p>
-<p>A basic TRC query is of the form:</p>
-<p><span class="math display">\[ \{t \space | \space P(t)\} \]</span></p>
-<p>Where: - <span class="math inline">\(t\)</span> = The resulting tuple(s) - <span class="math inline">\(P(t)\)</span> = The predicate (a condition that evaluates to true or false for tuple <span class="math inline">\(t\)</span>)</p>
-<section id="trc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="trc-examples">TRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p><span class="math display">\[ \{t \space | \space \exists \space s \in students (t.name=s.name \land s.age=21) \} \]</span></p>
-<p><em>Intuition:</em> We are looking for a tuple <span class="math inline">\(t\)</span> such that there exists (<span class="math inline">\(\exists\)</span>) a tuple <span class="math inline">\(s\)</span> in the <code>students</code> relation where the name in our result matches the name in the student record, and the student’s age is 21.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{M \space | \space \exists \space E \in employee \space \exists \space D \in department ( E.id=D.id \land D.name='Manufacturing' \land M.name=E.name) \} \]</span></p>
-<p><em>Intuition:</em> We want a tuple <span class="math inline">\(M\)</span> such that there exists an employee <span class="math inline">\(E\)</span> and a department <span class="math inline">\(D\)</span> where their IDs match, the department name is ‘Manufacturing’, and our result tuple <span class="math inline">\(M\)</span> takes the name of that employee <span class="math inline">\(E\)</span>.</p>
+<section id="equivalence-of-fd-sets" class="level2">
+<h2 class="anchored" data-anchor-id="equivalence-of-fd-sets">Equivalence of FD Sets</h2>
+<p>Two sets of FDs, <span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span>, are <strong>equivalent</strong> if <span class="math inline">\(F^+ = G^+\)</span> — meaning every FD in <span class="math inline">\(F\)</span> can be derived from <span class="math inline">\(G\)</span>, and every FD in <span class="math inline">\(G\)</span> can be derived from <span class="math inline">\(F\)</span>.</p>
+<p>We break this into two directions:</p>
+<ul>
+<li><strong><span class="math inline">\(F\)</span> covers <span class="math inline">\(G\)</span></strong>: every FD of <span class="math inline">\(G\)</span> is logically implied by <span class="math inline">\(F\)</span> (i.e., <span class="math inline">\(F^+ \supseteq G\)</span>)</li>
+<li><strong><span class="math inline">\(G\)</span> covers <span class="math inline">\(F\)</span></strong>: every FD of <span class="math inline">\(F\)</span> is logically implied by <span class="math inline">\(G\)</span> (i.e., <span class="math inline">\(G^+ \supseteq F\)</span>)</li>
+</ul>
+<p><span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span> are equivalent only if <strong>both</strong> directions of covering hold.</p>
+<hr>
+</section>
+<section id="canonical-cover" class="level2">
+<h2 class="anchored" data-anchor-id="canonical-cover">Canonical Cover</h2>
+<p>Real-world FD sets often contain <strong>redundant dependencies</strong> (whole FDs that can be inferred from the others) or <strong>redundant parts</strong> of FDs (extraneous attributes). The <strong>canonical cover</strong> <span class="math inline">\(F_c\)</span> is the minimal, “optimal” version of <span class="math inline">\(F\)</span>, trimmed down as far as possible while still being equivalent to it.</p>
+<p><span class="math inline">\(F_c\)</span> is a canonical cover for <span class="math inline">\(F\)</span> if <strong>all</strong> of the following hold:</p>
+<ul>
+<li><span class="math inline">\(F_c^+ = F^+\)</span> (they’re fully equivalent)</li>
+<li>No FD in <span class="math inline">\(F_c\)</span> contains an extraneous attribute (nothing more to trim)</li>
+<li>Every left-hand side in <span class="math inline">\(F_c\)</span> is unique, no two FDs <span class="math inline">\(\alpha_1 \rightarrow \beta_1\)</span> and <span class="math inline">\(\alpha_2 \rightarrow \beta_2\)</span> share <span class="math inline">\(\alpha_1 \rightarrow \alpha_2\)</span> (these would just get merged via the union rule)</li>
+</ul>
+<p>Intuitively: a canonical cover is the smallest, most irreducible set of FDs that says exactly the same thing as <span class="math inline">\(F\)</span> — no redundant FDs, and no redundant attributes tucked inside the FDs that remain.</p>
+<section id="trimming-the-right-hand-side-rhs" class="level3">
+<h3 class="anchored" data-anchor-id="trimming-the-right-hand-side-rhs">Trimming the Right-Hand Side (RHS)</h3>
+<p><span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow CD\}\)</span> simplifies to <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}\)</span></p>
+<ul>
+<li><strong>Forward:</strong> <span class="math inline">\(A \rightarrow CD\)</span> splits (via decomposition) into <span class="math inline">\(A \rightarrow C\)</span> and <span class="math inline">\(A \rightarrow D\)</span>; and <span class="math inline">\(A \rightarrow C\)</span> is redundant anyway since <span class="math inline">\(A \rightarrow B, B \rightarrow C\)</span> already gives it via transitivity</li>
+<li><strong>Reverse:</strong> <span class="math inline">\(A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C\)</span>; combine with <span class="math inline">\(A \rightarrow D\)</span> (union rule) to rebuild <span class="math inline">\(A \rightarrow CD\)</span></li>
+<li>Check: <span class="math inline">\(A^+ = ABCD\)</span> under either version — confirms equivalence</li>
+</ul>
+</section>
+<section id="trimming-the-left-hand-side-lhs" class="level3">
+<h3 class="anchored" data-anchor-id="trimming-the-left-hand-side-lhs">Trimming the Left-Hand Side (LHS)</h3>
+<p><span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ AC \rightarrow D\}\)</span> simplifies to <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}\)</span></p>
+<ul>
+<li><strong>Forward:</strong> <span class="math inline">\(A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C \Rightarrow A \rightarrow AC\)</span> (union with <span class="math inline">\(A \rightarrow A\)</span>); then <span class="math inline">\(A \rightarrow AC\)</span> combined with <span class="math inline">\(AC \rightarrow D\)</span> gives <span class="math inline">\(A \rightarrow D\)</span> by transitivity — so <span class="math inline">\(C\)</span> was extraneous in <span class="math inline">\(AC \rightarrow D\)</span></li>
+<li><strong>Reverse:</strong> <span class="math inline">\(A \rightarrow D \Rightarrow AC \rightarrow D\)</span> trivially (augmentation)</li>
+<li>Check: <span class="math inline">\(A^+ = ABCD\)</span> confirms this too</li>
+</ul>
+</section>
+<section id="algorithm-to-compute-a-canonical-cover" class="level3">
+<h3 class="anchored" data-anchor-id="algorithm-to-compute-a-canonical-cover">Algorithm to Compute a Canonical Cover</h3>
+<pre><code>repeat
+    Use the union rule to replace any pair of dependencies
+        α1 → β1  and  α1 → β2
+    with
+        α1 → β1β2
+
+    Find a functional dependency α → β with an extraneous
+    attribute either in α or in β
+    (test for extraneous attributes using the CURRENT Fc, not the original F)
+
+    If found, delete that extraneous attribute
+until F does not change</code></pre>
+<blockquote class="blockquote">
+<p><strong>Warning:</strong> Once you delete an extraneous attribute, previously-unmergeable FDs might suddenly share the same left-hand side — so the union rule may become applicable again. Keep looping until nothing changes.</p>
+</blockquote>
+</section>
+<section id="worked-example" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example">Worked Example</h3>
+<p><span class="math inline">\(R = (A, B, C)\)</span>, <span class="math inline">\(F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}\)</span></p>
+<ol type="1">
+<li><strong>Union</strong>: merge <span class="math inline">\(A \rightarrow BC\)</span> and <span class="math inline">\(A \rightarrow B\)</span> into <span class="math inline">\(A \rightarrow BC\)</span> → set becomes <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}\)</span></li>
+<li><strong><span class="math inline">\(A\)</span> is extraneous in <span class="math inline">\(AB \rightarrow C\)</span></strong>: dropping <span class="math inline">\(A\)</span> leaves <span class="math inline">\(B \rightarrow C\)</span>, which is already present in the set → set becomes <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C\}\)</span></li>
+<li><strong><span class="math inline">\(C\)</span> is extraneous in <span class="math inline">\(A \rightarrow BC\)</span></strong>: is <span class="math inline">\(A \rightarrow C\)</span> implied by the rest? Yes — via transitivity on <span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(B \rightarrow C\)</span> (in trickier cases, just compute <span class="math inline">\(A^+\)</span> to check)</li>
+</ol>
+<p><strong>Canonical cover:</strong> <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C\}\)</span></p>
 <hr>
 </section>
 </section>
-<section id="domain-relational-calculus-drc" class="level1">
-<h1>Domain Relational Calculus (DRC)</h1>
-<p>Domain Relational Calculus is another non-procedural query language, equivalent in expressive power to Tuple Relational Calculus. However, instead of using whole tuples as variables, DRC uses variables that take values from domains (individual attributes/columns).</p>
-<p>A basic DRC query is of the form:</p>
-<p><span class="math display">\[ \{ &lt;x_1, x_2, ... ,x_n&gt; \space | \space P(x_1, x_2, ... , x_n)\} \]</span></p>
-<p>Where: - <span class="math inline">\(&lt;x_1, x_2, ... , x_n&gt;\)</span> represents domain variables (e.g., individual columns like name, age, etc.) - <span class="math inline">\(P\)</span> represents a predicate formula similar to TRC.</p>
-<section id="drc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="drc-examples">DRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p>Schema: - <code>student(name, age, marks)</code></p>
-<p><span class="math display">\[ \{&lt;a&gt; | \space \exists \space b \space (&lt;a,b,c&gt; \in students \space \land \space b=21)  \} \]</span></p>
-<p><em>Intuition:</em> We want to output a single domain variable <span class="math inline">\(a\)</span> (which represents the name), such that there exists some marks variable <span class="math inline">\(c\)</span> where the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> exists in the <code>students</code> relation, and the age variable <span class="math inline">\(b = 21\)</span>.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{ &lt;b&gt; |\space \exists \space a,c  \space (&lt;a, b, c&gt; \in employee) \space \land \space \exists \space x,y,z \space (&lt;a, x, y, z&gt; \in department \space \land y='Manufacturing') \} \]</span></p>
-<p><em>(Note: The notes had a slight variable mismatch. I corrected it here to ensure variable <span class="math inline">\(a\)</span> maps to <code>id</code>, <span class="math inline">\(b\)</span> maps to <code>name</code>, <span class="math inline">\(c\)</span> maps to <code>salary</code>, and in the department relation, the first variable <span class="math inline">\(a\)</span> corresponds to <code>id</code>, ensuring the join condition.)</em></p>
-<p><em>Intuition:</em> We want to output variable <span class="math inline">\(b\)</span> (employee name). To do this, we assert that the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> must exist in <code>employee</code>. Additionally, we assert that the tuple <span class="math inline">\(&lt;a, x, y, z&gt;\)</span> must exist in <code>department</code> where the variable <span class="math inline">\(y\)</span> (department name) is exactly ‘Manufacturing’. The shared variable <span class="math inline">\(a\)</span> (the ID) effectively joins the two relations.</p>
+<section id="prime-and-non-prime-attributes" class="level2">
+<h2 class="anchored" data-anchor-id="prime-and-non-prime-attributes">Prime and Non-Prime Attributes:</h2>
+<ul>
+<li><strong>Prime attributes</strong> : Union of all candidate key attributes (<span class="math inline">\(CK_1 \cup CK_2 \cup CK_3 \cup \ldots\)</span>).</li>
+</ul>
+<p>Note: if a prime attribute <span class="math inline">\(A\)</span> is itself determined by some other set <span class="math inline">\(X\)</span> (i.e.&nbsp;<span class="math inline">\(X \rightarrow A\)</span>), that’s a signal <span class="math inline">\(X\)</span> may also be a candidate key.</p>
+<ul>
+<li><strong>Non-prime attributes</strong> : every attribute that appears in <em>no</em> candidate key</li>
+</ul>
 
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1056,13 +1057,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_3/advanced_sql.html" class="pagination-link" aria-label="Advanced SQL">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced SQL</span></span>
+      <a href="../../weeks/week_5/02.html" class="pagination-link" aria-label="Functional Dependency Theory">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Functional Dependency Theory</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_4/02_entity_relationship_model.html" class="pagination-link" aria-label="Entity-Relationship Model">
-        <span class="nav-page-text"><span class="chapter-title">Entity-Relationship Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_5/04.html" class="pagination-link" aria-label="Lossless Join Decomposition &amp; Dependency Preservation">
+        <span class="nav-page-text"><span class="chapter-title">Lossless Join Decomposition &amp; Dependency Preservation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
