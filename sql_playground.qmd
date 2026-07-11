@@ -135,8 +135,9 @@ body.quarto-dark {
   width: 50px;
 }
 .schema-sidebar.collapsed .schema-content,
-.schema-sidebar.collapsed #schema-title {
-  display: none;
+.schema-sidebar.collapsed #schema-title,
+.schema-sidebar.collapsed #schema-link {
+  display: none !important;
 }
 .schema-sidebar.collapsed .schema-header {
   justify-content: center;
@@ -582,7 +583,10 @@ body.quarto-dark .error-msg {
 
     <div class="schema-sidebar" id="schema-sidebar">
       <div class="schema-header">
-        <span id="schema-title">Schema</span>
+        <a id="schema-link" href="schema/flis.png" target="_blank" class="pg-btn pg-btn-secondary" style="text-decoration: none; padding: 4px 8px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; margin-right: auto; flex-shrink: 0;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          Schema
+        </a>
         <button id="toggle-schema-btn" class="pg-btn-icon" title="Toggle Sidebar">
           <svg id="icon-collapse" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           <svg id="icon-expand" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -728,7 +732,7 @@ async function refreshSchema() {
     var res = arr[arr.length - 1];
     if (!res || res.rows.length === 0) { el.innerHTML = '<p style="padding:0.5rem;color:var(--pg-text-muted)">No tables found.</p>'; return; }
     
-    var constArr = await db.exec("SELECT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
+    var constArr = await db.exec("SELECT DISTINCT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
     var constraints = {};
     if (constArr.length > 0 && constArr[constArr.length - 1].rows) {
       constArr[constArr.length - 1].rows.forEach(function(r) {
@@ -739,7 +743,7 @@ async function refreshSchema() {
         if (r.constraint_type === 'PRIMARY KEY') {
           if (!constraints[t][c].some(function(k) { return k.type === 'PK'; })) constraints[t][c].push({ type: 'PK' });
         } else if (r.constraint_type === 'FOREIGN KEY') {
-          if (!constraints[t][c].some(function(k) { return k.type === 'FK' && k.toTable === r.foreign_table_name && k.toCol === r.foreign_column_name; })) constraints[t][c].push({ type: 'FK', toTable: r.foreign_table_name, toCol: r.foreign_column_name });
+          if (!constraints[t][c].some(function(k) { return k.type === 'FK' && k.toTable === r.foreign_table_name; })) constraints[t][c].push({ type: 'FK', toTable: r.foreign_table_name });
         }
       });
     }
@@ -768,7 +772,7 @@ async function refreshSchema() {
         if (constraints[tbl] && constraints[tbl][c.name]) {
           constraints[tbl][c.name].forEach(function(k) {
             if (k.type === 'PK') { keyHtml += '<span class="key-badge key-pk" title="Primary Key">PK</span>'; isPk = true; }
-            if (k.type === 'FK') { keyTitle = "FK to " + k.toTable + "." + k.toCol; keyHtml += '<span class="key-badge key-fk" title="' + keyTitle + '">FK</span><span class="key-fk-link" title="'+keyTitle+'">&rarr; '+k.toTable+'</span>'; isFk = true; }
+            if (k.type === 'FK') { keyTitle = "FK to " + k.toTable; keyHtml += '<span class="key-badge key-fk" title="' + keyTitle + '">FK</span><span class="key-fk-link" title="'+keyTitle+'">&rarr; '+k.toTable+'</span>'; isFk = true; }
           });
         }
         
@@ -976,7 +980,15 @@ document.addEventListener("DOMContentLoaded", function() {
   var sidebar = document.getElementById("schema-sidebar");
   var icC = document.getElementById("icon-collapse");
   var icE = document.getElementById("icon-expand");
-  sel.addEventListener("change", function(e) { initDB(e.target.value); });
+  sel.addEventListener("change", function(e) { 
+    initDB(e.target.value); 
+    var val = e.target.value;
+    var sLink = document.getElementById("schema-link");
+    if (sLink) {
+      sLink.style.display = (val === 'test_db') ? 'none' : 'inline-flex';
+      sLink.href = 'schema/' + val + '.png';
+    }
+  });
   resetBtn.addEventListener("click", function() { initDB(sel.value); });
   runBtn.addEventListener("click", runQuery);
   toggleBtn.addEventListener("click", function() {
@@ -988,6 +1000,14 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("font-inc").addEventListener("click", function() { updateFontSize(currentFontSize + 1); });
   document.getElementById("font-dec").addEventListener("click", function() { updateFontSize(currentFontSize - 1); });
   editor.commands.addCommand({ name: "runQuery", bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" }, exec: function() { runQuery(); }, readOnly: true });
+
+  var savedSqlCode = localStorage.getItem("sqlPlaygroundCode");
+  if (savedSqlCode) {
+    editor.setValue(savedSqlCode, -1);
+  }
+  editor.getSession().on('change', function() {
+    localStorage.setItem("sqlPlaygroundCode", editor.getValue());
+  });
 
   // Resizer Logic
   var resizer = document.getElementById('resizer-y');

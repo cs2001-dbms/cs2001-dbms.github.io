@@ -120,8 +120,9 @@ body.quarto-dark {
   width: 50px;
 }
 .schema-sidebar.collapsed .schema-content,
-.schema-sidebar.collapsed .schema-select {
-  display: none;
+.schema-sidebar.collapsed .schema-select,
+.schema-sidebar.collapsed #schema-link {
+  display: none !important;
 }
 .schema-sidebar.collapsed .schema-header {
   justify-content: center;
@@ -514,7 +515,11 @@ body.quarto-dark .error-msg {
 
     <button id="run-btn" class="pg-btn pg-btn-primary">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-      Run
+      Run Python
+    </button>
+    <button id="reset-btn" class="pg-btn pg-btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+      Reset
     </button>
     <div class="editor-controls">
       <select id="theme-select" class="theme-select" title="Editor Theme">
@@ -598,6 +603,9 @@ body.quarto-dark .error-msg {
           <option value="university">University (university)</option>
           <option value="test_db">My Workspace (test_db)</option>
         </select>
+        <a id="schema-link" href="schema/flis.png" target="_blank" class="pg-btn pg-btn-secondary" title="View Schema" style="text-decoration: none; padding: 4px 6px; display: inline-flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; margin-right: auto; margin-left: 5px; flex-shrink: 0;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </a>
         <button id="toggle-schema-btn" class="pg-btn-icon" title="Toggle Sidebar">
           <svg id="icon-collapse" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
           <svg id="icon-expand" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -647,7 +655,15 @@ document.getElementById('python-editor').addEventListener('keydown', function(e)
   }
 }, true);
 
-editor.setValue(playgroundData.defaultCode, -1);
+var savedPythonCode = localStorage.getItem("pythonPlaygroundCode");
+if (savedPythonCode !== null) {
+  editor.setValue(savedPythonCode, -1);
+} else {
+  editor.setValue(playgroundData.defaultCode || "", -1);
+}
+editor.getSession().on('change', function() {
+  localStorage.setItem("pythonPlaygroundCode", editor.getValue());
+});
 
 function syncTheme() {
   var isDark = document.body.classList.contains("quarto-dark");
@@ -758,7 +774,7 @@ async function refreshSchema(dsId) {
     var res = arr[arr.length - 1];
     if (!res || res.rows.length === 0) { el.innerHTML = '<p style="padding:0.5rem;color:var(--pg-text-muted)">No tables found.</p>'; return; }
     
-    var constArr = await targetDb.exec("SELECT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
+    var constArr = await targetDb.exec("SELECT DISTINCT tc.table_name, kcu.column_name, tc.constraint_type, ccu.table_name AS foreign_table_name FROM information_schema.table_constraints AS tc JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.constraint_schema = kcu.constraint_schema LEFT JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name AND ccu.constraint_schema = tc.constraint_schema WHERE tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY') AND tc.table_schema = 'public';");
     var constraints = {};
     if (constArr.length > 0 && constArr[constArr.length - 1].rows) {
       constArr[constArr.length - 1].rows.forEach(function(r) {
@@ -769,7 +785,7 @@ async function refreshSchema(dsId) {
         if (r.constraint_type === 'PRIMARY KEY') {
           if (!constraints[t][c].some(function(k) { return k.type === 'PK'; })) constraints[t][c].push({ type: 'PK' });
         } else if (r.constraint_type === 'FOREIGN KEY') {
-          if (!constraints[t][c].some(function(k) { return k.type === 'FK' && k.toTable === r.foreign_table_name && k.toCol === r.foreign_column_name; })) constraints[t][c].push({ type: 'FK', toTable: r.foreign_table_name, toCol: r.foreign_column_name });
+          if (!constraints[t][c].some(function(k) { return k.type === 'FK' && k.toTable === r.foreign_table_name; })) constraints[t][c].push({ type: 'FK', toTable: r.foreign_table_name });
         }
       });
     }
@@ -798,7 +814,7 @@ async function refreshSchema(dsId) {
         if (constraints[tbl] && constraints[tbl][c.name]) {
           constraints[tbl][c.name].forEach(function(k) {
             if (k.type === 'PK') { keyHtml += '<span class="key-badge key-pk" title="Primary Key">PK</span>'; isPk = true; }
-            if (k.type === 'FK') { keyTitle = "FK to " + k.toTable + "." + k.toCol; keyHtml += '<span class="key-badge key-fk" title="' + keyTitle + '">FK</span><span class="key-fk-link" title="'+keyTitle+'">&rarr; '+k.toTable+'</span>'; isFk = true; }
+            if (k.type === 'FK') { keyTitle = "FK to " + k.toTable; keyHtml += '<span class="key-badge key-fk" title="' + keyTitle + '">FK</span><span class="key-fk-link" title="'+keyTitle+'">&rarr; '+k.toTable+'</span>'; isFk = true; }
           });
         }
         
@@ -944,8 +960,37 @@ document.addEventListener("DOMContentLoaded", function() {
   var icC = document.getElementById("icon-collapse");
   var icE = document.getElementById("icon-expand");
   var schemaSelect = document.getElementById("schema-select");
-  schemaSelect.addEventListener("change", function(e) { refreshSchema(e.target.value); });
+  schemaSelect.addEventListener("change", function(e) { 
+    refreshSchema(e.target.value); 
+    var val = e.target.value;
+    var sLink = document.getElementById("schema-link");
+    if (sLink) {
+      sLink.style.display = (val === 'test_db') ? 'none' : 'inline-flex';
+      sLink.href = 'schema/' + val + '.png';
+    }
+  });
   runBtn.addEventListener("click", runPython);
+  var resetBtn = document.getElementById("reset-btn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", function() {
+      var rc = document.getElementById("result-table-container");
+      if (rc) rc.innerHTML = '<p style="text-align:center;margin-top:2rem;color:var(--pg-text-muted)">Environment re-initialized. Write a script and click Run.</p>';
+      var errEl = document.getElementById("error-message");
+      if (errEl) errEl.style.display = "none";
+      if (pyodideReady && pyodide) {
+        pyodide.runPython("for _name in list(globals().keys()):\\n    if not _name.startswith('_'):\\n        del globals()[_name]");
+      }
+      var dsId = schemaSelect.value;
+      if (databases[dsId] && dsId !== "test_db") {
+        databases[dsId].close().then(function() {
+          delete databases[dsId];
+          refreshSchema(dsId);
+        });
+      } else {
+        refreshSchema(dsId);
+      }
+    });
+  }
   toggleBtn.addEventListener("click", function() {
     var c = sidebar.classList.toggle("collapsed");
     mainSec.classList.toggle("collapsed-sidebar", c);

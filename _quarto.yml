@@ -6,6 +6,7 @@ project:
     browser: false
   resources:
     - "datasets/*.sql"
+    - "schema/*.png"
 
 book:
   title: "Database Management Systems"
