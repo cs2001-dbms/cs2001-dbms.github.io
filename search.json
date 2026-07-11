@@ -4,47 +4,7 @@
     "href": "index.html",
     "title": "Database Management Systems",
     "section": "",
-    "text": "About the course",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#course-overview",
-    "href": "index.html#course-overview",
-    "title": "Database Management Systems",
-    "section": "Course Overview",
-    "text": "Course Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None!",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#course-faculty",
-    "href": "index.html#course-faculty",
-    "title": "Database Management Systems",
-    "section": "Course Faculty",
-    "text": "Course Faculty\n\nFaculty Lead\nDr. Partha Pratim Das Professor, Department of Computer Science and Engineering IIT Kharagpur\n\n\nCourse Instructor\nManidipa Bhattacharjee",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#textbook",
-    "href": "index.html#textbook",
-    "title": "Database Management Systems",
-    "section": "Textbook",
-    "text": "Textbook\n\nTitle: Database System Concepts (7th Edition)\nAuthors: Avi Silberschatz, Henry F. Korth, S. Sudarshan\nPublisher: McGraw-Hill",
-    "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
-    ]
-  },
-  {
-    "objectID": "index.html#how-to-use-this-portal",
-    "href": "index.html#how-to-use-this-portal",
-    "title": "Database Management Systems",
-    "section": "How to Use This Portal",
-    "text": "How to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.",
+    "text": "Welcome to DBMS (CS2001) Course\nThis portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.\n\nCourse Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None\n\n\n\nTextbook\n\nTitle: Database System Concepts (7th Ed.)\nAuthors: Silberschatz, Korth, Sudarshan\nPublisher: McGraw-Hill\n\n\n\n\n\nCourse Faculty\nDr. Partha Pratim Das\nProfessor, Department of Computer Science and Engineering, IIT Kharagpur\n\n\nCourse Instructors:\nManidipa Bhattacharjee\nPravin Sankar\n\n\n\nHow to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar or click Start Course above to jump into specific topics.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
     ]

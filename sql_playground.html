@@ -1058,7 +1058,7 @@ body.quarto-dark .error-msg {
 
     <div class="schema-sidebar" id="schema-sidebar">
       <div class="schema-header">
-        <a id="schema-link" href="schema/flis.png" target="_blank" class="pg-btn pg-btn-secondary" style="text-decoration: none; padding: 4px 8px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; margin-right: auto; flex-shrink: 0;">
+        <a id="schema-link" href="datasets/schema/flis.png" target="_blank" class="pg-btn pg-btn-secondary" style="text-decoration: none; padding: 4px 8px; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; height: 100%; box-sizing: border-box; margin-right: auto; flex-shrink: 0;">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           Schema
         </a>
@@ -1461,7 +1461,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var sLink = document.getElementById("schema-link");
     if (sLink) {
       sLink.style.display = (val === 'test_db') ? 'none' : 'inline-flex';
-      sLink.href = 'schema/' + val + '.png';
+      sLink.href = 'datasets/schema/' + val + '.png';
     }
   });
   resetBtn.addEventListener("click", function() { initDB(sel.value); });
