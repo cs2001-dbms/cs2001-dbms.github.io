@@ -14,6 +14,11 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Install Chromium for Mermaid PDF rendering
+        run: quarto tools install chromium
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
