@@ -1,7 +1,6 @@
 ---
 title: "Relational Algebra and Calculus"
 format:
-  pdf: default
   html:
     toc: true
     format-links: true

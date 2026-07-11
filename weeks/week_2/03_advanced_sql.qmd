@@ -2,7 +2,6 @@
 title: "Advanced SQL Filtering, Sets & Aggregation"
 number-depth: 2
 format: 
-    pdf: default
     html:
         code-fold: false
 ---

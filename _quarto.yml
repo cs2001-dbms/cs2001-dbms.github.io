@@ -64,6 +64,7 @@ book:
       - icon: folder
         href: "https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY"
         text: "Live Session Slides"
+  downloads: [pdf]
   chapters:
     - href: index.qmd
       text: "About the Course"
@@ -90,10 +91,14 @@ book:
         - weeks/week_4/03_advanced_er_concepts.qmd
     - part: '**Week-05**'
       chapters:
-        - weeks/week_5/01.qmd
-        - weeks/week_5/02.qmd
-        - weeks/week_5/03.qmd
-        - weeks/week_5/04.qmd
+        - href: weeks/week_5/01.qmd
+          text: Functional Dependencies
+        - href: weeks/week_5/02.qmd
+          text: Armstrong Axioms
+        - href: weeks/week_5/03.qmd
+          text: Extraneous attributes & Canonical cover
+        - href: weeks/week_5/04.qmd
+          text: Lossless Join & Dependency preservation
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd

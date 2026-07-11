@@ -1,7 +1,6 @@
 ---
 title: "Entity-Relationship Model"
 format:
-  pdf: default
   html:
     toc: true
 ---
