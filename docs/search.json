@@ -697,10 +697,10 @@
     "href": "sql_playground.html",
     "title": "SQL Playground",
     "section": "",
-    "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      A-\n      16px\n      A+\n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        Schema",
+    "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>15</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -751,6 +751,534 @@
     "text": "How to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar to jump into specific topics.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html",
+    "href": "weeks/week_5/01.html",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "",
+    "text": "Spotting a Bad Schema\nSo far we know how to build tables. But not every table design is equally good, a relational schema should reflect real-world structure, avoid redundant storage, support efficient access, and preserve data integrity as data changes. These goals sometimes conflict — good design is a balancing act, not a checklist.\nConsider a single, combined table: instructor_with_department(ID, name, salary, dept_name, building, budget).\nSince a department can have many instructors, building and budget get copied once for every instructor in that department. That repetition is redundancy.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#redundancy-and-anomalies",
+    "href": "weeks/week_5/01.html#redundancy-and-anomalies",
+    "title": "Good Relational Design",
+    "section": "Redundancy and Anomalies",
+    "text": "Redundancy and Anomalies\nRedundancy: the same fact stored in multiple places — usually a sign the schema isn’t normalized.\nAnomaly: an inconsistency triggered by insert, delete, or update operations on a redundant schema.\n-- Poorly designed, flattened relation\nCREATE TABLE player_with_team (\n    player_id   varchar(10),\n    player_name varchar(50),\n    position    varchar(20),\n    team_id     varchar(10),\n    team_name   varchar(50),   -- redundant: repeats per player\n    stadium     varchar(50),   -- redundant\n    city        varchar(50)    -- redundant\n);\n\n\n\n\n\n\n\n\nAnomaly\nProblem\nExample\n\n\n\n\nInsertion\nCan’t add one fact without unrelated data\nCan’t add a new team without at least one player\n\n\nDeletion\nDeleting a row loses unrelated info\nDeleting a team’s only player loses stadium/city\n\n\nUpdate\nOne logical change needs many row updates\nTeam changes stadium → must update every player row\n\n\n\n\n⚠️ Anomalies are the expected result of leaving redundant data in one flat table — not an edge case.\n\nRoot cause chain: Dependency → Redundancy → Anomaly. team_id determines team_name, stadium, city — that dependency is exactly what forces repetition across player rows.\nFix: decompose.\nCREATE TABLE teams (\n    team_id   varchar(10) PRIMARY KEY,\n    team_name varchar(50) NOT NULL,\n    stadium   varchar(50),\n    city      varchar(50)\n);\n\nCREATE TABLE players (\n    player_id   varchar(10) PRIMARY KEY,\n    player_name varchar(50) NOT NULL,\n    position    varchar(20),\n    team_id     varchar(10) REFERENCES teams(team_id)\n);",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Good Relational Design</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#decomposition-lossy-vs.-lossless",
+    "href": "weeks/week_5/01.html#decomposition-lossy-vs.-lossless",
+    "title": "Good Relational Design",
+    "section": "Decomposition: Lossy vs. Lossless",
+    "text": "Decomposition: Lossy vs. Lossless\nSplitting a table must preserve information — otherwise the split is worse than the original.\n\nLossy (wrong)\nplayers1 (player_name, position)\nplayers2 (player_name, team_id)\nIf two players share a name, rejoining on player_name produces fabricated rows — the original data can’t be reconstructed.\n\n\nLossless (right)\nA decomposition of \\(R\\) into \\(R_1, R_2\\) is lossless if rejoining always reconstructs \\(R\\) exactly:\n\\[R_1 \\cup R_2 = R, \\quad r_1 \\bowtie r_2 = r \\ \\ \\forall r \\in R\\]\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    R[\"player_with_team\"] -- Decompose --&gt; R1[\"players (player_id, name, position, team_id)\"]\n    R -- Decompose --&gt; R2[\"teams (team_id, name, stadium, city)\"]\n    R1 -- Join on team_id --&gt; J[\"Reconstructs R exactly\"]\n    R2 -- Join on team_id --&gt; J\n\n\n\n\n\n\n\n💡 The teams/players split is lossless because team_id — the shared column — is a candidate key of teams.\n\nGood Decomposition ⇒ Minimization of Redundancy, but only when lossless.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Good Relational Design</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#first-normal-form-1nf",
+    "href": "weeks/week_5/01.html#first-normal-form-1nf",
+    "title": "Good Relational Design",
+    "section": "First Normal Form (1NF)",
+    "text": "First Normal Form (1NF)\nA domain is atomic if its values are indivisible. 1NF requires every attribute’s domain to be atomic, with a single value per attribute.\n-- Violates 1NF: not atomic\nCREATE TABLE matches_bad (\n    match_id      varchar(10) PRIMARY KEY,\n    home_team_id  varchar(10),\n    away_team_id  varchar(10),\n    match_date    date,\n    referee_names varchar(200)  -- 'M. Oliver, A. Taylor, S. Attwell'\n);\nProblems: can’t query by individual referee, no validation, adding a referee changes the column’s meaning.\nFix — junction table:\nCREATE TABLE match_referees (\n    match_id   varchar(10) REFERENCES matches(match_id),\n    referee_id varchar(10) REFERENCES referees(referee_id),\n    role       varchar(20),  -- 'Main', 'Assistant', 'VAR'\n    PRIMARY KEY (match_id, referee_id)\n);\nEach row now stores one atomic fact. Any number of referees per match, no repeating groups.\n\n📌 This is why match_referees is a separate table in our schema — 1NF requires it whenever a relationship is many-valued.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Good Relational Design</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#functional-dependencies",
+    "href": "weeks/week_5/01.html#functional-dependencies",
+    "title": "Good Relational Design",
+    "section": "Functional Dependencies",
+    "text": "Functional Dependencies\nAn FD is a promise: knowing \\(\\alpha\\) always tells you \\(\\beta\\).\n\\[\\alpha \\rightarrow \\beta \\iff t_1[\\alpha] = t_2[\\alpha] \\Rightarrow t_1[\\beta] = t_2[\\beta]\\]\nAn FD generalizes the notion of a key:\n\n\\(K\\) is a superkey of \\(R\\) iff \\(K \\rightarrow R\\)\n\\(K\\) is a candidate key of \\(R\\) iff \\(K \\rightarrow R\\) and no proper subset of \\(K\\) also does\n\nOn our schema:\nteam_id → team_name, stadium, city\nplayer_id → player_name, position, team_id\nmatch_id, referee_id → role\nteam_name → position does not hold — a team tells you nothing about one player’s position.\n\n⚠️ An FD must hold for every legal instance, not just the current data. A coincidental match in today’s rows doesn’t count.\n\nTrivial FDs: \\(\\alpha \\rightarrow \\beta\\) is trivial if \\(\\beta \\subseteq \\alpha\\) — always true, adds no information.\nplayer_id, player_name → player_id   -- trivial\n\nClosure of a Set of FDs\nGiven \\(F\\), the closure \\(F^+\\) is every FD derivable from \\(F\\).\n\\[F = \\{\\text{team\\_id} \\rightarrow \\text{stadium},\\ \\text{stadium} \\rightarrow \\text{city}\\}\\] \\[F^+ = F \\cup \\{\\text{team\\_id} \\rightarrow \\text{city}\\} \\quad \\text{(by transitivity)}\\]\nThe rules for computing closures and finding candidate keys systematically are covered in the next segment.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Good Relational Design</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#summary",
+    "href": "weeks/week_5/01.html#summary",
+    "title": "Good Relational Design",
+    "section": "Summary",
+    "text": "Summary\n\nRedundancy causes anomalies; decomposition fixes redundancy\nDecompositions must be lossless — the rejoin must reconstruct the original exactly\n1NF requires atomic, single-valued attributes — the reason match_referees exists as its own table\nFunctional dependencies formalize “this determines that” and underpin all of normalization theory",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Good Relational Design</span>"
+    ]
+  },
+  {
+    "objectID": "pythonDB_playground.html",
+    "href": "pythonDB_playground.html",
+    "title": "Python-DB Playground",
+    "section": "",
+    "text": "Run\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
+    "crumbs": [
+      "**Playground**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Python-DB Playground</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html",
+    "href": "weeks/week_5/02.html",
+    "title": "Functional Dependency Theory",
+    "section": "",
+    "text": "Armstrong’s Axioms\nWe defined functional dependencies and briefly met the idea of a closure (\\(F^+\\)) — the set of all FDs that logically follow from a given set \\(F\\). Now we formalize how to actually compute that closure, and use it to build a rigorous test for “good” design.\nGiven a set of FDs \\(F\\), we can mechanically derive new, logically-implied FDs using three basic rules:\nApply these repeatedly to \\(F\\), and each newly generated FD is said to be logically implied by \\(F\\). The process always terminates after finitely many steps (there are only so many attribute combinations), producing the closure \\(F^+\\) — the complete set of FDs implied by \\(F\\). Naturally, \\(F \\subseteq F^+\\).",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#armstrongs-axioms",
+    "href": "weeks/week_5/02.html#armstrongs-axioms",
+    "title": "Functional Dependency Theory",
+    "section": "",
+    "text": "Axiom\nRule\nIntuition\n\n\n\n\nReflexivity\nif \\(\\beta \\subseteq \\alpha\\), then \\(\\alpha \\rightarrow \\beta\\)\nA set of attributes always determines its own subsets — this is the “free” trivial case\n\n\nAugmentation\nif \\(\\alpha \\rightarrow \\beta\\), then \\(\\gamma\\alpha \\rightarrow \\gamma\\beta\\)\nTaking the same extra attributes onto both sides of a valid FD keeps it valid\n\n\nTransitivity\nif \\(\\alpha \\rightarrow \\beta\\) and \\(\\beta \\rightarrow \\gamma\\), then \\(\\alpha \\rightarrow \\gamma\\)\nIf A determines B, and B determines C, then A determines C too\n\n\n\n\n\nWorked Example\nFor \\(R = (A, B, C, G, H, I)\\) with:\n\\[F = \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\]\nSome members of \\(F^+\\) we can derive:\n\n\\(A \\rightarrow H\\) — by transitivity from \\(A \\rightarrow B\\) and \\(B \\rightarrow H\\)\n\\(AG \\rightarrow I\\) — augment \\(A \\rightarrow C\\) with \\(G\\) to get \\(AG \\rightarrow CG\\), then transitivity with \\(CG \\rightarrow I\\)\n\\(CG \\rightarrow HI\\) — augment \\(CG \\rightarrow I\\) with \\(CG\\) to get \\(CG \\rightarrow CGI\\); augment \\(CG \\rightarrow H\\) with \\(I\\) to get \\(CGI \\rightarrow HI\\); combine via transitivity\n\n\n\nComputing \\(F^+\\) Algorithmically\nF+ ← F\nrepeat\n    for each functional dependency f in F+\n        apply reflexivity and augmentation rules on f\n        add the resulting functional dependencies to F+\n    for each pair of functional dependencies f1 and f2 in F+\n        if f1 and f2 can be combined using transitivity\n            then add the resulting functional dependency to F+\nuntil F+ does not change any further\n\nNote: This brute-force approach works, but it’s expensive. There’s a much cheaper alternative — attribute closure.\n\n\n\nDerived Rules\nThese follow from the basic three axioms (so they’re not “new” axioms, just useful shortcuts):\n\n\n\n\n\n\n\nRule\nStatement\n\n\n\n\nUnion\nif \\(\\alpha \\rightarrow \\beta\\) and \\(\\alpha \\rightarrow \\gamma\\), then \\(\\alpha \\rightarrow \\beta\\gamma\\)\n\n\nDecomposition\nif \\(\\alpha \\rightarrow \\beta\\gamma\\), then \\(\\alpha \\rightarrow \\beta\\) and \\(\\alpha \\rightarrow \\gamma\\)\n\n\nPseudotransitivity\nif \\(\\alpha \\rightarrow \\beta\\) and \\(\\gamma\\beta \\rightarrow \\delta\\), then \\(\\alpha\\gamma \\rightarrow \\delta\\)",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#closure-of-attribute-sets",
+    "href": "weeks/week_5/02.html#closure-of-attribute-sets",
+    "title": "Functional Dependency Theory & Normal Forms",
+    "section": "Closure of Attribute Sets",
+    "text": "Closure of Attribute Sets\nRather than computing all of \\(F^+\\), we usually just need \\(\\alpha^+\\) — the set of attributes functionally determined by \\(\\alpha\\).\nresult ← α\nwhile (result changes) do\n    for each β → γ in F do\n        if β ⊆ result then result ← result ∪ γ\n\nWorked Example\nRelation: team_full(team_id, team_name, manager_id, stadium_id, city, country)\nF = { team_id → team_name,\n      team_id → manager_id,\n      manager_id, stadium_id → city,\n      manager_id, stadium_id → country,\n      team_name → city }\nCompute \\((\\text{team\\_id}, \\text{stadium\\_id})^+\\):\n\n\n\n\n\n\n\n\nStep\nResult so far\nRule applied\n\n\n\n\na\n{team_id, stadium_id}\nstart\n\n\nb\n{team_id, stadium_id, team_name, manager_id}\nteam_id → team_name, manager_id\n\n\nc\n{..., city}\nmanager_id, stadium_id → city\n\n\nd\n{..., country}\nmanager_id, stadium_id → country\n\n\n\nClosure = all 6 attributes → {team_id, stadium_id} is a superkey.\nIs it a candidate key? Check subsets:\n\n(team_id)+ = {team_id, team_name, manager_id} — not all of R → not a superkey\n(stadium_id)+ = {stadium_id} — not a superkey\n\nNo proper subset is a superkey ⇒ {team_id, stadium_id} is a candidate key.\n\n\nUses of Attribute Closure\n\n\n\n\n\n\n\nTask\nHow\n\n\n\n\nTest if \\(\\alpha\\) is a superkey\nCheck if \\(\\alpha^+ \\supseteq R\\)\n\n\nTest if \\(\\alpha \\rightarrow \\beta\\) holds\nCheck if \\(\\beta \\subseteq \\alpha^+\\)\n\n\nCompute all of \\(F^+\\)\nFor every \\(\\gamma \\subseteq R\\), compute \\(\\gamma^+\\), output \\(\\gamma \\rightarrow S\\) for each \\(S \\subseteq \\gamma^+\\)",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>FD Theory: Armstrong's Axioms, Attribute Closure, BCNF & 3NF</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#bcnf-boyce-codd-normal-form",
+    "href": "weeks/week_5/02.html#bcnf-boyce-codd-normal-form",
+    "title": "Functional Dependency Theory",
+    "section": "BCNF: Boyce-Codd Normal Form",
+    "text": "BCNF: Boyce-Codd Normal Form\nA relation schema \\(R\\) is in BCNF with respect to a set of FDs \\(F\\) if, for every non-trivial FD \\(\\alpha \\rightarrow \\beta\\) in \\(F^+\\) (where \\(\\alpha, \\beta \\subseteq R\\)), at least one of these holds:\n\n\\(\\alpha \\rightarrow \\beta\\) is trivial (i.e., \\(\\beta \\subseteq \\alpha\\)), or\n\\(\\alpha\\) is a superkey for \\(R\\)\n\nIn other words: the only things allowed to determine other attributes are superkeys (or trivial cases). If some non-key attribute determines other attributes, BCNF is violated.\nExample violation: instr_dept(ID, name, salary, dept_name, building, budget) — the FD \\(dept\\_name \\rightarrow building, budget\\) is non-trivial, but dept_name is not a superkey. So this schema is not in BCNF.\n\nBCNF Decomposition Rule\nIf a non-trivial FD \\(\\alpha \\rightarrow \\beta\\) violates BCNF on \\(R\\), decompose \\(R\\) into:\n\n\\(\\alpha \\cup \\beta\\)\n\\(R - (\\beta - \\alpha)\\)\n\nApplying it to our example: with \\(\\alpha = dept\\_name\\) and \\(\\beta = (building, budget)\\):\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph TD\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;\n    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;\n\n    R[\"instr_dept&lt;br/&gt;(ID, name, salary, dept_name, building, budget)&lt;br/&gt;&lt;i&gt;violates BCNF: dept_name → building, budget&lt;/i&gt;\"]:::bad\n    R1[\"(dept_name, building, budget)&lt;br/&gt;dept_name → building, budget\"]:::good\n    R2[\"(ID, name, salary, dept_name)&lt;br/&gt;ID → name, salary, dept_name\"]:::good\n\n    R --&gt;|\"α ∪ β\"| R1\n    R --&gt;|\"R − (β − α)\"| R2\n\n\n\n\n\n\nBoth resulting relations are now in BCNF.\n\n\nChecking Lossless Join (via FDs)\nWhen we split \\(R\\) into \\(R_1\\) and \\(R_2\\):\n\nLossy if \\(R_1 \\bowtie R_2 \\supset R\\) (join produces extra, spurious rows)\nLossless if \\(R_1 \\bowtie R_2 = R\\) (join exactly reconstructs the original)\n\nTo confirm a decomposition is lossless using FDs, all three must hold:\n\\[R_1 \\cup R_2 = R\\] \\[R_1 \\cap R_2 \\neq \\phi\\] \\[R_1 \\cap R_2 \\rightarrow R_1 \\quad \\text{or} \\quad R_1 \\cap R_2 \\rightarrow R_2\\]\nThat last condition is key: the shared (common) attribute must be enough to act as a key for at least one of the two pieces. BCNF decomposition, done via the rule above, is guaranteed to satisfy this — so BCNF always gives you a lossless join.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#dependency-preservation",
+    "href": "weeks/week_5/02.html#dependency-preservation",
+    "title": "Functional Dependency Theory",
+    "section": "Dependency Preservation",
+    "text": "Dependency Preservation\nChecking constraints across multiple tables (i.e., needing a join just to verify an FD still holds) is expensive. A decomposition is dependency preserving if every FD in \\(F\\) can be checked by looking at just one relation in the decomposition — no joins required for validation.\n\nWhen BCNF and Dependency Preservation Clash\nIt’s not always possible to get both. Consider \\(R = CSZ\\) with \\(F = \\{CS \\rightarrow Z,\\ Z \\rightarrow C\\}\\), where the key is \\(CS\\).\n\n\\(CS \\rightarrow Z\\) is fine (satisfies BCNF, since \\(CS\\) is a superkey)\n\\(Z \\rightarrow C\\) violates BCNF (\\(Z\\) is not a superkey)\n\nDecomposing via the BCNF rule gives \\(R_1 = ZC\\) and \\(R_2 = SZ\\).\n\n\n\n\n\n\n\nCheck\nResult\n\n\n\n\n\\(R_1 \\cup R_2 = CSZ = R\\)\n✅\n\n\n\\(R_1 \\cap R_2 = Z \\neq \\phi\\)\n✅\n\n\n\\(R_1 \\cap R_2 = Z \\rightarrow ZC = R_1\\)\n✅ Lossless join!\n\n\nCan we verify \\(CS \\rightarrow Z\\) without a join?\n❌ No — \\(C\\) and \\(S\\) now live in different tables\n\n\n\nSo this BCNF decomposition is lossless, but not dependency preserving. This motivates a slightly relaxed normal form.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#nf-third-normal-form",
+    "href": "weeks/week_5/02.html#nf-third-normal-form",
+    "title": "Functional Dependency Theory",
+    "section": "3NF: Third Normal Form",
+    "text": "3NF: Third Normal Form\nA relation schema \\(R\\) is in 3NF if for every FD \\(\\alpha \\rightarrow \\beta \\in F^+\\), at least one of these holds:\n\n\\(\\alpha \\rightarrow \\beta\\) is trivial (\\(\\beta \\subseteq \\alpha\\)), or\n\\(\\alpha\\) is a superkey for \\(R\\), or\nEvery attribute \\(A\\) in \\(\\beta - \\alpha\\) is part of some candidate key of \\(R\\) (each attribute can belong to a different candidate key)\n\nThat third condition is the relaxation: BCNF only allows the first two. 3NF adds a third escape hatch specifically to preserve dependencies. Since BCNF already satisfies one of the first two conditions, every relation in BCNF is automatically in 3NF — but not vice versa.\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph TD\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    A[\"All Relations\"] --&gt; B[\"1NF\"]\n    B --&gt; C[\"3NF\"]\n    C --&gt; D[\"BCNF\"]",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#goals-of-normalization",
+    "href": "weeks/week_5/02.html#goals-of-normalization",
+    "title": "Functional Dependency Theory",
+    "section": "Goals of Normalization",
+    "text": "Goals of Normalization\nGiven a relation schema \\(R\\) with FD set \\(F\\), normalization aims to:\n\nDecide whether \\(R\\) is already in “good” form\nIf not, decompose it into \\(\\{R_1, R_2, \\ldots, R_n\\}\\) such that:\n\nEach piece is in good form\nThe decomposition is lossless-join\nPreferably, the decomposition is also dependency preserving",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#is-bcnf-always-enough",
+    "href": "weeks/week_5/02.html#is-bcnf-always-enough",
+    "title": "Functional Dependency Theory & Normal Forms",
+    "section": "Is BCNF Always Enough?",
+    "text": "Is BCNF Always Enough?\nNot quite. Consider:\nCREATE TABLE player_contacts (\n    player_id  varchar(10),\n    agent_name varchar(50),\n    phone      varchar(20)\n);\nA player can have multiple agents and multiple phone numbers — independently of each other. There are no non-trivial FDs, so this relation is trivially in BCNF. But it still has an insertion anomaly: adding one new phone number for a player with 2 agents means inserting 2 rows (one per agent), just to record one fact.\nFix: split into two independent relations:\nCREATE TABLE player_agents (\n    player_id  varchar(10),\n    agent_name varchar(50)\n);\n\nCREATE TABLE player_phones (\n    player_id varchar(10),\n    phone     varchar(20)\n);\nThis kind of independence — two multivalued facts about the same entity, unrelated to each other — is what Fourth Normal Form (4NF) addresses, covered next.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>FD Theory: Armstrong's Axioms, Attribute Closure, BCNF & 3NF</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#summary",
+    "href": "weeks/week_5/02.html#summary",
+    "title": "Functional Dependency Theory & Normal Forms",
+    "section": "Summary",
+    "text": "Summary\n\nArmstrong’s Axioms (reflexivity, augmentation, transitivity) generate \\(F^+\\); union, decomposition, and pseudotransitivity are useful derived shortcuts\nAttribute closure (\\(\\alpha^+\\)) is the practical tool for testing superkeys, candidate keys, and individual FDs\nBCNF: every non-trivial FD’s LHS must be a superkey — eliminates redundancy but can sacrifice dependency preservation\n3NF: a minimal relaxation of BCNF that guarantees dependency preservation, at the cost of allowing some redundancy\nBCNF doesn’t catch everything — multivalued, independent facts need 4NF",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>FD Theory: Armstrong's Axioms, Attribute Closure, BCNF & 3NF</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html",
+    "href": "weeks/week_5/03.html",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "",
+    "text": "Extraneous Attributes\nWe already have attribute closure (\\(\\alpha^+\\)) as our cheap, go-to tool for testing superkeys and individual FDs. Now we use it to answer a sharper question: does every FD in our set actually earn its place, in full? This leads us to extraneous attributes and, ultimately, the canonical cover — the leanest possible version of a set of FDs.\nSome FD sets carry dead weight — attributes on either side of an FD that don’t actually contribute anything. An attribute is extraneous if we can remove it without losing any information from the FD set.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#attribute-set-closure-worked-example",
+    "href": "weeks/week_5/03.html#attribute-set-closure-worked-example",
+    "title": "Algorithms for Functional Dependencies",
+    "section": "",
+    "text": "Setup\n\nRelation: \\(R = (A, B, C, G, H, I)\\)\nFunctional Dependencies: \\[F = \\{A \\rightarrow B, \\ A \\rightarrow C, \\ CG \\rightarrow H, \\ CG \\rightarrow I, \\ B \\rightarrow H\\}\\]\n\n\n\nStep-by-Step Evaluation of \\((AG)^+\\)\nStep | Result Set | Rule Applied & Justification |\n:—: | | |\na | \\(\\{A, G\\}\\) | Initialization: Start with the base attributes. |\nb | \\(\\{A, G, B, C\\}\\) | \\(A \\rightarrow B\\) and \\(A \\rightarrow C\\) hold, and \\(A \\subseteq \\{A, G\\}\\). |\nc | \\(\\{A, G, B, C, H\\}\\) | \\(CG \\rightarrow H\\) holds, and \\(CG \\subseteq \\{A, G, B, C\\}\\). |\nd | \\(\\{A, G, B, C, H, I\\}\\) | \\(CG \\rightarrow I\\) holds, and \\(CG \\subseteq \\{A, G, B, C, H\\}\\). |\n\\[\\text{Final Closure: } (AG)^+ = \\{A, B, C, G, H, I\\} = R\\]\n\n\nKey Verification: Is \\(AG\\) a Candidate Key?\n\nIs \\(AG\\) a superkey? Yes, because \\((AG)^+ \\supseteq R\\).\nIs it minimal (any subset a superkey)?\n\n\\((A)^+ = \\{A, B, C, H\\} \\neq R\\) (Not a superkey)\n\\((G)^+ = \\{G\\} \\neq R\\) (Not a superkey)\n\n\n\n📌 Since \\(AG\\) is a superkey and no proper subset of \\(AG\\) is a superkey, \\(AG\\) is verified as a candidate key.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#extraneous-attributes",
+    "href": "weeks/week_5/03.html#extraneous-attributes",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "",
+    "text": "Extraneous on the left (\\(\\alpha\\)): Attribute \\(A \\in \\alpha\\) is extraneous in \\(\\alpha \\rightarrow \\beta\\) if \\(F\\) still logically implies \\((\\alpha - A) \\rightarrow \\beta\\) — i.e., dropping \\(A\\) makes the FD stronger (broader left side removed) but the same conclusion still holds.\nSimpler Rule: An attribute on the left is dead weight if the remaining attributes on the left are already powerful enough to find the right side.\nExtraneous on the right (\\(\\beta\\)): Attribute \\(A \\in \\beta\\) is extraneous in \\(\\alpha \\rightarrow \\beta\\) if the remaining set of FDs — with \\(A\\) dropped from \\(\\beta\\) — still logically implies the original \\(\\alpha \\rightarrow \\beta\\) (i.e., \\(A\\) was derivable anyway).\nSimpler Rule: An attribute on the right is dead weight if you can already figure it out by playing a chain-reaction game with the other rules in your system.\n\n\nWorked Examples\nExample 1 — extraneous on the left: \\(F = \\{A \\rightarrow C,\\ AB \\rightarrow C\\}\\)\n\n\\(B\\) is extraneous in \\(AB \\rightarrow C\\), because \\(A^+ = AC\\) already — meaning \\(A \\rightarrow C\\) holds on its own, without needing \\(B\\) at all.\n\nExample 2 — extraneous on the right: \\(F = \\{A \\rightarrow C,\\ AB \\rightarrow CD\\}\\)\n\n\\(C\\) is extraneous in \\(AB \\rightarrow CD\\), because dropping it leaves \\(\\{A \\rightarrow C,\\ AB \\rightarrow D\\}\\), and \\(AB^+ = ABCD\\) in this reduced set — so \\(C\\) was always derivable anyway.\n\n\n\nTesting for Extraneous Attributes\nTo test if \\(A \\in \\alpha\\) is extraneous in \\(\\alpha \\rightarrow \\beta\\): Cover up \\(A\\). Compute the attribute closure of whatever is left on the left side: \\((\\alpha - A)^+\\). If your target \\(\\beta\\) is inside that result set, \\(A\\) is extraneous.\nTo test if \\(A \\in \\beta\\) is extraneous in \\(\\alpha \\rightarrow \\beta\\): Hide \\(A\\) from the right side of that specific dependency. Using this modified set of rules, compute the attribute closure of the left side: \\(\\alpha^+\\). If \\(A\\) still pops up in the final result, it means the other rules already had it covered. \\(A\\) is extraneous.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#equivalence-of-fd-sets",
+    "href": "weeks/week_5/03.html#equivalence-of-fd-sets",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Equivalence of FD Sets",
+    "text": "Equivalence of FD Sets\nTwo sets of FDs, \\(F\\) and \\(G\\), are equivalent if \\(F^+ = G^+\\) — meaning every FD in \\(F\\) can be derived from \\(G\\), and every FD in \\(G\\) can be derived from \\(F\\).\nWe break this into two directions:\n\n\\(F\\) covers \\(G\\): every FD of \\(G\\) is logically implied by \\(F\\) (i.e., \\(F^+ \\supseteq G\\))\n\\(G\\) covers \\(F\\): every FD of \\(F\\) is logically implied by \\(G\\) (i.e., \\(G^+ \\supseteq F\\))\n\n\\(F\\) and \\(G\\) are equivalent only if both directions of covering hold.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#canonical-cover-f_c",
+    "href": "weeks/week_5/03.html#canonical-cover-f_c",
+    "title": "Algorithms for Functional Dependencies",
+    "section": "Canonical Cover (\\(F_c\\))",
+    "text": "Canonical Cover (\\(F_c\\))\nA Canonical Cover \\(F_c\\) is a minimal, optimized, and irreducible set of functional dependencies that preserves the exact same logical meaning as the original set \\(F\\) (\\(F_c^+ = F^+\\)).\n\nProperties of \\(F_c\\)\n\nNo Redundancy: No functional dependency in \\(F_c\\) contains an extraneous attribute (neither on LHS nor RHS).\nUnique Antecedents: The left-hand side of every dependency in \\(F_c\\) is unique. There are no two dependencies \\(\\alpha_1 \\rightarrow \\beta_1\\) and \\(\\alpha_2 \\rightarrow \\beta_2\\) such that \\(\\alpha_1 = \\alpha_2\\).\n\n\n\nThe Canonical Cover Algorithm\n\nStep 1: Use the Union Rule to combine any FDs with identical LHS. Replace \\((\\alpha \\rightarrow \\beta_1)\\) and \\((\\alpha \\rightarrow \\beta_2)\\) with \\((\\alpha \\rightarrow \\beta_1\\beta_2)\\).\nStep 2: Find a dependency \\(\\alpha \\rightarrow \\beta\\) with an extraneous attribute \\(A\\) (either in \\(\\alpha\\) or \\(\\beta\\)) using the current state of \\(F_c\\).\nStep 3: If found, delete the attribute and loop back to check Step 1 again. Repeat until \\(F_c\\) stabilizes.\n\n\n\nComprehensive Execution Trace\nInitial State: \\(R = (A, B, C)\\), \\(F = \\{A \\rightarrow BC, \\ B \\rightarrow C, \\ A \\rightarrow B, \\ AB \\rightarrow C\\}\\)\n\nStep 1: Apply Union Rule Combine \\(A \\rightarrow BC\\) and \\(A \\rightarrow B\\) into \\(A \\rightarrow BC\\). \\[\\text{Current } F_c = \\{A \\rightarrow BC, \\ B \\rightarrow C, \\ AB \\rightarrow C\\}\\]\nStep 2: Test LHS for Extraneous Attributes Evaluate \\(AB \\rightarrow C\\). Check if \\(A\\) is extraneous. Compute \\((AB - A)^+ = B^+\\) using current \\(F_c\\). From \\(B \\rightarrow C\\), we find \\(B^+ = \\{B, C\\}\\). Since the target \\(C \\subseteq B^+\\), \\(A\\) is extraneous in \\(AB \\rightarrow C\\). Drop \\(A\\) to turn the dependency into \\(B \\rightarrow C\\). \\[\\text{Current } F_c = \\{A \\rightarrow BC, \\ B \\rightarrow C, \\ B \\rightarrow C\\}\\] Consolidate duplicate rules: \\[\\text{Current } F_c = \\{A \\rightarrow BC, \\ B \\rightarrow C\\}\\]\nStep 3: Test RHS for Extraneous Attributes Evaluate \\(A \\rightarrow BC\\). Check if \\(C\\) is extraneous. Construct temporary set \\(F' = \\{A \\rightarrow B, \\ B \\rightarrow C\\}\\). Compute \\(A^+\\) using \\(F'\\): \\(A \\rightarrow B \\implies \\{A, B\\} \\rightarrow B \\rightarrow C \\implies \\{A, B, C\\}\\). Since the target $C \\(A^+\\), attribute \\(C\\) is extraneous in the RHS of \\(A \\rightarrow BC\\). Drop \\(C\\) from the RHS. \\[\\text{Current } F_c = \\{A \\rightarrow B, \\ B \\rightarrow C\\}\\]\nTermination: No further extraneous attributes or union operations remain.\n\n\\[\\text{Final Canonical Cover } F_c = \\{A \\rightarrow B, \\ B \\rightarrow C\\}\\]",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#prime-vs.-non-prime-attributes",
+    "href": "weeks/week_5/03.html#prime-vs.-non-prime-attributes",
+    "title": "Algorithms for Functional Dependencies",
+    "section": "Prime vs. Non-Prime Attributes",
+    "text": "Prime vs. Non-Prime Attributes\nWhen normalizing relations, attributes are classified based on their membership in candidate keys.\n\n\n\n\n\n\n\n\nClassification\nDefinition\nComputational Definition\n\n\n\n\nPrime Attribute\nAn attribute that belongs to at least one candidate key of \\(R\\).\n\\(\\bigcup (\\text{CK}_1 \\cup \\text{CK}_2 \\cup \\dots \\cup \\text{CK}_n)\\)\n\n\nNon-Prime Attribute\nAn attribute that does not belong to any candidate key of \\(R\\).\n\\(R - (\\text{Prime Attributes})\\)\n\n\n\n\n💡 Key Multiplicity Rule: If a prime attribute is functionally determined by an independent set of attributes (\\(X \\rightarrow A\\), where \\(A\\) is prime), it indicates that the schema likely contains multiple candidate keys.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html",
+    "href": "weeks/week_5/04.html",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "",
+    "text": "Lossless Join Decomposition\nFor \\(R\\) decomposed into \\(R_1, R_2\\), we require that for every legal relation \\(r\\) on \\(R\\):\n\\[r = \\pi_{R_1}(r) \\bowtie \\pi_{R_2}(r)\\]\nSufficient condition: the decomposition is lossless if at least one of these is in \\(F^+\\):\n\\[R_1 \\cap R_2 \\rightarrow R_1 \\quad \\text{or} \\quad R_1 \\cap R_2 \\rightarrow R_2\\]\nFull check:",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#lossless-join-decomposition",
+    "href": "weeks/week_5/04.html#lossless-join-decomposition",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "",
+    "text": "⚠️ This is sufficient, but only necessary when all constraints are FDs (other constraint types can change the picture).\n\n\n\n\\(R_1 \\cup R_2 = R\\)\n\\(R_1 \\cap R_2 \\neq \\phi\\)\n\\(R_1 \\cap R_2 \\rightarrow R_1\\) or \\(R_1 \\cap R_2 \\rightarrow R_2\\)\n\n\nExample: Supplier-Parts (Lossy)\nSupplier_Parts(S#, Sname, City, P#, Qty), with S# → Sname, City and (S#, P#) → Qty.\nBad decomposition: Supplier(S#, Sname, City, Qty), Parts(P#, Qty)\nCommon attribute is Qty — not a superkey of either side. Joining back produces extra tuples: lossy. It also fails to preserve (S#, P#) → Qty.\n\n\nExample: Supplier-Parts (Lossless)\nGood decomposition: Supplier(S#, Sname, City), Parts(S#, P#, Qty)\nCommon attribute is S#, a superkey of Supplier. Joining back reconstructs the original exactly: lossless, and all dependencies preserved.\n\n\nExample: Two Decompositions, Different Outcomes\n\\(R = (A,B,C)\\), \\(F = \\{A \\rightarrow B,\\ B \\rightarrow C\\}\\)\n\n\n\n\n\n\n\n\nDecomposition\nLossless?\nDependency Preserving?\n\n\n\n\n\\(R_1=(A,B),\\ R_2=(B,C)\\)\nYes — \\(R_1 \\cap R_2 = \\{B\\}\\), \\(B \\rightarrow BC\\)\nYes\n\n\n\\(R_1=(A,B),\\ R_2=(A,C)\\)\nYes — \\(R_1 \\cap R_2 = \\{A\\}\\), \\(A \\rightarrow AB\\)\nNo — \\(B \\rightarrow C\\) can’t be checked without joining\n\n\n\nSame relation, same FDs — the choice of split determines whether both properties hold.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#lossless-vs.-lossy-operational-examples",
+    "href": "weeks/week_5/04.html#lossless-vs.-lossy-operational-examples",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Lossless vs. Lossy: Operational Examples",
+    "text": "Lossless vs. Lossy: Operational Examples\n\n1. The Lossy Trap (Shared Attribute is Not a Key)\nConsider a schema tracking factory inventory: Supplier_Parts(S#, Sname, City, P#, Qty) * \\(F = \\{S\\# \\rightarrow \\text{Sname}, \\ S\\# \\rightarrow \\text{City}, \\ (S\\#, P\\#) \\rightarrow \\text{Qty}\\}\\)\nDecompose into: * \\(R_1 = \\text{Supplier}(S\\#, \\text{Sname}, \\text{City}, \\text{Qty})\\) * \\(R_2 = \\text{Parts}(P\\#, \\text{Qty})\\)\nEvaluation: * Intersection: \\(R_1 \\cap R_2 = \\{\\text{Qty}\\}\\) * Superkey Verification: Compute \\((\\text{Qty})^+ = \\{\\text{Qty}\\}\\). * Result: Since \\(\\text{Qty} \\rightarrow R_1\\) and \\(\\text{Qty} \\rightarrow R_2\\) both fail, computing \\(\\text{Supplier} \\bowtie \\text{Parts}\\) generates illegal, out-of-context matching rows. The join is completely lossy.\n\n\n2. The Lossless Fix (Shared Attribute as a Superkey)\nUsing the same setup, change the boundaries of the split: * \\(R_1 = \\text{Supplier}(S\\#, \\text{Sname}, \\text{City})\\) * \\(R_2 = \\text{Parts}(S\\#, P\\#, \\text{Qty})\\)\nEvaluation: * Intersection: \\(R_1 \\cap R_2 = \\{S\\#\\}\\) * Superkey Verification: Compute \\((S\\#)^+ = \\{S\\#, \\text{Sname}, \\text{City}\\} = R_1\\). * Result: Since \\(R_1 \\cap R_2 \\rightarrow R_1\\) holds perfectly, this decomposition is guaranteed lossless.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#dependency-preservation",
+    "href": "weeks/week_5/04.html#dependency-preservation",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Dependency Preservation",
+    "text": "Dependency Preservation\nLet \\(F_i\\) be the set of dependencies of \\(F^+\\) to only the attributes in \\(R_i\\). A decomposition into \\(R_1, ..., R_n\\) is dependency preserving if:\n\\[(F_1 \\cup F_2 \\cup \\cdots \\cup F_n)^+ = F^+\\]\nIf not, checking updates for FD violations requires an expensive join.\n\nWorked Example (Cyclic FDs)\n\\(R(A,B,C,D)\\), \\(F = \\{A \\rightarrow B,\\ B \\rightarrow C,\\ C \\rightarrow D,\\ D \\rightarrow A\\}\\)\nDecomposition: \\(R_1(A,B),\\ R_2(B,C),\\ R_3(C,D)\\)\nA→B, B→C, C→D are trivially preserved (each lives entirely inside one \\(R_i\\)). The only one to check is D→A:\n\\[D \\rightarrow C \\ (R_3) \\Rightarrow C \\rightarrow B\\ (R_2) \\Rightarrow B \\rightarrow A\\ (R_1) \\Rightarrow D \\rightarrow A \\text{ by transitivity}\\]\nAll dependencies preserved.\n\n\nTesting (Polynomial Method — Preferred)\nresult ← α\nwhile (result changes) do\n    for each Ri in the decomposition:\n        t = (result ∩ Ri)+ ∩ Ri      -- closure computed w.r.t. F, restricted to Ri\n        result ← result ∪ t\n-- α → β is preserved iff β ⊆ result\nApply this test to every FD in \\(F\\) to confirm the whole decomposition preserves dependencies.\n\n\nWorked Example (Polynomial Method)\n\\(R(A,B,C,D,E,F)\\), \\(F = \\{A \\rightarrow BCD,\\ A \\rightarrow EF,\\ BC \\rightarrow AD,\\ BC \\rightarrow E,\\ BC \\rightarrow F,\\ B \\rightarrow F,\\ D \\rightarrow E\\}\\)\nDecomposition: \\(R_1(A,B,C,D),\\ R_2(B,F),\\ R_3(D,E)\\)\nA→BCD, BC→AD (both fully inside \\(R_1\\)), B→F (inside \\(R_2\\)), D→E (inside \\(R_3\\)) are automatically preserved. Remaining to check: A→E, A→F, BC→E, BC→F.\nChecking A → EF:\n\n\n\nRound\nApply\nResult grows to\n\n\n\n\nStart\n—\n{A}\n\n\n\\(R_1\\)\n\\((A)^+ \\cap R_1\\)\n{A,B,C,D}\n\n\n\\(R_2\\)\n\\((ABCD)^+ \\cap R_2\\)\n{...,F} (via B→F)\n\n\n\\(R_3\\)\n\\((ABCDF)^+ \\cap R_3\\)\n{...,E} (via D→E)\n\n\n\nResult contains E,F ⇒ A→EF preserved.\nChecking BC → E, F: same process starting from {B,C} — reaches A,D via \\(R_1\\) (BC→AD), then F via \\(R_2\\) (B→F), then E via \\(R_3\\) (D→E). Both preserved.\nAll dependencies preserved — this decomposition is dependency preserving.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#testing-dependency-preservation",
+    "href": "weeks/week_5/04.html#testing-dependency-preservation",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Testing Dependency Preservation",
+    "text": "Testing Dependency Preservation\n\nMethod 1: The Exponential Closure Approach (Theoretical)\n\nGenerate the absolute closure \\(F^+\\).\nProject \\(F^+\\) onto each sub-relation \\(R_i\\) by discarding any FDs containing attributes outside \\(R_i\\). This yields \\(F_1, F_2, \\dots, F_n\\).\nCheck if the unified set \\(F' = \\bigcup F_i\\) can logically infer every single base dependency in \\(F\\).\n\n\n⚠️ Performance Warning: Calculating global \\(F^+\\) closures scales exponentially (\\(2^n\\)), making this approach highly inefficient for complex systems.\n\n\n\nMethod 2: The Polynomial Testing Loop (Practical)\nTo verify if a specific dependency \\(\\alpha \\rightarrow \\beta\\) is preserved across a decomposition \\(D = \\{R_1, R_2, \\dots, R_n\\}\\), run this adaptive attribute closure algorithm:\n\nInitialize result = \\(\\alpha\\)\nLoop while changes occur to result:\n\nFor each sub-relation \\(R_i\\) in the decomposition:\n\nCompute \\(t = (\\text{result} \\cap R_i)^+ \\cap R_i\\) (where the closure is evaluated using global rules \\(F\\))\nUpdate \\(\\text{result} = \\text{result} \\cup t\\)\n\n\nEvaluation: If \\(\\beta \\subseteq \\text{result}\\) at termination, the functional dependency \\(\\alpha \\rightarrow \\beta\\) is preserved. Repeat this process for each individual dependency in \\(F\\).",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#dependency-testing-walkthrough",
+    "href": "weeks/week_5/04.html#dependency-testing-walkthrough",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Dependency Testing Walkthrough",
+    "text": "Dependency Testing Walkthrough\n\nSetup\n\nGlobal Schema: \\(R(A, B, C, D, E, F)\\)\nFunctional Dependencies: \\[F = \\{A \\rightarrow BCD, \\ A \\rightarrow EF, \\ BC \\rightarrow AD, \\ BC \\rightarrow E, \\ BC \\rightarrow F, \\ B \\rightarrow F, \\ D \\rightarrow E\\}\\]\nDecomposition Target: \\(R_1(A, B, C, D)\\), \\(R_2(B, F)\\), \\(R_3(D, E)\\)\n\n\n\nAlgorithmic Verification Trace\n\nTest 1: Is \\(BC \\rightarrow E\\) preserved?\n\nSet initial \\(\\text{result} = \\{B, C\\}\\).\nIteration 1:\n\nEvaluate \\(R_1(A, B, C, D)\\): \\[\\text{result} \\cap R_1 = \\{B, C\\}\\] Compute \\((\\{B, C\\})^+ = \\{A, B, C, D, E, F\\}\\) (using base \\(F\\)). \\[t = \\{A, B, C, D, E, F\\} \\cap \\{A, B, C, D\\} = \\{A, B, C, D\\}\\] Update: \\(\\text{result} = \\{B, C\\} \\cup \\{A, B, C, D\\} = \\{A, B, C, D\\}\\)\nEvaluate \\(R_3(D, E)\\): \\[\\text{result} \\cap R_3 = \\{D\\}\\] Compute \\((\\{D\\})^+ = \\{D, E\\}\\). \\[t = \\{D, E\\} \\cap \\{D, E\\} = \\{D, E\\}\\] Update: \\(\\text{result} = \\{A, B, C, D\\} \\cup \\{D, E\\} = \\{A, B, C, D, E\\}\\)\n\nResult Check: The target attribute \\(E \\subseteq \\{A, B, C, D, E\\}\\). Preserved.\n\n\n\nTest 2: Is \\(A \\rightarrow EF\\) preserved?\n\nSet initial \\(\\text{result} = \\{A\\}\\).\nIteration 1:\n\nEvaluate \\(R_1(A, B, C, D)\\): \\[\\text{result} \\cap R_1 = \\{A\\}\\] Compute \\((\\{A\\})^+ = \\{A, B, C, D, E, F\\}\\). \\[t = \\{A, B, C, D, E, F\\} \\cap \\{A, B, C, D\\} = \\{A, B, C, D\\}\\] Update: \\(\\text{result} = \\{A, B, C, D\\}\\)\nEvaluate \\(R_2(B, F)\\): \\[\\text{result} \\cap R_2 = \\{B\\}\\] Compute \\((\\{B\\})^+ = \\{B, F\\}\\). \\[t = \\{B, F\\} \\cap \\{B, F\\} = \\{B, F\\}\\] Update: \\(\\text{result} = \\{A, B, C, D, F\\}\\)\nEvaluate \\(R_3(D, E)\\): \\[\\text{result} \\cap R_3 = \\{D\\}\\] Compute \\((\\{D\\})^+ = \\{D, E\\}\\). \\[t = \\{D, E\\} \\cap \\{D, E\\} = \\{D, E\\}\\] Update: \\(\\text{result} = \\{A, B, C, D, E, F\\}\\)\n\nResult Check: Target attributes \\(\\{E, F\\} \\subseteq \\{A, B, C, D, E, F\\}\\). Preserved.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#why-do-we-need-good-design",
+    "href": "weeks/week_5/01.html#why-do-we-need-good-design",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "",
+    "text": "Reflect the real-world structure of the problem\nBe able to represent all the data we’ll ever need over time\nAvoid storing the same data item redundantly\nProvide efficient access to data\nMaintain data integrity over time\nStay clean, consistent, and easy to understand\n\n\nNote: These goals sometimes pull in opposite directions! For example, avoiding all redundancy can sometimes mean more tables and slightly slower queries (more joins). Good design is about finding the right balance.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#spotting-a-bad-schema",
+    "href": "weeks/week_5/01.html#spotting-a-bad-schema",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "",
+    "text": "ID — the key\nname, salary — belong purely to the instructor, no repetition\nbuilding, budget — belong to the department, not the instructor — and this is where trouble starts",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#redundancy-and-anomaly",
+    "href": "weeks/week_5/01.html#redundancy-and-anomaly",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "Redundancy and Anomaly",
+    "text": "Redundancy and Anomaly\nRedundancy means the same data item is stored in multiple places in the database. It usually shows up when a database hasn’t been normalized — everything crammed into one flat table.\nRedundancy causes anomalies — inconsistencies that pop up when we insert, delete, or update data. There are three kinds:\n\n\n\n\n\n\n\n\nAnomaly\nWhat Goes Wrong\nExample\n\n\n\n\nInsertion\nCan’t add a record without also supplying unrelated data\nWe can’t add a new instructor to instructor_with_department unless we also know their department’s building and budget — even if the department has no instructors yet\n\n\nDeletion\nDeleting one record accidentally erases unrelated information\nIf we delete the last instructor of a department, we lose that department’s building and budget info entirely — even though the department still exists\n\n\nUpdate\nChanging one fact means changing it in many places, risking missed updates\nIf a department’s budget changes, we must update every single instructor row for that department — miss one row, and the data becomes inconsistent\n\n\n\n\nThe Chain of Cause and Effect\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    A[\"Dependency\"] --&gt; B[\"Redundancy\"] --&gt; C[\"Anomaly\"]\n    D[\"Decomposition\"] -.-&gt;|\"minimizes\"| B\n    E[\"Normalization\"] -.-&gt;|\"ensures good\"| D\n\n\n\n\n\n\n\ndept_name uniquely decides building and budget (a department can’t have two budgets), so those columns depend on dept_name. Dependency causes redundancy.\nThe fix is to decompose (split) the table so each fact is stored only once: instructor_with_department → instructor + department.\n\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph TD\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;\n    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;\n\n    A[\"instructor_with_department&lt;br/&gt;(ID, name, salary, dept_name, building, budget)\"]:::bad\n    B[\"instructor&lt;br/&gt;(ID, name, salary, dept_name)\"]:::good\n    C[\"department&lt;br/&gt;(dept_name, building, budget)\"]:::good\n\n    A -- \"Decompose\" --&gt; B\n    A -- \"Decompose\" --&gt; C\n\n\n\n\n\n\n\nBut not just any split works — it needs to preserve information, respect the dependencies, and stay efficient. Normalization is the formal set of rules that guarantees a good decomposition.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#decomposition-splitting-tables-safely",
+    "href": "weeks/week_5/01.html#decomposition-splitting-tables-safely",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "Decomposition: Splitting Tables Safely",
+    "text": "Decomposition: Splitting Tables Safely\nThe idea: write a rule like “if there were a schema (dept_name, building, budget), then dept_name would be a candidate key.” This rule is called a functional dependency, written:\n\\[dept\\_name \\rightarrow building, budget\\]\nSince dept_name is not a candidate key in the combined inst_dept table, building and budget end up repeated — a clear sign the table needs decomposing.\n\nLossy Decomposition\nHere’s a decomposition that goes wrong. Take:\nemployee(ID, name, street, city, salary)\n…and split it into:\n\nemployee1(ID, name)\nemployee2(name, street, city, salary)\n\nIf two employees can share the same name, then employee2 can’t tell them apart on its own — it becomes a weak entity that can’t stand without an identifying relationship. When you try to join employee1 and employee2 back together on name, you get extra, incorrect rows mixing up different people’s addresses and salaries. We can no longer reconstruct the original table correctly. This is a lossy decomposition.\n\nWarning: A lossy decomposition is a one-way trip — once you split the data this way, the original table cannot be reliably rebuilt. Always check that a decomposition is lossless before using it.\n\n\n\nLossless-Join Decomposition\nA decomposition of \\(R\\) into \\(R_1\\) and \\(R_2\\) is lossless if joining \\(R_1\\) and \\(R_2\\) back together (via natural join) always reproduces exactly \\(R\\) — no missing rows, no extra rows.\nFormally, for \\(R = (A, B, C)\\) decomposed into \\(R_1 = (A, B)\\) and \\(R_2 = (B, C)\\):\n\\[R_1 \\cup R_2 = R, \\quad R_1 \\cap R_2 \\neq \\phi\\] \\[\\forall r \\in R,\\ r_1 = \\Pi_{R_1}(r),\\ r_2 = \\Pi_{R_2}(r) \\implies r_1 \\bowtie r_2 = r\\]\nIn plain terms: if you project the original table onto \\(R_1\\) and \\(R_2\\), then natural-join them back together, you should land exactly back on the original table — nothing gained, nothing lost.\n\n\n\n\n\n\n\n\n\nLossy Decomposition\nLossless-Join Decomposition\n\n\n\n\nReconstructing original data\n❌ Not possible — join produces incorrect/extra rows\n✅ Always possible via natural join\n\n\nCommon cause\nSplitting on a non-key, non-unique attribute (like name)\nSplitting along a shared key or a column that determines the other\n\n\nGoal\n—\nRemoves redundancy while preserving all original data",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#atomic-domains-and-first-normal-form-1nf",
+    "href": "weeks/week_5/01.html#atomic-domains-and-first-normal-form-1nf",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "Atomic Domains and First Normal Form (1NF)",
+    "text": "Atomic Domains and First Normal Form (1NF)\n\nWhat Does “Atomic” Mean?\nA domain is atomic if its values are indivisible units — you can’t meaningfully break them into smaller parts within the database.\nNon-atomic examples:\n\nA set of names (multiple values crammed into one field)\nComposite attributes (like an address made of street + city + zip, stored as one field)\nIDs like CS101 that get split into parts (CS = department, 101 = course number)\n\nA relational schema \\(R\\) is in First Normal Form (1NF) if:\n\nEvery attribute’s domain is atomic, and\nEach attribute holds only a single value from that domain (no repeating groups)\n\nNon-atomic values complicate storage and encourage redundancy — e.g., storing a set of bank accounts directly inside each customer record.\n\nNote: Atomicity is really about how a value is used, not some absolute property of the data type. Strings are normally atomic — but if you start parsing CS0012 to pull out \"CS\" as the department, you’ve broken atomicity, because now information is encoded inside the application logic instead of the database itself. That’s a bad idea to rely on.\n\n\n\nWatching a Bad Design Evolve Into 1NF\nImagine a student(ID, name, telephone_number) table where telephone_number can hold multiple numbers:\nAttempt 1 — Multi-valued field: One row per student, but telephone_number holds a set of numbers (e.g., “9876543210, 9123456789”). ❌ Not 1NF — the domain isn’t atomic and it’s multi-valued.\nAttempt 2 — Two separate columns (telephone_number_1, telephone_number_2): Technically atomic per column, so this is 1NF — but conceptually messy:\n\nThe ordering of “number 1” vs “number 2” is arbitrary and meaningless\nSearching across both columns for a number is awkward\nWhat happens when a student has a third number?\n\nAttempt 3 — One row per (student, number) pair: Now ID alone is no longer a valid key — duplicated name for every extra number, and the real key becomes (ID, telephone_number). Better atomicity, but now name is redundantly repeated.\nAttempt 4 — Two relations (the fix):\n\nstudent(ID, name)\nstudent_phone(ID, telephone_number)\n\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;\n\n    S[\"student&lt;br/&gt;(ID, name)\"]:::good\n    P[\"student_phone&lt;br/&gt;(ID, telephone_number)\"]:::good\n\n    S -- \"One-to-Many\" --&gt; P\n\n\n\n\n\n\nThis decomposition captures the natural one-to-many relationship between a student and their phone numbers. As a nice side effect, it also satisfies the higher normal forms (2NF, 3NF) we’ll get to later — decomposition is often the cure for non-atomic, repeating data too.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#functional-dependencies-fds",
+    "href": "weeks/week_5/01.html#functional-dependencies-fds",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "Functional Dependencies (FDs)",
+    "text": "Functional Dependencies (FDs)\n\nWhy We Need Them\nOur end goal: a theory that lets us (1) decide if a relation \\(R\\) is already in “good” form, and (2) if not, decompose it into smaller relations that are each in good form and preserve all information (lossless-join).\n\n\nDefinition\nA functional dependency generalizes the idea of a key. For a relation schema \\(R\\), with \\(\\alpha \\subseteq R\\) and \\(\\beta \\subseteq R\\):\n\\[\\alpha \\rightarrow \\beta\\]\nholds if, for any legal instance of \\(R\\), whenever two tuples agree on all attributes in \\(\\alpha\\), they must also agree on all attributes in \\(\\beta\\):\n\\[t_1[\\alpha] = t_2[\\alpha] \\implies t_1[\\beta] = t_2[\\beta]\\]\nIn plain English: knowing the value of \\(\\alpha\\) is enough to pin down the value of \\(\\beta\\).\nExample: In a relation \\(r(A, B)\\), if every time \\(A = 2\\) we also see \\(B = 4\\) — but different \\(A\\) values can share the same \\(B\\) — then \\(B \\rightarrow A\\) might hold while \\(A \\rightarrow B\\) does not (or vice versa, depending on the actual data).\n\n\nKeys, Redefined Using FDs\n\n\\(K\\) is a superkey for \\(R\\) if and only if \\(K \\rightarrow R\\) (K determines every attribute in R)\n\\(K\\) is a candidate key for \\(R\\) if and only if \\(K \\rightarrow R\\), and no proper subset \\(\\alpha \\subset K\\) also satisfies \\(\\alpha \\rightarrow R\\) (K is minimal)\n\nFDs let us express constraints that go beyond what keys alone can capture. For inst_dept(ID, name, salary, dept_name, building, budget), we’d expect:\n\\[dept\\_name \\rightarrow building\\] \\[dept\\_name \\rightarrow budget\\] \\[ID \\rightarrow budget\\]\n…but we would not expect dept_name → salary to hold — an instructor’s salary isn’t determined just by their department.\n\n\nUsing FDs\n\nA relation satisfies a set of FDs \\(F\\) if it’s legal under those constraints.\n\\(F\\) holds on schema \\(R\\) only if every legal instance of \\(R\\) satisfies \\(F\\) — not just one lucky snapshot of the data.\n\n\nNote: If one specific instance of instructor happens to satisfy name → ID purely by coincidence (no two instructors currently share a name), that doesn’t mean the FD holds on the schema in general. It only holds if it’s guaranteed for every possible legal instance.\n\n\n\nTrivial FDs\nAn FD \\(\\alpha \\rightarrow \\beta\\) is trivial if \\(\\beta \\subseteq \\alpha\\) — meaning it’s automatically true for every relation, so it tells us nothing new.\n\nID, name → ID — trivial (ID is already part of the left side)\nname → name — trivial\n\n\n\nClosure of a Set of FDs\nGiven a set \\(F\\) of FDs, we can often derive more FDs that logically follow from it. The set of all FDs derivable from \\(F\\) (including \\(F\\) itself) is called the closure, written \\(F^+\\).\nExample:\n\\[F = \\{A \\rightarrow B,\\ B \\rightarrow C\\}\\] \\[F^+ = \\{A \\rightarrow B,\\ B \\rightarrow C,\\ A \\rightarrow C\\}\\]\nHere \\(A \\rightarrow C\\) wasn’t stated directly, but it follows logically (if \\(A\\) determines \\(B\\), and \\(B\\) determines \\(C\\), then \\(A\\) must determine \\(C\\) too). We’ll dig into the formal rules for computing closures next.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/01.html#quick-recap",
+    "href": "weeks/week_5/01.html#quick-recap",
+    "title": "Redundancy, Decomposition & Functional Dependencies",
+    "section": "Quick Recap",
+    "text": "Quick Recap\n\nGood design avoids redundancy, but the goals of good design can conflict with each other\nRedundancy → insertion, deletion, and update anomalies\nRedundancy is caused by dependency; decomposition (guided by normalization) removes it\nA decomposition must be lossless-join — you must be able to reconstruct the original relation by joining the pieces back together\n1NF requires every attribute to hold a single, atomic value — no composite or multi-valued fields\nFunctional dependencies (\\(\\alpha \\rightarrow \\beta\\)) formalize why redundancy happens and give us a rigorous way to test whether a design is good\nThe closure of a set of FDs captures every dependency that logically follows from the stated ones",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Redundancy, Decomposition & Functional Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#closure-of-attribute-sets-alpha",
+    "href": "weeks/week_5/02.html#closure-of-attribute-sets-alpha",
+    "title": "Functional Dependency Theory",
+    "section": "Closure of Attribute Sets (\\(\\alpha^+\\))",
+    "text": "Closure of Attribute Sets (\\(\\alpha^+\\))\nComputing the entire \\(F^+\\) is overkill when we only care about one question: “what does this particular set of attributes determine?” That’s where attribute closure comes in.\nGiven a set of attributes \\(\\alpha\\), its closure under \\(F\\) — written \\(\\alpha^+\\) — is the set of all attributes functionally determined by \\(\\alpha\\).\n\nAlgorithm\nresult ← α\nwhile (changes to result) do\n    for each β → γ in F do\n        if β ⊆ result then result ← result ∪ γ\nKeep scanning the FDs and expanding result until nothing new gets added.\n\n\nWorked Example\nFor \\(R = (A, B, C, G, H, I)\\) with: \\[F = \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\] \\((AG)^+\\):\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    A1[\"AG\"] --&gt;|\"A → B, A → C\"| A2[\"ABCG\"]\n    A2 --&gt;|\"CG → H\"| A3[\"ABCGH\"]\n    A3 --&gt;|\"CG → I\"| A4[\"ABCGHI\"]\n\n\n\n\n\n\n\nresult = AG\nresult = ABCG (applying \\(A \\rightarrow B\\) and \\(A \\rightarrow C\\))\nresult = ABCGH (since \\(CG \\subseteq\\) current result, apply \\(CG \\rightarrow H\\))\nresult = ABCGHI (since \\(CG \\subseteq\\) current result, apply \\(CG \\rightarrow I\\))\n\nSo \\((AG)^+ = ABCGHI\\) — every attribute in \\(R\\). That tells us something important…\n\n\nIs \\(AG\\) a Candidate Key?\n\nIs \\(AG\\) a superkey? Check if \\((AG)^+ \\supseteq R\\). Since \\((AG)^+ = ABCGHI = R\\), yes!\nIs any subset of \\(AG\\) also a superkey? Check \\((A)^+\\) and \\((G)^+\\) individually. If neither alone reaches all of \\(R\\), then \\(AG\\) is minimal — making it a candidate key.\n\n\n\nWhat Attribute Closure Is Good For\n\n\n\n\n\n\n\nUse Case\nHow\n\n\n\n\nTesting for superkey\nCompute \\(\\alpha^+\\); if it contains all attributes of \\(R\\), \\(\\alpha\\) is a superkey\n\n\nTesting if a specific FD holds\nTo check if \\(\\alpha \\rightarrow \\beta \\in F^+\\), just compute \\(\\alpha^+\\) and check if \\(\\beta \\subseteq \\alpha^+\\)\n\n\nComputing all of \\(F^+\\)\nFor every possible subset \\(\\gamma \\subseteq R\\), compute \\(\\gamma^+\\), then output \\(\\gamma \\rightarrow S\\) for every \\(S \\subseteq \\gamma^+\\)",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#decomposition-using-functional-dependencies",
+    "href": "weeks/week_5/02.html#decomposition-using-functional-dependencies",
+    "title": "Functional Dependency Theory",
+    "section": "Decomposition Using Functional Dependencies",
+    "text": "Decomposition Using Functional Dependencies\nNow we use this machinery to formally define what makes a decomposition “good enough” — leading to two increasingly strict normal forms: BCNF and 3NF.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#problems-with-decomposition",
+    "href": "weeks/week_5/02.html#problems-with-decomposition",
+    "title": "Functional Dependency Theory",
+    "section": "Problems With Decomposition",
+    "text": "Problems With Decomposition\nDecomposing isn’t free — it trades off against three potential costs:\n\n\n\n\n\n\n\nProblem\nDescription\n\n\n\n\nLossiness\nThe original relation may become impossible to reconstruct\n\n\nDependency checking cost\nVerifying an FD may now require a join across tables\n\n\nQuery cost\nSome queries get more expensive — e.g., “what’s the building for this instructor?” now needs a join instead of a single lookup\n\n\n\n\nNote: There’s always a tradeoff to weigh: redundancy and anomalies vs. the costs above. Normalization theory gives you the tools to decide — it doesn’t mean you should always decompose all the way to BCNF in practice.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#how-good-is-bcnf-really",
+    "href": "weeks/week_5/02.html#how-good-is-bcnf-really",
+    "title": "Functional Dependency Theory",
+    "section": "How Good Is BCNF, Really?",
+    "text": "How Good Is BCNF, Really?\nBCNF isn’t the end of the story. Consider inst_info(ID, child_name, phone), where an instructor can have multiple children and multiple phone numbers.\nSince a given ID might have several child_name values and several phone values, storing all combinations means every child gets paired with every phone number.\nThere are no non-trivial functional dependencies in this table at all — so technically, it’s already in BCNF! And yet it has a glaring insertion anomaly: adding a new phone number for instructor 99999 (who has two children, David and William) requires inserting two new tuples — one for each child:\n(99999, David, 981-992-3443)\n(99999, William, 981-992-3443)\nThat’s clearly redundant, and BCNF didn’t catch it — because the problem here isn’t a functional dependency, it’s a different kind of constraint (a multivalued dependency, between child_name and phone, both independent of each other under the same ID).\nFix: decompose into inst_child(ID, child_name) and inst_phone(ID, phone).\n\n\n\n\n\n%%{init: {'theme': 'neutral'}}%%\ngraph LR\n    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;\n    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;\n    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;\n\n    A[\"inst_info&lt;br/&gt;(ID, child_name, phone)&lt;br/&gt;&lt;i&gt;BCNF, but still redundant!&lt;/i&gt;\"]:::bad\n    B[\"inst_child&lt;br/&gt;(ID, child_name)\"]:::good\n    C[\"inst_phone&lt;br/&gt;(ID, phone)\"]:::good\n\n    A --&gt; B\n    A --&gt; C\n\n\n\n\n\n\nThis gap is exactly what motivates going even further, to the Fourth Normal Form (4NF) — which we’ll cover next.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Functional Dependency Theory</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/02.html#quick-recap",
+    "href": "weeks/week_5/02.html#quick-recap",
+    "title": "FD Theory: Armstrong’s Axioms, Attribute Closure, BCNF & 3NF",
+    "section": "Quick Recap",
+    "text": "Quick Recap\n\nArmstrong’s Axioms (reflexivity, augmentation, transitivity) are sound and complete rules for deriving all FDs logically implied by a set \\(F\\), giving us \\(F^+\\)\nAttribute closure (\\(\\alpha^+\\)) is a cheap, practical algorithm to test superkeys and individual FDs without computing the entire \\(F^+\\)\nBCNF requires every non-trivial FD’s left side to be a superkey — it guarantees a lossless join, but can sacrifice dependency preservation\n3NF relaxes BCNF slightly (allowing determined attributes that are part of some candidate key) specifically to preserve dependency checking\nDecomposition always trades off potential lossiness, dependency-checking cost, and query cost against reduced redundancy\nEven BCNF isn’t foolproof — tables with no non-trivial FDs can still carry anomalies caused by multivalued dependencies, motivating 4NF",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>FD Theory: Armstrong's Axioms, Attribute Closure, BCNF & 3NF</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#quick-recap-attribute-set-closure",
+    "href": "weeks/week_5/03.html#quick-recap-attribute-set-closure",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Quick Recap: Attribute Set Closure",
+    "text": "Quick Recap: Attribute Set Closure\nFor \\(R = (A, B, C, G, H, I)\\) with \\(F = \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\):\n\\[(AG)^+ : \\quad AG \\rightarrow ABCG \\rightarrow ABCGH \\rightarrow ABCGHI\\]\nSince \\((AG)^+ = R\\), \\(AG\\) is a superkey. Check if any subset — \\(A\\) alone or \\(G\\) alone — also reaches all of \\(R\\); if neither does, \\(AG\\) is minimal, making it a candidate key.\nAttribute closure is useful for:\n\n\n\n\n\n\n\nTask\nHow\n\n\n\n\nTest if \\(\\alpha\\) is a superkey\nCompute \\(\\alpha^+\\); check if it contains all of \\(R\\)\n\n\nTest if \\(\\alpha \\rightarrow \\beta\\) holds\nCompute \\(\\alpha^+\\); check if \\(\\beta \\subseteq \\alpha^+\\)\n\n\nCompute all of \\(F^+\\)\nFor every \\(\\gamma \\subseteq R\\), compute \\(\\gamma^+\\), and output \\(\\gamma \\rightarrow S\\) for every \\(S \\subseteq \\gamma^+\\)",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#canonical-cover",
+    "href": "weeks/week_5/03.html#canonical-cover",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Canonical Cover",
+    "text": "Canonical Cover\nReal-world FD sets often contain redundant dependencies (whole FDs that can be inferred from the others) or redundant parts of FDs (extraneous attributes). The canonical cover \\(F_c\\) is the minimal, “optimal” version of \\(F\\), trimmed down as far as possible while still being equivalent to it.\n\\(F_c\\) is a canonical cover for \\(F\\) if all of the following hold:\n\n\\(F_c^+ = F^+\\) (they’re fully equivalent)\nNo FD in \\(F_c\\) contains an extraneous attribute (nothing more to trim)\nEvery left-hand side in \\(F_c\\) is unique, no two FDs \\(\\alpha_1 \\rightarrow \\beta_1\\) and \\(\\alpha_2 \\rightarrow \\beta_2\\) share \\(\\alpha_1 \\rightarrow \\alpha_2\\) (these would just get merged via the union rule)\n\nIntuitively: a canonical cover is the smallest, most irreducible set of FDs that says exactly the same thing as \\(F\\) — no redundant FDs, and no redundant attributes tucked inside the FDs that remain.\n\nTrimming the Right-Hand Side (RHS)\n\\(\\{A \\rightarrow B,\\ B \\rightarrow C,\\ A \\rightarrow CD\\}\\) simplifies to \\(\\{A \\rightarrow B,\\ B \\rightarrow C,\\ A \\rightarrow D\\}\\)\n\nForward: \\(A \\rightarrow CD\\) splits (via decomposition) into \\(A \\rightarrow C\\) and \\(A \\rightarrow D\\); and \\(A \\rightarrow C\\) is redundant anyway since \\(A \\rightarrow B, B \\rightarrow C\\) already gives it via transitivity\nReverse: \\(A \\rightarrow B, B \\rightarrow C \\Rightarrow A \\rightarrow C\\); combine with \\(A \\rightarrow D\\) (union rule) to rebuild \\(A \\rightarrow CD\\)\nCheck: \\(A^+ = ABCD\\) under either version — confirms equivalence\n\n\n\nTrimming the Left-Hand Side (LHS)\n\\(\\{A \\rightarrow B,\\ B \\rightarrow C,\\ AC \\rightarrow D\\}\\) simplifies to \\(\\{A \\rightarrow B,\\ B \\rightarrow C,\\ A \\rightarrow D\\}\\)\n\nForward: \\(A \\rightarrow B, B \\rightarrow C \\Rightarrow A \\rightarrow C \\Rightarrow A \\rightarrow AC\\) (union with \\(A \\rightarrow A\\)); then \\(A \\rightarrow AC\\) combined with \\(AC \\rightarrow D\\) gives \\(A \\rightarrow D\\) by transitivity — so \\(C\\) was extraneous in \\(AC \\rightarrow D\\)\nReverse: \\(A \\rightarrow D \\Rightarrow AC \\rightarrow D\\) trivially (augmentation)\nCheck: \\(A^+ = ABCD\\) confirms this too\n\n\n\nAlgorithm to Compute a Canonical Cover\nrepeat\n    Use the union rule to replace any pair of dependencies\n        α1 → β1  and  α1 → β2\n    with\n        α1 → β1β2\n\n    Find a functional dependency α → β with an extraneous\n    attribute either in α or in β\n    (test for extraneous attributes using the CURRENT Fc, not the original F)\n\n    If found, delete that extraneous attribute\nuntil F does not change\n\nWarning: Once you delete an extraneous attribute, previously-unmergeable FDs might suddenly share the same left-hand side — so the union rule may become applicable again. Keep looping until nothing changes.\n\n\n\nWorked Example\n\\(R = (A, B, C)\\), \\(F = \\{A \\rightarrow BC,\\ B \\rightarrow C,\\ A \\rightarrow B,\\ AB \\rightarrow C\\}\\)\n\nUnion: merge \\(A \\rightarrow BC\\) and \\(A \\rightarrow B\\) into \\(A \\rightarrow BC\\) → set becomes \\(\\{A \\rightarrow BC,\\ B \\rightarrow C,\\ AB \\rightarrow C\\}\\)\n\\(A\\) is extraneous in \\(AB \\rightarrow C\\): dropping \\(A\\) leaves \\(B \\rightarrow C\\), which is already present in the set → set becomes \\(\\{A \\rightarrow BC,\\ B \\rightarrow C\\}\\)\n\\(C\\) is extraneous in \\(A \\rightarrow BC\\): is \\(A \\rightarrow C\\) implied by the rest? Yes — via transitivity on \\(A \\rightarrow B\\) and \\(B \\rightarrow C\\) (in trickier cases, just compute \\(A^+\\) to check)\n\nCanonical cover: \\(\\{A \\rightarrow B,\\ B \\rightarrow C\\}\\)",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#practice-problems",
+    "href": "weeks/week_5/03.html#practice-problems",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Practice Problems",
+    "text": "Practice Problems\n1. Test if an FD is implied by a given set:\n\n\n\\(F = \\{A \\rightarrow BC,\\ CD \\rightarrow E,\\ E \\rightarrow C,\\ D \\rightarrow AEH,\\ ABH \\rightarrow BD,\\ DH \\rightarrow BC\\}\\) — check \\(BCD \\rightarrow H\\) and \\(AED \\rightarrow C\\)\n\n\n\\(F = \\{AB \\rightarrow CD,\\ AF \\rightarrow D,\\ DE \\rightarrow F,\\ C \\rightarrow G,\\ F \\rightarrow E,\\ G \\rightarrow A\\}\\) — check \\(CF \\rightarrow DF\\), \\(BG \\rightarrow E\\), \\(AF \\rightarrow G\\), \\(AB \\rightarrow EF\\)\n\n\n\\(F = \\{A \\rightarrow BC,\\ B \\rightarrow E,\\ CD \\rightarrow EF\\}\\) — check \\(AD \\rightarrow F\\)\n\n\nMethod: compute the closure of the FD’s left-hand side under \\(F\\), then check if the right-hand side is a subset.\n2. Find a superkey using FDs:\n\n\n\\(R(ABCDE)\\), \\(F = \\{AB \\rightarrow C,\\ DE \\rightarrow B,\\ CD \\rightarrow E\\}\\)\n\n\n\\(R(ABCDE)\\), \\(F = \\{AB \\rightarrow C,\\ C \\rightarrow D,\\ B \\rightarrow EA\\}\\)\n\n\nMethod: for candidate attribute sets, compute their closure and check if it covers all of \\(R\\).\n3. Find the candidate key(s) for the same two schemas above.\nMethod: find a superkey (as above), then confirm minimality by checking that no proper subset also reaches all of \\(R\\).\n4. Find prime and non-prime attributes:\nGiven schemas (a) through (g) with various FD sets — find all candidate keys first, then:\n\nPrime attributes = union of all candidate key attributes (\\(CK_1 \\cup CK_2 \\cup CK_3 \\cup \\ldots\\)). Note: if a prime attribute \\(A\\) is itself determined by some other set \\(X\\) (i.e. \\(X \\rightarrow A\\)), that’s a signal \\(X\\) may also be a candidate key.\nNon-prime attributes = every attribute that appears in no candidate key\n\n5. Check equivalence of FD set pairs:\n\n\n\\(F = \\{A \\rightarrow C,\\ AC \\rightarrow D,\\ E \\rightarrow AD,\\ E \\rightarrow H\\}\\) vs. \\(G = \\{A \\rightarrow CD,\\ E \\rightarrow AH\\}\\)\n\n\n\\(P = \\{A \\rightarrow B,\\ AB \\rightarrow C,\\ D \\rightarrow ACE\\}\\) vs. \\(Q = \\{A \\rightarrow BC,\\ D \\rightarrow AE\\}\\)\n\n\nMethod: show \\(F\\) covers \\(G\\) and \\(G\\) covers \\(F\\) (or vice versa) using attribute closure.\n6. Find the canonical cover (minimal cover):\n\n\n\\(\\{AB \\rightarrow CD,\\ BC \\rightarrow D\\}\\)\n\n\n\\(\\{ABCD \\rightarrow E,\\ E \\rightarrow D,\\ AC \\rightarrow D,\\ A \\rightarrow B\\}\\)\n\n\nMethod: apply the canonical cover algorithm — merge shared left-hand sides via union, then strip extraneous attributes one at a time, re-checking after each removal.",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#quick-recap",
+    "href": "weeks/week_5/03.html#quick-recap",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Quick Recap",
+    "text": "Quick Recap\n\nExtraneous attributes are attributes that can be dropped from either side of an FD without losing any logical implication — tested cheaply via attribute closure\nEquivalence of two FD sets requires mutual covering: each must be derivable from the other\nThe canonical cover is the fully trimmed, minimal version of an FD set — no redundant FDs, no redundant attributes within them, and unique left-hand sides\nComputing a canonical cover is iterative: merge FDs sharing a left-hand side (union rule), then repeatedly strip extraneous attributes, re-checking since new merges can become possible after each removal\nThese tools — attribute closure, extraneous attribute tests, and canonical cover — are the practical toolkit for finding candidate keys, checking FD implication, and simplifying real schemas",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#summary",
+    "href": "weeks/week_5/04.html#summary",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Summary",
+    "text": "Summary\n\nA decomposition is lossless if the common attribute(s) of the two pieces form a superkey of at least one piece — check via \\(R_1 \\cap R_2 \\rightarrow R_1\\) or \\(R_2\\)\nThe same relation can be split in ways that are lossless but not dependency preserving, or both — the choice of split matters\nDependency preservation means every original FD can be checked locally, without a join\nThe polynomial-time test (closure restricted to each \\(R_i\\), iterated) is the practical way to check preservation — the direct \\(F^+\\) computation is exponential",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/03.html#prime-and-non-prime-attributes",
+    "href": "weeks/week_5/03.html#prime-and-non-prime-attributes",
+    "title": "Algorithms for FDs: Extraneous Attributes & Canonical Cover",
+    "section": "Prime and Non-Prime Attributes:",
+    "text": "Prime and Non-Prime Attributes:\n\nPrime attributes : Union of all candidate key attributes (\\(CK_1 \\cup CK_2 \\cup CK_3 \\cup \\ldots\\)).\n\nNote: if a prime attribute \\(A\\) is itself determined by some other set \\(X\\) (i.e. \\(X \\rightarrow A\\)), that’s a signal \\(X\\) may also be a candidate key.\n\nNon-prime attributes : every attribute that appears in no candidate key",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>17</span>  <span class='chapter-title'>Algorithms for FDs: Extraneous Attributes & Canonical Cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#superkey-calculation-formulas",
+    "href": "weeks/week_5/04.html#superkey-calculation-formulas",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Superkey Calculation Formulas",
+    "text": "Superkey Calculation Formulas\nGiven a relation with \\(N\\) total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.\n\nCase 1: Only 1 Candidate Key (Single Attribute)\nIf the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = \\(\\{A_1\\}\\)): \\[\\text{Total Superkeys} = 2^{N-1}\\]\n\n\nCase 2: Only 1 Candidate Key (Composite Key)\nIf the relation has only one candidate key, and that key is a composite key formed by \\(k\\) attributes: \\[\\text{Total Superkeys} = 2^{N-k}\\]\n\n\nCase 3: Every Single Attribute is a Candidate Key\nIf the relation has \\(N\\) candidate keys (meaning every single attribute in the relation is its own independent candidate key): \\[\\text{Total Superkeys} = 2^N - 1\\]\n\n\nCase 4: Two Distinct Candidate Keys\nWhen a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the Principle of Inclusion-Exclusion to avoid double-counting the superkeys that contain both keys.\n\n\nGeneric Set Formula\n\\[\\text{Max Superkeys} = (\\text{Superkeys with } A_1) + (\\text{Superkeys with } A_2) - (\\text{Superkeys with both } A_1 \\text{ and } A_2)\\]\n\n\nMathematical Representation\nLet \\(m\\) be the number of attributes forming the first candidate key, and \\(n\\) be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:\n\\[\\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\\]\n\n📌 Note: If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from \\((m+n)\\) to the number of attributes in their absolute union: \\(|\\text{Key}_1 \\cup \\text{Key}_2|\\).",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_5/04.html#case-4-two-distinct-candidate-keys",
+    "href": "weeks/week_5/04.html#case-4-two-distinct-candidate-keys",
+    "title": "Lossless Join Decomposition & Dependency Preservation",
+    "section": "Case 4: Two Distinct Candidate Keys",
+    "text": "Case 4: Two Distinct Candidate Keys\nWhen a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the Principle of Inclusion-Exclusion to avoid double-counting the superkeys that contain both keys.\n\nGeneric Set Formula\n\\[\\text{Max Superkeys} = (\\text{Superkeys with } A_1) + (\\text{Superkeys with } A_2) - (\\text{Superkeys with both } A_1 \\text{ and } A_2)\\]\n\n\nMathematical Representation\nLet \\(m\\) be the number of attributes forming the first candidate key, and \\(n\\) be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:\n\\[\\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\\]\n\n📌 Note: If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from \\((m+n)\\) to the number of attributes in their absolute union: \\(|\\text{Key}_1 \\cup \\text{Key}_2|\\).",
+    "crumbs": [
+      "**Week-05**",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Lossless Join Decomposition & Dependency Preservation</span>"
     ]
   }
 ]

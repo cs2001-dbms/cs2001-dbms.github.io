@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Algebra and Calculus – Database Management Systems</title>
+<title>Redundancy, Decomposition &amp; Functional Dependencies – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_4/02_entity_relationship_model.html" rel="next">
-<link href="../../weeks/week_3/advanced_sql.html" rel="prev">
+<link href="../../weeks/week_5/02.html" rel="next">
+<link href="../../weeks/week_4/03_advanced_er_concepts.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -75,6 +75,9 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -280,7 +283,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -403,16 +406,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-04</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Relational Algebra and Calculus</span></a>
+  <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Algebra and Calculus</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -429,26 +432,26 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-05</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Good Relational Design</span></a>
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory &amp; Normal Forms</span></a>
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependency Theory</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms for Functional Dependencies</span></a>
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -489,19 +492,29 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#introduction-to-query-languages" id="toc-introduction-to-query-languages" class="nav-link active" data-scroll-target="#introduction-to-query-languages">Introduction to Query Languages</a></li>
-  <li><a href="#relational-algebra-ra" id="toc-relational-algebra-ra" class="nav-link" data-scroll-target="#relational-algebra-ra">Relational Algebra (RA)</a>
+  <li><a href="#spotting-a-bad-schema" id="toc-spotting-a-bad-schema" class="nav-link active" data-scroll-target="#spotting-a-bad-schema">Spotting a Bad Schema</a></li>
+  <li><a href="#redundancy-and-anomaly" id="toc-redundancy-and-anomaly" class="nav-link" data-scroll-target="#redundancy-and-anomaly">Redundancy and Anomaly</a>
   <ul class="collapse">
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
-  <li><a href="#division-operation" id="toc-division-operation" class="nav-link" data-scroll-target="#division-operation">Division Operation</a></li>
+  <li><a href="#the-chain-of-cause-and-effect" id="toc-the-chain-of-cause-and-effect" class="nav-link" data-scroll-target="#the-chain-of-cause-and-effect">The Chain of Cause and Effect</a></li>
   </ul></li>
-  <li><a href="#tuple-relational-calculus-trc" id="toc-tuple-relational-calculus-trc" class="nav-link" data-scroll-target="#tuple-relational-calculus-trc">Tuple Relational Calculus (TRC)</a>
+  <li><a href="#decomposition-splitting-tables-safely" id="toc-decomposition-splitting-tables-safely" class="nav-link" data-scroll-target="#decomposition-splitting-tables-safely">Decomposition: Splitting Tables Safely</a>
   <ul class="collapse">
-  <li><a href="#trc-examples" id="toc-trc-examples" class="nav-link" data-scroll-target="#trc-examples">TRC Examples</a></li>
+  <li><a href="#lossy-decomposition" id="toc-lossy-decomposition" class="nav-link" data-scroll-target="#lossy-decomposition">Lossy Decomposition</a></li>
+  <li><a href="#lossless-join-decomposition" id="toc-lossless-join-decomposition" class="nav-link" data-scroll-target="#lossless-join-decomposition">Lossless-Join Decomposition</a></li>
   </ul></li>
-  <li><a href="#domain-relational-calculus-drc" id="toc-domain-relational-calculus-drc" class="nav-link" data-scroll-target="#domain-relational-calculus-drc">Domain Relational Calculus (DRC)</a>
+  <li><a href="#atomic-domains-and-first-normal-form-1nf" id="toc-atomic-domains-and-first-normal-form-1nf" class="nav-link" data-scroll-target="#atomic-domains-and-first-normal-form-1nf">Atomic Domains and First Normal Form (1NF)</a>
   <ul class="collapse">
-  <li><a href="#drc-examples" id="toc-drc-examples" class="nav-link" data-scroll-target="#drc-examples">DRC Examples</a></li>
+  <li><a href="#what-does-atomic-mean" id="toc-what-does-atomic-mean" class="nav-link" data-scroll-target="#what-does-atomic-mean">What Does “Atomic” Mean?</a></li>
+  <li><a href="#watching-a-bad-design-evolve-into-1nf" id="toc-watching-a-bad-design-evolve-into-1nf" class="nav-link" data-scroll-target="#watching-a-bad-design-evolve-into-1nf">Watching a Bad Design Evolve Into 1NF</a></li>
+  </ul></li>
+  <li><a href="#functional-dependencies-fds" id="toc-functional-dependencies-fds" class="nav-link" data-scroll-target="#functional-dependencies-fds">Functional Dependencies (FDs)</a>
+  <ul class="collapse">
+  <li><a href="#why-we-need-them" id="toc-why-we-need-them" class="nav-link" data-scroll-target="#why-we-need-them">Why We Need Them</a></li>
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#keys-redefined-using-fds" id="toc-keys-redefined-using-fds" class="nav-link" data-scroll-target="#keys-redefined-using-fds">Keys, Redefined Using FDs</a></li>
+  <li><a href="#using-fds" id="toc-using-fds" class="nav-link" data-scroll-target="#using-fds">Using FDs</a></li>
+  <li><a href="#trivial-fds" id="toc-trivial-fds" class="nav-link" data-scroll-target="#trivial-fds">Trivial FDs</a></li>
+  <li><a href="#closure-of-a-set-of-fds" id="toc-closure-of-a-set-of-fds" class="nav-link" data-scroll-target="#closure-of-a-set-of-fds">Closure of a Set of FDs</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -510,9 +523,9 @@ window.Quarto = {
 <main class="content column-body" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><span class="chapter-title">Relational Algebra and Calculus</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Algebra and Calculus</span></h1>
+<h1 class="title"><span class="chapter-title">Redundancy, Decomposition &amp; Functional Dependencies</span></h1>
 </div>
 
 
@@ -529,111 +542,275 @@ window.Quarto = {
 </header>
 
 
-<p><img src="thumb_ra.png" class="img-fluid"></p>
-<section id="introduction-to-query-languages" class="level1">
-<h1>Introduction to Query Languages</h1>
-<p>Query languages in DBMS are broadly classified into two categories:</p>
-<ol type="1">
-<li><strong>Procedural Query Languages</strong>: The user specifies <em>what</em> data is needed and <em>how</em> to get it. Relational Algebra is a procedural language.</li>
-<li><strong>Non-Procedural (Declarative) Query Languages</strong>: The user specifies <em>what</em> data is needed without specifying <em>how</em> to get it. Relational Calculus is a non-procedural language.</li>
-</ol>
+<p>So far we know <em>how</em> to build tables. But not every table design is equally good, a relational schema should reflect real-world structure, avoid redundant storage, support efficient access, and preserve data integrity as data changes. These goals sometimes conflict — good design is a balancing act, not a checklist.</p>
+<hr>
+<section id="spotting-a-bad-schema" class="level2">
+<h2 class="anchored" data-anchor-id="spotting-a-bad-schema">Spotting a Bad Schema</h2>
+<p>Consider a single, combined table: <code>instructor_with_department(ID, name, salary, dept_name, building, budget)</code>.</p>
+<ul>
+<li><code>ID</code> — the key</li>
+<li><code>name</code>, <code>salary</code> — belong purely to the instructor, no repetition</li>
+<li><code>building</code>, <code>budget</code> — belong to the <em>department</em>, not the instructor — and this is where trouble starts</li>
+</ul>
+<p>Since a department can have many instructors, <code>building</code> and <code>budget</code> get copied once for every instructor in that department. That repetition is <strong>redundancy</strong>.</p>
 <hr>
 </section>
-<section id="relational-algebra-ra" class="level1">
-<h1>Relational Algebra (RA)</h1>
-<p>Relational Algebra is a procedural query language that takes one or two relations as input and produces a new relation as a result. The fundamental operations include:</p>
-<ul>
-<li><span class="math inline">\(\sigma\)</span> - <strong>Select</strong>: Filters rows based on a given condition.</li>
-<li><span class="math inline">\(\pi\)</span> - <strong>Project</strong>: Selects specific columns from a relation.</li>
-<li><span class="math inline">\(\neg\)</span> - <strong>Negation (Not)</strong></li>
-<li><span class="math inline">\(\cup\)</span> - <strong>Union</strong>: Combines rows of two relations.</li>
-<li><span class="math inline">\(\cap\)</span> - <strong>Intersection</strong>: Finds common rows between two relations.</li>
-<li><span class="math inline">\(\times\)</span> - <strong>Cartesian Product</strong>: Combines each row of the first relation with each row of the second.</li>
-<li><span class="math inline">\(-\)</span> - <strong>Set Difference (Except)</strong>: Finds rows present in the first relation but not in the second.</li>
-<li><span class="math inline">\(⋈\)</span> - <strong>Natural Join</strong>: Combines two relations based on matching values in common attributes.</li>
-</ul>
-<section id="examples" class="level2">
-<h2 class="anchored" data-anchor-id="examples">Examples</h2>
-<p><strong>1. Find all the names of students whose age is greater than 25, or who are enrolled in Maths</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age, Subject)</code></p>
-<p>First, we filter the <code>Students</code> table using the Selection (<span class="math inline">\(\sigma\)</span>) operation for the condition <code>Age &gt; 25 OR Subject = 'Maths'</code>. Then, we use the Projection (<span class="math inline">\(\pi\)</span>) operation to only retrieve the <code>Name</code> attribute.</p>
-<p><span class="math display">\[ \pi_{Name}(\sigma_{Age&gt;25 \space \lor \space Subject='Maths'}(Students)) \]</span></p>
-<p><strong>2. Find the name and sports of the student whose age is less than 25 and awards is greater than 3</strong></p>
-<p>Schema: - <code>Students(RollNo, Name, Age)</code> - <code>Activity(RollNo, Sports, Awards)</code></p>
-<p>Here we need data from two different domains (the <code>Students</code> and <code>Activity</code> tables). We use a Natural Join (<span class="math inline">\(⋈\)</span>) to combine them on their common attribute (<code>RollNo</code>), filter the result, and project the specific columns.</p>
-<p><span class="math display">\[ \pi_{Name, Sports}(\sigma_{Age&lt;25 \space \land \space Awards&gt;3}(Students ⋈ Activity)) \]</span></p>
-</section>
-<section id="division-operation" class="level2">
-<h2 class="anchored" data-anchor-id="division-operation">Division Operation</h2>
-<p>The <strong>Division (<span class="math inline">\(r \div s\)</span>)</strong> operation is used in queries that involve the word “every” or “all”. For example, “Find students who have taken <em>all</em> courses offered in the Biology department.”</p>
-<p>Suppose we have two relations: <span class="math inline">\(r(A, B, C)\)</span> and <span class="math inline">\(s(B, C)\)</span>. The result of <span class="math inline">\(r \div s\)</span> will be a relation with the attribute <span class="math inline">\(A\)</span>, containing values of <span class="math inline">\(A\)</span> that match with <em>all</em> the tuples present in <span class="math inline">\(s\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="division.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption>Division Operation Example</figcaption>
-</figure>
-</div>
-<p>In the mathematical example from the notes, if we perform <span class="math inline">\(r \div s\)</span>:</p>
+<section id="redundancy-and-anomaly" class="level2">
+<h2 class="anchored" data-anchor-id="redundancy-and-anomaly">Redundancy and Anomaly</h2>
+<p><strong>Redundancy</strong> means the same data item is stored in multiple places in the database. It usually shows up when a database hasn’t been normalized — everything crammed into one flat table.</p>
+<p>Redundancy causes <strong>anomalies</strong> — inconsistencies that pop up when we insert, delete, or update data. There are three kinds:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>A</th>
-<th>B</th>
-<th>C</th>
+<th>Anomaly</th>
+<th>What Goes Wrong</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\alpha\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
+<td><strong>Insertion</strong></td>
+<td>Can’t add a record without also supplying unrelated data</td>
+<td>We can’t add a new instructor to <code>instructor_with_department</code> unless we <em>also</em> know their department’s building and budget — even if the department has no instructors yet</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\gamma\)</span></td>
-<td>a</td>
-<td><span class="math inline">\(\gamma\)</span></td>
+<td><strong>Deletion</strong></td>
+<td>Deleting one record accidentally erases unrelated information</td>
+<td>If we delete the <em>last</em> instructor of a department, we lose that department’s building and budget info entirely — even though the department still exists</td>
+</tr>
+<tr class="odd">
+<td><strong>Update</strong></td>
+<td>Changing one fact means changing it in many places, risking missed updates</td>
+<td>If a department’s budget changes, we must update every single instructor row for that department — miss one row, and the data becomes inconsistent</td>
 </tr>
 </tbody>
 </table>
-<p>The output would be the values in column <code>A</code> (<span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span>) that are associated with all tuples of the divisor.</p>
+<section id="the-chain-of-cause-and-effect" class="level3">
+<h3 class="anchored" data-anchor-id="the-chain-of-cause-and-effect">The Chain of Cause and Effect</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    A["Dependency"] --&gt; B["Redundancy"] --&gt; C["Anomaly"]
+    D["Decomposition"] -.-&gt;|"minimizes"| B
+    E["Normalization"] -.-&gt;|"ensures good"| D
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><code>dept_name</code> uniquely decides <code>building</code> and <code>budget</code> (a department can’t have two budgets), so those columns <em>depend on</em> <code>dept_name</code>. <strong>Dependency causes redundancy.</strong></li>
+<li>The fix is to <strong>decompose</strong> (split) the table so each fact is stored only once: <code>instructor_with_department</code> → <code>instructor</code> + <code>department</code>.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
+graph TD
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
+    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
+
+    A["instructor_with_department&lt;br/&gt;(ID, name, salary, dept_name, building, budget)"]:::bad
+    B["instructor&lt;br/&gt;(ID, name, salary, dept_name)"]:::good
+    C["department&lt;br/&gt;(dept_name, building, budget)"]:::good
+
+    A -- "Decompose" --&gt; B
+    A -- "Decompose" --&gt; C
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li>But not just any split works — it needs to preserve information, respect the dependencies, and stay efficient. <strong>Normalization</strong> is the formal set of rules that guarantees a <em>good</em> decomposition.</li>
+</ul>
 <hr>
 </section>
 </section>
-<section id="tuple-relational-calculus-trc" class="level1">
-<h1>Tuple Relational Calculus (TRC)</h1>
-<p>Tuple Relational Calculus is a <strong>non-procedural</strong> query language. Instead of writing operations to fetch data, we write mathematical predicates that define the resulting tuples.</p>
-<p>A basic TRC query is of the form:</p>
-<p><span class="math display">\[ \{t \space | \space P(t)\} \]</span></p>
-<p>Where: - <span class="math inline">\(t\)</span> = The resulting tuple(s) - <span class="math inline">\(P(t)\)</span> = The predicate (a condition that evaluates to true or false for tuple <span class="math inline">\(t\)</span>)</p>
-<section id="trc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="trc-examples">TRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p><span class="math display">\[ \{t \space | \space \exists \space s \in students (t.name=s.name \land s.age=21) \} \]</span></p>
-<p><em>Intuition:</em> We are looking for a tuple <span class="math inline">\(t\)</span> such that there exists (<span class="math inline">\(\exists\)</span>) a tuple <span class="math inline">\(s\)</span> in the <code>students</code> relation where the name in our result matches the name in the student record, and the student’s age is 21.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{M \space | \space \exists \space E \in employee \space \exists \space D \in department ( E.id=D.id \land D.name='Manufacturing' \land M.name=E.name) \} \]</span></p>
-<p><em>Intuition:</em> We want a tuple <span class="math inline">\(M\)</span> such that there exists an employee <span class="math inline">\(E\)</span> and a department <span class="math inline">\(D\)</span> where their IDs match, the department name is ‘Manufacturing’, and our result tuple <span class="math inline">\(M\)</span> takes the name of that employee <span class="math inline">\(E\)</span>.</p>
+<section id="decomposition-splitting-tables-safely" class="level2">
+<h2 class="anchored" data-anchor-id="decomposition-splitting-tables-safely">Decomposition: Splitting Tables Safely</h2>
+<p>The idea: write a rule like <em>“if there were a schema <code>(dept_name, building, budget)</code>, then <code>dept_name</code> would be a candidate key.”</em> This rule is called a <strong>functional dependency</strong>, written:</p>
+<p><span class="math display">\[dept\_name \rightarrow building, budget\]</span></p>
+<p>Since <code>dept_name</code> is <em>not</em> a candidate key in the combined <code>inst_dept</code> table, <code>building</code> and <code>budget</code> end up repeated — a clear sign the table needs decomposing.</p>
+<section id="lossy-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="lossy-decomposition">Lossy Decomposition</h3>
+<p>Here’s a decomposition that goes wrong. Take:</p>
+<p><code>employee(ID, name, street, city, salary)</code></p>
+<p>…and split it into:</p>
+<ul>
+<li><code>employee1(ID, name)</code></li>
+<li><code>employee2(name, street, city, salary)</code></li>
+</ul>
+<p>If two employees can share the same <code>name</code>, then <code>employee2</code> can’t tell them apart on its own — it becomes a weak entity that can’t stand without an identifying relationship. When you try to <strong>join</strong> <code>employee1</code> and <code>employee2</code> back together on <code>name</code>, you get extra, incorrect rows mixing up different people’s addresses and salaries. We can no longer reconstruct the original table correctly. This is a <strong>lossy decomposition</strong>.</p>
+<blockquote class="blockquote">
+<p><strong>Warning:</strong> A lossy decomposition is a one-way trip — once you split the data this way, the original table cannot be reliably rebuilt. Always check that a decomposition is lossless before using it.</p>
+</blockquote>
+</section>
+<section id="lossless-join-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="lossless-join-decomposition">Lossless-Join Decomposition</h3>
+<p>A decomposition of <span class="math inline">\(R\)</span> into <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span> is <strong>lossless</strong> if joining <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span> back together (via natural join) always reproduces exactly <span class="math inline">\(R\)</span> — no missing rows, no extra rows.</p>
+<p>Formally, for <span class="math inline">\(R = (A, B, C)\)</span> decomposed into <span class="math inline">\(R_1 = (A, B)\)</span> and <span class="math inline">\(R_2 = (B, C)\)</span>:</p>
+<p><span class="math display">\[R_1 \cup R_2 = R, \quad R_1 \cap R_2 \neq \phi\]</span> <span class="math display">\[\forall r \in R,\ r_1 = \Pi_{R_1}(r),\ r_2 = \Pi_{R_2}(r) \implies r_1 \bowtie r_2 = r\]</span></p>
+<p>In plain terms: if you project the original table onto <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span>, then natural-join them back together, you should land exactly back on the original table — nothing gained, nothing lost.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Lossy Decomposition</th>
+<th>Lossless-Join Decomposition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reconstructing original data</strong></td>
+<td>❌ Not possible — join produces incorrect/extra rows</td>
+<td>✅ Always possible via natural join</td>
+</tr>
+<tr class="even">
+<td><strong>Common cause</strong></td>
+<td>Splitting on a non-key, non-unique attribute (like <code>name</code>)</td>
+<td>Splitting along a shared key or a column that determines the other</td>
+</tr>
+<tr class="odd">
+<td><strong>Goal</strong></td>
+<td>—</td>
+<td>Removes redundancy <em>while</em> preserving all original data</td>
+</tr>
+</tbody>
+</table>
 <hr>
 </section>
 </section>
-<section id="domain-relational-calculus-drc" class="level1">
-<h1>Domain Relational Calculus (DRC)</h1>
-<p>Domain Relational Calculus is another non-procedural query language, equivalent in expressive power to Tuple Relational Calculus. However, instead of using whole tuples as variables, DRC uses variables that take values from domains (individual attributes/columns).</p>
-<p>A basic DRC query is of the form:</p>
-<p><span class="math display">\[ \{ &lt;x_1, x_2, ... ,x_n&gt; \space | \space P(x_1, x_2, ... , x_n)\} \]</span></p>
-<p>Where: - <span class="math inline">\(&lt;x_1, x_2, ... , x_n&gt;\)</span> represents domain variables (e.g., individual columns like name, age, etc.) - <span class="math inline">\(P\)</span> represents a predicate formula similar to TRC.</p>
-<section id="drc-examples" class="level2">
-<h2 class="anchored" data-anchor-id="drc-examples">DRC Examples</h2>
-<p><strong>1. Find the name of the students whose age is 21</strong></p>
-<p>Schema: - <code>student(name, age, marks)</code></p>
-<p><span class="math display">\[ \{&lt;a&gt; | \space \exists \space b \space (&lt;a,b,c&gt; \in students \space \land \space b=21)  \} \]</span></p>
-<p><em>Intuition:</em> We want to output a single domain variable <span class="math inline">\(a\)</span> (which represents the name), such that there exists some marks variable <span class="math inline">\(c\)</span> where the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> exists in the <code>students</code> relation, and the age variable <span class="math inline">\(b = 21\)</span>.</p>
-<p><strong>2. Find the name of the employees who work in the ‘Manufacturing’ department</strong></p>
-<p>Schema: - <code>employee(id, name, salary)</code> - <code>department(id, d_id, name, building)</code></p>
-<p><span class="math display">\[ \{ &lt;b&gt; |\space \exists \space a,c  \space (&lt;a, b, c&gt; \in employee) \space \land \space \exists \space x,y,z \space (&lt;a, x, y, z&gt; \in department \space \land y='Manufacturing') \} \]</span></p>
-<p><em>(Note: The notes had a slight variable mismatch. I corrected it here to ensure variable <span class="math inline">\(a\)</span> maps to <code>id</code>, <span class="math inline">\(b\)</span> maps to <code>name</code>, <span class="math inline">\(c\)</span> maps to <code>salary</code>, and in the department relation, the first variable <span class="math inline">\(a\)</span> corresponds to <code>id</code>, ensuring the join condition.)</em></p>
-<p><em>Intuition:</em> We want to output variable <span class="math inline">\(b\)</span> (employee name). To do this, we assert that the tuple <span class="math inline">\(&lt;a, b, c&gt;\)</span> must exist in <code>employee</code>. Additionally, we assert that the tuple <span class="math inline">\(&lt;a, x, y, z&gt;\)</span> must exist in <code>department</code> where the variable <span class="math inline">\(y\)</span> (department name) is exactly ‘Manufacturing’. The shared variable <span class="math inline">\(a\)</span> (the ID) effectively joins the two relations.</p>
+<section id="atomic-domains-and-first-normal-form-1nf" class="level2">
+<h2 class="anchored" data-anchor-id="atomic-domains-and-first-normal-form-1nf">Atomic Domains and First Normal Form (1NF)</h2>
+<section id="what-does-atomic-mean" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-atomic-mean">What Does “Atomic” Mean?</h3>
+<p>A domain is <strong>atomic</strong> if its values are indivisible units — you can’t meaningfully break them into smaller parts within the database.</p>
+<p><strong>Non-atomic examples:</strong></p>
+<ul>
+<li>A <em>set</em> of names (multiple values crammed into one field)</li>
+<li>Composite attributes (like an address made of street + city + zip, stored as one field)</li>
+<li>IDs like <code>CS101</code> that get split into parts (<code>CS</code> = department, <code>101</code> = course number)</li>
+</ul>
+<p>A relational schema <span class="math inline">\(R\)</span> is in <strong>First Normal Form (1NF)</strong> if:</p>
+<ul>
+<li>Every attribute’s domain is atomic, <strong>and</strong></li>
+<li>Each attribute holds only a single value from that domain (no repeating groups)</li>
+</ul>
+<p>Non-atomic values complicate storage and <em>encourage</em> redundancy — e.g., storing a set of bank accounts directly inside each customer record.</p>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Atomicity is really about <em>how</em> a value is used, not some absolute property of the data type. Strings are normally atomic — but if you start parsing <code>CS0012</code> to pull out <code>"CS"</code> as the department, you’ve broken atomicity, because now information is encoded inside the application logic instead of the database itself. That’s a bad idea to rely on.</p>
+</blockquote>
+</section>
+<section id="watching-a-bad-design-evolve-into-1nf" class="level3">
+<h3 class="anchored" data-anchor-id="watching-a-bad-design-evolve-into-1nf">Watching a Bad Design Evolve Into 1NF</h3>
+<p>Imagine a <code>student(ID, name, telephone_number)</code> table where <code>telephone_number</code> can hold multiple numbers:</p>
+<p><strong>Attempt 1 — Multi-valued field:</strong> One row per student, but <code>telephone_number</code> holds a <em>set</em> of numbers (e.g., “9876543210, 9123456789”). ❌ Not 1NF — the domain isn’t atomic and it’s multi-valued.</p>
+<p><strong>Attempt 2 — Two separate columns</strong> (<code>telephone_number_1</code>, <code>telephone_number_2</code>): Technically atomic per column, so this <em>is</em> 1NF — but conceptually messy:</p>
+<ul>
+<li>The ordering of “number 1” vs “number 2” is arbitrary and meaningless</li>
+<li>Searching across both columns for a number is awkward</li>
+<li>What happens when a student has a third number?</li>
+</ul>
+<p><strong>Attempt 3 — One row per (student, number) pair:</strong> Now <code>ID</code> alone is no longer a valid key — duplicated <code>name</code> for every extra number, and the real key becomes <code>(ID, telephone_number)</code>. Better atomicity, but now <code>name</code> is redundantly repeated.</p>
+<p><strong>Attempt 4 — Two relations (the fix):</strong></p>
+<ul>
+<li><code>student(ID, name)</code></li>
+<li><code>student_phone(ID, telephone_number)</code></li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
+
+    S["student&lt;br/&gt;(ID, name)"]:::good
+    P["student_phone&lt;br/&gt;(ID, telephone_number)"]:::good
+
+    S -- "One-to-Many" --&gt; P
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>This decomposition captures the natural <strong>one-to-many</strong> relationship between a student and their phone numbers. As a nice side effect, it also satisfies the higher normal forms (2NF, 3NF) we’ll get to later — decomposition is often the cure for non-atomic, repeating data too.</p>
+<hr>
+</section>
+</section>
+<section id="functional-dependencies-fds" class="level2">
+<h2 class="anchored" data-anchor-id="functional-dependencies-fds">Functional Dependencies (FDs)</h2>
+<section id="why-we-need-them" class="level3">
+<h3 class="anchored" data-anchor-id="why-we-need-them">Why We Need Them</h3>
+<p>Our end goal: a theory that lets us (1) decide if a relation <span class="math inline">\(R\)</span> is already in “good” form, and (2) if not, decompose it into smaller relations that are each in good form <em>and</em> preserve all information (lossless-join).</p>
+</section>
+<section id="definition" class="level3">
+<h3 class="anchored" data-anchor-id="definition">Definition</h3>
+<p>A functional dependency generalizes the idea of a key. For a relation schema <span class="math inline">\(R\)</span>, with <span class="math inline">\(\alpha \subseteq R\)</span> and <span class="math inline">\(\beta \subseteq R\)</span>:</p>
+<p><span class="math display">\[\alpha \rightarrow \beta\]</span></p>
+<p>holds if, for <em>any</em> legal instance of <span class="math inline">\(R\)</span>, whenever two tuples agree on all attributes in <span class="math inline">\(\alpha\)</span>, they must also agree on all attributes in <span class="math inline">\(\beta\)</span>:</p>
+<p><span class="math display">\[t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]\]</span></p>
+<p>In plain English: knowing the value of <span class="math inline">\(\alpha\)</span> is enough to pin down the value of <span class="math inline">\(\beta\)</span>.</p>
+<p><strong>Example:</strong> In a relation <span class="math inline">\(r(A, B)\)</span>, if every time <span class="math inline">\(A = 2\)</span> we also see <span class="math inline">\(B = 4\)</span> — but different <span class="math inline">\(A\)</span> values can share the same <span class="math inline">\(B\)</span> — then <span class="math inline">\(B \rightarrow A\)</span> might hold while <span class="math inline">\(A \rightarrow B\)</span> does not (or vice versa, depending on the actual data).</p>
+</section>
+<section id="keys-redefined-using-fds" class="level3">
+<h3 class="anchored" data-anchor-id="keys-redefined-using-fds">Keys, Redefined Using FDs</h3>
+<ul>
+<li><span class="math inline">\(K\)</span> is a <strong>superkey</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span> (K determines every attribute in R)</li>
+<li><span class="math inline">\(K\)</span> is a <strong>candidate key</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span>, <strong>and</strong> no proper subset <span class="math inline">\(\alpha \subset K\)</span> also satisfies <span class="math inline">\(\alpha \rightarrow R\)</span> (K is minimal)</li>
+</ul>
+<p>FDs let us express constraints that go beyond what keys alone can capture. For <code>inst_dept(ID, name, salary, dept_name, building, budget)</code>, we’d expect:</p>
+<p><span class="math display">\[dept\_name \rightarrow building\]</span> <span class="math display">\[dept\_name \rightarrow budget\]</span> <span class="math display">\[ID \rightarrow budget\]</span></p>
+<p>…but we would <strong>not</strong> expect <code>dept_name → salary</code> to hold — an instructor’s salary isn’t determined just by their department.</p>
+</section>
+<section id="using-fds" class="level3">
+<h3 class="anchored" data-anchor-id="using-fds">Using FDs</h3>
+<ul>
+<li>A relation <strong>satisfies</strong> a set of FDs <span class="math inline">\(F\)</span> if it’s legal under those constraints.</li>
+<li><span class="math inline">\(F\)</span> <strong>holds</strong> on schema <span class="math inline">\(R\)</span> only if <em>every</em> legal instance of <span class="math inline">\(R\)</span> satisfies <span class="math inline">\(F\)</span> — not just one lucky snapshot of the data.</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> If one specific instance of <code>instructor</code> happens to satisfy <code>name → ID</code> purely by coincidence (no two instructors currently share a name), that doesn’t mean the FD <em>holds</em> on the schema in general. It only holds if it’s guaranteed for every possible legal instance.</p>
+</blockquote>
+</section>
+<section id="trivial-fds" class="level3">
+<h3 class="anchored" data-anchor-id="trivial-fds">Trivial FDs</h3>
+<p>An FD <span class="math inline">\(\alpha \rightarrow \beta\)</span> is <strong>trivial</strong> if <span class="math inline">\(\beta \subseteq \alpha\)</span> — meaning it’s automatically true for every relation, so it tells us nothing new.</p>
+<ul>
+<li><code>ID, name → ID</code> — trivial (ID is already part of the left side)</li>
+<li><code>name → name</code> — trivial</li>
+</ul>
+</section>
+<section id="closure-of-a-set-of-fds" class="level3">
+<h3 class="anchored" data-anchor-id="closure-of-a-set-of-fds">Closure of a Set of FDs</h3>
+<p>Given a set <span class="math inline">\(F\)</span> of FDs, we can often <em>derive</em> more FDs that logically follow from it. The set of all FDs derivable from <span class="math inline">\(F\)</span> (including <span class="math inline">\(F\)</span> itself) is called the <strong>closure</strong>, written <span class="math inline">\(F^+\)</span>.</p>
+<p><strong>Example:</strong></p>
+<p><span class="math display">\[F = \{A \rightarrow B,\ B \rightarrow C\}\]</span> <span class="math display">\[F^+ = \{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow C\}\]</span></p>
+<p>Here <span class="math inline">\(A \rightarrow C\)</span> wasn’t stated directly, but it follows logically (if <span class="math inline">\(A\)</span> determines <span class="math inline">\(B\)</span>, and <span class="math inline">\(B\)</span> determines <span class="math inline">\(C\)</span>, then <span class="math inline">\(A\)</span> must determine <span class="math inline">\(C\)</span> too). We’ll dig into the formal rules for computing closures next.</p>
 
 
 
@@ -1056,13 +1233,13 @@ window.Quarto = {
   </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_3/advanced_sql.html" class="pagination-link" aria-label="Advanced SQL">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced SQL</span></span>
+      <a href="../../weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_4/02_entity_relationship_model.html" class="pagination-link" aria-label="Entity-Relationship Model">
-        <span class="nav-page-text"><span class="chapter-title">Entity-Relationship Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_5/02.html" class="pagination-link" aria-label="Functional Dependency Theory">
+        <span class="nav-page-text"><span class="chapter-title">Functional Dependency Theory</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

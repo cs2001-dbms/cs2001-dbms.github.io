@@ -1,0 +1,217 @@
+---
+title: "Redundancy, Decomposition & Functional Dependencies"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+So far we know *how* to build tables. But not every table design is equally good, a relational schema should reflect real-world structure, avoid redundant storage, support efficient access, and preserve data integrity as data changes. These goals sometimes conflict — good design is a balancing act, not a checklist.
+
+---
+
+## Spotting a Bad Schema
+
+Consider a single, combined table: `instructor_with_department(ID, name, salary, dept_name, building, budget)`.
+
+- `ID` — the key
+- `name`, `salary` — belong purely to the instructor, no repetition
+- `building`, `budget` — belong to the *department*, not the instructor — and this is where trouble starts
+
+Since a department can have many instructors, `building` and `budget` get copied once for every instructor in that department. That repetition is **redundancy**.
+
+---
+
+## Redundancy and Anomaly
+
+**Redundancy** means the same data item is stored in multiple places in the database. It usually shows up when a database hasn't been normalized — everything crammed into one flat table.
+
+Redundancy causes **anomalies** — inconsistencies that pop up when we insert, delete, or update data. There are three kinds:
+
+| Anomaly | What Goes Wrong | Example |
+|---|---|---|
+| **Insertion** | Can't add a record without also supplying unrelated data | We can't add a new instructor to `instructor_with_department` unless we *also* know their department's building and budget — even if the department has no instructors yet |
+| **Deletion** | Deleting one record accidentally erases unrelated information | If we delete the *last* instructor of a department, we lose that department's building and budget info entirely — even though the department still exists |
+| **Update** | Changing one fact means changing it in many places, risking missed updates | If a department's budget changes, we must update every single instructor row for that department — miss one row, and the data becomes inconsistent |
+
+### The Chain of Cause and Effect
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    A["Dependency"] --> B["Redundancy"] --> C["Anomaly"]
+    D["Decomposition"] -.->|"minimizes"| B
+    E["Normalization"] -.->|"ensures good"| D
+```
+
+- `dept_name` uniquely decides `building` and `budget` (a department can't have two budgets), so those columns *depend on* `dept_name`. **Dependency causes redundancy.**
+- The fix is to **decompose** (split) the table so each fact is stored only once: `instructor_with_department` → `instructor` + `department`.
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
+    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
+
+    A["instructor_with_department<br/>(ID, name, salary, dept_name, building, budget)"]:::bad
+    B["instructor<br/>(ID, name, salary, dept_name)"]:::good
+    C["department<br/>(dept_name, building, budget)"]:::good
+
+    A -- "Decompose" --> B
+    A -- "Decompose" --> C
+```
+
+- But not just any split works — it needs to preserve information, respect the dependencies, and stay efficient. **Normalization** is the formal set of rules that guarantees a *good* decomposition.
+
+---
+
+## Decomposition: Splitting Tables Safely
+
+The idea: write a rule like *"if there were a schema `(dept_name, building, budget)`, then `dept_name` would be a candidate key."* This rule is called a **functional dependency**, written:
+
+$$dept\_name \rightarrow building, budget$$
+
+Since `dept_name` is *not* a candidate key in the combined `inst_dept` table, `building` and `budget` end up repeated — a clear sign the table needs decomposing.
+
+### Lossy Decomposition
+
+Here's a decomposition that goes wrong. Take:
+
+`employee(ID, name, street, city, salary)`
+
+...and split it into:
+
+- `employee1(ID, name)`
+- `employee2(name, street, city, salary)`
+
+If two employees can share the same `name`, then `employee2` can't tell them apart on its own — it becomes a weak entity that can't stand without an identifying relationship. When you try to **join** `employee1` and `employee2` back together on `name`, you get extra, incorrect rows mixing up different people's addresses and salaries. We can no longer reconstruct the original table correctly. This is a **lossy decomposition**.
+
+> **Warning:** A lossy decomposition is a one-way trip — once you split the data this way, the original table cannot be reliably rebuilt. Always check that a decomposition is lossless before using it.
+
+### Lossless-Join Decomposition
+
+A decomposition of $R$ into $R_1$ and $R_2$ is **lossless** if joining $R_1$ and $R_2$ back together (via natural join) always reproduces exactly $R$ — no missing rows, no extra rows.
+
+Formally, for $R = (A, B, C)$ decomposed into $R_1 = (A, B)$ and $R_2 = (B, C)$:
+
+$$R_1 \cup R_2 = R, \quad R_1 \cap R_2 \neq \phi$$
+$$\forall r \in R,\ r_1 = \Pi_{R_1}(r),\ r_2 = \Pi_{R_2}(r) \implies r_1 \bowtie r_2 = r$$
+
+In plain terms: if you project the original table onto $R_1$ and $R_2$, then natural-join them back together, you should land exactly back on the original table — nothing gained, nothing lost.
+
+| | Lossy Decomposition | Lossless-Join Decomposition |
+|---|---|---|
+| **Reconstructing original data** | ❌ Not possible — join produces incorrect/extra rows | ✅ Always possible via natural join |
+| **Common cause** | Splitting on a non-key, non-unique attribute (like `name`) | Splitting along a shared key or a column that determines the other |
+| **Goal** | — | Removes redundancy *while* preserving all original data |
+
+---
+
+## Atomic Domains and First Normal Form (1NF)
+
+### What Does "Atomic" Mean?
+
+A domain is **atomic** if its values are indivisible units — you can't meaningfully break them into smaller parts within the database.
+
+**Non-atomic examples:**
+
+- A *set* of names (multiple values crammed into one field)
+- Composite attributes (like an address made of street + city + zip, stored as one field)
+- IDs like `CS101` that get split into parts (`CS` = department, `101` = course number)
+
+A relational schema $R$ is in **First Normal Form (1NF)** if:
+
+- Every attribute's domain is atomic, **and**
+- Each attribute holds only a single value from that domain (no repeating groups)
+
+Non-atomic values complicate storage and *encourage* redundancy.
+
+> **Note:** Atomicity is really about *how* a value is used, not some absolute property of the data type. Strings are normally atomic — but if you start parsing `CS0012` to pull out `"CS"` as the department, you've broken atomicity, because now information is encoded inside the application logic instead of the database itself. That's a bad idea to rely on.
+
+### Watching a Bad Design Evolve Into 1NF
+
+Imagine a `student(ID, name, telephone_number)` table where `telephone_number` can hold multiple numbers:
+
+**Attempt 1 — Multi-valued field:** One row per student, but `telephone_number` holds a *set* of numbers (e.g., "9876543210, 9123456789"). ❌ Not 1NF — the domain isn't atomic and it's multi-valued.
+
+**Attempt 2 — Two separate columns** (`telephone_number_1`, `telephone_number_2`): Technically atomic per column, so this *is* 1NF — but conceptually messy:
+
+- The ordering of "number 1" vs "number 2" is arbitrary and meaningless
+- Searching across both columns for a number is awkward
+- What happens when a student has a third number?
+
+**Attempt 3 — One row per (student, number) pair:** Now `ID` alone is no longer a valid key — duplicated `name` for every extra number, and the real key becomes `(ID, telephone_number)`. Better atomicity, but now `name` is redundantly repeated.
+
+**Attempt 4 — Two relations (the fix):**
+
+- `student(ID, name)`
+- `student_phone(ID, telephone_number)`
+
+```{mermaid}
+%%{init: {'theme': 'neutral'}}%%
+graph LR
+    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
+    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
+
+    S["student<br/>(ID, name)"]:::good
+    P["student_phone<br/>(ID, telephone_number)"]:::good
+
+    S -- "One-to-Many" --> P
+```
+
+This decomposition captures the natural **one-to-many** relationship between a student and their phone numbers. As a nice side effect, it also satisfies the higher normal forms (2NF, 3NF) we'll get to later — decomposition is often the cure for non-atomic, repeating data too.
+
+---
+
+## Functional Dependencies (FDs)
+
+### Why We Need Them
+
+Our end goal: a theory that lets us (1) decide if a relation $R$ is already in "good" form, and (2) if not, decompose it into smaller relations that are each in good form *and* preserve all information (lossless-join).
+
+### Definition
+
+A functional dependency generalizes the idea of a key. For a relation schema $R$, with $\alpha \subseteq R$ and $\beta \subseteq R$:
+
+$$\alpha \rightarrow \beta$$
+
+holds if, for *any* legal instance of $R$, whenever two tuples agree on all attributes in $\alpha$, they must also agree on all attributes in $\beta$:
+
+$$t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]$$
+
+In plain English: knowing the value of $\alpha$ is enough to pin down the value of $\beta$.
+
+**Example:** In a relation $r(A, B)$, if every time $A = 2$ we also see $B = 4$ — but different $A$ values can share the same $B$ — then $B \rightarrow A$ might hold while $A \rightarrow B$ does not (or vice versa, depending on the actual data).
+
+### Keys, Redefined Using FDs
+
+- $K$ is a **superkey** for $R$ if and only if $K \rightarrow R$ (K determines every attribute in R)
+- $K$ is a **candidate key** for $R$ if and only if $K \rightarrow R$, **and** no proper subset $\alpha \subset K$ also satisfies $\alpha \rightarrow R$ (K is minimal)
+
+
+### Using FDs
+
+- A relation **satisfies** a set of FDs $F$ if it's legal under those constraints.
+- $F$ **holds** on schema $R$ only if *every* legal instance of $R$ satisfies $F$ — not just one lucky snapshot of the data.
+
+> **Note:** If one specific instance of `instructor` happens to satisfy `name → ID` purely by coincidence (no two instructors currently share a name), that doesn't mean the FD *holds* on the schema in general. It only holds if it's guaranteed for every possible legal instance.
+
+### Trivial FDs
+
+An FD $\alpha \rightarrow \beta$ is **trivial** if $\beta \subseteq \alpha$ — meaning it's automatically true for every relation, so it tells us nothing new.
+
+- `ID, name → ID` — trivial (ID is already part of the left side)
+- `name → name` — trivial
+
+### Closure of a Set of FDs
+
+Given a set $F$ of FDs, we can often *derive* more FDs that logically follow from it. The set of all FDs derivable from $F$ (including $F$ itself) is called the **closure**, written $F^+$.
+
+**Example:**
+
+$$F = \{A \rightarrow B,\ B \rightarrow C\}$$
+$$F^+ = \{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow C\}$$
+
+Here $A \rightarrow C$ wasn't stated directly, but it follows logically (if $A$ determines $B$, and $B$ determines $C$, then $A$ must determine $C$ too). We'll dig into the formal rules for computing closures next.
