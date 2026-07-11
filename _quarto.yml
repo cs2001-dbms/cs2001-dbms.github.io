@@ -64,7 +64,9 @@ book:
       - icon: folder
         href: "https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY"
         text: "Live Session Slides"
-  downloads: [pdf]
+      - icon: file-pdf
+        href: "Database-Management-Systems.pdf"
+        text: "Download PDF"
   chapters:
     - href: index.qmd
       text: "About the Course"
@@ -139,7 +141,7 @@ format:
     code-link: true
     code-overflow: wrap
 
-    format-links: true
+    format-links: false
     reader-mode: true
     reading-progress: true
     code-annotations: hover
@@ -156,16 +158,3 @@ format:
     image-lazy-loading: true # Enable lazy loading for images
     optimize-images: true  # Automatically optimize images
     optimize-assets: true  # Optimize assets like JS and CSS for faster load
-  pdf:
-    pdf-engine: xelatex
-    papersize: letter
-    toc: true
-    toc-depth: 2
-    number-sections: true
-    colorlinks: true
-    highlight-style: pygments
-    geometry:
-      - top=1in
-      - bottom=1in
-      - left=1in
-      - right=1in

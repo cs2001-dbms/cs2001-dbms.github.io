@@ -6,7 +6,6 @@ name: Quarto Publish
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     permissions:
       contents: write
     steps:
@@ -15,25 +14,6 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          tinytex: true
-
-      - name: Install Chromium for Mermaid diagrams
-        run: |
-          quarto install chromium --no-prompt || quarto tools install chromium || true
-
-      - name: Install required LaTeX packages
-        run: |
-          export PATH="$HOME/bin:$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
-          tlmgr update --self || true
-          tlmgr install koma-script caption float xcolor geometry fancyvrb \
-            framed booktabs longtable array multirow wrapfig colortbl tabu \
-            threeparttable threeparttablex environ trimspaces makecell \
-            hyperref bookmark xurl unicode-math fontspec upquote microtype \
-            csquotes natbib etoolbox mdwtools soul setspace babel \
-            amsmath amsfonts amscls tcolorbox pgf tikz-cd enumitem \
-            listings fvextra lineno grffile adjustbox collectbox \
-            ucs oberdiek graphics graphics-def infwarerr xetex || true
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
