@@ -82,9 +82,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-4a3ee7e1ea6f4eca5f14e96bc3166cc9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -310,6 +313,9 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
+    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-secondary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
+<p><strong>Welcome!</strong> Scroll to the bottom of any chapter to ask questions, review, and get answers!</p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -325,7 +331,7 @@ window.Quarto = {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
@@ -335,7 +341,13 @@ window.Quarto = {
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">DBMS [CS2001]</a> 
-        <div class="sidebar-tools-main">
+        <div class="sidebar-tools-main tools-wide">
+    <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
+    <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
@@ -465,12 +477,43 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-05</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependencies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Armstrong Axioms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Extraneous attributes &amp; Canonical cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/04.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Lossless Join &amp; Dependency preservation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -489,30 +532,18 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
-  <ul>
-  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a>
   <ul class="collapse">
-  <li><a href="#insert-adding-new-records" id="toc-insert-adding-new-records" class="nav-link" data-scroll-target="#insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</a></li>
-  <li><a href="#update-modifying-existing-data" id="toc-update-modifying-existing-data" class="nav-link" data-scroll-target="#update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</a></li>
-  <li><a href="#delete-removing-records" id="toc-delete-removing-records" class="nav-link" data-scroll-target="#delete-removing-records">3. <code>DELETE</code>: Removing Records</a></li>
-  </ul></li>
-  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a>
-  <ul class="collapse">
-  <li><a href="#the-select-clause-in-detail" id="toc-the-select-clause-in-detail" class="nav-link" data-scroll-target="#the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</a></li>
-  <li><a href="#the-order-by-clause" id="toc-the-order-by-clause" class="nav-link" data-scroll-target="#the-order-by-clause">The <code>ORDER BY</code> Clause</a></li>
-  </ul></li>
-  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a>
-  <ul class="collapse">
-  <li><a href="#fixing-the-cross-join" id="toc-fixing-the-cross-join" class="nav-link" data-scroll-target="#fixing-the-cross-join">Fixing the Cross Join</a></li>
-  </ul></li>
+  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a></li>
+  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a></li>
+  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/02_dml_and_queries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/02_dml_and_queries.html"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></a></li></ol></nav>
@@ -522,7 +553,7 @@ window.Quarto = {
 
 
 
-<div class="quarto-title-meta column-body">
+<div class="quarto-title-meta">
 
     
   
@@ -536,7 +567,7 @@ window.Quarto = {
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="dml_banner.png" class="img-fluid figure-img"></p>
+<p><a href="dml_banner.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="DML Operations"><img src="dml_banner.png" class="img-fluid figure-img" alt="DML Operations"></a></p>
 <figcaption>DML Operations</figcaption>
 </figure>
 </div>
@@ -569,16 +600,16 @@ window.Quarto = {
 <section id="insert-adding-new-records" class="level3">
 <h3 class="anchored" data-anchor-id="insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</h3>
 <p>A new student, Pravin, has just enrolled. We need to add him to our database.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>Tip:</strong> You <em>can</em> write an <code>INSERT</code> without listing the column names (e.g., <code>INSERT INTO student VALUES (...)</code>), but specifying the columns as shown above is much safer! It prevents errors if someone later adds a new column to the table.</p>
 </blockquote>
 <p><strong>Inserting Multiple Rows at Once:</strong> You can also insert several students in a single command by separating the values with commas!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">VALUES</span> </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">VALUES</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Our Table Now:</strong></p>
 <table class="caption-top table">
 <thead>
@@ -606,9 +637,9 @@ window.Quarto = {
 <section id="update-modifying-existing-data" class="level3">
 <h3 class="anchored" data-anchor-id="update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</h3>
 <p>Oops! We made a mistake. Pravin actually got an ‘A’ grade, not an ‘S’. We don’t delete his record; we just <code>UPDATE</code> it.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">UPDATE</span> student </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">UPDATE</span> student </span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>[WARNING]</strong> Always, <em>always</em> use a <code>WHERE</code> clause with <code>UPDATE</code>!</p>
 </blockquote>
@@ -667,8 +698,8 @@ window.Quarto = {
 <section id="delete-removing-records" class="level3">
 <h3 class="anchored" data-anchor-id="delete-removing-records">3. <code>DELETE</code>: Removing Records</h3>
 <p>Pravin has decided to transfer to another school. We need to remove his record completely.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>(Just like <code>UPDATE</code>, forgetting the <code>WHERE</code> clause here would delete everyone!)</em></p>
 <hr>
 </section>
@@ -677,9 +708,9 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-anatomy-of-a-query">The Anatomy of a Query</h2>
 <p>Now that we have data, how do we ask the database questions? We write queries.</p>
 <p>Think of a SQL query like giving instructions to an incredibly fast, but very literal librarian. The fundamental structure requires three clauses:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Here is the mental model of how the librarian thinks: 1. <strong><code>FROM</code></strong>: <em>“Which section of the library (tables) should I go to?”</em> 2. <strong><code>WHERE</code></strong>: <em>“Which specific books (rows) should I pull off the shelf?”</em> 3. <strong><code>SELECT</code></strong>: <em>“Which chapters (columns) should I photocopy and give to you?”</em></p>
 <section id="the-select-clause-in-detail" class="level3">
 <h3 class="anchored" data-anchor-id="the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</h3>
@@ -691,9 +722,9 @@ window.Quarto = {
 <li><p><code>TOP &lt;n&gt;</code> (or <code>LIMIT</code>): “Only show me the first <code>n</code> results.”</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-order-by-clause" class="level3">
 <h3 class="anchored" data-anchor-id="the-order-by-clause">The <code>ORDER BY</code> Clause</h3>
@@ -703,18 +734,18 @@ window.Quarto = {
 <li><code>DESC</code>: Descending order (Z-A, 10-1).</li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> name, salary</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">SELECT</span> name, salary</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
 <section id="the-danger-of-cross-joins" class="level2">
 <h2 class="anchored" data-anchor-id="the-danger-of-cross-joins">The Danger of Cross Joins</h2>
 <p>What happens if you tell the librarian to get data from <em>two</em> places at once?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When you list multiple tables in the <code>FROM</code> clause without a <code>WHERE</code> condition, SQL performs a <strong>Cross Join</strong> (Cartesian Product). It pairs <em>every</em> row in the first table with <em>every</em> row in the second table.</p>
 <p><strong>Let’s visualize this:</strong> If you have 2 Instructors and 2 Courses:</p>
 <p><em>Instructors Table:</em></p>
@@ -797,10 +828,10 @@ window.Quarto = {
 <section id="fixing-the-cross-join" class="level3">
 <h3 class="anchored" data-anchor-id="fixing-the-cross-join">Fixing the Cross Join</h3>
 <p>To fix this, we use the <code>WHERE</code> clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>(Notice how we used <code>AS i</code> and <code>AS c</code> to give our tables nicknames? This makes our <code>WHERE</code> clause much easier to read!)</em></p>
 
 
@@ -909,6 +940,13 @@ window.Quarto = {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -1163,25 +1201,64 @@ window.Quarto = {
           }
         };
       }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
             }
-          });
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
@@ -1222,7 +1299,39 @@ window.Quarto = {
     }
   });
   </script>
-<nav class="page-navigation column-body">
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      if (authorPrefersDark) {
+          [baseTheme, altTheme] = [altTheme, baseTheme];
+      }
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "cs2001-dbms/cs2001-dbms.github.io";
+    script.dataset.repoId = "R_kgDOSjpYJw";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "1";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
+<nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../../weeks/week_2/01_relational_and_ddl.html" class="pagination-link" aria-label="Relational Model &amp; DDL">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Model &amp; DDL</span></span>
@@ -1235,6 +1344,51 @@ window.Quarto = {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© CS2001 - Database Management Systems</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/02_dml_and_queries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

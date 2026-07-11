@@ -47,9 +47,12 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-4a3ee7e1ea6f4eca5f14e96bc3166cc9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -275,6 +278,9 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
+    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-secondary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
+<p><strong>Welcome!</strong> Scroll to the bottom of any chapter to ask questions, review, and get answers!</p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -290,7 +296,7 @@ window.Quarto = {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
@@ -300,7 +306,13 @@ window.Quarto = {
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">DBMS [CS2001]</a> 
-        <div class="sidebar-tools-main">
+        <div class="sidebar-tools-main tools-wide">
+    <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
+    <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
@@ -430,12 +442,43 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-05</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependencies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Armstrong Axioms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Extraneous attributes &amp; Canonical cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/04.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Lossless Join &amp; Dependency preservation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -454,22 +497,16 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
-  <ul>
+  <ul class="collapse">
   <li><a href="#introduction-to-entity-sets" id="toc-introduction-to-entity-sets" class="nav-link active" data-scroll-target="#introduction-to-entity-sets">Introduction to Entity Sets</a>
   <ul class="collapse">
   <li><a href="#strong-entity-set" id="toc-strong-entity-set" class="nav-link" data-scroll-target="#strong-entity-set">Strong Entity Set</a></li>
-  <li><a href="#weak-entity-set" id="toc-weak-entity-set" class="nav-link" data-scroll-target="#weak-entity-set">Weak Entity Set</a>
-  <ul class="collapse">
-  <li><a href="#characteristics-of-weak-entity-sets" id="toc-characteristics-of-weak-entity-sets" class="nav-link" data-scroll-target="#characteristics-of-weak-entity-sets">Characteristics of Weak Entity Sets</a></li>
+  <li><a href="#weak-entity-set" id="toc-weak-entity-set" class="nav-link" data-scroll-target="#weak-entity-set">Weak Entity Set</a></li>
   </ul></li>
-  </ul></li>
-  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a>
-  <ul class="collapse">
-  <li><a href="#types-of-attributes" id="toc-types-of-attributes" class="nav-link" data-scroll-target="#types-of-attributes">Types of Attributes</a></li>
-  </ul></li>
+  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
   <li><a href="#entity-relationship-er-diagrams" id="toc-entity-relationship-er-diagrams" class="nav-link" data-scroll-target="#entity-relationship-er-diagrams">Entity-Relationship (ER) Diagrams</a></li>
   <li><a href="#mapping-cardinalities-relationship-types" id="toc-mapping-cardinalities-relationship-types" class="nav-link" data-scroll-target="#mapping-cardinalities-relationship-types">Mapping Cardinalities (Relationship Types)</a>
   <ul class="collapse">
@@ -481,10 +518,10 @@ window.Quarto = {
   <li><a href="#total-and-partial-participation" id="toc-total-and-partial-participation" class="nav-link" data-scroll-target="#total-and-partial-participation">Total and Partial Participation</a></li>
   <li><a href="#expressing-weak-entity-sets-in-er-diagrams" id="toc-expressing-weak-entity-sets-in-er-diagrams" class="nav-link" data-scroll-target="#expressing-weak-entity-sets-in-er-diagrams">Expressing Weak Entity Sets in ER Diagrams</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_4/02_entity_relationship_model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/02_entity_relationship_model.html"><span class="chapter-title">Entity-Relationship Model</span></a></li></ol></nav>
@@ -494,7 +531,7 @@ window.Quarto = {
 
 
 
-<div class="quarto-title-meta column-body">
+<div class="quarto-title-meta">
 
     
   
@@ -506,7 +543,7 @@ window.Quarto = {
 </header>
 
 
-<p><img src="thumb_er.png" class="img-fluid"></p>
+<p><a href="thumb_er.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="thumb_er.png" class="img-fluid"></a></p>
 <section id="introduction-to-entity-sets" class="level1">
 <h1>Introduction to Entity Sets</h1>
 <p>The Entity-Relationship (ER) model is a high-level conceptual data model that helps in designing the schema of a database. It allows us to describe the data involved in a real-world enterprise in terms of objects and their relationships.</p>
@@ -555,7 +592,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="attributes.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<p><a href="attributes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Types of Attributes"><img src="attributes.png" class="img-fluid figure-img" style="width:50.0%" alt="Types of Attributes"></a></p>
 <figcaption>Types of Attributes</figcaption>
 </figure>
 </div>
@@ -588,7 +625,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="1-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><a href="1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="One to One"><img src="1-1.png" class="img-fluid figure-img" style="width:70.0%" alt="One to One"></a></p>
 <figcaption>One to One</figcaption>
 </figure>
 </div>
@@ -602,7 +639,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="1-many.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><a href="1-many.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="One to Many"><img src="1-many.png" class="img-fluid figure-img" style="width:70.0%" alt="One to Many"></a></p>
 <figcaption>One to Many</figcaption>
 </figure>
 </div>
@@ -616,7 +653,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="many-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><a href="many-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Many to One"><img src="many-1.png" class="img-fluid figure-img" style="width:70.0%" alt="Many to One"></a></p>
 <figcaption>Many to One</figcaption>
 </figure>
 </div>
@@ -630,7 +667,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="many-many.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><a href="many-many.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Many to Many"><img src="many-many.png" class="img-fluid figure-img" style="width:70.0%" alt="Many to Many"></a></p>
 <figcaption>Many to Many</figcaption>
 </figure>
 </div>
@@ -647,7 +684,7 @@ window.Quarto = {
 <p><em>Example</em>: If every student <em>must</em> have an instructor, the <code>Student</code> entity set has total participation. If an instructor <em>may or may not</em> have a student, the <code>Instructor</code> entity set has partial participation.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="total_participation.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><a href="total_participation.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Total and Partial Participation"><img src="total_participation.png" class="img-fluid figure-img" style="width:80.0%" alt="Total and Partial Participation"></a></p>
 <figcaption>Total and Partial Participation</figcaption>
 </figure>
 </div>
@@ -658,7 +695,7 @@ window.Quarto = {
 <p>As discussed earlier, a weak entity set does not have a primary key and depends on a strong entity set. In an ER diagram, we denote the weak entity set with a double rectangle, its identifying relationship with a double diamond, and its discriminator attribute with a dashed underline.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="weak_entity.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><a href="weak_entity.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Weak Entity Set Notation"><img src="weak_entity.png" class="img-fluid figure-img" style="width:80.0%" alt="Weak Entity Set Notation"></a></p>
 <figcaption>Weak Entity Set Notation</figcaption>
 </figure>
 </div>
@@ -768,6 +805,13 @@ window.Quarto = {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -1022,25 +1066,64 @@ window.Quarto = {
           }
         };
       }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
             }
-          });
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
@@ -1081,7 +1164,39 @@ window.Quarto = {
     }
   });
   </script>
-<nav class="page-navigation column-body">
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      if (authorPrefersDark) {
+          [baseTheme, altTheme] = [altTheme, baseTheme];
+      }
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "cs2001-dbms/cs2001-dbms.github.io";
+    script.dataset.repoId = "R_kgDOSjpYJw";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "1";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
+<nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="pagination-link" aria-label="Relational Algebra and Calculus">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Algebra and Calculus</span></span>
@@ -1094,6 +1209,51 @@ window.Quarto = {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© CS2001 - Database Management Systems</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_4/02_entity_relationship_model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

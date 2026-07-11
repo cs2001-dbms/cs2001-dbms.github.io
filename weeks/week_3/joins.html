@@ -82,9 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-4a3ee7e1ea6f4eca5f14e96bc3166cc9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-ad5a812442c60a9613ae4a1141391d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -313,6 +313,9 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
+    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-secondary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
+<p><strong>Welcome!</strong> Scroll to the bottom of any chapter to ask questions, review, and get answers!</p>
+</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -328,7 +331,7 @@ window.Quarto = {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
@@ -338,7 +341,13 @@ window.Quarto = {
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">DBMS [CS2001]</a> 
-        <div class="sidebar-tools-main">
+        <div class="sidebar-tools-main tools-wide">
+    <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
+    <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
@@ -468,12 +477,43 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-05</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependencies</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Armstrong Axioms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Extraneous attributes &amp; Canonical cover</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_5/04.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Lossless Join &amp; Dependency preservation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -492,26 +532,20 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
-  <ul>
+  <ul class="collapse">
   <li><a href="#sample-data" id="toc-sample-data" class="nav-link active" data-scroll-target="#sample-data">Sample Data</a></li>
   <li><a href="#cross-join" id="toc-cross-join" class="nav-link" data-scroll-target="#cross-join">Cross Join</a></li>
   <li><a href="#inner-join" id="toc-inner-join" class="nav-link" data-scroll-target="#inner-join">Inner Join</a></li>
-  <li><a href="#outer-join" id="toc-outer-join" class="nav-link" data-scroll-target="#outer-join">Outer Join</a>
-  <ul class="collapse">
-  <li><a href="#left-outer-join" id="toc-left-outer-join" class="nav-link" data-scroll-target="#left-outer-join">Left Outer Join</a></li>
-  <li><a href="#right-outer-join" id="toc-right-outer-join" class="nav-link" data-scroll-target="#right-outer-join">Right Outer Join</a></li>
-  <li><a href="#full-outer-join" id="toc-full-outer-join" class="nav-link" data-scroll-target="#full-outer-join">Full Outer Join</a></li>
-  <li><a href="#using-explicit-conditions" id="toc-using-explicit-conditions" class="nav-link" data-scroll-target="#using-explicit-conditions">Using Explicit Conditions</a></li>
-  </ul></li>
+  <li><a href="#outer-join" id="toc-outer-join" class="nav-link" data-scroll-target="#outer-join">Outer Join</a></li>
   <li><a href="#quick-reference-join-types" id="toc-quick-reference-join-types" class="nav-link" data-scroll-target="#quick-reference-join-types">Quick Reference: Join Types</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/joins.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content column-body" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/joins.html"><span class="chapter-title">Joins</span></a></li></ol></nav>
@@ -521,7 +555,7 @@ window.Quarto = {
 
 
 
-<div class="quarto-title-meta column-body">
+<div class="quarto-title-meta">
 
     
   
@@ -612,11 +646,11 @@ graph TD
 <section id="cross-join" class="level2">
 <h2 class="anchored" data-anchor-id="cross-join">Cross Join</h2>
 <p>Returns the <strong>full Cartesian product</strong> — every row of one table paired with every row of the other, no filtering at all.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Explicit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">cross</span> <span class="kw">join</span> review;</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- Implicit (comma syntax)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie, review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">-- Explicit</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">cross</span> <span class="kw">join</span> review;</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">-- Implicit (comma syntax)</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie, review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>With 3 movies and 3 reviews, this produces <strong>9 rows</strong> — almost all of them meaningless pairings.</p>
 <hr>
 </section>
@@ -649,12 +683,12 @@ graph TD
 </tr>
 </tbody>
 </table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Equi-join</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">inner</span> <span class="kw">join</span> review</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Natural join (same result, but movie_id appears once)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">-- Equi-join</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">inner</span> <span class="kw">join</span> review</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">-- Natural join (same result, but movie_id appears once)</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Result</strong> (only matching <code>movie_id</code>s survive):</p>
 <table class="caption-top table">
 <thead>
@@ -686,7 +720,7 @@ graph TD
 <section id="left-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="left-outer-join">Left Outer Join</h3>
 <p>Keeps <strong>all rows from the left table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -717,7 +751,7 @@ graph TD
 <section id="right-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="right-outer-join">Right Outer Join</h3>
 <p>Keeps <strong>all rows from the right table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -748,7 +782,7 @@ graph TD
 <section id="full-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="full-outer-join">Full Outer Join</h3>
 <p>Keeps <strong>everything from both sides</strong> — the union of left and right outer joins.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -784,13 +818,13 @@ graph TD
 <section id="using-explicit-conditions" class="level3">
 <h3 class="anchored" data-anchor-id="using-explicit-conditions">Using Explicit Conditions</h3>
 <p>Joins can also use <code>on</code> (any condition) or <code>using</code> (shared column names), instead of <code>natural</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Explicit condition</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- Shared column shorthand</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">using</span> (movie_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">-- Explicit condition</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">-- Shared column shorthand</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw">using</span> (movie_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p>💡 <code>on</code> works with <em>any</em> condition (even inequality!). <code>natural</code> and <code>using</code> both rely on matching column names — <code>using</code> lets you name exactly which shared column(s) to join on, while <code>natural</code> matches on <strong>all</strong> identically-named columns.</p>
 </blockquote>
@@ -942,6 +976,13 @@ graph TD
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
@@ -1196,25 +1237,64 @@ graph TD
           }
         };
       }
-        // Attach click handler to the DT
-        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-        for (const annoteDlNode of annoteDls) {
-          annoteDlNode.addEventListener('click', (event) => {
-            const clickedEl = event.target;
-            if (clickedEl !== selectedAnnoteEl) {
-              unselectCodeLines();
-              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-              if (activeEl) {
-                activeEl.classList.remove('code-annotation-active');
-              }
-              selectCodeLines(clickedEl);
-              clickedEl.classList.add('code-annotation-active');
-            } else {
-              // Unselect the line
-              unselectCodeLines();
-              clickedEl.classList.remove('code-annotation-active');
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
             }
-          });
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
@@ -1255,7 +1335,39 @@ graph TD
     }
   });
   </script>
-<nav class="page-navigation column-body">
+<input type="hidden" id="giscus-base-theme" value="light">
+<input type="hidden" id="giscus-alt-theme" value="dark">
+<script>
+  function loadGiscus() {
+    // Function to get the theme based on body class
+    const getTheme = () => {
+      let baseTheme = document.getElementById('giscus-base-theme').value;
+      let altTheme = document.getElementById('giscus-alt-theme').value;
+      if (authorPrefersDark) {
+          [baseTheme, altTheme] = [altTheme, baseTheme];
+      }
+      return document.body.classList.contains('quarto-dark') ? altTheme : baseTheme;
+    };
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.async = true;
+    script.dataset.repo = "cs2001-dbms/cs2001-dbms.github.io";
+    script.dataset.repoId = "R_kgDOSjpYJw";
+    script.dataset.category = "General";
+    script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
+    script.dataset.mapping = "pathname";
+    script.dataset.reactionsEnabled = "1";
+    script.dataset.emitMetadata = "0";
+    script.dataset.inputPosition = "top";
+    script.dataset.theme = getTheme();
+    script.dataset.lang = "en";
+    script.crossOrigin = "anonymous";
+    // Append the script to the desired div instead of at the end of the body
+    document.getElementById("quarto-content").appendChild(script);
+  }
+  loadGiscus();
+</script>
+<nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../../weeks/week_3/nested_subqueries.html" class="pagination-link" aria-label="Nested Subqueries">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Nested Subqueries</span></span>
@@ -1268,6 +1380,19 @@ graph TD
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© CS2001 - Database Management Systems</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/joins.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 
