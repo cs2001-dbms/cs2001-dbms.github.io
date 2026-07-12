@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover – Database Management Systems</title>
+<title>Extraneous Attributes, Equivalence &amp; Canonical Cover – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -305,9 +305,9 @@ window.Quarto = {
       <a href="../../">DBMS [CS2001]</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
-    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Live Streams" class="quarto-navigation-tool px-1" aria-label="Live Streams"><i class="bi bi-play-circle"></i></a>
     <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
-    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in" title="Contact" class="quarto-navigation-tool px-1" aria-label="Contact"><i class="bi bi-envelope"></i></a>
     <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
     <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
@@ -499,9 +499,7 @@ window.Quarto = {
    
   <ul class="collapse">
   <li><a href="#extraneous-attributes" id="toc-extraneous-attributes" class="nav-link active" data-scroll-target="#extraneous-attributes">Extraneous Attributes</a></li>
-  <li><a href="#equivalence-of-fd-sets" id="toc-equivalence-of-fd-sets" class="nav-link" data-scroll-target="#equivalence-of-fd-sets">Equivalence of FD Sets</a></li>
-  <li><a href="#canonical-cover" id="toc-canonical-cover" class="nav-link" data-scroll-target="#canonical-cover">Canonical Cover</a></li>
-  <li><a href="#prime-and-non-prime-attributes" id="toc-prime-and-non-prime-attributes" class="nav-link" data-scroll-target="#prime-and-non-prime-attributes">Prime and Non-Prime Attributes:</a></li>
+  <li><a href="#equivalence-canonical-cover" id="toc-equivalence-canonical-cover" class="nav-link" data-scroll-target="#equivalence-canonical-cover">Equivalence &amp; Canonical Cover</a></li>
   </ul>
 <div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/03.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -511,7 +509,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/03.html"><span class="chapter-title">Extraneous attributes &amp; Canonical cover</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Algorithms for FDs: Extraneous Attributes &amp; Canonical Cover</span></h1>
+<h1 class="title"><span class="chapter-title">Extraneous Attributes, Equivalence &amp; Canonical Cover</span></h1>
 </div>
 
 
@@ -528,116 +526,85 @@ window.Quarto = {
 </header>
 
 
-<p>We already have <strong>attribute closure</strong> (<span class="math inline">\(\alpha^+\)</span>) as our cheap, go-to tool for testing superkeys and individual FDs. Now we use it to answer a sharper question: <em>does every FD in our set actually earn its place, in full?</em> This leads us to <strong>extraneous attributes</strong> and, ultimately, the <strong>canonical cover</strong> — the leanest possible version of a set of FDs.</p>
+<p>We already have <strong>attribute closure</strong> (<span class="math inline">\(\alpha^+\)</span>) as our go-to tool for testing superkeys and FDs. Now we use it to ask a sharper question: does every attribute in every FD actually earn its place? This leads to <strong>extraneous attributes</strong> and, from there, the <strong>canonical cover</strong> — the leanest version of an FD set.</p>
 <hr>
 <section id="extraneous-attributes" class="level2">
 <h2 class="anchored" data-anchor-id="extraneous-attributes">Extraneous Attributes</h2>
-<p>Some FD sets carry dead weight — attributes on either side of an FD that don’t actually contribute anything. An attribute is <strong>extraneous</strong> if we can remove it without losing any information from the FD set.</p>
-<ul>
-<li><p><strong>Extraneous on the left (<span class="math inline">\(\alpha\)</span>):</strong> Attribute <span class="math inline">\(A \in \alpha\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if <span class="math inline">\(F\)</span> still logically implies <span class="math inline">\((\alpha - A) \rightarrow \beta\)</span> — i.e., dropping <span class="math inline">\(A\)</span> makes the FD <em>stronger</em> (broader left side removed) but the same conclusion still holds.</p>
-<p><em>Simpler Rule:</em> An attribute on the left is dead weight if the remaining attributes on the left are already powerful enough to find the right side.</p></li>
-<li><p><strong>Extraneous on the right (<span class="math inline">\(\beta\)</span>):</strong> Attribute <span class="math inline">\(A \in \beta\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if the <em>remaining</em> set of FDs — with <span class="math inline">\(A\)</span> dropped from <span class="math inline">\(\beta\)</span> — still logically implies the original <span class="math inline">\(\alpha \rightarrow \beta\)</span> (i.e., <span class="math inline">\(A\)</span> was derivable anyway).</p>
-<p><em>Simpler Rule:</em> An attribute on the right is dead weight if you can already figure it out by playing a chain-reaction game with the other rules in your system.</p></li>
-</ul>
-<section id="worked-examples" class="level3">
-<h3 class="anchored" data-anchor-id="worked-examples">Worked Examples</h3>
-<p><strong>Example 1 — extraneous on the left:</strong> <span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow C\}\)</span></p>
-<ul>
-<li><span class="math inline">\(B\)</span> is extraneous in <span class="math inline">\(AB \rightarrow C\)</span>, because <span class="math inline">\(A^+ = AC\)</span> already — meaning <span class="math inline">\(A \rightarrow C\)</span> holds on its own, without needing <span class="math inline">\(B\)</span> at all.</li>
-</ul>
-<p><strong>Example 2 — extraneous on the right:</strong> <span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow CD\}\)</span></p>
-<ul>
-<li><span class="math inline">\(C\)</span> is extraneous in <span class="math inline">\(AB \rightarrow CD\)</span>, because dropping it leaves <span class="math inline">\(\{A \rightarrow C,\ AB \rightarrow D\}\)</span>, and <span class="math inline">\(AB^+ = ABCD\)</span> in this reduced set — so <span class="math inline">\(C\)</span> was always derivable anyway.</li>
-</ul>
-</section>
-<section id="testing-for-extraneous-attributes" class="level3">
-<h3 class="anchored" data-anchor-id="testing-for-extraneous-attributes">Testing for Extraneous Attributes</h3>
-<p><strong>To test if <span class="math inline">\(A \in \alpha\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span>:</strong> Cover up <span class="math inline">\(A\)</span>. Compute the attribute closure of whatever is left on the left side: <span class="math inline">\((\alpha - A)^+\)</span>. If your target <span class="math inline">\(\beta\)</span> is inside that result set, <span class="math inline">\(A\)</span> is extraneous.</p>
-<p><strong>To test if <span class="math inline">\(A \in \beta\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span>:</strong> Hide <span class="math inline">\(A\)</span> from the right side of that specific dependency. Using this modified set of rules, compute the attribute closure of the left side: <span class="math inline">\(\alpha^+\)</span>. If <span class="math inline">\(A\)</span> still pops up in the final result, it means the other rules already had it covered. <span class="math inline">\(A\)</span> is extraneous.</p>
-<hr>
-</section>
-</section>
-<section id="equivalence-of-fd-sets" class="level2">
-<h2 class="anchored" data-anchor-id="equivalence-of-fd-sets">Equivalence of FD Sets</h2>
-<p>Two sets of FDs, <span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span>, are <strong>equivalent</strong> if <span class="math inline">\(F^+ = G^+\)</span> — meaning every FD in <span class="math inline">\(F\)</span> can be derived from <span class="math inline">\(G\)</span>, and every FD in <span class="math inline">\(G\)</span> can be derived from <span class="math inline">\(F\)</span>.</p>
-<p>We break this into two directions:</p>
-<ul>
-<li><strong><span class="math inline">\(F\)</span> covers <span class="math inline">\(G\)</span></strong>: every FD of <span class="math inline">\(G\)</span> is logically implied by <span class="math inline">\(F\)</span> (i.e., <span class="math inline">\(F^+ \supseteq G\)</span>)</li>
-<li><strong><span class="math inline">\(G\)</span> covers <span class="math inline">\(F\)</span></strong>: every FD of <span class="math inline">\(F\)</span> is logically implied by <span class="math inline">\(G\)</span> (i.e., <span class="math inline">\(G^+ \supseteq F\)</span>)</li>
-</ul>
-<p><span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span> are equivalent only if <strong>both</strong> directions of covering hold.</p>
-<hr>
-</section>
-<section id="canonical-cover" class="level2">
-<h2 class="anchored" data-anchor-id="canonical-cover">Canonical Cover</h2>
-<p>Real-world FD sets often contain <strong>redundant dependencies</strong> (whole FDs that can be inferred from the others) or <strong>redundant parts</strong> of FDs (extraneous attributes). The <strong>canonical cover</strong> <span class="math inline">\(F_c\)</span> is the minimal, “optimal” version of <span class="math inline">\(F\)</span>, trimmed down as far as possible while still being equivalent to it.</p>
-<p><span class="math inline">\(F_c\)</span> is a canonical cover for <span class="math inline">\(F\)</span> if <strong>all</strong> of the following hold:</p>
-<ul>
-<li><span class="math inline">\(F_c^+ = F^+\)</span> (they’re fully equivalent)</li>
-<li>No FD in <span class="math inline">\(F_c\)</span> contains an extraneous attribute (nothing more to trim)</li>
-<li>Every left-hand side in <span class="math inline">\(F_c\)</span> is unique, no two FDs <span class="math inline">\(\alpha_1 \rightarrow \beta_1\)</span> and <span class="math inline">\(\alpha_2 \rightarrow \beta_2\)</span> share <span class="math inline">\(\alpha_1 \rightarrow \alpha_2\)</span> (these would just get merged via the union rule)</li>
-</ul>
-<p>Intuitively: a canonical cover is the smallest, most irreducible set of FDs that says exactly the same thing as <span class="math inline">\(F\)</span> — no redundant FDs, and no redundant attributes tucked inside the FDs that remain.</p>
-<section id="trimming-the-right-hand-side-rhs" class="level3">
-<h3 class="anchored" data-anchor-id="trimming-the-right-hand-side-rhs">Trimming the Right-Hand Side (RHS)</h3>
-<p><span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow CD\}\)</span> simplifies to <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}\)</span></p>
-<ul>
-<li><strong>Forward:</strong> <span class="math inline">\(A \rightarrow CD\)</span> splits (via decomposition) into <span class="math inline">\(A \rightarrow C\)</span> and <span class="math inline">\(A \rightarrow D\)</span>; and <span class="math inline">\(A \rightarrow C\)</span> is redundant anyway since <span class="math inline">\(A \rightarrow B, B \rightarrow C\)</span> already gives it via transitivity</li>
-<li><strong>Reverse:</strong> <span class="math inline">\(A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C\)</span>; combine with <span class="math inline">\(A \rightarrow D\)</span> (union rule) to rebuild <span class="math inline">\(A \rightarrow CD\)</span></li>
-<li>Check: <span class="math inline">\(A^+ = ABCD\)</span> under either version — confirms equivalence</li>
-</ul>
-</section>
-<section id="trimming-the-left-hand-side-lhs" class="level3">
-<h3 class="anchored" data-anchor-id="trimming-the-left-hand-side-lhs">Trimming the Left-Hand Side (LHS)</h3>
-<p><span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ AC \rightarrow D\}\)</span> simplifies to <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}\)</span></p>
-<ul>
-<li><strong>Forward:</strong> <span class="math inline">\(A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C \Rightarrow A \rightarrow AC\)</span> (union with <span class="math inline">\(A \rightarrow A\)</span>); then <span class="math inline">\(A \rightarrow AC\)</span> combined with <span class="math inline">\(AC \rightarrow D\)</span> gives <span class="math inline">\(A \rightarrow D\)</span> by transitivity — so <span class="math inline">\(C\)</span> was extraneous in <span class="math inline">\(AC \rightarrow D\)</span></li>
-<li><strong>Reverse:</strong> <span class="math inline">\(A \rightarrow D \Rightarrow AC \rightarrow D\)</span> trivially (augmentation)</li>
-<li>Check: <span class="math inline">\(A^+ = ABCD\)</span> confirms this too</li>
-</ul>
-</section>
-<section id="algorithm-to-compute-a-canonical-cover" class="level3">
-<h3 class="anchored" data-anchor-id="algorithm-to-compute-a-canonical-cover">Algorithm to Compute a Canonical Cover</h3>
-<pre><code>repeat
-    Use the union rule to replace any pair of dependencies
-        α1 → β1  and  α1 → β2
-    with
-        α1 → β1β2
-
-    Find a functional dependency α → β with an extraneous
-    attribute either in α or in β
-    (test for extraneous attributes using the CURRENT Fc, not the original F)
-
-    If found, delete that extraneous attribute
-until F does not change</code></pre>
 <blockquote class="blockquote">
-<p><strong>Warning:</strong> Once you delete an extraneous attribute, previously-unmergeable FDs might suddenly share the same left-hand side — so the union rule may become applicable again. Keep looping until nothing changes.</p>
+<p>💡 <strong>In plain English:</strong> an extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.</p>
+</blockquote>
+<p>An attribute can be dead weight on either side of an FD:</p>
+<ul>
+<li><strong>Extraneous on the left (<span class="math inline">\(\alpha\)</span>):</strong> attribute <span class="math inline">\(A \in \alpha\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if the <em>rest</em> of the left side, without <span class="math inline">\(A\)</span>, still determines <span class="math inline">\(\beta\)</span> on its own.</li>
+<li><strong>Extraneous on the right (<span class="math inline">\(\beta\)</span>):</strong> attribute <span class="math inline">\(A \in \beta\)</span> is extraneous in <span class="math inline">\(\alpha \rightarrow \beta\)</span> if the <em>other</em> FDs in the set can already derive <span class="math inline">\(A\)</span> anyway — this one FD isn’t needed to get it.</li>
+</ul>
+<section id="how-to-test" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-test">How to Test</h3>
+<p><strong>Left side:</strong> Drop <span class="math inline">\(A\)</span> from <span class="math inline">\(\alpha\)</span>. Compute <span class="math inline">\((\alpha - A)^+\)</span>. If <span class="math inline">\(\beta\)</span> is inside that result, <span class="math inline">\(A\)</span> was extraneous.</p>
+<p><strong>Right side:</strong> Drop <span class="math inline">\(A\)</span> from <span class="math inline">\(\beta\)</span> (just for this one FD). Recompute <span class="math inline">\(\alpha^+\)</span> using this adjusted set. If <span class="math inline">\(A\)</span> still shows up in the result, it means the other FDs already covered it — so <span class="math inline">\(A\)</span> was extraneous.</p>
+</section>
+<section id="example-extraneous-on-the-left" class="level3">
+<h3 class="anchored" data-anchor-id="example-extraneous-on-the-left">Example — Extraneous on the Left</h3>
+<p><span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow C\}\)</span></p>
+<p>Is <span class="math inline">\(B\)</span> extraneous in <span class="math inline">\(AB \rightarrow C\)</span>? Drop it and check <span class="math inline">\(A^+\)</span>. Since <span class="math inline">\(A^+ = AC\)</span> already contains <span class="math inline">\(C\)</span>, yes — <span class="math inline">\(A\)</span> alone was always enough. <span class="math inline">\(B\)</span> was dead weight.</p>
+</section>
+<section id="example-extraneous-on-the-right" class="level3">
+<h3 class="anchored" data-anchor-id="example-extraneous-on-the-right">Example — Extraneous on the Right</h3>
+<p><span class="math inline">\(F = \{A \rightarrow C,\ AB \rightarrow CD\}\)</span></p>
+<p>Is <span class="math inline">\(C\)</span> extraneous in <span class="math inline">\(AB \rightarrow CD\)</span>? Drop it, leaving <span class="math inline">\(\{A \rightarrow C,\ AB \rightarrow D\}\)</span>. Compute <span class="math inline">\(AB^+\)</span> under this reduced set: it comes out to <span class="math inline">\(ABCD\)</span> — which still contains <span class="math inline">\(C\)</span>. So <span class="math inline">\(C\)</span> was always derivable anyway, and was extraneous in the original FD.</p>
+<hr>
+</section>
+</section>
+<section id="equivalence-canonical-cover" class="level2">
+<h2 class="anchored" data-anchor-id="equivalence-canonical-cover">Equivalence &amp; Canonical Cover</h2>
+<section id="equivalence-of-fd-sets" class="level3">
+<h3 class="anchored" data-anchor-id="equivalence-of-fd-sets">Equivalence of FD Sets</h3>
+<blockquote class="blockquote">
+<p>💡 <strong>In plain English:</strong> two FD sets are equivalent if they’re just two different ways of writing down the same set of rules.</p>
+</blockquote>
+<p><span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span> are <strong>equivalent</strong> if <span class="math inline">\(F^+ = G^+\)</span>. This needs both directions to hold:</p>
+<ul>
+<li><strong><span class="math inline">\(F\)</span> covers <span class="math inline">\(G\)</span></strong>: everything in <span class="math inline">\(G\)</span> can be derived from <span class="math inline">\(F\)</span></li>
+<li><strong><span class="math inline">\(G\)</span> covers <span class="math inline">\(F\)</span></strong>: everything in <span class="math inline">\(F\)</span> can be derived from <span class="math inline">\(G\)</span></li>
+</ul>
+<p>Only if both hold are <span class="math inline">\(F\)</span> and <span class="math inline">\(G\)</span> truly equivalent.</p>
+</section>
+<section id="canonical-cover" class="level3">
+<h3 class="anchored" data-anchor-id="canonical-cover">Canonical Cover</h3>
+<blockquote class="blockquote">
+<p>💡 <strong>In plain English:</strong> the canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn’t actually needed.</p>
+</blockquote>
+<p><span class="math inline">\(F_c\)</span> is a canonical cover of <span class="math inline">\(F\)</span> if:</p>
+<ul>
+<li><span class="math inline">\(F_c^+ = F^+\)</span> (says exactly the same thing as <span class="math inline">\(F\)</span>)</li>
+<li>No FD in <span class="math inline">\(F_c\)</span> has an extraneous attribute</li>
+<li>Every left-hand side in <span class="math inline">\(F_c\)</span> appears only once (no two FDs share a left side — those would just merge)</li>
+</ul>
+</section>
+<section id="how-to-compute-it" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-compute-it">How to Compute It</h3>
+<ol type="1">
+<li>Combine any FDs that share the same left-hand side into one, using the union rule.</li>
+<li>Look at each remaining FD and test both sides for extraneous attributes; remove any that are found.</li>
+<li>Repeat steps 1–2 until nothing changes.</li>
+</ol>
+<blockquote class="blockquote">
+<p>⚠️ Removing an extraneous attribute can create a <em>new</em> opportunity to merge left-hand sides that didn’t match before — so keep looping until the set is stable.</p>
 </blockquote>
 </section>
 <section id="worked-example" class="level3">
 <h3 class="anchored" data-anchor-id="worked-example">Worked Example</h3>
 <p><span class="math inline">\(R = (A, B, C)\)</span>, <span class="math inline">\(F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}\)</span></p>
 <ol type="1">
-<li><strong>Union</strong>: merge <span class="math inline">\(A \rightarrow BC\)</span> and <span class="math inline">\(A \rightarrow B\)</span> into <span class="math inline">\(A \rightarrow BC\)</span> → set becomes <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}\)</span></li>
-<li><strong><span class="math inline">\(A\)</span> is extraneous in <span class="math inline">\(AB \rightarrow C\)</span></strong>: dropping <span class="math inline">\(A\)</span> leaves <span class="math inline">\(B \rightarrow C\)</span>, which is already present in the set → set becomes <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C\}\)</span></li>
-<li><strong><span class="math inline">\(C\)</span> is extraneous in <span class="math inline">\(A \rightarrow BC\)</span></strong>: is <span class="math inline">\(A \rightarrow C\)</span> implied by the rest? Yes — via transitivity on <span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(B \rightarrow C\)</span> (in trickier cases, just compute <span class="math inline">\(A^+\)</span> to check)</li>
+<li><strong>Merge:</strong> <span class="math inline">\(A \rightarrow BC\)</span> and <span class="math inline">\(A \rightarrow B\)</span> share a left side → combine into <span class="math inline">\(A \rightarrow BC\)</span>. Set is now <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}\)</span>.</li>
+<li><strong>Left-side check:</strong> is <span class="math inline">\(A\)</span> extraneous in <span class="math inline">\(AB \rightarrow C\)</span>? Drop it — <span class="math inline">\(B \rightarrow C\)</span> is already in the set, so yes. Set is now <span class="math inline">\(\{A \rightarrow BC,\ B \rightarrow C\}\)</span>.</li>
+<li><strong>Right-side check:</strong> is <span class="math inline">\(C\)</span> extraneous in <span class="math inline">\(A \rightarrow BC\)</span>? Drop it and check — <span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(B \rightarrow C\)</span> together still give <span class="math inline">\(A \rightarrow C\)</span> by transitivity. So yes, <span class="math inline">\(C\)</span> was extraneous.</li>
 </ol>
-<p><strong>Canonical cover:</strong> <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C\}\)</span></p>
-<hr>
+<p><strong>Canonical cover:</strong> <span class="math inline">\(\{A \rightarrow B,\ B \rightarrow C\}\)</span> — the smallest set that says exactly what the original four FDs said.</p>
+
+
+
 </section>
-</section>
-<section id="prime-and-non-prime-attributes" class="level2">
-<h2 class="anchored" data-anchor-id="prime-and-non-prime-attributes">Prime and Non-Prime Attributes:</h2>
-<ul>
-<li><strong>Prime attributes</strong> : Union of all candidate key attributes (<span class="math inline">\(CK_1 \cup CK_2 \cup CK_3 \cup \ldots\)</span>).</li>
-</ul>
-<p>Note: if a prime attribute <span class="math inline">\(A\)</span> is itself determined by some other set <span class="math inline">\(X\)</span> (i.e.&nbsp;<span class="math inline">\(X \rightarrow A\)</span>), that’s a signal <span class="math inline">\(X\)</span> may also be a candidate key.</p>
-<ul>
-<li><strong>Non-prime attributes</strong> : every attribute that appears in <em>no</em> candidate key</li>
-</ul>
-
-
-
 </section>
 
 </main> <!-- /main -->
@@ -1120,7 +1087,7 @@ until F does not change</code></pre>
     script.dataset.repoId = "R_kgDOSjpYJw";
     script.dataset.category = "General";
     script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
-    script.dataset.mapping = "pathname";
+    script.dataset.mapping = "url";
     script.dataset.reactionsEnabled = "1";
     script.dataset.emitMetadata = "0";
     script.dataset.inputPosition = "top";

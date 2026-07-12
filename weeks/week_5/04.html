@@ -305,9 +305,9 @@ window.Quarto = {
       <a href="../../">DBMS [CS2001]</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
-    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Live Streams" class="quarto-navigation-tool px-1" aria-label="Live Streams"><i class="bi bi-play-circle"></i></a>
     <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
-    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in" title="Contact" class="quarto-navigation-tool px-1" aria-label="Contact"><i class="bi bi-envelope"></i></a>
     <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
     <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
@@ -500,7 +500,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#lossless-join-decomposition" id="toc-lossless-join-decomposition" class="nav-link active" data-scroll-target="#lossless-join-decomposition">Lossless Join Decomposition</a></li>
   <li><a href="#dependency-preservation" id="toc-dependency-preservation" class="nav-link" data-scroll-target="#dependency-preservation">Dependency Preservation</a></li>
-  <li><a href="#superkey-calculation-formulas" id="toc-superkey-calculation-formulas" class="nav-link" data-scroll-target="#superkey-calculation-formulas">Superkey Calculation Formulas</a></li>
   </ul>
 <div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/04.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -529,158 +528,240 @@ window.Quarto = {
 
 <section id="lossless-join-decomposition" class="level2">
 <h2 class="anchored" data-anchor-id="lossless-join-decomposition">Lossless Join Decomposition</h2>
-<p>For <span class="math inline">\(R\)</span> decomposed into <span class="math inline">\(R_1, R_2\)</span>, we require that for every legal relation <span class="math inline">\(r\)</span> on <span class="math inline">\(R\)</span>:</p>
-<p><span class="math display">\[r = \pi_{R_1}(r) \bowtie \pi_{R_2}(r)\]</span></p>
-<p><strong>Sufficient condition:</strong> the decomposition is lossless if at least one of these is in <span class="math inline">\(F^+\)</span>:</p>
-<p><span class="math display">\[R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2\]</span></p>
 <blockquote class="blockquote">
-<p>⚠️ This is sufficient, but only <em>necessary</em> when all constraints are FDs (other constraint types can change the picture).</p>
+<p>💡 <strong>In plain English:</strong> if you split a table in two, you should be able to join the pieces back together and get <em>exactly</em> the original table back — not extra, made-up rows, and not missing ones.</p>
 </blockquote>
-<p><strong>Full check:</strong></p>
+<p>For <span class="math inline">\(R\)</span> decomposed into <span class="math inline">\(R_1, R_2\)</span>, this must hold for every legal instance:</p>
+<p><span class="math display">\[r = \pi_{R_1}(r) \bowtie \pi_{R_2}(r)\]</span></p>
+<p><strong>Sufficient condition:</strong> the decomposition is lossless if at least one of these is true:</p>
+<p><span class="math display">\[R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2\]</span></p>
+<p>In other words: the attribute(s) shared between the two pieces must be enough, on their own, to act as a key for at least one of the two pieces.</p>
+<blockquote class="blockquote">
+<p>⚠️ This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn’t guaranteed to be necessary.</p>
+</blockquote>
+<p><strong>Full checklist for a lossless decomposition:</strong></p>
 <ul>
-<li><span class="math inline">\(R_1 \cup R_2 = R\)</span></li>
-<li><span class="math inline">\(R_1 \cap R_2 \neq \phi\)</span></li>
-<li><span class="math inline">\(R_1 \cap R_2 \rightarrow R_1\)</span> or <span class="math inline">\(R_1 \cap R_2 \rightarrow R_2\)</span></li>
+<li><span class="math inline">\(R_1 \cup R_2 = R\)</span> — nothing gets left out</li>
+<li><span class="math inline">\(R_1 \cap R_2 \neq \phi\)</span> — the two pieces actually share something in common</li>
+<li><span class="math inline">\(R_1 \cap R_2 \rightarrow R_1\)</span> or <span class="math inline">\(R_1 \cap R_2 \rightarrow R_2\)</span> — that shared part is a key on at least one side</li>
 </ul>
-<section id="example-supplier-parts-lossy" class="level3">
-<h3 class="anchored" data-anchor-id="example-supplier-parts-lossy">Example: Supplier-Parts (Lossy)</h3>
+<section id="worked-example-supplier-parts" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-supplier-parts">Worked Example: Supplier-Parts</h3>
 <p><code>Supplier_Parts(S#, Sname, City, P#, Qty)</code>, with <code>S# → Sname, City</code> and <code>(S#, P#) → Qty</code>.</p>
-<p><strong>Bad decomposition:</strong> <code>Supplier(S#, Sname, City, Qty)</code>, <code>Parts(P#, Qty)</code></p>
-<p>Common attribute is <code>Qty</code> — not a superkey of either side. Joining back produces <strong>extra tuples</strong>: lossy. It also fails to preserve <code>(S#, P#) → Qty</code>.</p>
+<p>Here’s a sample instance:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>S#</th>
+<th>Sname</th>
+<th>City</th>
+<th>P#</th>
+<th>Qty</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>S1</td>
+<td>Smith</td>
+<td>London</td>
+<td>P1</td>
+<td>300</td>
+</tr>
+<tr class="even">
+<td>S1</td>
+<td>Smith</td>
+<td>London</td>
+<td>P2</td>
+<td>200</td>
+</tr>
+<tr class="odd">
+<td>S2</td>
+<td>Jones</td>
+<td>Paris</td>
+<td>P1</td>
+<td>400</td>
+</tr>
+<tr class="even">
+<td>S2</td>
+<td>Jones</td>
+<td>Paris</td>
+<td>P2</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A bad split:</strong> <code>Supplier(S#, Sname, City, Qty)</code> and <code>Parts(P#, Qty)</code></p>
+<p>The shared attribute here is <code>Qty</code> — and <code>Qty</code> isn’t a key of either piece. Projecting our sample data onto these two tables and joining them back on <code>Qty</code> gives:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>S#</th>
+<th>Sname</th>
+<th>City</th>
+<th>P#</th>
+<th>Qty</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>S1</td>
+<td>Smith</td>
+<td>London</td>
+<td>P1</td>
+<td>300</td>
+<td>✅ original</td>
+</tr>
+<tr class="even">
+<td>S1</td>
+<td>Smith</td>
+<td>London</td>
+<td>P2</td>
+<td>300</td>
+<td>❌ spurious</td>
+</tr>
+<tr class="odd">
+<td>S2</td>
+<td>Jones</td>
+<td>Paris</td>
+<td>P1</td>
+<td>300</td>
+<td>❌ spurious</td>
+</tr>
+<tr class="even">
+<td>S2</td>
+<td>Jones</td>
+<td>Paris</td>
+<td>P2</td>
+<td>300</td>
+<td>✅ original</td>
+</tr>
+<tr class="odd">
+<td>S1</td>
+<td>Smith</td>
+<td>London</td>
+<td>P2</td>
+<td>200</td>
+<td>✅ original</td>
+</tr>
+<tr class="even">
+<td>S2</td>
+<td>Jones</td>
+<td>Paris</td>
+<td>P1</td>
+<td>400</td>
+<td>✅ original</td>
+</tr>
+</tbody>
+</table>
+<p>Both suppliers happened to have a <code>Qty = 300</code> row, so the join matches <em>every</em> <code>Qty = 300</code> row in <code>Supplier</code> with <em>every</em> <code>Qty = 300</code> row in <code>Parts</code> — creating two fabricated combinations that never existed in the original data. This decomposition is lossy, and it also fails to preserve <code>(S#, P#) → Qty</code>.</p>
+<p><strong>A good split:</strong> <code>Supplier(S#, Sname, City)</code> and <code>Parts(S#, P#, Qty)</code></p>
+<p>The shared attribute is <code>S#</code>, which <em>is</em> a key of <code>Supplier</code>. Joining these two projections back together on <code>S#</code> reconstructs exactly the original four rows — no more, no less. Lossless, and every dependency is preserved too.</p>
+<blockquote class="blockquote">
+<p>📌 The lesson: it’s not <em>whether</em> you split a table, it’s <em>where</em> you split it. The same table can be decomposed well or badly.</p>
+</blockquote>
+<hr>
 </section>
-<section id="example-supplier-parts-lossless" class="level3">
-<h3 class="anchored" data-anchor-id="example-supplier-parts-lossless">Example: Supplier-Parts (Lossless)</h3>
-<p><strong>Good decomposition:</strong> <code>Supplier(S#, Sname, City)</code>, <code>Parts(S#, P#, Qty)</code></p>
-<p>Common attribute is <code>S#</code>, a superkey of <code>Supplier</code>. Joining back reconstructs the original exactly: lossless, and all dependencies preserved.</p>
 </section>
-<section id="example-two-decompositions-different-outcomes" class="level3">
-<h3 class="anchored" data-anchor-id="example-two-decompositions-different-outcomes">Example: Two Decompositions, Different Outcomes</h3>
+<section id="dependency-preservation" class="level2">
+<h2 class="anchored" data-anchor-id="dependency-preservation">Dependency Preservation</h2>
+<blockquote class="blockquote">
+<p>💡 <strong>In plain English:</strong> after splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition “preserves dependencies.”</p>
+</blockquote>
+<p>Let <span class="math inline">\(F_i\)</span> be the set of FDs from <span class="math inline">\(F^+\)</span> that only involve attributes inside <span class="math inline">\(R_i\)</span>. A decomposition into <span class="math inline">\(R_1, ..., R_n\)</span> <strong>preserves dependencies</strong> if:</p>
+<p><span class="math display">\[(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+\]</span></p>
+<p>If this fails, catching a violation of some original FD needs an expensive join across tables.</p>
+<section id="a-quick-contrast" class="level3">
+<h3 class="anchored" data-anchor-id="a-quick-contrast">A Quick Contrast</h3>
 <p><span class="math inline">\(R = (A,B,C)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C\}\)</span></p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Decomposition</th>
-<th>Lossless?</th>
 <th>Dependency Preserving?</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><span class="math inline">\(R_1=(A,B),\ R_2=(B,C)\)</span></td>
-<td>Yes — <span class="math inline">\(R_1 \cap R_2 = \{B\}\)</span>, <span class="math inline">\(B \rightarrow BC\)</span></td>
-<td>Yes</td>
+<td>Yes — both <code>A→B</code> and <code>B→C</code> sit fully inside one piece each</td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(R_1=(A,B),\ R_2=(A,C)\)</span></td>
-<td>Yes — <span class="math inline">\(R_1 \cap R_2 = \{A\}\)</span>, <span class="math inline">\(A \rightarrow AB\)</span></td>
-<td><strong>No</strong> — <span class="math inline">\(B \rightarrow C\)</span> can’t be checked without joining</td>
+<td>No — <code>B→C</code> can’t be checked without joining, since <code>B</code> and <code>C</code> now live in different tables</td>
 </tr>
 </tbody>
 </table>
-<p>Same relation, same FDs — the <em>choice</em> of split determines whether both properties hold.</p>
-<hr>
+<p>Same relation, same FDs — the <em>choice</em> of split decides the outcome.</p>
 </section>
+<section id="how-to-test-it" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-test-it">How to Test It</h3>
+<ol type="1">
+<li>Start with <code>result</code> set to just the left-hand-side attributes (<span class="math inline">\(\alpha\)</span>) of the FD you’re checking.</li>
+<li>Go through each piece <span class="math inline">\(R_i\)</span> of the decomposition. Take the attributes <code>result</code> shares with <span class="math inline">\(R_i\)</span>, compute their closure under the <em>full</em> <span class="math inline">\(F\)</span>, then keep only the attributes that also belong to <span class="math inline">\(R_i\)</span>. Add anything new to <code>result</code>.</li>
+<li>Repeat step 2, cycling through every <span class="math inline">\(R_i\)</span>, until <code>result</code> stops growing.</li>
+<li>If the right-hand-side attributes (<span class="math inline">\(\beta\)</span>) are now inside <code>result</code>, the FD is preserved without needing a join.</li>
+</ol>
+<p>Run this check on every FD in <span class="math inline">\(F\)</span> to confirm the whole decomposition preserves dependencies.</p>
 </section>
-<section id="dependency-preservation" class="level2">
-<h2 class="anchored" data-anchor-id="dependency-preservation">Dependency Preservation</h2>
-<p>Let <span class="math inline">\(F_i\)</span> be the set of dependencies of <span class="math inline">\(F^+\)</span> to only the attributes in <span class="math inline">\(R_i\)</span>. A decomposition into <span class="math inline">\(R_1, ..., R_n\)</span> is <strong>dependency preserving</strong> if:</p>
-<p><span class="math display">\[(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+\]</span></p>
-<p>If not, checking updates for FD violations requires an expensive join.</p>
-<section id="worked-example-cyclic-fds" class="level3">
-<h3 class="anchored" data-anchor-id="worked-example-cyclic-fds">Worked Example (Cyclic FDs)</h3>
+<section id="worked-example" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example">Worked Example</h3>
 <p><span class="math inline">\(R(A,B,C,D)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}\)</span></p>
 <p>Decomposition: <span class="math inline">\(R_1(A,B),\ R_2(B,C),\ R_3(C,D)\)</span></p>
-<p><code>A→B</code>, <code>B→C</code>, <code>C→D</code> are trivially preserved (each lives entirely inside one <span class="math inline">\(R_i\)</span>). The only one to check is <code>D→A</code>:</p>
-<p><span class="math display">\[D \rightarrow C \ (R_3) \Rightarrow C \rightarrow B\ (R_2) \Rightarrow B \rightarrow A\ (R_1) \Rightarrow D \rightarrow A \text{ by transitivity}\]</span></p>
-<p>All dependencies preserved.</p>
-</section>
-<section id="testing-polynomial-method-preferred" class="level3">
-<h3 class="anchored" data-anchor-id="testing-polynomial-method-preferred">Testing (Polynomial Method — Preferred)</h3>
-<pre><code>result ← α
-while (result changes) do
-    for each Ri in the decomposition:
-        t = (result ∩ Ri)+ ∩ Ri      -- closure computed w.r.t. F, restricted to Ri
-        result ← result ∪ t
--- α → β is preserved iff β ⊆ result</code></pre>
-<p>Apply this test to every FD in <span class="math inline">\(F\)</span> to confirm the whole decomposition preserves dependencies.</p>
-</section>
-<section id="worked-example-polynomial-method" class="level3">
-<h3 class="anchored" data-anchor-id="worked-example-polynomial-method">Worked Example (Polynomial Method)</h3>
-<p><span class="math inline">\(R(A,B,C,D,E,F)\)</span>, <span class="math inline">\(F = \{A \rightarrow BCD,\ A \rightarrow EF,\ BC \rightarrow AD,\ BC \rightarrow E,\ BC \rightarrow F,\ B \rightarrow F,\ D \rightarrow E\}\)</span></p>
-<p>Decomposition: <span class="math inline">\(R_1(A,B,C,D),\ R_2(B,F),\ R_3(D,E)\)</span></p>
-<p><code>A→BCD</code>, <code>BC→AD</code> (both fully inside <span class="math inline">\(R_1\)</span>), <code>B→F</code> (inside <span class="math inline">\(R_2\)</span>), <code>D→E</code> (inside <span class="math inline">\(R_3\)</span>) are automatically preserved. Remaining to check: <code>A→E</code>, <code>A→F</code>, <code>BC→E</code>, <code>BC→F</code>.</p>
-<p><strong>Checking <code>A → EF</code>:</strong></p>
+<p><code>A→B</code>, <code>B→C</code>, <code>C→D</code> each sit fully inside one piece, so they’re automatically preserved. The one worth checking is <code>D→A</code>:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Round</th>
-<th>Apply</th>
-<th>Result grows to</th>
+<th>Piece Checked</th>
+<th>Closure Computed</th>
+<th>Result So Far</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Start</td>
 <td>—</td>
-<td><code>{A}</code></td>
+<td>—</td>
+<td><code>{D}</code></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(R_1\)</span></td>
-<td><span class="math inline">\((A)^+ \cap R_1\)</span></td>
-<td><code>{A,B,C,D}</code></td>
+<td>1</td>
+<td><span class="math inline">\(R_1=(A,B)\)</span></td>
+<td><code>result ∩ R1 = {}</code> → nothing to add</td>
+<td><code>{D}</code></td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(R_2\)</span></td>
-<td><span class="math inline">\((ABCD)^+ \cap R_2\)</span></td>
-<td><code>{...,F}</code> (via <code>B→F</code>)</td>
+<td>1</td>
+<td><span class="math inline">\(R_2=(B,C)\)</span></td>
+<td><code>result ∩ R2 = {}</code> → nothing to add</td>
+<td><code>{D}</code></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(R_3\)</span></td>
-<td><span class="math inline">\((ABCDF)^+ \cap R_3\)</span></td>
-<td><code>{...,E}</code> (via <code>D→E</code>)</td>
+<td>1</td>
+<td><span class="math inline">\(R_3=(C,D)\)</span></td>
+<td><code>(D)+ = ABCD</code>, keep only <code>C,D</code></td>
+<td><code>{C,D}</code></td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><span class="math inline">\(R_2=(B,C)\)</span></td>
+<td><code>(C)+ = ABCD</code>, keep only <code>B,C</code></td>
+<td><code>{B,C,D}</code></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><span class="math inline">\(R_1=(A,B)\)</span></td>
+<td><code>(B)+ = ABCD</code>, keep only <code>A,B</code></td>
+<td><code>{A,B,C,D}</code></td>
 </tr>
 </tbody>
 </table>
-<p>Result contains <code>E,F</code> ⇒ <code>A→EF</code> preserved.</p>
-<p><strong>Checking <code>BC → E, F</code>:</strong> same process starting from <code>{B,C}</code> — reaches <code>A,D</code> via <span class="math inline">\(R_1\)</span> (<code>BC→AD</code>), then <code>F</code> via <span class="math inline">\(R_2\)</span> (<code>B→F</code>), then <code>E</code> via <span class="math inline">\(R_3\)</span> (<code>D→E</code>). Both preserved.</p>
-<p>All dependencies preserved — this decomposition is dependency preserving.</p>
-</section>
-</section>
-<section id="superkey-calculation-formulas" class="level2">
-<h2 class="anchored" data-anchor-id="superkey-calculation-formulas">Superkey Calculation Formulas</h2>
-<p>Given a relation with <span class="math inline">\(N\)</span> total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.</p>
-<section id="case-1-only-1-candidate-key-single-attribute" class="level3">
-<h3 class="anchored" data-anchor-id="case-1-only-1-candidate-key-single-attribute">Case 1: Only 1 Candidate Key (Single Attribute)</h3>
-<p>If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = <span class="math inline">\(\{A_1\}\)</span>): <span class="math display">\[\text{Total Superkeys} = 2^{N-1}\]</span></p>
-</section>
-<section id="case-2-only-1-candidate-key-composite-key" class="level3">
-<h3 class="anchored" data-anchor-id="case-2-only-1-candidate-key-composite-key">Case 2: Only 1 Candidate Key (Composite Key)</h3>
-<p>If the relation has only one candidate key, and that key is a composite key formed by <span class="math inline">\(k\)</span> attributes: <span class="math display">\[\text{Total Superkeys} = 2^{N-k}\]</span></p>
-</section>
-<section id="case-3-every-single-attribute-is-a-candidate-key" class="level3">
-<h3 class="anchored" data-anchor-id="case-3-every-single-attribute-is-a-candidate-key">Case 3: Every Single Attribute is a Candidate Key</h3>
-<p>If the relation has <span class="math inline">\(N\)</span> candidate keys (meaning every single attribute in the relation is its own independent candidate key): <span class="math display">\[\text{Total Superkeys} = 2^N - 1\]</span></p>
-</section>
-<section id="case-4-two-distinct-candidate-keys" class="level3">
-<h3 class="anchored" data-anchor-id="case-4-two-distinct-candidate-keys">Case 4: Two Distinct Candidate Keys</h3>
-<p>When a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the <strong>Principle of Inclusion-Exclusion</strong> to avoid double-counting the superkeys that contain both keys.</p>
-</section>
-<section id="generic-set-formula" class="level3">
-<h3 class="anchored" data-anchor-id="generic-set-formula">Generic Set Formula</h3>
-<p><span class="math display">\[\text{Max Superkeys} = (\text{Superkeys with } A_1) + (\text{Superkeys with } A_2) - (\text{Superkeys with both } A_1 \text{ and } A_2)\]</span></p>
-</section>
-<section id="mathematical-representation" class="level3">
-<h3 class="anchored" data-anchor-id="mathematical-representation">Mathematical Representation</h3>
-<p>Let <span class="math inline">\(m\)</span> be the number of attributes forming the first candidate key, and <span class="math inline">\(n\)</span> be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:</p>
-<p><span class="math display">\[\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\]</span></p>
-<blockquote class="blockquote">
-<p>📌 <strong>Note:</strong> If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from <span class="math inline">\((m+n)\)</span> to the number of attributes in their absolute union: <span class="math inline">\(|\text{Key}_1 \cup \text{Key}_2|\)</span>.</p>
-</blockquote>
+<p><code>result</code> now contains <code>A</code> — so <code>D → A</code> is preserved. Every FD in <span class="math inline">\(F\)</span> checks out, so this decomposition is dependency preserving.</p>
 
 
 
@@ -1167,7 +1248,7 @@ while (result changes) do
     script.dataset.repoId = "R_kgDOSjpYJw";
     script.dataset.category = "General";
     script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
-    script.dataset.mapping = "pathname";
+    script.dataset.mapping = "url";
     script.dataset.reactionsEnabled = "1";
     script.dataset.emitMetadata = "0";
     script.dataset.inputPosition = "top";

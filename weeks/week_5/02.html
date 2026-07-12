@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Functional Dependency Theory – Database Management Systems</title>
+<title>Armstrong’s Axioms &amp; Closure of Attribute Sets – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -75,9 +75,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -308,9 +305,9 @@ window.Quarto = {
       <a href="../../">DBMS [CS2001]</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="javascript:window.scrollTo(0, document.body.scrollHeight);" title="Ask Questions &amp; Review" class="quarto-navigation-tool px-1" aria-label="Ask Questions &amp; Review"><i class="bi bi-chat-text"></i></a>
-    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Lecture Streams" class="quarto-navigation-tool px-1" aria-label="Lecture Streams"><i class="bi bi-play-circle"></i></a>
+    <a href="https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams" title="Live Streams" class="quarto-navigation-tool px-1" aria-label="Live Streams"><i class="bi bi-play-circle"></i></a>
     <a href="https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb" title="Discourse Community" class="quarto-navigation-tool px-1" aria-label="Discourse Community"><i class="bi bi-people"></i></a>
-    <a href="mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in" title="Contact Instructors" class="quarto-navigation-tool px-1" aria-label="Contact Instructors"><i class="bi bi-envelope"></i></a>
+    <a href="mailto:pravins@study.iitm.ac.in" title="Contact" class="quarto-navigation-tool px-1" aria-label="Contact"><i class="bi bi-envelope"></i></a>
     <a href="https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY" title="Live Session Slides" class="quarto-navigation-tool px-1" aria-label="Live Session Slides"><i class="bi bi-folder"></i></a>
     <a href="../../Database-Management-Systems.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
@@ -502,14 +499,7 @@ window.Quarto = {
    
   <ul class="collapse">
   <li><a href="#armstrongs-axioms" id="toc-armstrongs-axioms" class="nav-link active" data-scroll-target="#armstrongs-axioms">Armstrong’s Axioms</a></li>
-  <li><a href="#closure-of-attribute-sets-alpha" id="toc-closure-of-attribute-sets-alpha" class="nav-link" data-scroll-target="#closure-of-attribute-sets-alpha">Closure of Attribute Sets (<span class="math inline">\(\alpha^+\)</span>)</a></li>
-  <li><a href="#decomposition-using-functional-dependencies" id="toc-decomposition-using-functional-dependencies" class="nav-link" data-scroll-target="#decomposition-using-functional-dependencies">Decomposition Using Functional Dependencies</a></li>
-  <li><a href="#bcnf-boyce-codd-normal-form" id="toc-bcnf-boyce-codd-normal-form" class="nav-link" data-scroll-target="#bcnf-boyce-codd-normal-form">BCNF: Boyce-Codd Normal Form</a></li>
-  <li><a href="#dependency-preservation" id="toc-dependency-preservation" class="nav-link" data-scroll-target="#dependency-preservation">Dependency Preservation</a></li>
-  <li><a href="#nf-third-normal-form" id="toc-nf-third-normal-form" class="nav-link" data-scroll-target="#nf-third-normal-form">3NF: Third Normal Form</a></li>
-  <li><a href="#goals-of-normalization" id="toc-goals-of-normalization" class="nav-link" data-scroll-target="#goals-of-normalization">Goals of Normalization</a></li>
-  <li><a href="#problems-with-decomposition" id="toc-problems-with-decomposition" class="nav-link" data-scroll-target="#problems-with-decomposition">Problems With Decomposition</a></li>
-  <li><a href="#how-good-is-bcnf-really" id="toc-how-good-is-bcnf-really" class="nav-link" data-scroll-target="#how-good-is-bcnf-really">How Good Is BCNF, Really?</a></li>
+  <li><a href="#closure-of-attribute-sets" id="toc-closure-of-attribute-sets" class="nav-link" data-scroll-target="#closure-of-attribute-sets">Closure of Attribute Sets</a></li>
   </ul>
 <div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -519,7 +509,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/02.html"><span class="chapter-title">Armstrong Axioms</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Functional Dependency Theory</span></h1>
+<h1 class="title"><span class="chapter-title">Armstrong’s Axioms &amp; Closure of Attribute Sets</span></h1>
 </div>
 
 
@@ -536,11 +526,9 @@ window.Quarto = {
 </header>
 
 
-<p>We defined functional dependencies and briefly met the idea of a <strong>closure</strong> (<span class="math inline">\(F^+\)</span>) — the set of all FDs that logically follow from a given set <span class="math inline">\(F\)</span>. Now we formalize <em>how</em> to actually compute that closure, and use it to build a rigorous test for “good” design.</p>
-<hr>
 <section id="armstrongs-axioms" class="level2">
 <h2 class="anchored" data-anchor-id="armstrongs-axioms">Armstrong’s Axioms</h2>
-<p>Given a set of FDs <span class="math inline">\(F\)</span>, we can mechanically derive new, logically-implied FDs using three basic rules:</p>
+<p>Given a set of FDs <span class="math inline">\(F\)</span>, these three rules let us mechanically derive new FDs that logically follow from it:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -558,50 +546,33 @@ window.Quarto = {
 <tr class="odd">
 <td><strong>Reflexivity</strong></td>
 <td>if <span class="math inline">\(\beta \subseteq \alpha\)</span>, then <span class="math inline">\(\alpha \rightarrow \beta\)</span></td>
-<td>A set of attributes always determines its own subsets — this is the “free” trivial case</td>
+<td>A set of attributes always determines its own subsets</td>
 </tr>
 <tr class="even">
 <td><strong>Augmentation</strong></td>
 <td>if <span class="math inline">\(\alpha \rightarrow \beta\)</span>, then <span class="math inline">\(\gamma\alpha \rightarrow \gamma\beta\)</span></td>
-<td>Taking the same extra attributes onto both sides of a valid FD keeps it valid</td>
+<td>Adding the same extra attributes to both sides keeps an FD valid</td>
 </tr>
 <tr class="odd">
 <td><strong>Transitivity</strong></td>
 <td>if <span class="math inline">\(\alpha \rightarrow \beta\)</span> and <span class="math inline">\(\beta \rightarrow \gamma\)</span>, then <span class="math inline">\(\alpha \rightarrow \gamma\)</span></td>
-<td>If A determines B, and B determines C, then A determines C too</td>
+<td>If A determines B, and B determines C, then A determines C</td>
 </tr>
 </tbody>
 </table>
-<p>Apply these repeatedly to <span class="math inline">\(F\)</span>, and each newly generated FD is said to be <strong>logically implied</strong> by <span class="math inline">\(F\)</span>. The process always terminates after finitely many steps (there are only so many attribute combinations), producing the closure <span class="math inline">\(F^+\)</span> — the complete set of FDs implied by <span class="math inline">\(F\)</span>. Naturally, <span class="math inline">\(F \subseteq F^+\)</span>.</p>
+<p>Applying these repeatedly to <span class="math inline">\(F\)</span> gives every FD <strong>logically implied</strong> by <span class="math inline">\(F\)</span> — this full set is the closure <span class="math inline">\(F^+\)</span>, and <span class="math inline">\(F \subseteq F^+\)</span>.</p>
 <section id="worked-example" class="level3">
 <h3 class="anchored" data-anchor-id="worked-example">Worked Example</h3>
-<p>For <span class="math inline">\(R = (A, B, C, G, H, I)\)</span> with:</p>
-<p><span class="math display">\[F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}\]</span></p>
-<p>Some members of <span class="math inline">\(F^+\)</span> we can derive:</p>
-<ul>
-<li><span class="math inline">\(A \rightarrow H\)</span> — by transitivity from <span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(B \rightarrow H\)</span></li>
-<li><span class="math inline">\(AG \rightarrow I\)</span> — augment <span class="math inline">\(A \rightarrow C\)</span> with <span class="math inline">\(G\)</span> to get <span class="math inline">\(AG \rightarrow CG\)</span>, then transitivity with <span class="math inline">\(CG \rightarrow I\)</span></li>
-<li><span class="math inline">\(CG \rightarrow HI\)</span> — augment <span class="math inline">\(CG \rightarrow I\)</span> with <span class="math inline">\(CG\)</span> to get <span class="math inline">\(CG \rightarrow CGI\)</span>; augment <span class="math inline">\(CG \rightarrow H\)</span> with <span class="math inline">\(I\)</span> to get <span class="math inline">\(CGI \rightarrow HI\)</span>; combine via transitivity</li>
-</ul>
-</section>
-<section id="computing-f-algorithmically" class="level3">
-<h3 class="anchored" data-anchor-id="computing-f-algorithmically">Computing <span class="math inline">\(F^+\)</span> Algorithmically</h3>
-<pre><code>F+ ← F
-repeat
-    for each functional dependency f in F+
-        apply reflexivity and augmentation rules on f
-        add the resulting functional dependencies to F+
-    for each pair of functional dependencies f1 and f2 in F+
-        if f1 and f2 can be combined using transitivity
-            then add the resulting functional dependency to F+
-until F+ does not change any further</code></pre>
+<p>For <span class="math inline">\(R = (A, B, C, G, H, I)\)</span> with <span class="math inline">\(F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}\)</span>:</p>
+<p><span class="math display">\[A \rightarrow H \quad \text{(by transitivity, since } A \rightarrow B \text{ and } B \rightarrow H\text{)}\]</span></p>
+<p>This wasn’t stated directly in <span class="math inline">\(F\)</span>, but follows logically — and is therefore part of <span class="math inline">\(F^+\)</span>.</p>
 <blockquote class="blockquote">
-<p><strong>Note:</strong> This brute-force approach works, but it’s expensive. There’s a much cheaper alternative — <strong>attribute closure</strong>.</p>
+<p><strong>Note:</strong> Computing all of <span class="math inline">\(F^+\)</span> this way (repeatedly applying axioms until nothing new appears) works, but is expensive. <strong>Attribute closure</strong>, covered next, is the practical shortcut.</p>
 </blockquote>
 </section>
 <section id="derived-rules" class="level3">
 <h3 class="anchored" data-anchor-id="derived-rules">Derived Rules</h3>
-<p>These follow from the basic three axioms (so they’re not “new” axioms, just useful shortcuts):</p>
+<p>These follow from the three basic axioms — not new rules, just useful shortcuts:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -631,300 +602,188 @@ until F+ does not change any further</code></pre>
 <hr>
 </section>
 </section>
-<section id="closure-of-attribute-sets-alpha" class="level2">
-<h2 class="anchored" data-anchor-id="closure-of-attribute-sets-alpha">Closure of Attribute Sets (<span class="math inline">\(\alpha^+\)</span>)</h2>
-<p>Computing the <em>entire</em> <span class="math inline">\(F^+\)</span> is overkill when we only care about one question: “what does this particular set of attributes determine?” That’s where <strong>attribute closure</strong> comes in.</p>
-<p>Given a set of attributes <span class="math inline">\(\alpha\)</span>, its closure under <span class="math inline">\(F\)</span> — written <span class="math inline">\(\alpha^+\)</span> — is the set of <em>all</em> attributes functionally determined by <span class="math inline">\(\alpha\)</span>.</p>
-<section id="algorithm" class="level3">
-<h3 class="anchored" data-anchor-id="algorithm">Algorithm</h3>
-<pre><code>result ← α
-while (changes to result) do
-    for each β → γ in F do
-        if β ⊆ result then result ← result ∪ γ</code></pre>
-<p>Keep scanning the FDs and expanding <code>result</code> until nothing new gets added.</p>
+<section id="closure-of-attribute-sets" class="level2">
+<h2 class="anchored" data-anchor-id="closure-of-attribute-sets">Closure of Attribute Sets</h2>
+<p>Instead of computing the entire <span class="math inline">\(F^+\)</span>, we usually just want to know: what does <em>this</em> set of attributes determine? That’s the <strong>closure of an attribute set</strong>, written <span class="math inline">\(\alpha^+\)</span> — all attributes functionally determined by <span class="math inline">\(\alpha\)</span> under <span class="math inline">\(F\)</span>.</p>
+<section id="how-to-compute-it" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-compute-it">How to Compute It</h3>
+<ol type="1">
+<li>Start with <code>result = α</code>.</li>
+<li>Scan through every FD <span class="math inline">\(\beta \rightarrow \gamma\)</span> in <span class="math inline">\(F\)</span>.</li>
+<li>If <span class="math inline">\(\beta\)</span> is already contained in <code>result</code>, add <span class="math inline">\(\gamma\)</span> to <code>result</code>.</li>
+<li>Repeat steps 2–3 until no new attributes get added.</li>
+</ol>
 </section>
 <section id="worked-example-1" class="level3">
 <h3 class="anchored" data-anchor-id="worked-example-1">Worked Example</h3>
-<p>For <span class="math inline">\(R = (A, B, C, G, H, I)\)</span> with: <span class="math display">\[F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}\]</span> <span class="math inline">\((AG)^+\)</span>:</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    A1["AG"] --&gt;|"A → B, A → C"| A2["ABCG"]
-    A2 --&gt;|"CG → H"| A3["ABCGH"]
-    A3 --&gt;|"CG → I"| A4["ABCGHI"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<ol type="1">
-<li><code>result = AG</code></li>
-<li><code>result = ABCG</code> (applying <span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(A \rightarrow C\)</span>)</li>
-<li><code>result = ABCGH</code> (since <span class="math inline">\(CG \subseteq\)</span> current result, apply <span class="math inline">\(CG \rightarrow H\)</span>)</li>
-<li><code>result = ABCGHI</code> (since <span class="math inline">\(CG \subseteq\)</span> current result, apply <span class="math inline">\(CG \rightarrow I\)</span>)</li>
-</ol>
-<p>So <span class="math inline">\((AG)^+ = ABCGHI\)</span> — every attribute in <span class="math inline">\(R\)</span>. That tells us something important…</p>
+<p>For <span class="math inline">\(R = (A, B, C, G, H, I)\)</span> with <span class="math inline">\(F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}\)</span>, compute <span class="math inline">\((AG)^+\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>AG</code></td>
+<td>starting point</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>ABCG</code></td>
+<td><span class="math inline">\(A \rightarrow B\)</span> and <span class="math inline">\(A \rightarrow C\)</span> apply</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>ABCGH</code></td>
+<td><span class="math inline">\(CG \subseteq\)</span> result, so <span class="math inline">\(CG \rightarrow H\)</span> applies</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>ABCGHI</code></td>
+<td><span class="math inline">\(CG \rightarrow I\)</span> applies</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\((AG)^+ = ABCGHI\)</span> — every attribute in <span class="math inline">\(R\)</span>.</p>
 </section>
-<section id="is-ag-a-candidate-key" class="level3">
-<h3 class="anchored" data-anchor-id="is-ag-a-candidate-key">Is <span class="math inline">\(AG\)</span> a Candidate Key?</h3>
+<section id="superkeys-and-candidate-keys-via-closure" class="level3">
+<h3 class="anchored" data-anchor-id="superkeys-and-candidate-keys-via-closure">Superkeys and Candidate Keys, via Closure</h3>
 <ul>
-<li><strong>Is <span class="math inline">\(AG\)</span> a superkey?</strong> Check if <span class="math inline">\((AG)^+ \supseteq R\)</span>. Since <span class="math inline">\((AG)^+ = ABCGHI = R\)</span>, yes!</li>
-<li><strong>Is any subset of <span class="math inline">\(AG\)</span> also a superkey?</strong> Check <span class="math inline">\((A)^+\)</span> and <span class="math inline">\((G)^+\)</span> individually. If neither alone reaches all of <span class="math inline">\(R\)</span>, then <span class="math inline">\(AG\)</span> is <em>minimal</em> — making it a <strong>candidate key</strong>.</li>
+<li><span class="math inline">\(K\)</span> is a <strong>superkey</strong> of <span class="math inline">\(R\)</span> if <span class="math inline">\(K^+ \supseteq R\)</span> (contains every attribute)</li>
+<li><span class="math inline">\(K\)</span> is a <strong>candidate key</strong> of <span class="math inline">\(R\)</span> if <span class="math inline">\(K^+ \supseteq R\)</span> <strong>and</strong> no proper subset of <span class="math inline">\(K\)</span> also satisfies this (minimal)</li>
 </ul>
+<p><strong>Applying this to <span class="math inline">\(AG\)</span>:</strong> <span class="math inline">\((AG)^+ = R\)</span>, so <span class="math inline">\(AG\)</span> is a superkey. Checking subsets — <span class="math inline">\((A)^+ = ABC\)</span> and <span class="math inline">\((G)^+ = G\)</span> — neither reaches all of <span class="math inline">\(R\)</span>. So <span class="math inline">\(AG\)</span> is minimal, making it a <strong>candidate key</strong>.</p>
 </section>
-<section id="what-attribute-closure-is-good-for" class="level3">
-<h3 class="anchored" data-anchor-id="what-attribute-closure-is-good-for">What Attribute Closure Is Good For</h3>
+<section id="prime-and-non-prime-attributes" class="level3">
+<h3 class="anchored" data-anchor-id="prime-and-non-prime-attributes">Prime and Non-Prime Attributes</h3>
+<ul>
+<li><strong>Prime attribute</strong>: belongs to <em>some</em> candidate key</li>
+<li><strong>Non-prime attribute</strong>: belongs to <em>no</em> candidate key</li>
+</ul>
+<p>Here’s a data instance for <span class="math inline">\(R = (A,B,C,G,H,I)\)</span> consistent with <span class="math inline">\(F= \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}\)</span>, compute <span class="math inline">\((AG)^+\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>G</th>
+<th>H</th>
+<th>I</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>a1</td>
+<td>b1</td>
+<td>c1</td>
+<td>g1</td>
+<td>h1</td>
+<td>i1</td>
+</tr>
+<tr class="even">
+<td>a1</td>
+<td>b1</td>
+<td>c1</td>
+<td>g2</td>
+<td>h1</td>
+<td>i2</td>
+</tr>
+<tr class="odd">
+<td>a2</td>
+<td>b2</td>
+<td>c2</td>
+<td>g1</td>
+<td>h2</td>
+<td>i3</td>
+</tr>
+<tr class="even">
+<td>a2</td>
+<td>b2</td>
+<td>c2</td>
+<td>g2</td>
+<td>h2</td>
+<td>i4</td>
+</tr>
+</tbody>
+</table>
+<p>Only the pair <span class="math inline">\((A, G)\)</span> is unique across every row — no other single column or combination pins down a row on its own (<code>A</code> alone repeats across rows 1–2 and 3–4; <code>G</code> alone repeats across rows 1&amp;3, 2&amp;4). That matches what we found algebraically: <span class="math inline">\(AG\)</span> is the candidate key.</p>
+<p>So: <code>A</code> and <code>G</code> are <strong>prime</strong> attributes; <code>B</code>, <code>C</code>, <code>H</code>, <code>I</code> are <strong>non-prime</strong> — each of them is simply <em>determined by</em> the key, not part of it.</p>
+</section>
+<section id="formula-maximum-number-of-superkeys" class="level3">
+<h3 class="anchored" data-anchor-id="formula-maximum-number-of-superkeys">Formula: Maximum Number of Superkeys</h3>
+<p>Given a relation with <span class="math inline">\(N\)</span> total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.</p>
+</section>
+<section id="case-1-only-1-candidate-key-single-attribute" class="level3">
+<h3 class="anchored" data-anchor-id="case-1-only-1-candidate-key-single-attribute">Case 1: Only 1 Candidate Key (Single Attribute)</h3>
+<p>If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = <span class="math inline">\(\{A_1\}\)</span>): <span class="math display">\[\text{Total Superkeys} = 2^{N-1}\]</span></p>
+</section>
+<section id="case-2-only-1-candidate-key-composite-key" class="level3">
+<h3 class="anchored" data-anchor-id="case-2-only-1-candidate-key-composite-key">Case 2: Only 1 Candidate Key (Composite Key)</h3>
+<p>If the relation has only one candidate key, and that key is a composite key formed by <span class="math inline">\(k\)</span> attributes: <span class="math display">\[\text{Total Superkeys} = 2^{N-k}\]</span></p>
+</section>
+<section id="case-3-every-single-attribute-is-a-candidate-key" class="level3">
+<h3 class="anchored" data-anchor-id="case-3-every-single-attribute-is-a-candidate-key">Case 3: Every Single Attribute is a Candidate Key</h3>
+<p>If the relation has <span class="math inline">\(N\)</span> candidate keys (meaning every single attribute in the relation is its own independent candidate key): <span class="math display">\[\text{Total Superkeys} = 2^N - 1\]</span></p>
+</section>
+<section id="case-4-two-distinct-candidate-keys" class="level3">
+<h3 class="anchored" data-anchor-id="case-4-two-distinct-candidate-keys">Case 4: Two Distinct Candidate Keys</h3>
+<p>When a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the <strong>Principle of Inclusion-Exclusion</strong> to avoid double-counting the superkeys that contain both keys.</p>
+</section>
+<section id="generic-set-formula" class="level3">
+<h3 class="anchored" data-anchor-id="generic-set-formula">Generic Set Formula</h3>
+<p><span class="math display">\[\text{Max Superkeys} = (\text{Superkeys with } A_1) + (\text{Superkeys with } A_2) - (\text{Superkeys with both } A_1 \text{ and } A_2)\]</span></p>
+</section>
+<section id="mathematical-representation" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-representation">Mathematical Representation</h3>
+<p>Let <span class="math inline">\(m\)</span> be the number of attributes forming the first candidate key, and <span class="math inline">\(n\)</span> be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:</p>
+<p><span class="math display">\[\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\]</span></p>
+<blockquote class="blockquote">
+<p>📌 <strong>Note:</strong> If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from <span class="math inline">\((m+n)\)</span> to the number of attributes in their absolute union: <span class="math inline">\(|\text{Key}_1 \cup \text{Key}_2|\)</span>.</p>
+</blockquote>
+<p><strong>Example:</strong> <span class="math inline">\(R = (A,B,C,G,H,I)\)</span> has <span class="math inline">\(n = 6\)</span> attributes; candidate key <span class="math inline">\(AG\)</span> has <span class="math inline">\(k = 2\)</span>. Number of superkeys: <span class="math inline">\(2^{(6-2)} = 2^4 = 16\)</span>.</p>
+</section>
+<section id="why-attribute-closure-matters" class="level3">
+<h3 class="anchored" data-anchor-id="why-attribute-closure-matters">Why Attribute Closure Matters</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Use Case</th>
 <th>How</th>
+<th>In Plain English</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Testing for superkey</strong></td>
-<td>Compute <span class="math inline">\(\alpha^+\)</span>; if it contains <em>all</em> attributes of <span class="math inline">\(R\)</span>, <span class="math inline">\(\alpha\)</span> is a superkey</td>
+<td>Test if <span class="math inline">\(\alpha\)</span> is a superkey</td>
+<td>Check <span class="math inline">\(\alpha^+ \supseteq R\)</span></td>
+<td>Compute what <span class="math inline">\(\alpha\)</span> determines — if it covers every column in the table, <span class="math inline">\(\alpha\)</span> is enough to identify a row</td>
 </tr>
 <tr class="even">
-<td><strong>Testing if a specific FD holds</strong></td>
-<td>To check if <span class="math inline">\(\alpha \rightarrow \beta \in F^+\)</span>, just compute <span class="math inline">\(\alpha^+\)</span> and check if <span class="math inline">\(\beta \subseteq \alpha^+\)</span></td>
+<td>Test if <span class="math inline">\(\alpha \rightarrow \beta\)</span> holds</td>
+<td>Check <span class="math inline">\(\beta \subseteq \alpha^+\)</span></td>
+<td>Compute what <span class="math inline">\(\alpha\)</span> determines, then see if <span class="math inline">\(\beta\)</span> shows up in that list</td>
 </tr>
 <tr class="odd">
-<td><strong>Computing all of <span class="math inline">\(F^+\)</span></strong></td>
-<td>For every possible subset <span class="math inline">\(\gamma \subseteq R\)</span>, compute <span class="math inline">\(\gamma^+\)</span>, then output <span class="math inline">\(\gamma \rightarrow S\)</span> for every <span class="math inline">\(S \subseteq \gamma^+\)</span></td>
+<td>Compute all of <span class="math inline">\(F^+\)</span></td>
+<td>For every <span class="math inline">\(\gamma \subseteq R\)</span>, output <span class="math inline">\(\gamma \rightarrow S\)</span> for each <span class="math inline">\(S \subseteq \gamma^+\)</span></td>
+<td>Try every possible set of columns, work out what each one determines, and write down all those dependencies</td>
 </tr>
 </tbody>
 </table>
-<hr>
-</section>
-</section>
-<section id="decomposition-using-functional-dependencies" class="level2">
-<h2 class="anchored" data-anchor-id="decomposition-using-functional-dependencies">Decomposition Using Functional Dependencies</h2>
-<p>Now we use this machinery to formally define what makes a decomposition “good enough” — leading to two increasingly strict normal forms: <strong>BCNF</strong> and <strong>3NF</strong>.</p>
-<hr>
-</section>
-<section id="bcnf-boyce-codd-normal-form" class="level2">
-<h2 class="anchored" data-anchor-id="bcnf-boyce-codd-normal-form">BCNF: Boyce-Codd Normal Form</h2>
-<p>A relation schema <span class="math inline">\(R\)</span> is in <strong>BCNF</strong> with respect to a set of FDs <span class="math inline">\(F\)</span> if, for FD <span class="math inline">\(\alpha \rightarrow \beta\)</span> in <span class="math inline">\(F^+\)</span> (where <span class="math inline">\(\alpha, \beta \subseteq R\)</span>), <strong>at least one</strong> of these holds:</p>
-<ul>
-<li><span class="math inline">\(\alpha \rightarrow \beta\)</span> is trivial (i.e., <span class="math inline">\(\beta \subseteq \alpha\)</span>), <strong>or</strong></li>
-<li><span class="math inline">\(\alpha\)</span> is a superkey for <span class="math inline">\(R\)</span></li>
-</ul>
-<p>In other words: the <em>only</em> things allowed to determine other attributes are superkeys (or trivial cases). If some non-key attribute determines other attributes, BCNF is violated.</p>
-<p><strong>Example violation:</strong> <code>instr_dept(ID, name, salary, dept_name, building, budget)</code> — the FD <span class="math inline">\(dept\_name \rightarrow building, budget\)</span> is non-trivial, but <code>dept_name</code> is <strong>not</strong> a superkey. So this schema is <em>not</em> in BCNF.</p>
-<section id="bcnf-decomposition-rule" class="level3">
-<h3 class="anchored" data-anchor-id="bcnf-decomposition-rule">BCNF Decomposition Rule</h3>
-<p>If a non-trivial FD <span class="math inline">\(\alpha \rightarrow \beta\)</span> violates BCNF on <span class="math inline">\(R\)</span>, decompose <span class="math inline">\(R\)</span> into:</p>
-<ul>
-<li><span class="math inline">\(\alpha \cup \beta\)</span></li>
-<li><span class="math inline">\(R - (\beta - \alpha)\)</span></li>
-</ul>
-<p><strong>Applying it to our example:</strong> with <span class="math inline">\(\alpha = dept\_name\)</span> and <span class="math inline">\(\beta = (building, budget)\)</span>:</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
-    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
-
-    R["instr_dept&lt;br/&gt;(ID, name, salary, dept_name, building, budget)&lt;br/&gt;&lt;i&gt;violates BCNF: dept_name → building, budget&lt;/i&gt;"]:::bad
-    R1["(dept_name, building, budget)&lt;br/&gt;dept_name → building, budget"]:::good
-    R2["(ID, name, salary, dept_name)&lt;br/&gt;ID → name, salary, dept_name"]:::good
-
-    R --&gt;|"α ∪ β"| R1
-    R --&gt;|"R − (β − α)"| R2
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p>Both resulting relations are now in BCNF.</p>
-</section>
-<section id="checking-lossless-join-via-fds" class="level3">
-<h3 class="anchored" data-anchor-id="checking-lossless-join-via-fds">Checking Lossless Join (via FDs)</h3>
-<p>When we split <span class="math inline">\(R\)</span> into <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span>:</p>
-<ul>
-<li><strong>Lossy</strong> if <span class="math inline">\(R_1 \bowtie R_2 \supset R\)</span> (join produces extra, spurious rows)</li>
-<li><strong>Lossless</strong> if <span class="math inline">\(R_1 \bowtie R_2 = R\)</span> (join exactly reconstructs the original)</li>
-</ul>
-<p>To confirm a decomposition is lossless using FDs, <strong>all three</strong> must hold:</p>
-<p><span class="math display">\[R_1 \cup R_2 = R\]</span> <span class="math display">\[R_1 \cap R_2 \neq \phi\]</span> <span class="math display">\[R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2\]</span></p>
-<p>That last condition is key: the shared (common) attribute must be enough to act as a key for at least <em>one</em> of the two pieces. BCNF decomposition, done via the rule above, is guaranteed to satisfy this — so <strong>BCNF always gives you a lossless join</strong>.</p>
-<hr>
-</section>
-</section>
-<section id="dependency-preservation" class="level2">
-<h2 class="anchored" data-anchor-id="dependency-preservation">Dependency Preservation</h2>
-<p>Checking constraints across multiple tables (i.e., needing a join just to verify an FD still holds) is expensive. A decomposition is <strong>dependency preserving</strong> if every FD in <span class="math inline">\(F\)</span> can be checked by looking at just <em>one</em> relation in the decomposition — no joins required for validation.</p>
-<section id="when-bcnf-and-dependency-preservation-clash" class="level3">
-<h3 class="anchored" data-anchor-id="when-bcnf-and-dependency-preservation-clash">When BCNF and Dependency Preservation Clash</h3>
-<p>It’s not always possible to get both. Consider <span class="math inline">\(R = CSZ\)</span> with <span class="math inline">\(F = \{CS \rightarrow Z,\ Z \rightarrow C\}\)</span>, where the key is <span class="math inline">\(CS\)</span>.</p>
-<ul>
-<li><span class="math inline">\(CS \rightarrow Z\)</span> is fine (satisfies BCNF, since <span class="math inline">\(CS\)</span> is a superkey)</li>
-<li><span class="math inline">\(Z \rightarrow C\)</span> violates BCNF (<span class="math inline">\(Z\)</span> is not a superkey)</li>
-</ul>
-<p>Decomposing via the BCNF rule gives <span class="math inline">\(R_1 = ZC\)</span> and <span class="math inline">\(R_2 = SZ\)</span>.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Check</th>
-<th>Result</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(R_1 \cup R_2 = CSZ = R\)</span></td>
-<td>✅</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(R_1 \cap R_2 = Z \neq \phi\)</span></td>
-<td>✅</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(R_1 \cap R_2 = Z \rightarrow ZC = R_1\)</span></td>
-<td>✅ Lossless join!</td>
-</tr>
-<tr class="even">
-<td>Can we verify <span class="math inline">\(CS \rightarrow Z\)</span> without a join?</td>
-<td>❌ No — <span class="math inline">\(C\)</span> and <span class="math inline">\(S\)</span> now live in <em>different</em> tables</td>
-</tr>
-</tbody>
-</table>
-<p>So this BCNF decomposition is lossless, but <strong>not</strong> dependency preserving. This motivates a slightly relaxed normal form.</p>
-<hr>
-</section>
-</section>
-<section id="nf-third-normal-form" class="level2">
-<h2 class="anchored" data-anchor-id="nf-third-normal-form">3NF: Third Normal Form</h2>
-<p>A relation schema <span class="math inline">\(R\)</span> is in <strong>3NF</strong> if for every FD <span class="math inline">\(\alpha \rightarrow \beta \in F^+\)</span>, <strong>at least one</strong> of these holds:</p>
-<ul>
-<li><span class="math inline">\(\alpha \rightarrow \beta\)</span> is trivial (<span class="math inline">\(\beta \subseteq \alpha\)</span>), <strong>or</strong></li>
-<li><span class="math inline">\(\alpha\)</span> is a superkey for <span class="math inline">\(R\)</span>, <strong>or</strong></li>
-<li>Every attribute <span class="math inline">\(A\)</span> in <span class="math inline">\(\beta - \alpha\)</span> is part of <em>some</em> candidate key of <span class="math inline">\(R\)</span> (each attribute can belong to a different candidate key)</li>
-</ul>
-<p>That third condition is the relaxation: BCNF only allows the first two. 3NF adds a third escape hatch specifically to preserve dependencies. Since BCNF already satisfies one of the first two conditions, <strong>every relation in BCNF is automatically in 3NF</strong> — but not vice versa.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    A["All Relations"] --&gt; B["1NF"]
-    B --&gt; C["3NF"]
-    C --&gt; D["BCNF"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<hr>
-</section>
-<section id="goals-of-normalization" class="level2">
-<h2 class="anchored" data-anchor-id="goals-of-normalization">Goals of Normalization</h2>
-<p>Given a relation schema <span class="math inline">\(R\)</span> with FD set <span class="math inline">\(F\)</span>, normalization aims to:</p>
-<ol type="1">
-<li>Decide whether <span class="math inline">\(R\)</span> is already in “good” form</li>
-<li>If not, decompose it into <span class="math inline">\(\{R_1, R_2, \ldots, R_n\}\)</span> such that:
-<ul>
-<li>Each piece is in good form</li>
-<li>The decomposition is <strong>lossless-join</strong></li>
-<li>Preferably, the decomposition is also <strong>dependency preserving</strong></li>
-</ul></li>
-</ol>
-</section>
-<section id="problems-with-decomposition" class="level2">
-<h2 class="anchored" data-anchor-id="problems-with-decomposition">Problems With Decomposition</h2>
-<p>Decomposing isn’t free — it trades off against three potential costs:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Problem</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Lossiness</strong></td>
-<td>The original relation may become impossible to reconstruct</td>
-</tr>
-<tr class="even">
-<td><strong>Dependency checking cost</strong></td>
-<td>Verifying an FD may now require a join across tables</td>
-</tr>
-<tr class="odd">
-<td><strong>Query cost</strong></td>
-<td>Some queries get more expensive — e.g., “what’s the building for this instructor?” now needs a join instead of a single lookup</td>
-</tr>
-</tbody>
-</table>
-<blockquote class="blockquote">
-<p><strong>Note:</strong> There’s always a tradeoff to weigh: redundancy and anomalies vs.&nbsp;the costs above. Normalization theory gives you the tools to decide — it doesn’t mean you should <em>always</em> decompose all the way to BCNF in practice.</p>
-</blockquote>
-<hr>
-</section>
-<section id="how-good-is-bcnf-really" class="level2">
-<h2 class="anchored" data-anchor-id="how-good-is-bcnf-really">How Good Is BCNF, Really?</h2>
-<p>BCNF isn’t the end of the story. Consider <code>inst_info(ID, child_name, phone)</code>, where an instructor can have multiple children <em>and</em> multiple phone numbers.</p>
-<p>Since a given <code>ID</code> might have several <code>child_name</code> values and several <code>phone</code> values, storing all combinations means every child gets paired with every phone number.</p>
-<p>There are <strong>no non-trivial functional dependencies</strong> in this table at all — so technically, it’s already in BCNF! And yet it has a glaring <strong>insertion anomaly</strong>: adding a new phone number for instructor <code>99999</code> (who has two children, David and William) requires inserting <em>two</em> new tuples — one for each child:</p>
-<pre><code>(99999, David, 981-992-3443)
-(99999, William, 981-992-3443)</code></pre>
-<p>That’s clearly redundant, and BCNF didn’t catch it — because the problem here isn’t a functional dependency, it’s a different kind of constraint (a <strong>multivalued dependency</strong>, between <code>child_name</code> and <code>phone</code>, both independent of each other under the same <code>ID</code>).</p>
-<p><strong>Fix:</strong> decompose into <code>inst_child(ID, child_name)</code> and <code>inst_phone(ID, phone)</code>.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
-    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
-
-    A["inst_info&lt;br/&gt;(ID, child_name, phone)&lt;br/&gt;&lt;i&gt;BCNF, but still redundant!&lt;/i&gt;"]:::bad
-    B["inst_child&lt;br/&gt;(ID, child_name)"]:::good
-    C["inst_phone&lt;br/&gt;(ID, phone)"]:::good
-
-    A --&gt; B
-    A --&gt; C
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
-<p>This gap is exactly what motivates going even further, to the <strong>Fourth Normal Form (4NF)</strong> — which we’ll cover next.</p>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1407,7 +1266,7 @@ graph LR
     script.dataset.repoId = "R_kgDOSjpYJw";
     script.dataset.category = "General";
     script.dataset.categoryId = "DIC_kwDOSjpYJ84DA9Ou";
-    script.dataset.mapping = "pathname";
+    script.dataset.mapping = "url";
     script.dataset.reactionsEnabled = "1";
     script.dataset.emitMetadata = "0";
     script.dataset.inputPosition = "top";
