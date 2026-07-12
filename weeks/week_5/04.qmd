@@ -8,133 +8,111 @@ format:
 
 ## Lossless Join Decomposition
 
-For $R$ decomposed into $R_1, R_2$, we require that for every legal relation $r$ on $R$:
+> 💡 **In plain English:** if you split a table in two, you should be able to join the pieces back together and get *exactly* the original table back — not extra, made-up rows, and not missing ones.
+
+For $R$ decomposed into $R_1, R_2$, this must hold for every legal instance:
 
 $$r = \pi_{R_1}(r) \bowtie \pi_{R_2}(r)$$
 
-**Sufficient condition:** the decomposition is lossless if at least one of these is in $F^+$:
+**Sufficient condition:** the decomposition is lossless if at least one of these is true:
 
 $$R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2$$
 
-> ⚠️ This is sufficient, but only *necessary* when all constraints are FDs (other constraint types can change the picture).
+In other words: the attribute(s) shared between the two pieces must be enough, on their own, to act as a key for at least one of the two pieces.
 
-**Full check:**
+> ⚠️ This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn't guaranteed to be necessary.
 
-- $R_1 \cup R_2 = R$
-- $R_1 \cap R_2 \neq \phi$
-- $R_1 \cap R_2 \rightarrow R_1$ or $R_1 \cap R_2 \rightarrow R_2$
+**Full checklist for a lossless decomposition:**
 
-### Example: Supplier-Parts (Lossy)
+- $R_1 \cup R_2 = R$ — nothing gets left out
+- $R_1 \cap R_2 \neq \phi$ — the two pieces actually share something in common
+- $R_1 \cap R_2 \rightarrow R_1$ or $R_1 \cap R_2 \rightarrow R_2$ — that shared part is a key on at least one side
+
+### Worked Example: Supplier-Parts
 
 `Supplier_Parts(S#, Sname, City, P#, Qty)`, with `S# → Sname, City` and `(S#, P#) → Qty`.
 
-**Bad decomposition:** `Supplier(S#, Sname, City, Qty)`, `Parts(P#, Qty)`
+Here's a sample instance:
 
-Common attribute is `Qty` — not a superkey of either side. Joining back produces **extra tuples**: lossy. It also fails to preserve `(S#, P#) → Qty`.
+| S# | Sname | City | P# | Qty |
+|---|---|---|---|---|
+| S1 | Smith | London | P1 | 300 |
+| S1 | Smith | London | P2 | 200 |
+| S2 | Jones | Paris | P1 | 400 |
+| S2 | Jones | Paris | P2 | 300 |
 
-### Example: Supplier-Parts (Lossless)
+**A bad split:** `Supplier(S#, Sname, City, Qty)` and `Parts(P#, Qty)`
 
-**Good decomposition:** `Supplier(S#, Sname, City)`, `Parts(S#, P#, Qty)`
+The shared attribute here is `Qty` — and `Qty` isn't a key of either piece. Projecting our sample data onto these two tables and joining them back on `Qty` gives:
 
-Common attribute is `S#`, a superkey of `Supplier`. Joining back reconstructs the original exactly: lossless, and all dependencies preserved.
+| S# | Sname | City | P# | Qty | |
+|---|---|---|---|---|---|
+| S1 | Smith | London | P1 | 300 | ✅ original |
+| S1 | Smith | London | P2 | 300 | ❌ spurious |
+| S2 | Jones | Paris | P1 | 300 | ❌ spurious |
+| S2 | Jones | Paris | P2 | 300 | ✅ original |
+| S1 | Smith | London | P2 | 200 | ✅ original |
+| S2 | Jones | Paris | P1 | 400 | ✅ original |
 
-### Example: Two Decompositions, Different Outcomes
+Both suppliers happened to have a `Qty = 300` row, so the join matches *every* `Qty = 300` row in `Supplier` with *every* `Qty = 300` row in `Parts` — creating two fabricated combinations that never existed in the original data. This decomposition is lossy, and it also fails to preserve `(S#, P#) → Qty`.
 
-$R = (A,B,C)$, $F = \{A \rightarrow B,\ B \rightarrow C\}$
+**A good split:** `Supplier(S#, Sname, City)` and `Parts(S#, P#, Qty)`
 
-| Decomposition | Lossless? | Dependency Preserving? |
-|---|---|---|
-| $R_1=(A,B),\ R_2=(B,C)$ | Yes — $R_1 \cap R_2 = \{B\}$, $B \rightarrow BC$ | Yes |
-| $R_1=(A,B),\ R_2=(A,C)$ | Yes — $R_1 \cap R_2 = \{A\}$, $A \rightarrow AB$ | **No** — $B \rightarrow C$ can't be checked without joining |
+The shared attribute is `S#`, which *is* a key of `Supplier`. Joining these two projections back together on `S#` reconstructs exactly the original four rows — no more, no less. Lossless, and every dependency is preserved too.
 
-Same relation, same FDs — the *choice* of split determines whether both properties hold.
+> 📌 The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
 
 ---
 
 ## Dependency Preservation
 
-Let $F_i$ be the set of dependencies of $F^+$ to only the attributes in $R_i$. A decomposition into $R_1, ..., R_n$ is **dependency preserving** if:
+> 💡 **In plain English:** after splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition "preserves dependencies."
+
+Let $F_i$ be the set of FDs from $F^+$ that only involve attributes inside $R_i$. A decomposition into $R_1, ..., R_n$ **preserves dependencies** if:
 
 $$(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+$$
 
-If not, checking updates for FD violations requires an expensive join.
+If this fails, catching a violation of some original FD needs an expensive join across tables.
 
-### Worked Example (Cyclic FDs)
+### A Quick Contrast
+
+$R = (A,B,C)$, $F = \{A \rightarrow B,\ B \rightarrow C\}$
+
+| Decomposition | Dependency Preserving? |
+|---|---|
+| $R_1=(A,B),\ R_2=(B,C)$ | Yes — both `A→B` and `B→C` sit fully inside one piece each |
+| $R_1=(A,B),\ R_2=(A,C)$ | No — `B→C` can't be checked without joining, since `B` and `C` now live in different tables |
+
+Same relation, same FDs — the *choice* of split decides the outcome.
+
+### How to Test It
+
+1. Start with `result` set to just the left-hand-side attributes ($\alpha$) of the FD you're checking.
+2. Go through each piece $R_i$ of the decomposition. Take the attributes `result` shares with $R_i$, compute their closure under the *full* $F$, then keep only the attributes that also belong to $R_i$. Add anything new to `result`.
+3. Repeat step 2, cycling through every $R_i$, until `result` stops growing.
+4. If the right-hand-side attributes ($\beta$) are now inside `result`, the FD is preserved without needing a join.
+
+Run this check on every FD in $F$ to confirm the whole decomposition preserves dependencies.
+
+### Worked Example
 
 $R(A,B,C,D)$, $F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}$
 
 Decomposition: $R_1(A,B),\ R_2(B,C),\ R_3(C,D)$
 
-`A→B`, `B→C`, `C→D` are trivially preserved (each lives entirely inside one $R_i$). The only one to check is `D→A`:
+`A→B`, `B→C`, `C→D` each sit fully inside one piece, so they're automatically preserved. The one worth checking is `D→A`:
 
-$$D \rightarrow C \ (R_3) \Rightarrow C \rightarrow B\ (R_2) \Rightarrow B \rightarrow A\ (R_1) \Rightarrow D \rightarrow A \text{ by transitivity}$$
+| Round | Piece Checked | Closure Computed | Result So Far |
+|---|---|---|---|
+| Start | — | — | `{D}` |
+| 1 | $R_1=(A,B)$ | `result ∩ R1 = {}` → nothing to add | `{D}` |
+| 1 | $R_2=(B,C)$ | `result ∩ R2 = {}` → nothing to add | `{D}` |
+| 1 | $R_3=(C,D)$ | `(D)+ = ABCD`, keep only `C,D` | `{C,D}` |
+| 2 | $R_2=(B,C)$ | `(C)+ = ABCD`, keep only `B,C` | `{B,C,D}` |
+| 2 | $R_1=(A,B)$ | `(B)+ = ABCD`, keep only `A,B` | `{A,B,C,D}` |
 
-All dependencies preserved.
+`result` now contains `A` — so `D → A` is preserved. Every FD in $F$ checks out, so this decomposition is dependency preserving.
 
-### Testing (Polynomial Method — Preferred)
 
-```
-result ← α
-while (result changes) do
-    for each Ri in the decomposition:
-        t = (result ∩ Ri)+ ∩ Ri      -- closure computed w.r.t. F, restricted to Ri
-        result ← result ∪ t
--- α → β is preserved iff β ⊆ result
-```
-
-Apply this test to every FD in $F$ to confirm the whole decomposition preserves dependencies.
-
-### Worked Example (Polynomial Method)
-
-$R(A,B,C,D,E,F)$, $F = \{A \rightarrow BCD,\ A \rightarrow EF,\ BC \rightarrow AD,\ BC \rightarrow E,\ BC \rightarrow F,\ B \rightarrow F,\ D \rightarrow E\}$
-
-Decomposition: $R_1(A,B,C,D),\ R_2(B,F),\ R_3(D,E)$
-
-`A→BCD`, `BC→AD` (both fully inside $R_1$), `B→F` (inside $R_2$), `D→E` (inside $R_3$) are automatically preserved. Remaining to check: `A→E`, `A→F`, `BC→E`, `BC→F`.
-
-**Checking `A → EF`:**
-
-| Round | Apply | Result grows to |
-|---|---|---|
-| Start | — | `{A}` |
-| $R_1$ | $(A)^+ \cap R_1$ | `{A,B,C,D}` |
-| $R_2$ | $(ABCD)^+ \cap R_2$ | `{...,F}` (via `B→F`) |
-| $R_3$ | $(ABCDF)^+ \cap R_3$ | `{...,E}` (via `D→E`) |
-
-Result contains `E,F` ⇒ `A→EF` preserved.
-
-**Checking `BC → E, F`:** same process starting from `{B,C}` — reaches `A,D` via $R_1$ (`BC→AD`), then `F` via $R_2$ (`B→F`), then `E` via $R_3$ (`D→E`). Both preserved.
-
-All dependencies preserved — this decomposition is dependency preserving.
-
-## Superkey Calculation Formulas
-
-Given a relation with $N$ total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys. 
-
-### Case 1: Only 1 Candidate Key (Single Attribute)
-If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = $\{A_1\}$):
-$$\text{Total Superkeys} = 2^{N-1}$$
-
-### Case 2: Only 1 Candidate Key (Composite Key)
-If the relation has only one candidate key, and that key is a composite key formed by $k$ attributes:
-$$\text{Total Superkeys} = 2^{N-k}$$
-
-### Case 3: Every Single Attribute is a Candidate Key
-If the relation has $N$ candidate keys (meaning every single attribute in the relation is its own independent candidate key):
-$$\text{Total Superkeys} = 2^N - 1$$
-
-### Case 4: Two Distinct Candidate Keys
-
-When a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the **Principle of Inclusion-Exclusion** to avoid double-counting the superkeys that contain both keys.
-
-### Generic Set Formula
-$$\text{Max Superkeys} = (\text{Superkeys with } A_1) + (\text{Superkeys with } A_2) - (\text{Superkeys with both } A_1 \text{ and } A_2)$$
-
-### Mathematical Representation
-Let $m$ be the number of attributes forming the first candidate key, and $n$ be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:
-
-$$\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}$$
-
-> 📌 **Note:** If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from $(m+n)$ to the number of attributes in their absolute union: $|\text{Key}_1 \cup \text{Key}_2|$.
 
 

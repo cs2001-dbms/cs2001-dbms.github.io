@@ -1,59 +1,36 @@
 ---
-title: "Functional Dependency Theory"
+title: "Armstrong's Axioms & Closure of Attribute Sets"
 number-depth: 2
 format: 
     html:
         code-fold: false
 ---
 
-We defined functional dependencies and briefly met the idea of a **closure** ($F^+$) — the set of all FDs that logically follow from a given set $F$. Now we formalize *how* to actually compute that closure, and use it to build a rigorous test for "good" design.
-
----
-
 ## Armstrong's Axioms
 
-Given a set of FDs $F$, we can mechanically derive new, logically-implied FDs using three basic rules:
+Given a set of FDs $F$, these three rules let us mechanically derive new FDs that logically follow from it:
 
 | Axiom | Rule | Intuition |
 |---|---|---|
-| **Reflexivity** | if $\beta \subseteq \alpha$, then $\alpha \rightarrow \beta$ | A set of attributes always determines its own subsets — this is the "free" trivial case |
-| **Augmentation** | if $\alpha \rightarrow \beta$, then $\gamma\alpha \rightarrow \gamma\beta$ | Taking the same extra attributes onto both sides of a valid FD keeps it valid |
-| **Transitivity** | if $\alpha \rightarrow \beta$ and $\beta \rightarrow \gamma$, then $\alpha \rightarrow \gamma$ | If A determines B, and B determines C, then A determines C too |
+| **Reflexivity** | if $\beta \subseteq \alpha$, then $\alpha \rightarrow \beta$ | A set of attributes always determines its own subsets |
+| **Augmentation** | if $\alpha \rightarrow \beta$, then $\gamma\alpha \rightarrow \gamma\beta$ | Adding the same extra attributes to both sides keeps an FD valid |
+| **Transitivity** | if $\alpha \rightarrow \beta$ and $\beta \rightarrow \gamma$, then $\alpha \rightarrow \gamma$ | If A determines B, and B determines C, then A determines C |
 
-Apply these repeatedly to $F$, and each newly generated FD is said to be **logically implied** by $F$. The process always terminates after finitely many steps (there are only so many attribute combinations), producing the closure $F^+$ — the complete set of FDs implied by $F$. Naturally, $F \subseteq F^+$.
-
+Applying these repeatedly to $F$ gives every FD **logically implied** by $F$ — this full set is the closure $F^+$, and $F \subseteq F^+$.
 
 ### Worked Example
 
-For $R = (A, B, C, G, H, I)$ with:
+For $R = (A, B, C, G, H, I)$ with $F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}$:
 
-$$F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}$$
+$$A \rightarrow H \quad \text{(by transitivity, since } A \rightarrow B \text{ and } B \rightarrow H\text{)}$$
 
-Some members of $F^+$ we can derive:
+This wasn't stated directly in $F$, but follows logically — and is therefore part of $F^+$.
 
-- $A \rightarrow H$ — by transitivity from $A \rightarrow B$ and $B \rightarrow H$
-- $AG \rightarrow I$ — augment $A \rightarrow C$ with $G$ to get $AG \rightarrow CG$, then transitivity with $CG \rightarrow I$
-- $CG \rightarrow HI$ — augment $CG \rightarrow I$ with $CG$ to get $CG \rightarrow CGI$; augment $CG \rightarrow H$ with $I$ to get $CGI \rightarrow HI$; combine via transitivity
-
-### Computing $F^+$ Algorithmically
-
-```
-F+ ← F
-repeat
-    for each functional dependency f in F+
-        apply reflexivity and augmentation rules on f
-        add the resulting functional dependencies to F+
-    for each pair of functional dependencies f1 and f2 in F+
-        if f1 and f2 can be combined using transitivity
-            then add the resulting functional dependency to F+
-until F+ does not change any further
-```
-
-> **Note:** This brute-force approach works, but it's expensive. There's a much cheaper alternative — **attribute closure**.
+> **Note:** Computing all of $F^+$ this way (repeatedly applying axioms until nothing new appears) works, but is expensive. **Attribute closure**, covered next, is the practical shortcut.
 
 ### Derived Rules
 
-These follow from the basic three axioms (so they're not "new" axioms, just useful shortcuts):
+These follow from the three basic axioms — not new rules, just useful shortcuts:
 
 | Rule | Statement |
 |---|---|
@@ -63,220 +40,91 @@ These follow from the basic three axioms (so they're not "new" axioms, just usef
 
 ---
 
-## Closure of Attribute Sets ($\alpha^+$)
+## Closure of Attribute Sets
 
-Computing the *entire* $F^+$ is overkill when we only care about one question: "what does this particular set of attributes determine?" That's where **attribute closure** comes in.
+Instead of computing the entire $F^+$, we usually just want to know: what does *this* set of attributes determine? That's the **closure of an attribute set**, written $\alpha^+$ — all attributes functionally determined by $\alpha$ under $F$.
 
-Given a set of attributes $\alpha$, its closure under $F$ — written $\alpha^+$ — is the set of *all* attributes functionally determined by $\alpha$.
+### How to Compute It
 
-### Algorithm
-
-```
-result ← α
-while (changes to result) do
-    for each β → γ in F do
-        if β ⊆ result then result ← result ∪ γ
-```
-
-Keep scanning the FDs and expanding `result` until nothing new gets added.
+1. Start with `result = α`.
+2. Scan through every FD $\beta \rightarrow \gamma$ in $F$.
+3. If $\beta$ is already contained in `result`, add $\gamma$ to `result`.
+4. Repeat steps 2–3 until no new attributes get added.
 
 ### Worked Example
 
-For $R = (A, B, C, G, H, I)$ with:
-$$F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}$$
-$(AG)^+$:
+For $R = (A, B, C, G, H, I)$ with $F = \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}$, compute $(AG)^+$:
 
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    A1["AG"] -->|"A → B, A → C"| A2["ABCG"]
-    A2 -->|"CG → H"| A3["ABCGH"]
-    A3 -->|"CG → I"| A4["ABCGHI"]
-```
+| Step | Result | Why |
+|---|---|---|
+| 1 | `AG` | starting point |
+| 2 | `ABCG` | $A \rightarrow B$ and $A \rightarrow C$ apply |
+| 3 | `ABCGH` | $CG \subseteq$ result, so $CG \rightarrow H$ applies |
+| 4 | `ABCGHI` | $CG \rightarrow I$ applies |
 
-1. `result = AG`
-2. `result = ABCG` (applying $A \rightarrow B$ and $A \rightarrow C$)
-3. `result = ABCGH` (since $CG \subseteq$ current result, apply $CG \rightarrow H$)
-4. `result = ABCGHI` (since $CG \subseteq$ current result, apply $CG \rightarrow I$)
+$(AG)^+ = ABCGHI$ — every attribute in $R$.
 
-So $(AG)^+ = ABCGHI$ — every attribute in $R$. That tells us something important...
+### Superkeys and Candidate Keys, via Closure
 
-### Is $AG$ a Candidate Key?
+- $K$ is a **superkey** of $R$ if $K^+ \supseteq R$ (contains every attribute)
+- $K$ is a **candidate key** of $R$ if $K^+ \supseteq R$ **and** no proper subset of $K$ also satisfies this (minimal)
 
-- **Is $AG$ a superkey?** Check if $(AG)^+ \supseteq R$. Since $(AG)^+ = ABCGHI = R$, yes!
-- **Is any subset of $AG$ also a superkey?** Check $(A)^+$ and $(G)^+$ individually. If neither alone reaches all of $R$, then $AG$ is *minimal* — making it a **candidate key**.
+**Applying this to $AG$:** $(AG)^+ = R$, so $AG$ is a superkey. Checking subsets — $(A)^+ = ABC$ and $(G)^+ = G$ — neither reaches all of $R$. So $AG$ is minimal, making it a **candidate key**.
 
+### Prime and Non-Prime Attributes
 
-### What Attribute Closure Is Good For
+- **Prime attribute**: belongs to *some* candidate key
+- **Non-prime attribute**: belongs to *no* candidate key
 
-| Use Case | How |
-|---|---|
-| **Testing for superkey** | Compute $\alpha^+$; if it contains *all* attributes of $R$, $\alpha$ is a superkey |
-| **Testing if a specific FD holds** | To check if $\alpha \rightarrow \beta \in F^+$, just compute $\alpha^+$ and check if $\beta \subseteq \alpha^+$ |
-| **Computing all of $F^+$** | For every possible subset $\gamma \subseteq R$, compute $\gamma^+$, then output $\gamma \rightarrow S$ for every $S \subseteq \gamma^+$ |
+Here's a data instance for $R = (A,B,C,G,H,I)$ consistent with $F= \{A \rightarrow B,\ A \rightarrow C,\ CG \rightarrow H,\ CG \rightarrow I,\ B \rightarrow H\}$, compute $(AG)^+$:
 
----
+| A | B | C | G | H | I |
+|---|---|---|---|---|---|
+| a1 | b1 | c1 | g1 | h1 | i1 |
+| a1 | b1 | c1 | g2 | h1 | i2 |
+| a2 | b2 | c2 | g1 | h2 | i3 |
+| a2 | b2 | c2 | g2 | h2 | i4 |
 
-## Decomposition Using Functional Dependencies
+Only the pair $(A, G)$ is unique across every row — no other single column or combination pins down a row on its own (`A` alone repeats across rows 1–2 and 3–4; `G` alone repeats across rows 1&3, 2&4). That matches what we found algebraically: $AG$ is the candidate key.
 
-Now we use this machinery to formally define what makes a decomposition "good enough" — leading to two increasingly strict normal forms: **BCNF** and **3NF**.
+So: `A` and `G` are **prime** attributes; `B`, `C`, `H`, `I` are **non-prime** — each of them is simply *determined by* the key, not part of it.
 
----
+### Formula: Maximum Number of Superkeys
 
-## BCNF: Boyce-Codd Normal Form
+Given a relation with $N$ total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys. 
 
-A relation schema $R$ is in **BCNF** with respect to a set of FDs $F$ if, for FD $\alpha \rightarrow \beta$ in $F^+$ (where $\alpha, \beta \subseteq R$), **at least one** of these holds:
+### Case 1: Only 1 Candidate Key (Single Attribute)
+If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = $\{A_1\}$):
+$$\text{Total Superkeys} = 2^{N-1}$$
 
-- $\alpha \rightarrow \beta$ is trivial (i.e., $\beta \subseteq \alpha$), **or**
-- $\alpha$ is a superkey for $R$
+### Case 2: Only 1 Candidate Key (Composite Key)
+If the relation has only one candidate key, and that key is a composite key formed by $k$ attributes:
+$$\text{Total Superkeys} = 2^{N-k}$$
 
-In other words: the *only* things allowed to determine other attributes are superkeys (or trivial cases). If some non-key attribute determines other attributes, BCNF is violated.
+### Case 3: Every Single Attribute is a Candidate Key
+If the relation has $N$ candidate keys (meaning every single attribute in the relation is its own independent candidate key):
+$$\text{Total Superkeys} = 2^N - 1$$
 
-**Example violation:** `instr_dept(ID, name, salary, dept_name, building, budget)` — the FD $dept\_name \rightarrow building, budget$ is non-trivial, but `dept_name` is **not** a superkey. So this schema is *not* in BCNF.
+### Case 4: Two Distinct Candidate Keys
 
-### BCNF Decomposition Rule
+When a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the **Principle of Inclusion-Exclusion** to avoid double-counting the superkeys that contain both keys.
 
-If a non-trivial FD $\alpha \rightarrow \beta$ violates BCNF on $R$, decompose $R$ into:
+### Generic Set Formula
+$$\text{Max Superkeys} = (\text{Superkeys with } A_1) + (\text{Superkeys with } A_2) - (\text{Superkeys with both } A_1 \text{ and } A_2)$$
 
-- $\alpha \cup \beta$
-- $R - (\beta - \alpha)$
+### Mathematical Representation
+Let $m$ be the number of attributes forming the first candidate key, and $n$ be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:
 
-**Applying it to our example:** with $\alpha = dept\_name$ and $\beta = (building, budget)$:
+$$\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}$$
 
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
-    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
+> 📌 **Note:** If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from $(m+n)$ to the number of attributes in their absolute union: $|\text{Key}_1 \cup \text{Key}_2|$.
 
-    R["instr_dept<br/>(ID, name, salary, dept_name, building, budget)<br/><i>violates BCNF: dept_name → building, budget</i>"]:::bad
-    R1["(dept_name, building, budget)<br/>dept_name → building, budget"]:::good
-    R2["(ID, name, salary, dept_name)<br/>ID → name, salary, dept_name"]:::good
+**Example:** $R = (A,B,C,G,H,I)$ has $n = 6$ attributes; candidate key $AG$ has $k = 2$. Number of superkeys: $2^{(6-2)} = 2^4 = 16$.
 
-    R -->|"α ∪ β"| R1
-    R -->|"R − (β − α)"| R2
-```
+### Why Attribute Closure Matters
 
-Both resulting relations are now in BCNF.
-
-### Checking Lossless Join (via FDs)
-
-When we split $R$ into $R_1$ and $R_2$:
-
-- **Lossy** if $R_1 \bowtie R_2 \supset R$ (join produces extra, spurious rows)
-- **Lossless** if $R_1 \bowtie R_2 = R$ (join exactly reconstructs the original)
-
-To confirm a decomposition is lossless using FDs, **all three** must hold:
-
-$$R_1 \cup R_2 = R$$
-$$R_1 \cap R_2 \neq \phi$$
-$$R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_2$$
-
-That last condition is key: the shared (common) attribute must be enough to act as a key for at least *one* of the two pieces. BCNF decomposition, done via the rule above, is guaranteed to satisfy this — so **BCNF always gives you a lossless join**.
-
----
-
-## Dependency Preservation
-
-Checking constraints across multiple tables (i.e., needing a join just to verify an FD still holds) is expensive. A decomposition is **dependency preserving** if every FD in $F$ can be checked by looking at just *one* relation in the decomposition — no joins required for validation.
-
-### When BCNF and Dependency Preservation Clash
-
-It's not always possible to get both. Consider $R = CSZ$ with $F = \{CS \rightarrow Z,\ Z \rightarrow C\}$, where the key is $CS$.
-
-- $CS \rightarrow Z$ is fine (satisfies BCNF, since $CS$ is a superkey)
-- $Z \rightarrow C$ violates BCNF ($Z$ is not a superkey)
-
-Decomposing via the BCNF rule gives $R_1 = ZC$ and $R_2 = SZ$.
-
-| Check | Result |
-|---|---|
-| $R_1 \cup R_2 = CSZ = R$ | ✅ |
-| $R_1 \cap R_2 = Z \neq \phi$ | ✅ |
-| $R_1 \cap R_2 = Z \rightarrow ZC = R_1$ | ✅ Lossless join! |
-| Can we verify $CS \rightarrow Z$ without a join? | ❌ No — $C$ and $S$ now live in *different* tables |
-
-So this BCNF decomposition is lossless, but **not** dependency preserving. This motivates a slightly relaxed normal form.
-
----
-
-## 3NF: Third Normal Form
-
-A relation schema $R$ is in **3NF** if for every FD $\alpha \rightarrow \beta \in F^+$, **at least one** of these holds:
-
-- $\alpha \rightarrow \beta$ is trivial ($\beta \subseteq \alpha$), **or**
-- $\alpha$ is a superkey for $R$, **or**
-- Every attribute $A$ in $\beta - \alpha$ is part of *some* candidate key of $R$ (each attribute can belong to a different candidate key)
-
-That third condition is the relaxation: BCNF only allows the first two. 3NF adds a third escape hatch specifically to preserve dependencies. Since BCNF already satisfies one of the first two conditions, **every relation in BCNF is automatically in 3NF** — but not vice versa.
-
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    A["All Relations"] --> B["1NF"]
-    B --> C["3NF"]
-    C --> D["BCNF"]
-```
-
----
-
-## Goals of Normalization
-
-Given a relation schema $R$ with FD set $F$, normalization aims to:
-
-1. Decide whether $R$ is already in "good" form
-2. If not, decompose it into $\{R_1, R_2, \ldots, R_n\}$ such that:
-   - Each piece is in good form
-   - The decomposition is **lossless-join**
-   - Preferably, the decomposition is also **dependency preserving**
-
-## Problems With Decomposition
-
-Decomposing isn't free — it trades off against three potential costs:
-
-| Problem | Description |
-|---|---|
-| **Lossiness** | The original relation may become impossible to reconstruct |
-| **Dependency checking cost** | Verifying an FD may now require a join across tables |
-| **Query cost** | Some queries get more expensive — e.g., "what's the building for this instructor?" now needs a join instead of a single lookup |
-
-> **Note:** There's always a tradeoff to weigh: redundancy and anomalies vs. the costs above. Normalization theory gives you the tools to decide — it doesn't mean you should *always* decompose all the way to BCNF in practice.
-
----
-
-## How Good Is BCNF, Really?
-
-BCNF isn't the end of the story. Consider `inst_info(ID, child_name, phone)`, where an instructor can have multiple children *and* multiple phone numbers.
-
-Since a given `ID` might have several `child_name` values and several `phone` values, storing all combinations means every child gets paired with every phone number.
-
-There are **no non-trivial functional dependencies** in this table at all — so technically, it's already in BCNF! And yet it has a glaring **insertion anomaly**: adding a new phone number for instructor `99999` (who has two children, David and William) requires inserting *two* new tuples — one for each child:
-
-```
-(99999, David, 981-992-3443)
-(99999, William, 981-992-3443)
-```
-
-That's clearly redundant, and BCNF didn't catch it — because the problem here isn't a functional dependency, it's a different kind of constraint (a **multivalued dependency**, between `child_name` and `phone`, both independent of each other under the same `ID`).
-
-**Fix:** decompose into `inst_child(ID, child_name)` and `inst_phone(ID, phone)`.
-
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef bad fill:#f8d7da,stroke:#c0392b,stroke-width:2px,color:#000000;
-    classDef good fill:#d4edda,stroke:#27ae60,stroke-width:2px,color:#000000;
-
-    A["inst_info<br/>(ID, child_name, phone)<br/><i>BCNF, but still redundant!</i>"]:::bad
-    B["inst_child<br/>(ID, child_name)"]:::good
-    C["inst_phone<br/>(ID, phone)"]:::good
-
-    A --> B
-    A --> C
-```
-
-This gap is exactly what motivates going even further, to the **Fourth Normal Form (4NF)** — which we'll cover next.
+| Use Case | How | In Plain English |
+|---|---|---|
+| Test if $\alpha$ is a superkey | Check $\alpha^+ \supseteq R$ | Compute what $\alpha$ determines — if it covers every column in the table, $\alpha$ is enough to identify a row |
+| Test if $\alpha \rightarrow \beta$ holds | Check $\beta \subseteq \alpha^+$ | Compute what $\alpha$ determines, then see if $\beta$ shows up in that list |
+| Compute all of $F^+$ | For every $\gamma \subseteq R$, output $\gamma \rightarrow S$ for each $S \subseteq \gamma^+$ | Try every possible set of columns, work out what each one determines, and write down all those dependencies |

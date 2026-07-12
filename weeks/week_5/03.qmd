@@ -1,126 +1,84 @@
 ---
-title: "Algorithms for FDs: Extraneous Attributes & Canonical Cover"
+title: "Extraneous Attributes, Equivalence & Canonical Cover"
 number-depth: 2
 format: 
     html:
         code-fold: false
 ---
 
-We already have **attribute closure** ($\alpha^+$) as our cheap, go-to tool for testing superkeys and individual FDs. Now we use it to answer a sharper question: *does every FD in our set actually earn its place, in full?* This leads us to **extraneous attributes** and, ultimately, the **canonical cover** — the leanest possible version of a set of FDs.
+We already have **attribute closure** ($\alpha^+$) as our go-to tool for testing superkeys and FDs. Now we use it to ask a sharper question: does every attribute in every FD actually earn its place? This leads to **extraneous attributes** and, from there, the **canonical cover** — the leanest version of an FD set.
 
 ---
 
 ## Extraneous Attributes
 
-Some FD sets carry dead weight — attributes on either side of an FD that don't actually contribute anything. An attribute is **extraneous** if we can remove it without losing any information from the FD set.
+> 💡 **In plain English:** an extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
 
-- **Extraneous on the left ($\alpha$):** Attribute $A \in \alpha$ is extraneous in $\alpha \rightarrow \beta$ if $F$ still logically implies $(\alpha - A) \rightarrow \beta$ — i.e., dropping $A$ makes the FD *stronger* (broader left side removed) but the same conclusion still holds.
+An attribute can be dead weight on either side of an FD:
 
-   *Simpler Rule:* An attribute on the left is dead weight if the remaining attributes on the left are already powerful enough to find the right side.
+- **Extraneous on the left ($\alpha$):** attribute $A \in \alpha$ is extraneous in $\alpha \rightarrow \beta$ if the *rest* of the left side, without $A$, still determines $\beta$ on its own.
+- **Extraneous on the right ($\beta$):** attribute $A \in \beta$ is extraneous in $\alpha \rightarrow \beta$ if the *other* FDs in the set can already derive $A$ anyway — this one FD isn't needed to get it.
 
-- **Extraneous on the right ($\beta$):** Attribute $A \in \beta$ is extraneous in $\alpha \rightarrow \beta$ if the *remaining* set of FDs — with $A$ dropped from $\beta$ — still logically implies the original $\alpha \rightarrow \beta$ (i.e., $A$ was derivable anyway).
+### How to Test
 
-    *Simpler Rule:* An attribute on the right is dead weight if you can already figure it out by playing a chain-reaction game with the other rules in your system.
+**Left side:** Drop $A$ from $\alpha$. Compute $(\alpha - A)^+$. If $\beta$ is inside that result, $A$ was extraneous.
 
-### Worked Examples
+**Right side:** Drop $A$ from $\beta$ (just for this one FD). Recompute $\alpha^+$ using this adjusted set. If $A$ still shows up in the result, it means the other FDs already covered it — so $A$ was extraneous.
 
-**Example 1 — extraneous on the left:** $F = \{A \rightarrow C,\ AB \rightarrow C\}$
+### Example — Extraneous on the Left
 
-- $B$ is extraneous in $AB \rightarrow C$, because $A^+ = AC$ already — meaning $A \rightarrow C$ holds on its own, without needing $B$ at all.
+$F = \{A \rightarrow C,\ AB \rightarrow C\}$
 
-**Example 2 — extraneous on the right:** $F = \{A \rightarrow C,\ AB \rightarrow CD\}$
+Is $B$ extraneous in $AB \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $B$ was dead weight.
 
-- $C$ is extraneous in $AB \rightarrow CD$, because dropping it leaves $\{A \rightarrow C,\ AB \rightarrow D\}$, and $AB^+ = ABCD$ in this reduced set — so $C$ was always derivable anyway.
+### Example — Extraneous on the Right
 
-### Testing for Extraneous Attributes
+$F = \{A \rightarrow C,\ AB \rightarrow CD\}$
 
-**To test if $A \in \alpha$ is extraneous in $\alpha \rightarrow \beta$:**
-Cover up $A$. Compute the attribute closure of whatever is left on the left side: $(\alpha - A)^+$. If your target $\beta$ is inside that result set, $A$ is extraneous.
-
-**To test if $A \in \beta$ is extraneous in $\alpha \rightarrow \beta$:**
-Hide $A$ from the right side of that specific dependency. Using this modified set of rules, compute the attribute closure of the left side: $\alpha^+$. If $A$ still pops up in the final result, it means the other rules already had it covered. $A$ is extraneous.
+Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ AB \rightarrow D\}$. Compute $AB^+$ under this reduced set: it comes out to $ABCD$ — which still contains $C$. So $C$ was always derivable anyway, and was extraneous in the original FD.
 
 ---
 
-## Equivalence of FD Sets
+## Equivalence & Canonical Cover
 
-Two sets of FDs, $F$ and $G$, are **equivalent** if $F^+ = G^+$ — meaning every FD in $F$ can be derived from $G$, and every FD in $G$ can be derived from $F$.
+### Equivalence of FD Sets
 
-We break this into two directions:
+> 💡 **In plain English:** two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
 
-- **$F$ covers $G$**: every FD of $G$ is logically implied by $F$ (i.e., $F^+ \supseteq G$)
-- **$G$ covers $F$**: every FD of $F$ is logically implied by $G$ (i.e., $G^+ \supseteq F$)
+$F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hold:
 
-$F$ and $G$ are equivalent only if **both** directions of covering hold.
+- **$F$ covers $G$**: everything in $G$ can be derived from $F$
+- **$G$ covers $F$**: everything in $F$ can be derived from $G$
 
----
+Only if both hold are $F$ and $G$ truly equivalent.
 
-## Canonical Cover
+### Canonical Cover
 
-Real-world FD sets often contain **redundant dependencies** (whole FDs that can be inferred from the others) or **redundant parts** of FDs (extraneous attributes). The **canonical cover** $F_c$ is the minimal, "optimal" version of $F$, trimmed down as far as possible while still being equivalent to it.
+> 💡 **In plain English:** the canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
 
-$F_c$ is a canonical cover for $F$ if **all** of the following hold:
+$F_c$ is a canonical cover of $F$ if:
 
-- $F_c^+ = F^+$ (they're fully equivalent)
-- No FD in $F_c$ contains an extraneous attribute (nothing more to trim)
-- Every left-hand side in $F_c$ is unique, no two FDs $\alpha_1 \rightarrow \beta_1$ and $\alpha_2 \rightarrow \beta_2$ share $\alpha_1 \rightarrow \alpha_2$ (these would just get merged via the union rule)
+- $F_c^+ = F^+$ (says exactly the same thing as $F$)
+- No FD in $F_c$ has an extraneous attribute
+- Every left-hand side in $F_c$ appears only once (no two FDs share a left side — those would just merge)
 
-Intuitively: a canonical cover is the smallest, most irreducible set of FDs that says exactly the same thing as $F$ — no redundant FDs, and no redundant attributes tucked inside the FDs that remain.
+### How to Compute It
 
-### Trimming the Right-Hand Side (RHS)
+1. Combine any FDs that share the same left-hand side into one, using the union rule.
+2. Look at each remaining FD and test both sides for extraneous attributes; remove any that are found.
+3. Repeat steps 1–2 until nothing changes.
 
-$\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow CD\}$ simplifies to $\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}$
-
-- **Forward:** $A \rightarrow CD$ splits (via decomposition) into $A \rightarrow C$ and $A \rightarrow D$; and $A \rightarrow C$ is redundant anyway since $A \rightarrow B, B \rightarrow C$ already gives it via transitivity
-- **Reverse:** $A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C$; combine with $A \rightarrow D$ (union rule) to rebuild $A \rightarrow CD$
-- Check: $A^+ = ABCD$ under either version — confirms equivalence
-
-### Trimming the Left-Hand Side (LHS)
-
-$\{A \rightarrow B,\ B \rightarrow C,\ AC \rightarrow D\}$ simplifies to $\{A \rightarrow B,\ B \rightarrow C,\ A \rightarrow D\}$
-
-- **Forward:** $A \rightarrow B, B \rightarrow C \Rightarrow A \rightarrow C \Rightarrow A \rightarrow AC$ (union with $A \rightarrow A$); then $A \rightarrow AC$ combined with $AC \rightarrow D$ gives $A \rightarrow D$ by transitivity — so $C$ was extraneous in $AC \rightarrow D$
-- **Reverse:** $A \rightarrow D \Rightarrow AC \rightarrow D$ trivially (augmentation)
-- Check: $A^+ = ABCD$ confirms this too
-
-### Algorithm to Compute a Canonical Cover
-
-```
-repeat
-    Use the union rule to replace any pair of dependencies
-        α1 → β1  and  α1 → β2
-    with
-        α1 → β1β2
-
-    Find a functional dependency α → β with an extraneous
-    attribute either in α or in β
-    (test for extraneous attributes using the CURRENT Fc, not the original F)
-
-    If found, delete that extraneous attribute
-until F does not change
-```
-
-> **Warning:** Once you delete an extraneous attribute, previously-unmergeable FDs might suddenly share the same left-hand side — so the union rule may become applicable again. Keep looping until nothing changes.
+> ⚠️ Removing an extraneous attribute can create a *new* opportunity to merge left-hand sides that didn't match before — so keep looping until the set is stable.
 
 ### Worked Example
 
 $R = (A, B, C)$, $F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}$
 
-1. **Union**: merge $A \rightarrow BC$ and $A \rightarrow B$ into $A \rightarrow BC$ → set becomes $\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}$
-2. **$A$ is extraneous in $AB \rightarrow C$**: dropping $A$ leaves $B \rightarrow C$, which is already present in the set → set becomes $\{A \rightarrow BC,\ B \rightarrow C\}$
-3. **$C$ is extraneous in $A \rightarrow BC$**: is $A \rightarrow C$ implied by the rest? Yes — via transitivity on $A \rightarrow B$ and $B \rightarrow C$ (in trickier cases, just compute $A^+$ to check)
+1. **Merge:** $A \rightarrow BC$ and $A \rightarrow B$ share a left side → combine into $A \rightarrow BC$. Set is now $\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}$.
+2. **Left-side check:** is $A$ extraneous in $AB \rightarrow C$? Drop it — $B \rightarrow C$ is already in the set, so yes. Set is now $\{A \rightarrow BC,\ B \rightarrow C\}$.
+3. **Right-side check:** is $C$ extraneous in $A \rightarrow BC$? Drop it and check — $A \rightarrow B$ and $B \rightarrow C$ together still give $A \rightarrow C$ by transitivity. So yes, $C$ was extraneous.
 
-**Canonical cover:** $\{A \rightarrow B,\ B \rightarrow C\}$
-
----
-
-## Prime and Non-Prime Attributes:
-
-- **Prime attributes** : Union of all candidate key attributes ($CK_1 \cup CK_2 \cup CK_3 \cup \ldots$).
-
-Note: if a prime attribute $A$ is itself determined by some other set $X$ (i.e. $X \rightarrow A$), that's a signal $X$ may also be a candidate key.
-
-- **Non-prime attributes** : every attribute that appears in *no* candidate key
+**Canonical cover:** $\{A \rightarrow B,\ B \rightarrow C\}$ — the smallest set that says exactly what the original four FDs said.
 
 
 
