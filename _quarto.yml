@@ -22,7 +22,7 @@ comments:
   giscus:
     repo: cs2001-dbms/cs2001-dbms.github.io
     category: General
-    mapping: pathname
+    mapping: url
     input-position: top
     reactions-enabled: true
     loading: lazy
@@ -54,13 +54,13 @@ book:
         text: "Ask Questions & Review"
       - icon: play-circle
         href: "https://www.youtube.com/@dbms-iitmadrasbsdegree1439/streams"
-        text: "Lecture Streams"
+        text: "Live Streams"
       - icon: people
         href: "https://discourse.onlinedegree.iitm.ac.in/c/courses/dbms-kb"
         text: "Discourse Community"
       - icon: envelope
-        href: "mailto:pravins@study.iitm.ac.in,manidipa@study.iitm.ac.in"
-        text: "Contact Instructors"
+        href: "mailto:pravins@study.iitm.ac.in"
+        text: "Contact"
       - icon: folder
         href: "https://drive.google.com/drive/folders/1TglQNLuExuxpkPg7KdHFlZaX4jIvkECY"
         text: "Live Session Slides"
