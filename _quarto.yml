@@ -132,7 +132,7 @@ format:
     toc-collapsible: true
     toc-title: "**On this page**"
     toc-indent: 2em
-    toc-depth: 2
+    toc-depth: 3
     toc-expand: true
     number-sections: false  # Disable numbering globally
     code:
