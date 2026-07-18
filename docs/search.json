@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Database Management Systems",
     "section": "",
-    "text": "Welcome to DBMS (CS2001) Course\nThis portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.\n\nCourse Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None\n\n\n\nTextbook\n\nTitle: Database System Concepts (7th Ed.)\nAuthors: Silberschatz, Korth, Sudarshan\nPublisher: McGraw-Hill\n\n\n\n\n\nCourse Faculty\nDr. Partha Pratim Das\nProfessor, Department of Computer Science and Engineering, IIT Kharagpur\n\n\nCourse Instructors:\nManidipa Bhattacharjee\nPravin Sankar\n\n\n\nHow to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar or click Start Course above to jump into specific topics.",
+    "text": "Welcome to DBMS (CS2001) Course\nThis portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.\n\nCourse Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None\n\n\n\nTextbook\n\nTitle: Database System Concepts (7th Ed.)\nAuthors: Silberschatz, Korth, Sudarshan\nPublisher: McGraw-Hill\n\n\n\n\n\nCourse Faculty\nDr. Partha Pratim Das\nProfessor, Department of Computer Science and Engineering, IIT Kharagpur\n\n\nCourse Instructors:\nManidipa\nPravin\nBhaskar\nArshpreet\n\n\n\nHow to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar or click Start Course above to jump into specific topics.",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
     ]
@@ -985,7 +985,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>19</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -996,7 +996,7 @@
     "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Python-DB Playground</span>"
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Python-DB Playground</span>"
     ]
   },
   {
@@ -1026,7 +1026,7 @@
     "href": "weeks/week_5/02.html#closure-of-attribute-sets",
     "title": "Armstrong’s Axioms & Closure of Attribute Sets",
     "section": "Closure of Attribute Sets",
-    "text": "Closure of Attribute Sets\nInstead of computing the entire \\(F^+\\), we usually just want to know: what does this set of attributes determine? That’s the closure of an attribute set, written \\(\\alpha^+\\) — all attributes functionally determined by \\(\\alpha\\) under \\(F\\).\n\nHow to Compute It\n\nStart with result = α.\nScan through every FD \\(\\beta \\rightarrow \\gamma\\) in \\(F\\).\nIf \\(\\beta\\) is already contained in result, add \\(\\gamma\\) to result.\nRepeat steps 2–3 until no new attributes get added.\n\n\n\nWorked Example\nFor \\(R = (A, B, C, G, H, I)\\) with \\(F = \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\), compute \\((AG)^+\\):\n\n\n\nStep\nResult\nWhy\n\n\n\n\n1\nAG\nstarting point\n\n\n2\nABCG\n\\(A \\rightarrow B\\) and \\(A \\rightarrow C\\) apply\n\n\n3\nABCGH\n\\(CG \\subseteq\\) result, so \\(CG \\rightarrow H\\) applies\n\n\n4\nABCGHI\n\\(CG \\rightarrow I\\) applies\n\n\n\n\\((AG)^+ = ABCGHI\\) — every attribute in \\(R\\).\n\n\nSuperkeys and Candidate Keys, via Closure\n\n\\(K\\) is a superkey of \\(R\\) if \\(K^+ \\supseteq R\\) (contains every attribute)\n\\(K\\) is a candidate key of \\(R\\) if \\(K^+ \\supseteq R\\) and no proper subset of \\(K\\) also satisfies this (minimal)\n\nApplying this to \\(AG\\): \\((AG)^+ = R\\), so \\(AG\\) is a superkey. Checking subsets — \\((A)^+ = ABC\\) and \\((G)^+ = G\\) — neither reaches all of \\(R\\). So \\(AG\\) is minimal, making it a candidate key.\n\n\nPrime and Non-Prime Attributes\n\nPrime attribute: belongs to some candidate key\nNon-prime attribute: belongs to no candidate key\n\nHere’s a data instance for \\(R = (A,B,C,G,H,I)\\) consistent with \\(F\\):\n\n\n\nA\nB\nC\nG\nH\nI\n\n\n\n\na1\nb1\nc1\ng1\nh1\ni1\n\n\na1\nb1\nc1\ng2\nh1\ni2\n\n\na2\nb2\nc2\ng1\nh2\ni3\n\n\na2\nb2\nc2\ng2\nh2\ni4\n\n\n\nOnly the pair \\((A, G)\\) is unique across every row — no other single column or combination pins down a row on its own (A alone repeats across rows 1–2 and 3–4; G alone repeats across rows 1&3, 2&4). That matches what we found algebraically: \\(AG\\) is the candidate key.\nSo: A and G are prime attributes; B, C, H, I are non-prime — each of them is simply determined by the key, not part of it.\n\n\nFormula: Maximum Number of Superkeys\nGiven a relation with \\(N\\) total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.\n\n\nCase 1: Only 1 Candidate Key (Single Attribute)\nIf the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = \\(\\{A_1\\}\\)): \\[\\text{Total Superkeys} = 2^{N-1}\\]\n\n\nCase 2: Only 1 Candidate Key (Composite Key)\nIf the relation has only one candidate key, and that key is a composite key formed by \\(k\\) attributes: \\[\\text{Total Superkeys} = 2^{N-k}\\]\n\n\nCase 3: Every Single Attribute is a Candidate Key\nIf the relation has \\(N\\) candidate keys (meaning every single attribute in the relation is its own independent candidate key): \\[\\text{Total Superkeys} = 2^N - 1\\]\n\n\nCase 4: Two Distinct Candidate Keys\nWhen a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the Principle of Inclusion-Exclusion to avoid double-counting the superkeys that contain both keys.\n\n\nGeneric Set Formula\n\\[\\text{Max Superkeys} = (\\text{Superkeys with } A_1) + (\\text{Superkeys with } A_2) - (\\text{Superkeys with both } A_1 \\text{ and } A_2)\\]\n\n\nMathematical Representation\nLet \\(m\\) be the number of attributes forming the first candidate key, and \\(n\\) be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:\n\\[\\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\\]\n\n📌 Note: If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from \\((m+n)\\) to the number of attributes in their absolute union: \\(|\\text{Key}_1 \\cup \\text{Key}_2|\\).\n\nExample: \\(R = (A,B,C,G,H,I)\\) has \\(n = 6\\) attributes; candidate key \\(AG\\) has \\(k = 2\\). Number of superkeys: \\(2^{(6-2)} = 2^4 = 16\\).\n\n\nWhy Attribute Closure Matters\n\n\n\n\n\n\n\n\nUse Case\nHow\nIn Plain English\n\n\n\n\nTest if \\(\\alpha\\) is a superkey\nCheck \\(\\alpha^+ \\supseteq R\\)\nCompute what \\(\\alpha\\) determines — if it covers every column in the table, \\(\\alpha\\) is enough to identify a row\n\n\nTest if \\(\\alpha \\rightarrow \\beta\\) holds\nCheck \\(\\beta \\subseteq \\alpha^+\\)\nCompute what \\(\\alpha\\) determines, then see if \\(\\beta\\) shows up in that list\n\n\nCompute all of \\(F^+\\)\nFor every \\(\\gamma \\subseteq R\\), output \\(\\gamma \\rightarrow S\\) for each \\(S \\subseteq \\gamma^+\\)\nTry every possible set of columns, work out what each one determines, and write down all those dependencies",
+    "text": "Closure of Attribute Sets\nInstead of computing the entire \\(F^+\\), we usually just want to know: what does this set of attributes determine? That’s the closure of an attribute set, written \\(\\alpha^+\\) — all attributes functionally determined by \\(\\alpha\\) under \\(F\\).\n\nHow to Compute It\n\nStart with result = α.\nScan through every FD \\(\\beta \\rightarrow \\gamma\\) in \\(F\\).\nIf \\(\\beta\\) is already contained in result, add \\(\\gamma\\) to result.\nRepeat steps 2–3 until no new attributes get added.\n\n\n\nWorked Example\nFor \\(R = (A, B, C, G, H, I)\\) with \\(F = \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\), compute \\((AG)^+\\):\n\n\n\nStep\nResult\nWhy\n\n\n\n\n1\nAG\nstarting point\n\n\n2\nABCG\n\\(A \\rightarrow B\\) and \\(A \\rightarrow C\\) apply\n\n\n3\nABCGH\n\\(CG \\subseteq\\) result, so \\(CG \\rightarrow H\\) applies\n\n\n4\nABCGHI\n\\(CG \\rightarrow I\\) applies\n\n\n\n\\((AG)^+ = ABCGHI\\) — every attribute in \\(R\\).\n\n\nSuperkeys and Candidate Keys, via Closure\n\n\\(K\\) is a superkey of \\(R\\) if \\(K^+ \\supseteq R\\) (contains every attribute)\n\\(K\\) is a candidate key of \\(R\\) if \\(K^+ \\supseteq R\\) and no proper subset of \\(K\\) also satisfies this (minimal)\n\nApplying this to \\(AG\\): \\((AG)^+ = R\\), so \\(AG\\) is a superkey. Checking subsets — \\((A)^+ = ABC\\) and \\((G)^+ = G\\) — neither reaches all of \\(R\\). So \\(AG\\) is minimal, making it a candidate key.\n\n\nPrime and Non-Prime Attributes\n\nPrime attribute: belongs to some candidate key\nNon-prime attribute: belongs to no candidate key\n\nHere’s a data instance for \\(R = (A,B,C,G,H,I)\\) consistent with \\(F= \\{A \\rightarrow B,\\ A \\rightarrow C,\\ CG \\rightarrow H,\\ CG \\rightarrow I,\\ B \\rightarrow H\\}\\), compute \\((AG)^+\\):\n\n\n\nA\nB\nC\nG\nH\nI\n\n\n\n\na1\nb1\nc1\ng1\nh1\ni1\n\n\na1\nb1\nc1\ng2\nh1\ni2\n\n\na2\nb2\nc2\ng1\nh2\ni3\n\n\na2\nb2\nc2\ng2\nh2\ni4\n\n\n\nOnly the pair \\((A, G)\\) is unique across every row — no other single column or combination pins down a row on its own (A alone repeats across rows 1–2 and 3–4; G alone repeats across rows 1&3, 2&4). That matches what we found algebraically: \\(AG\\) is the candidate key.\nSo: A and G are prime attributes; B, C, H, I are non-prime — each of them is simply determined by the key, not part of it.\n\n\nFormula: Maximum Number of Superkeys\nGiven a relation with \\(N\\) total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.\n\n\nCase 1: Only 1 Candidate Key (Single Attribute)\nIf the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = \\(\\{A_1\\}\\)): \\[\\text{Total Superkeys} = 2^{N-1}\\]\n\n\nCase 2: Only 1 Candidate Key (Composite Key)\nIf the relation has only one candidate key, and that key is a composite key formed by \\(k\\) attributes: \\[\\text{Total Superkeys} = 2^{N-k}\\]\n\n\nCase 3: Every Single Attribute is a Candidate Key\nIf the relation has \\(N\\) candidate keys (meaning every single attribute in the relation is its own independent candidate key): \\[\\text{Total Superkeys} = 2^N - 1\\]\n\n\nCase 4: Two Distinct Candidate Keys\nWhen a relation contains two distinct candidate keys (which can be composed of one or many attributes), we must use the Principle of Inclusion-Exclusion to avoid double-counting the superkeys that contain both keys.\n\n\nGeneric Set Formula\n\\[\\text{Max Superkeys} = (\\text{Superkeys with } A_1) + (\\text{Superkeys with } A_2) - (\\text{Superkeys with both } A_1 \\text{ and } A_2)\\]\n\n\nMathematical Representation\nLet \\(m\\) be the number of attributes forming the first candidate key, and \\(n\\) be the number of attributes forming the second candidate key. Assuming the two candidate keys share no overlapping attributes:\n\\[\\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}\\]\n\n📌 Note: If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from \\((m+n)\\) to the number of attributes in their absolute union: \\(|\\text{Key}_1 \\cup \\text{Key}_2|\\).\n\nExample: \\(R = (A,B,C,G,H,I)\\) has \\(n = 6\\) attributes; candidate key \\(AG\\) has \\(k = 2\\). Number of superkeys: \\(2^{(6-2)} = 2^4 = 16\\).\n\n\nWhy Attribute Closure Matters\n\n\n\n\n\n\n\n\nUse Case\nHow\nIn Plain English\n\n\n\n\nTest if \\(\\alpha\\) is a superkey\nCheck \\(\\alpha^+ \\supseteq R\\)\nCompute what \\(\\alpha\\) determines — if it covers every column in the table, \\(\\alpha\\) is enough to identify a row\n\n\nTest if \\(\\alpha \\rightarrow \\beta\\) holds\nCheck \\(\\beta \\subseteq \\alpha^+\\)\nCompute what \\(\\alpha\\) determines, then see if \\(\\beta\\) shows up in that list\n\n\nCompute all of \\(F^+\\)\nFor every \\(\\gamma \\subseteq R\\), output \\(\\gamma \\rightarrow S\\) for each \\(S \\subseteq \\gamma^+\\)\nTry every possible set of columns, work out what each one determines, and write down all those dependencies",
     "crumbs": [
       "**Week-05**",
       "<span class='chapter-number'>16</span>  <span class='chapter-title'>Armstrong Axioms</span>"
@@ -1041,6 +1041,138 @@
     "crumbs": [
       "**Week-05**",
       "<span class='chapter-number'>17</span>  <span class='chapter-title'>Extraneous attributes & Canonical cover</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/03_bcnf_and_4nf.html",
+    "href": "weeks/week_6/03_bcnf_and_4nf.html",
+    "title": "BCNF and Multivalued Dependencies",
+    "section": "",
+    "text": "BCNF (Boyce-Codd Normal Form)\nWhile 3NF is sufficient for most practical database designs, it still allows certain types of anomalies if there are overlapping candidate keys. Boyce-Codd Normal Form (BCNF) was introduced to handle these edge cases by applying a stricter rule.\nA relational schema \\(R\\) is in BCNF if for every non-trivial functional dependency \\(A \\rightarrow B\\) associated with \\(R\\), the following condition holds: - \\(A\\) must be a superkey.\nSimply put: The left side of every functional dependency must uniquely identify the entire row. The “prime attribute” loophole present in 3NF is removed.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>BCNF and Multivalued Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/03_bcnf_and_4nf.html#bcnf-solved-example-1-success",
+    "href": "weeks/week_6/03_bcnf_and_4nf.html#bcnf-solved-example-1-success",
+    "title": "BCNF and Multivalued Dependencies",
+    "section": "BCNF Solved Example 1: Success",
+    "text": "BCNF Solved Example 1: Success\nConsider \\(R(A, B, C, D)\\) and its \\(FD=\\{A \\rightarrow B, \\space B \\rightarrow C, \\space C \\rightarrow D, \\space D \\rightarrow A\\}\\)\nStep 1: Find Candidate Keys\n\n\\(A^+ = \\{A, B, C, D\\}\\)\n\\(B^+ = \\{B, C, D, A\\}\\)\n\\(C^+ = \\{C, D, A, B\\}\\)\n\\(D^+ = \\{D, A, B, C\\}\\) Every single attribute is a candidate key (and thus, a superkey).\n\nStep 2: Check BCNF Condition\n\nFor \\(A \\rightarrow B\\), \\(A\\) is a superkey.\nFor \\(B \\rightarrow C\\), \\(B\\) is a superkey.\nFor \\(C \\rightarrow D\\), \\(C\\) is a superkey.\nFor \\(D \\rightarrow A\\), \\(D\\) is a superkey.\n\nConclusion: All functional dependencies satisfy the BCNF condition. The relation is in BCNF.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>BCNF and Multivalued Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/03_bcnf_and_4nf.html#bcnf-solved-example-2-failure",
+    "href": "weeks/week_6/03_bcnf_and_4nf.html#bcnf-solved-example-2-failure",
+    "title": "BCNF and Multivalued Dependencies",
+    "section": "BCNF Solved Example 2: Failure",
+    "text": "BCNF Solved Example 2: Failure\nLet’s look back at the example from the 3NF chapter: \\(R(A, B, C, D, E, F)\\) with \\(FD=\\{AB \\rightarrow CDE, \\space E \\rightarrow F, \\space BF \\rightarrow A, \\space C \\rightarrow B\\}\\). We found the candidate keys were \\(\\{A, B\\}, \\{A, C\\}, \\{B, F\\}\\).\nNow let’s check the FDs against the strict BCNF rule:\n\n\\(E \\rightarrow F\\): Is \\(E\\) a superkey? No.\n\\(C \\rightarrow B\\): Is \\(C\\) a superkey? No.\n\nConclusion: Because \\(E\\) and \\(C\\) are not superkeys, the relation fails BCNF, even though it was successfully in 3NF!",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>BCNF and Multivalued Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/03_bcnf_and_4nf.html#visualizing-mvd",
+    "href": "weeks/week_6/03_bcnf_and_4nf.html#visualizing-mvd",
+    "title": "BCNF and Multivalued Dependencies",
+    "section": "Visualizing MVD",
+    "text": "Visualizing MVD\n\n\n\nMVD Example\n\n\nIn this example, an instructor teaches a course, and a course has recommended books.\n\nThe instructors for a course are completely independent of the books for a course.\nThus, course_name \\(\\twoheadrightarrow\\) instructor\nAnd course_name \\(\\twoheadrightarrow\\) {book, edition}\n\nIf you try to store this in a single table, you must repeat every instructor for every book, causing massive data redundancy!",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>BCNF and Multivalued Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/03_bcnf_and_4nf.html#trivial-mvd",
+    "href": "weeks/week_6/03_bcnf_and_4nf.html#trivial-mvd",
+    "title": "BCNF and Multivalued Dependencies",
+    "section": "Trivial MVD",
+    "text": "Trivial MVD\nAn MVD \\(X \\twoheadrightarrow Y\\) is considered trivial if:\n\n\\(Y\\) is a subset of \\(X\\) (\\(Y \\subseteq X\\))\nOr, \\(X \\cup Y = R\\) (the entire table)",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>BCNF and Multivalued Dependencies</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/01_intro_to_normalization.html",
+    "href": "weeks/week_6/01_intro_to_normalization.html",
+    "title": "Introduction to Normalization",
+    "section": "",
+    "text": "What is Normalization?\nNormalization (or Schema Refinement) is a systematic technique of organizing data in a database. It involves decomposing a large, poorly-structured table into smaller, well-structured tables.\nNormalization serves two primary purposes:",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Introduction to Normalization</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/01_intro_to_normalization.html#functional-dependencies-fds",
+    "href": "weeks/week_6/01_intro_to_normalization.html#functional-dependencies-fds",
+    "title": "Introduction to Normalization",
+    "section": "Functional Dependencies (FDs)",
+    "text": "Functional Dependencies (FDs)\nA Functional Dependency, denoted as \\(X \\rightarrow Y\\), means that the attribute(s) \\(X\\) uniquely determines the attribute(s) \\(Y\\). If you know the value of \\(X\\), you can look up exactly one corresponding value of \\(Y\\).\n\nExample: \\(StudentID \\rightarrow StudentName\\). If you know the ID, there is only one possible name associated with it. Here, \\(X\\) is called the Determinant.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Introduction to Normalization</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/01_intro_to_normalization.html#database-keys",
+    "href": "weeks/week_6/01_intro_to_normalization.html#database-keys",
+    "title": "Introduction to Normalization",
+    "section": "Database Keys",
+    "text": "Database Keys\n\nSuperkey: A set of one or more attributes that can uniquely identify a row in a table. If \\(\\{StudentID\\}\\) is a superkey, then \\(\\{StudentID, StudentName\\}\\) is also a superkey.\nCandidate Key: A minimal superkey. It is a superkey where no proper subset of its attributes can uniquely identify a row. There can be multiple candidate keys in a table.\nPrimary Key: The specific candidate key chosen by the database designer to uniquely identify rows.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Introduction to Normalization</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/01_intro_to_normalization.html#attribute-types",
+    "href": "weeks/week_6/01_intro_to_normalization.html#attribute-types",
+    "title": "Introduction to Normalization",
+    "section": "Attribute Types",
+    "text": "Attribute Types\nBased on the Candidate Keys, all attributes in a table are divided into two categories:\n\nPrime Attribute: An attribute that is a part of any candidate key.\nNon-Prime Attribute: An attribute that is not a part of any candidate key.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Introduction to Normalization</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/02_normal_forms_1nf_to_3nf.html",
+    "href": "weeks/week_6/02_normal_forms_1nf_to_3nf.html",
+    "title": "Normal Forms (1NF to 3NF)",
+    "section": "",
+    "text": "1NF (First Normal Form)\nA Normal Form specifies a set of conditions that a relational schema must satisfy in terms of its constraints. As we move from 1NF up to higher normal forms, the rules become stricter, and data redundancy is further reduced.\nA relation is in First Normal Form (1NF) if and only if it satisfies the following rules:",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Normal Forms (1NF to 3NF)</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/02_normal_forms_1nf_to_3nf.html#nf-solved-example",
+    "href": "weeks/week_6/02_normal_forms_1nf_to_3nf.html#nf-solved-example",
+    "title": "Normal Forms (1NF to 3NF)",
+    "section": "2NF Solved Example",
+    "text": "2NF Solved Example\nConsider a relation \\(R(A, B, C, D, E, F)\\) and its Functional Dependencies: \\[FD=\\{AB \\rightarrow CDE, \\space E \\rightarrow F, \\space BF \\rightarrow A, \\space C \\rightarrow B\\}\\]\nStep 1: Find the Candidate Keys Let’s find the closures of attribute sets to see which ones determine all attributes in \\(R\\).\n\n\\((AB)^+ = \\{A, B, C, D, E, F\\}\\)\nSince \\(C \\rightarrow B\\), we can substitute \\(B\\) with \\(C\\): \\((AC)^+ = \\{A, C, B, D, E, F\\}\\)\nSince \\(BF \\rightarrow A\\), if we have \\(B\\) and \\(F\\), we get \\(A\\). Thus \\((BF)^+ = \\{B, F, A, C, D, E\\}\\)\n\nOur Candidate Keys are: \\(\\{A, B\\}, \\{A, C\\}, \\{B, F\\}\\).\nStep 2: Identify Prime and Non-Prime Attributes\n\nPrime Attributes: \\(A, B, C, F\\) (since they appear in at least one candidate key).\nNon-Prime Attributes: \\(D, E\\).\n\nStep 3: Check for Partial Dependencies We need to check if any non-prime attribute (\\(D\\) or \\(E\\)) depends on a proper subset of a candidate key. The proper subsets of our candidate keys are \\(\\{A\\}, \\{B\\}, \\{C\\}, \\{F\\}\\).\n\nDo we have \\(A \\rightarrow D\\) or \\(A \\rightarrow E\\)? No.\nDo we have \\(B \\rightarrow D\\) or \\(B \\rightarrow E\\)? No.\nDo we have \\(C \\rightarrow D\\) or \\(C \\rightarrow E\\)? No (\\(C\\) only determines \\(B\\), which is a prime attribute).\nDo we have \\(F \\rightarrow D\\) or \\(F \\rightarrow E\\)? No.\n\nSince no non-prime attribute depends on a part of a candidate key, there is no partial dependency. Conclusion: Relation \\(R\\) is in 2NF.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Normal Forms (1NF to 3NF)</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_6/02_normal_forms_1nf_to_3nf.html#nf-solved-example-1",
+    "href": "weeks/week_6/02_normal_forms_1nf_to_3nf.html#nf-solved-example-1",
+    "title": "Normal Forms (1NF to 3NF)",
+    "section": "3NF Solved Example",
+    "text": "3NF Solved Example\nLet’s use the same relation \\(R(A, B, C, D, E, F)\\) with \\(FD=\\{AB \\rightarrow CDE, \\space E \\rightarrow F, \\space BF \\rightarrow A, \\space C \\rightarrow B\\}\\). We know it is in 2NF. We know the Candidate Keys are \\(\\{A, B\\}, \\{A, C\\}, \\{B, F\\}\\), and Prime Attributes are \\(A, B, C, F\\).\nLet’s check each FD against the 3NF rules:\n\n\\(AB \\rightarrow CDE\\): \\(AB\\) is a superkey. (Condition 2 holds - Passes).\n\\(E \\rightarrow F\\): \\(E\\) is not a superkey. However, \\(F\\) is a prime attribute! (Condition 3 holds - Passes).\n\\(BF \\rightarrow A\\): \\(BF\\) is a superkey. (Condition 2 holds - Passes).\n\\(C \\rightarrow B\\): \\(C\\) is not a superkey. However, \\(B\\) is a prime attribute! (Condition 3 holds - Passes).\n\nConclusion: Since every functional dependency satisfies at least one of the 3NF conditions, the relation \\(R\\) is in 3NF.",
+    "crumbs": [
+      "**Week-06**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Normal Forms (1NF to 3NF)</span>"
     ]
   }
 ]

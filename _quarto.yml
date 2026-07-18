@@ -101,6 +101,11 @@ book:
           text: Extraneous attributes & Canonical cover
         - href: weeks/week_5/04.qmd
           text: Lossless Join & Dependency preservation
+    - part: '**Week-06**'
+      chapters:
+        - weeks/week_6/01_intro_to_normalization.qmd
+        - weeks/week_6/02_normal_forms_1nf_to_3nf.qmd
+        - weeks/week_6/03_bcnf_and_4nf.qmd
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd

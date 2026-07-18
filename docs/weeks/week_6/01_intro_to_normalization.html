@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Entity-Relationship Model – Database Management Systems</title>
+<title>Introduction to Normalization – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_4/03_advanced_er_concepts.html" rel="next">
-<link href="../../weeks/week_4/01_relational_algebra_and_calculus.html" rel="prev">
+<link href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" rel="next">
+<link href="../../weeks/week_5/04.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -286,7 +286,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/02_entity_relationship_model.html"><span class="chapter-title">Entity-Relationship Model</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><span class="chapter-title">Introduction to Normalization</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -415,13 +415,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-04</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Algebra and Calculus</span></a>
@@ -429,7 +429,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_4/02_entity_relationship_model.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Entity-Relationship Model</span></a>
+  <a href="../../weeks/week_4/02_entity_relationship_model.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Entity-Relationship Model</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -472,16 +472,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-06</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
+  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction to Normalization</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -527,32 +527,24 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#introduction-to-entity-sets" id="toc-introduction-to-entity-sets" class="nav-link active" data-scroll-target="#introduction-to-entity-sets">Introduction to Entity Sets</a>
+  <li><a href="#what-is-normalization" id="toc-what-is-normalization" class="nav-link active" data-scroll-target="#what-is-normalization">What is Normalization?</a></li>
+  <li><a href="#why-normalize-the-data-anomalies" id="toc-why-normalize-the-data-anomalies" class="nav-link" data-scroll-target="#why-normalize-the-data-anomalies">Why Normalize? The Data Anomalies</a></li>
+  <li><a href="#key-prerequisites" id="toc-key-prerequisites" class="nav-link" data-scroll-target="#key-prerequisites">Key Prerequisites</a>
   <ul class="collapse">
-  <li><a href="#strong-entity-set" id="toc-strong-entity-set" class="nav-link" data-scroll-target="#strong-entity-set">Strong Entity Set</a></li>
-  <li><a href="#weak-entity-set" id="toc-weak-entity-set" class="nav-link" data-scroll-target="#weak-entity-set">Weak Entity Set</a></li>
+  <li><a href="#functional-dependencies-fds" id="toc-functional-dependencies-fds" class="nav-link" data-scroll-target="#functional-dependencies-fds">Functional Dependencies (FDs)</a></li>
+  <li><a href="#database-keys" id="toc-database-keys" class="nav-link" data-scroll-target="#database-keys">Database Keys</a></li>
+  <li><a href="#attribute-types" id="toc-attribute-types" class="nav-link" data-scroll-target="#attribute-types">Attribute Types</a></li>
   </ul></li>
-  <li><a href="#attributes" id="toc-attributes" class="nav-link" data-scroll-target="#attributes">Attributes</a></li>
-  <li><a href="#entity-relationship-er-diagrams" id="toc-entity-relationship-er-diagrams" class="nav-link" data-scroll-target="#entity-relationship-er-diagrams">Entity-Relationship (ER) Diagrams</a></li>
-  <li><a href="#mapping-cardinalities-relationship-types" id="toc-mapping-cardinalities-relationship-types" class="nav-link" data-scroll-target="#mapping-cardinalities-relationship-types">Mapping Cardinalities (Relationship Types)</a>
-  <ul class="collapse">
-  <li><a href="#one-to-one-11-relationship" id="toc-one-to-one-11-relationship" class="nav-link" data-scroll-target="#one-to-one-11-relationship">One-to-One (1:1) Relationship</a></li>
-  <li><a href="#one-to-many-1n-relationship" id="toc-one-to-many-1n-relationship" class="nav-link" data-scroll-target="#one-to-many-1n-relationship">One-to-Many (1:N) Relationship</a></li>
-  <li><a href="#many-to-one-n1-relationship" id="toc-many-to-one-n1-relationship" class="nav-link" data-scroll-target="#many-to-one-n1-relationship">Many-to-One (N:1) Relationship</a></li>
-  <li><a href="#many-to-many-mn-relationship" id="toc-many-to-many-mn-relationship" class="nav-link" data-scroll-target="#many-to-many-mn-relationship">Many-to-Many (M:N) Relationship</a></li>
-  </ul></li>
-  <li><a href="#total-and-partial-participation" id="toc-total-and-partial-participation" class="nav-link" data-scroll-target="#total-and-partial-participation">Total and Partial Participation</a></li>
-  <li><a href="#expressing-weak-entity-sets-in-er-diagrams" id="toc-expressing-weak-entity-sets-in-er-diagrams" class="nav-link" data-scroll-target="#expressing-weak-entity-sets-in-er-diagrams">Expressing Weak Entity Sets in ER Diagrams</a></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_4/02_entity_relationship_model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/01_intro_to_normalization.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_4/01_relational_algebra_and_calculus.html"><strong>Week-04</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_4/02_entity_relationship_model.html"><span class="chapter-title">Entity-Relationship Model</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><span class="chapter-title">Introduction to Normalization</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Entity-Relationship Model</span></h1>
+<h1 class="title"><span class="chapter-title">Introduction to Normalization</span></h1>
 </div>
 
 
@@ -569,165 +561,73 @@ window.Quarto = {
 </header>
 
 
-<p><a href="thumb_er.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="thumb_er.png" class="img-fluid"></a></p>
-<section id="introduction-to-entity-sets" class="level1">
-<h1>Introduction to Entity Sets</h1>
-<p>The Entity-Relationship (ER) model is a high-level conceptual data model that helps in designing the schema of a database. It allows us to describe the data involved in a real-world enterprise in terms of objects and their relationships.</p>
+<p><a href="thumb_intro.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="thumb_intro.png" class="img-fluid"></a></p>
+<section id="what-is-normalization" class="level1">
+<h1>What is Normalization?</h1>
+<p><strong>Normalization</strong> (or Schema Refinement) is a systematic technique of organizing data in a database. It involves decomposing a large, poorly-structured table into smaller, well-structured tables.</p>
+<p>Normalization serves two primary purposes:</p>
+<ol type="1">
+<li><p><strong>Eliminating Redundant (useless) Data</strong>: Ensuring that the same piece of information isn’t stored in multiple places.</p></li>
+<li><p><strong>Ensuring Data Dependencies</strong>: Ensuring that data is logically stored and related correctly.</p></li>
+</ol>
+<hr>
+</section>
+<section id="why-normalize-the-data-anomalies" class="level1">
+<h1>Why Normalize? The Data Anomalies</h1>
+<p>If a database is not normalized, it can suffer from three major types of <strong>Anomalies</strong> (errors or inconsistencies) when data is modified.</p>
+<p>Imagine a single unnormalized table storing both student details and the courses they are enrolled in: <code>Student_Course(StudentID, StudentName, CourseID, CourseName)</code>.</p>
+<section id="insertion-anomaly" class="level3">
+<h3 class="anchored" data-anchor-id="insertion-anomaly">1. Insertion Anomaly</h3>
+<p>An insertion anomaly occurs when you cannot insert certain data into the database without the presence of other unrelated data.</p>
 <ul>
-<li><strong>Entity</strong>: An entity is an object that exists and is distinguishable from other objects. For example, a specific student named “Alice” is an entity.</li>
-<li><strong>Entity Set</strong>: An entity set is a collection of entities of the same type that share the same properties or attributes. For example, the set of all students in a university forms an entity set.</li>
-</ul>
-<section id="strong-entity-set" class="level2">
-<h2 class="anchored" data-anchor-id="strong-entity-set">Strong Entity Set</h2>
-<ul>
-<li>A strong entity set is an entity set that contains sufficient attributes to uniquely identify all its entities.</li>
-<li>A strong entity set always has a <strong>Primary Key</strong>.</li>
+<li><strong>Example</strong>: If a new course is created but no students have enrolled in it yet, you cannot add the course to the <code>Student_Course</code> table because you would have to leave the <code>StudentID</code> (part of the primary key) blank.</li>
 </ul>
 </section>
-<section id="weak-entity-set" class="level2">
-<h2 class="anchored" data-anchor-id="weak-entity-set">Weak Entity Set</h2>
+<section id="deletion-anomaly" class="level3">
+<h3 class="anchored" data-anchor-id="deletion-anomaly">2. Deletion Anomaly</h3>
+<p>A deletion anomaly occurs when deleting a row inadvertently causes the loss of other unrelated information.</p>
 <ul>
-<li>A weak entity set is an entity set that does not contain sufficient attributes to uniquely identify its entities on its own.</li>
-<li>A primary key does not exist for a weak entity set.</li>
-<li>Instead, it contains a partial key called a <strong>Discriminator</strong>. The discriminator is represented in an ER diagram by underlining the attribute with a <strong>dashed line</strong>.</li>
+<li><strong>Example</strong>: If a student is the only person enrolled in “Advanced Databases”, and that student drops out, deleting their record will also completely erase the existence of the “Advanced Databases” course from the system.</li>
 </ul>
-<section id="characteristics-of-weak-entity-sets" class="level3">
-<h3 class="anchored" data-anchor-id="characteristics-of-weak-entity-sets">Characteristics of Weak Entity Sets</h3>
+</section>
+<section id="update-anomaly" class="level3">
+<h3 class="anchored" data-anchor-id="update-anomaly">3. Update Anomaly</h3>
+<p>An update anomaly occurs when a piece of data is stored in multiple rows, and updating it requires changing multiple records. If one record is missed, the database becomes inconsistent.</p>
 <ul>
-<li>A weak entity set cannot exist independently since it doesn’t have a primary key. It depends on a strong entity set.</li>
-<li>It features in the model in relationship with a strong entity set. This dependency is called an <strong>identifying relationship</strong>.</li>
-<li>The primary key of a weak entity set is formed by combining its discriminator with the primary key of the strong entity set it depends on.</li>
-<li><strong>Primary key of weak entity set = Discriminator + Primary key of Strong entity set</strong>.</li>
-<li>A weak entity set must have <strong>total participation</strong> in its identifying relationship.</li>
+<li><strong>Example</strong>: If “Alice” gets married and changes her name, you must update her <code>StudentName</code> in every single row for every course she takes. If you miss one, the database will show two different names for the same <code>StudentID</code>.</li>
 </ul>
 <hr>
 </section>
 </section>
-</section>
-<section id="attributes" class="level1">
-<h1>Attributes</h1>
-<p>An attribute is a property or characteristic associated with an entity set. For example, the <code>Student</code> entity set might have attributes like <code>Name</code>, <code>Age</code>, and <code>Roll Number</code>.</p>
-<section id="types-of-attributes" class="level3">
-<h3 class="anchored" data-anchor-id="types-of-attributes">Types of Attributes</h3>
+<section id="key-prerequisites" class="level1">
+<h1>Key Prerequisites</h1>
+<p>Before diving into Normal Forms, we must define the mathematical rules that govern how attributes relate to one another.</p>
+<section id="functional-dependencies-fds" class="level2">
+<h2 class="anchored" data-anchor-id="functional-dependencies-fds">Functional Dependencies (FDs)</h2>
+<p>A Functional Dependency, denoted as <span class="math inline">\(X \rightarrow Y\)</span>, means that the attribute(s) <span class="math inline">\(X\)</span> uniquely determines the attribute(s) <span class="math inline">\(Y\)</span>. If you know the value of <span class="math inline">\(X\)</span>, you can look up exactly one corresponding value of <span class="math inline">\(Y\)</span>.</p>
 <ul>
-<li><strong>Simple attribute</strong>: An attribute that cannot be divided into smaller sub-parts (e.g., <code>Age</code>).</li>
-<li><strong>Composite attribute</strong>: An attribute that can be divided into smaller sub-parts. For example, a <code>Name</code> attribute can be divided into <code>First Name</code>, <code>Middle Name</code>, and <code>Last Name</code>.</li>
-<li><strong>Single-valued attribute</strong>: An attribute that holds a single value for a specific entity (e.g., <code>Roll Number</code>).</li>
-<li><strong>Multivalued attribute</strong>: An attribute that can hold multiple values for a specific entity. For example, a student might have multiple phone numbers (<code>{phone_numbers}</code>).</li>
-<li><strong>Derived attribute</strong>: An attribute whose value is calculated (derived) from the value of another attribute. For example, <code>Age()</code> can be derived from the <code>Date of Birth</code> attribute.</li>
+<li><strong>Example</strong>: <span class="math inline">\(StudentID \rightarrow StudentName\)</span>. If you know the ID, there is only one possible name associated with it. Here, <span class="math inline">\(X\)</span> is called the <strong>Determinant</strong>.</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="attributes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Types of Attributes"><img src="attributes.png" class="img-fluid figure-img" style="width:50.0%" alt="Types of Attributes"></a></p>
-<figcaption>Types of Attributes</figcaption>
-</figure>
-</div>
-<hr>
 </section>
-</section>
-<section id="entity-relationship-er-diagrams" class="level1">
-<h1>Entity-Relationship (ER) Diagrams</h1>
-<p>An ER diagram is a visual representation of the ER model. The standard notation involves:</p>
+<section id="database-keys" class="level2">
+<h2 class="anchored" data-anchor-id="database-keys">Database Keys</h2>
 <ul>
-<li><strong>Rectangles</strong>: Represent entity sets.</li>
-<li><strong>Ellipses</strong>: Attributes are listed inside ellipses and connected to the entity set.</li>
-<li><strong>Solid Underline</strong>: Indicates a primary key attribute.</li>
-<li><strong>Diamonds</strong>: Represent relationship sets.</li>
-<li><strong>Double Lines</strong>: Indicate total participation of an entity in a relationship.</li>
-<li><strong>Double Rectangles</strong>: Represent weak entity sets.</li>
-<li><strong>Double Diamonds</strong>: Represent identifying relationship sets for weak entity sets.</li>
+<li><strong>Superkey</strong>: A set of one or more attributes that can uniquely identify a row in a table. If <span class="math inline">\(\{StudentID\}\)</span> is a superkey, then <span class="math inline">\(\{StudentID, StudentName\}\)</span> is also a superkey.</li>
+<li><strong>Candidate Key</strong>: A <em>minimal</em> superkey. It is a superkey where no proper subset of its attributes can uniquely identify a row. There can be multiple candidate keys in a table.</li>
+<li><strong>Primary Key</strong>: The specific candidate key chosen by the database designer to uniquely identify rows.</li>
 </ul>
-<hr>
 </section>
-<section id="mapping-cardinalities-relationship-types" class="level1">
-<h1>Mapping Cardinalities (Relationship Types)</h1>
-<p>Mapping cardinalities express the number of entities to which another entity can be associated via a relationship set.</p>
-<section id="one-to-one-11-relationship" class="level2">
-<h2 class="anchored" data-anchor-id="one-to-one-11-relationship">One-to-One (1:1) Relationship</h2>
+<section id="attribute-types" class="level2">
+<h2 class="anchored" data-anchor-id="attribute-types">Attribute Types</h2>
+<p>Based on the Candidate Keys, all attributes in a table are divided into two categories:</p>
 <ul>
-<li>Each entity in <span class="math inline">\(A\)</span> is associated with at most one entity in <span class="math inline">\(B\)</span>.</li>
-<li>Each entity in <span class="math inline">\(B\)</span> is associated with at most one entity in <span class="math inline">\(A\)</span>.</li>
-<li><em>Example</em>: Each instructor has at most one student, and each student has at most one instructor.</li>
+<li><p><strong>Prime Attribute</strong>: An attribute that is a part of <em>any</em> candidate key.</p></li>
+<li><p><strong>Non-Prime Attribute</strong>: An attribute that is <em>not</em> a part of any candidate key.</p></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="One to One"><img src="1-1.png" class="img-fluid figure-img" style="width:70.0%" alt="One to One"></a></p>
-<figcaption>One to One</figcaption>
-</figure>
-</div>
-</section>
-<section id="one-to-many-1n-relationship" class="level2">
-<h2 class="anchored" data-anchor-id="one-to-many-1n-relationship">One-to-Many (1:N) Relationship</h2>
-<ul>
-<li>Each entity in <span class="math inline">\(A\)</span> can be associated with one or many entities in <span class="math inline">\(B\)</span>.</li>
-<li>Each entity in <span class="math inline">\(B\)</span> is associated with at most one entity in <span class="math inline">\(A\)</span>.</li>
-<li><em>Example</em>: An instructor can advise multiple students, but each student has only one instructor.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="1-many.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="One to Many"><img src="1-many.png" class="img-fluid figure-img" style="width:70.0%" alt="One to Many"></a></p>
-<figcaption>One to Many</figcaption>
-</figure>
-</div>
-</section>
-<section id="many-to-one-n1-relationship" class="level2">
-<h2 class="anchored" data-anchor-id="many-to-one-n1-relationship">Many-to-One (N:1) Relationship</h2>
-<ul>
-<li>Each entity in <span class="math inline">\(A\)</span> is associated with at most one entity in <span class="math inline">\(B\)</span>.</li>
-<li>Each entity in <span class="math inline">\(B\)</span> can be associated with one or many entities in <span class="math inline">\(A\)</span>.</li>
-<li><em>Example</em>: Many students can be advised by the same instructor, but each student has at most one instructor.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="many-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Many to One"><img src="many-1.png" class="img-fluid figure-img" style="width:70.0%" alt="Many to One"></a></p>
-<figcaption>Many to One</figcaption>
-</figure>
-</div>
-</section>
-<section id="many-to-many-mn-relationship" class="level2">
-<h2 class="anchored" data-anchor-id="many-to-many-mn-relationship">Many-to-Many (M:N) Relationship</h2>
-<ul>
-<li>Each entity in <span class="math inline">\(A\)</span> can be associated with one or many entities in <span class="math inline">\(B\)</span>.</li>
-<li>Each entity in <span class="math inline">\(B\)</span> can be associated with one or many entities in <span class="math inline">\(A\)</span>.</li>
-<li><em>Example</em>: An instructor can advise multiple students, and a student can have multiple instructors.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="many-many.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Many to Many"><img src="many-many.png" class="img-fluid figure-img" style="width:70.0%" alt="Many to Many"></a></p>
-<figcaption>Many to Many</figcaption>
-</figure>
-</div>
-<hr>
-</section>
-</section>
-<section id="total-and-partial-participation" class="level1">
-<h1>Total and Partial Participation</h1>
-<p>Participation constraints dictate whether the existence of an entity depends on its being related to another entity via the relationship type.</p>
-<ul>
-<li><strong>Total Participation</strong>: Every entity in the entity set must participate in at least one relationship in the relationship set. Indicated by a double line.</li>
-<li><strong>Partial Participation</strong>: Some entities may not participate in any relationship in the relationship set. Indicated by a single line.</li>
-</ul>
-<p><em>Example</em>: If every student <em>must</em> have an instructor, the <code>Student</code> entity set has total participation. If an instructor <em>may or may not</em> have a student, the <code>Instructor</code> entity set has partial participation.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="total_participation.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Total and Partial Participation"><img src="total_participation.png" class="img-fluid figure-img" style="width:80.0%" alt="Total and Partial Participation"></a></p>
-<figcaption>Total and Partial Participation</figcaption>
-</figure>
-</div>
-<hr>
-</section>
-<section id="expressing-weak-entity-sets-in-er-diagrams" class="level1">
-<h1>Expressing Weak Entity Sets in ER Diagrams</h1>
-<p>As discussed earlier, a weak entity set does not have a primary key and depends on a strong entity set. In an ER diagram, we denote the weak entity set with a double rectangle, its identifying relationship with a double diamond, and its discriminator attribute with a dashed underline.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="weak_entity.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Weak Entity Set Notation"><img src="weak_entity.png" class="img-fluid figure-img" style="width:80.0%" alt="Weak Entity Set Notation"></a></p>
-<figcaption>Weak Entity Set Notation</figcaption>
-</figure>
-</div>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1224,13 +1124,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_4/01_relational_algebra_and_calculus.html" class="pagination-link" aria-label="Relational Algebra and Calculus">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Relational Algebra and Calculus</span></span>
+      <a href="../../weeks/week_5/04.html" class="pagination-link" aria-label="Lossless Join &amp; Dependency preservation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Lossless Join &amp; Dependency preservation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
-        <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="pagination-link" aria-label="Normal Forms (1NF to 3NF)">
+        <span class="nav-page-text"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1242,7 +1142,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_4/02_entity_relationship_model.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/01_intro_to_normalization.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
