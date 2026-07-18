@@ -47,9 +47,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9b325c28454ee3ddedfcc241a9fdc2c7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -470,12 +470,38 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-06</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -497,11 +523,29 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
+  <ul>
+  <li><a href="#armstrongs-axioms" id="toc-armstrongs-axioms" class="nav-link active" data-scroll-target="#armstrongs-axioms">Armstrong’s Axioms</a>
   <ul class="collapse">
-  <li><a href="#armstrongs-axioms" id="toc-armstrongs-axioms" class="nav-link active" data-scroll-target="#armstrongs-axioms">Armstrong’s Axioms</a></li>
-  <li><a href="#closure-of-attribute-sets" id="toc-closure-of-attribute-sets" class="nav-link" data-scroll-target="#closure-of-attribute-sets">Closure of Attribute Sets</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example">Worked Example</a></li>
+  <li><a href="#derived-rules" id="toc-derived-rules" class="nav-link" data-scroll-target="#derived-rules">Derived Rules</a></li>
+  </ul></li>
+  <li><a href="#closure-of-attribute-sets" id="toc-closure-of-attribute-sets" class="nav-link" data-scroll-target="#closure-of-attribute-sets">Closure of Attribute Sets</a>
+  <ul class="collapse">
+  <li><a href="#how-to-compute-it" id="toc-how-to-compute-it" class="nav-link" data-scroll-target="#how-to-compute-it">How to Compute It</a></li>
+  <li><a href="#worked-example-1" id="toc-worked-example-1" class="nav-link" data-scroll-target="#worked-example-1">Worked Example</a></li>
+  <li><a href="#superkeys-and-candidate-keys-via-closure" id="toc-superkeys-and-candidate-keys-via-closure" class="nav-link" data-scroll-target="#superkeys-and-candidate-keys-via-closure">Superkeys and Candidate Keys, via Closure</a></li>
+  <li><a href="#prime-and-non-prime-attributes" id="toc-prime-and-non-prime-attributes" class="nav-link" data-scroll-target="#prime-and-non-prime-attributes">Prime and Non-Prime Attributes</a></li>
+  <li><a href="#formula-maximum-number-of-superkeys" id="toc-formula-maximum-number-of-superkeys" class="nav-link" data-scroll-target="#formula-maximum-number-of-superkeys">Formula: Maximum Number of Superkeys</a></li>
+  <li><a href="#case-1-only-1-candidate-key-single-attribute" id="toc-case-1-only-1-candidate-key-single-attribute" class="nav-link" data-scroll-target="#case-1-only-1-candidate-key-single-attribute">Case 1: Only 1 Candidate Key (Single Attribute)</a></li>
+  <li><a href="#case-2-only-1-candidate-key-composite-key" id="toc-case-2-only-1-candidate-key-composite-key" class="nav-link" data-scroll-target="#case-2-only-1-candidate-key-composite-key">Case 2: Only 1 Candidate Key (Composite Key)</a></li>
+  <li><a href="#case-3-every-single-attribute-is-a-candidate-key" id="toc-case-3-every-single-attribute-is-a-candidate-key" class="nav-link" data-scroll-target="#case-3-every-single-attribute-is-a-candidate-key">Case 3: Every Single Attribute is a Candidate Key</a></li>
+  <li><a href="#case-4-two-distinct-candidate-keys" id="toc-case-4-two-distinct-candidate-keys" class="nav-link" data-scroll-target="#case-4-two-distinct-candidate-keys">Case 4: Two Distinct Candidate Keys</a></li>
+  <li><a href="#generic-set-formula" id="toc-generic-set-formula" class="nav-link" data-scroll-target="#generic-set-formula">Generic Set Formula</a></li>
+  <li><a href="#mathematical-representation" id="toc-mathematical-representation" class="nav-link" data-scroll-target="#mathematical-representation">Mathematical Representation</a></li>
+  <li><a href="#why-attribute-closure-matters" id="toc-why-attribute-closure-matters" class="nav-link" data-scroll-target="#why-attribute-closure-matters">Why Attribute Closure Matters</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">

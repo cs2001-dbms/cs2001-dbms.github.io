@@ -82,9 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9b325c28454ee3ddedfcc241a9fdc2c7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -511,12 +511,38 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-06</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -538,16 +564,29 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
-  <ul class="collapse">
+  <ul>
   <li><a href="#what-is-a-relational-database" id="toc-what-is-a-relational-database" class="nav-link active" data-scroll-target="#what-is-a-relational-database">What is a Relational Database?</a></li>
   <li><a href="#the-concept-of-keys" id="toc-the-concept-of-keys" class="nav-link" data-scroll-target="#the-concept-of-keys">The Concept of Keys</a></li>
   <li><a href="#relational-queries-the-pure-language" id="toc-relational-queries-the-pure-language" class="nav-link" data-scroll-target="#relational-queries-the-pure-language">Relational Queries &amp; The Pure Language</a></li>
-  <li><a href="#relational-operators-slicing-and-dicing" id="toc-relational-operators-slicing-and-dicing" class="nav-link" data-scroll-target="#relational-operators-slicing-and-dicing">Relational Operators: Slicing and Dicing</a></li>
+  <li><a href="#relational-operators-slicing-and-dicing" id="toc-relational-operators-slicing-and-dicing" class="nav-link" data-scroll-target="#relational-operators-slicing-and-dicing">Relational Operators: Slicing and Dicing</a>
+  <ul class="collapse">
+  <li><a href="#the-big-two-select-vs.-project" id="toc-the-big-two-select-vs.-project" class="nav-link" data-scroll-target="#the-big-two-select-vs.-project">The Big Two: Select vs.&nbsp;Project</a></li>
+  <li><a href="#other-important-operators" id="toc-other-important-operators" class="nav-link" data-scroll-target="#other-important-operators">Other Important Operators</a></li>
+  </ul></li>
   <li><a href="#what-is-sql" id="toc-what-is-sql" class="nav-link" data-scroll-target="#what-is-sql">What is SQL?</a></li>
-  <li><a href="#domain-types-integrity-constraints" id="toc-domain-types-integrity-constraints" class="nav-link" data-scroll-target="#domain-types-integrity-constraints">Domain Types &amp; Integrity Constraints</a></li>
-  <li><a href="#ddl-building-the-blueprint" id="toc-ddl-building-the-blueprint" class="nav-link" data-scroll-target="#ddl-building-the-blueprint">DDL: Building the Blueprint</a></li>
+  <li><a href="#domain-types-integrity-constraints" id="toc-domain-types-integrity-constraints" class="nav-link" data-scroll-target="#domain-types-integrity-constraints">Domain Types &amp; Integrity Constraints</a>
+  <ul class="collapse">
+  <li><a href="#domain-types" id="toc-domain-types" class="nav-link" data-scroll-target="#domain-types">Domain Types</a></li>
+  <li><a href="#integrity-constraints" id="toc-integrity-constraints" class="nav-link" data-scroll-target="#integrity-constraints">Integrity Constraints</a></li>
+  </ul></li>
+  <li><a href="#ddl-building-the-blueprint" id="toc-ddl-building-the-blueprint" class="nav-link" data-scroll-target="#ddl-building-the-blueprint">DDL: Building the Blueprint</a>
+  <ul class="collapse">
+  <li><a href="#the-create-command" id="toc-the-create-command" class="nav-link" data-scroll-target="#the-create-command">1. The <code>CREATE</code> Command</a></li>
+  <li><a href="#the-alter-command" id="toc-the-alter-command" class="nav-link" data-scroll-target="#the-alter-command">2. The <code>ALTER</code> Command</a></li>
+  <li><a href="#the-drop-command" id="toc-the-drop-command" class="nav-link" data-scroll-target="#the-drop-command">3. The <code>DROP</code> Command</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/01_relational_and_ddl.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/01_relational_and_ddl.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">

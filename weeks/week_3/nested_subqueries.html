@@ -82,9 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9b325c28454ee3ddedfcc241a9fdc2c7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -508,12 +508,38 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-06</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -535,14 +561,28 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
-  <ul class="collapse">
+  <ul>
   <li><a href="#nested-subqueries" id="toc-nested-subqueries" class="nav-link active" data-scroll-target="#nested-subqueries">Nested Subqueries</a></li>
-  <li><a href="#subqueries-in-the-where-clause" id="toc-subqueries-in-the-where-clause" class="nav-link" data-scroll-target="#subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</a></li>
-  <li><a href="#subqueries-in-the-from-clause" id="toc-subqueries-in-the-from-clause" class="nav-link" data-scroll-target="#subqueries-in-the-from-clause">Subqueries in the FROM Clause</a></li>
+  <li><a href="#subqueries-in-the-where-clause" id="toc-subqueries-in-the-where-clause" class="nav-link" data-scroll-target="#subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</a>
+  <ul class="collapse">
+  <li><a href="#set-membership-in-not-in" id="toc-set-membership-in-not-in" class="nav-link" data-scroll-target="#set-membership-in-not-in">Set Membership: <code>IN</code> / <code>NOT IN</code></a></li>
+  <li><a href="#set-comparison-some-and-all" id="toc-set-comparison-some-and-all" class="nav-link" data-scroll-target="#set-comparison-some-and-all">Set Comparison: <code>SOME</code> and <code>ALL</code></a></li>
+  <li><a href="#test-for-empty-sets-exists" id="toc-test-for-empty-sets-exists" class="nav-link" data-scroll-target="#test-for-empty-sets-exists">Test for Empty Sets: <code>EXISTS</code></a></li>
+  <li><a href="#test-for-duplicates-unique" id="toc-test-for-duplicates-unique" class="nav-link" data-scroll-target="#test-for-duplicates-unique">Test for Duplicates: <code>UNIQUE</code></a></li>
+  </ul></li>
+  <li><a href="#subqueries-in-the-from-clause" id="toc-subqueries-in-the-from-clause" class="nav-link" data-scroll-target="#subqueries-in-the-from-clause">Subqueries in the FROM Clause</a>
+  <ul class="collapse">
+  <li><a href="#the-with-clause" id="toc-the-with-clause" class="nav-link" data-scroll-target="#the-with-clause">The <code>WITH</code> Clause</a></li>
+  </ul></li>
   <li><a href="#subqueries-in-the-select-clause" id="toc-subqueries-in-the-select-clause" class="nav-link" data-scroll-target="#subqueries-in-the-select-clause">Subqueries in the SELECT Clause</a></li>
-  <li><a href="#modifying-the-database" id="toc-modifying-the-database" class="nav-link" data-scroll-target="#modifying-the-database">Modifying the Database</a></li>
+  <li><a href="#modifying-the-database" id="toc-modifying-the-database" class="nav-link" data-scroll-target="#modifying-the-database">Modifying the Database</a>
+  <ul class="collapse">
+  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
+  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
+  <li><a href="#updates" id="toc-updates" class="nav-link" data-scroll-target="#updates">Updates</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/nested_subqueries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/nested_subqueries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">

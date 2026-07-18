@@ -82,9 +82,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-905e419b921e6856789b6eb0bac8e563.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-e3bf135d0e5327cc5264562cda4ca424.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-9b325c28454ee3ddedfcc241a9fdc2c7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -508,12 +508,38 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-06</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -535,12 +561,24 @@ window.Quarto = {
         <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
+  <ul>
+  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a>
   <ul class="collapse">
-  <li><a href="#dml-furnishing-the-house" id="toc-dml-furnishing-the-house" class="nav-link active" data-scroll-target="#dml-furnishing-the-house">DML: Furnishing the House</a></li>
-  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a></li>
-  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a></li>
+  <li><a href="#insert-adding-new-records" id="toc-insert-adding-new-records" class="nav-link" data-scroll-target="#insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</a></li>
+  <li><a href="#update-modifying-existing-data" id="toc-update-modifying-existing-data" class="nav-link" data-scroll-target="#update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</a></li>
+  <li><a href="#delete-removing-records" id="toc-delete-removing-records" class="nav-link" data-scroll-target="#delete-removing-records">3. <code>DELETE</code>: Removing Records</a></li>
+  </ul></li>
+  <li><a href="#the-anatomy-of-a-query" id="toc-the-anatomy-of-a-query" class="nav-link" data-scroll-target="#the-anatomy-of-a-query">The Anatomy of a Query</a>
+  <ul class="collapse">
+  <li><a href="#the-select-clause-in-detail" id="toc-the-select-clause-in-detail" class="nav-link" data-scroll-target="#the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</a></li>
+  <li><a href="#the-order-by-clause" id="toc-the-order-by-clause" class="nav-link" data-scroll-target="#the-order-by-clause">The <code>ORDER BY</code> Clause</a></li>
+  </ul></li>
+  <li><a href="#the-danger-of-cross-joins" id="toc-the-danger-of-cross-joins" class="nav-link" data-scroll-target="#the-danger-of-cross-joins">The Danger of Cross Joins</a>
+  <ul class="collapse">
+  <li><a href="#fixing-the-cross-join" id="toc-fixing-the-cross-join" class="nav-link" data-scroll-target="#fixing-the-cross-join">Fixing the Cross Join</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/02_dml_and_queries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/02_dml_and_queries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
