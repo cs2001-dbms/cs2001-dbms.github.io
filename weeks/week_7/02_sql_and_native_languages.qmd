@@ -1,0 +1,234 @@
+---
+title: "SQL and Native Languages"
+format:
+  html:
+    toc: true
+---
+
+When an application needs to talk to a database, it uses an **API (Application Programming Interface)** — a standard set of function calls that let you:
+
+- Open a connection to the database server
+- Send SQL queries or updates
+- Fetch results back into your program's variables
+
+There are two broad approaches to doing this:
+
+| Approach | What it means | Examples |
+|---|---|---|
+| **Connectionist** | SQL is sent as a string through a driver at runtime | ODBC, JDBC |
+| **Embedded SQL** | SQL is written directly inside the host language code and processed before compilation | Embedded SQL for C, Java (SQLJ) |
+
+---
+
+## ODBC (Open Database Connectivity)
+
+ODBC is a standard API that lets applications talk to *any* database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.
+
+It was originally developed by Microsoft and works with **C, C++, C#, Visual Basic, and Python**.
+
+A typical ODBC workflow:
+
+- Open a connection to the database
+- Send a query or update
+- Fetch results
+- Close the connection
+
+---
+
+## JDBC (Java Database Connectivity)
+
+JDBC is the Java equivalent of ODBC. It's the standard way for Java programs to talk to a database.
+
+The workflow is very similar:
+
+```java
+// 1. Open a connection
+Connection con = DriverManager.getConnection(connectionUrl);
+
+// 2. Create a statement object
+Statement stmt = con.createStatement();
+
+// 3. Execute a query and get results
+ResultSet rs = stmt.executeQuery("SELECT * FROM Production.Product");
+
+// 4. Iterate through results
+while (rs.next()) {
+    System.out.println(rs.getString("ProductID") + " : " + rs.getString("Name"));
+    }
+```
+
+- `DriverManager.getConnection()` — opens the connection using a connection URL
+- `Statement` — used to send SQL to the database
+- `ResultSet` — holds the rows returned by a query; you iterate through it with `rs.next()`
+
+---
+
+## Connectionist Bridges
+
+Sometimes the driver you need doesn't exist — for example, you want to connect a Java app to a database that only has an ODBC driver. **Bridges** solve this by translating function calls from one standard to another.
+
+| Bridge | What it does |
+|---|---|
+| **JDBC-to-ODBC** | JDBC driver internally uses an ODBC driver to reach the database |
+| **ODBC-to-JDBC** | ODBC driver internally uses a JDBC driver |
+| **OLE DB-to-ODBC** | Microsoft's OLE DB provider translated to ODBC calls |
+| **ADO.NET-to-ODBC** | ADO.NET provider (used in .NET apps) translated to ODBC |
+
+Think of a bridge as a translator — it lets two systems that speak different languages work together.
+
+---
+
+## Embedded SQL
+
+With ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they're even there. **Embedded SQL** takes a different approach: you write SQL *directly inside* the host language code, and a **pre-processor** converts it into regular function calls before compilation.
+
+Supported in: **C, C++, Java (SQLJ), COBOL, FORTRAN**.
+
+SQL statements are marked with `EXEC SQL` so the pre-processor knows what to handle:
+
+```c
+EXEC SQL <embedded SQL statement>;
+```
+
+### Key Concepts
+
+**Connecting to the database:**
+```c
+EXEC SQL CONNECT TO server USER username USING password;
+```
+
+**Host variables** — variables from your program that you use inside SQL queries. They're prefixed with `:` to distinguish them from SQL column names. 
+Variables used within the Embedded SQL query must be declared within DECLARE section:
+```c
+EXEC SQL BEGIN DECLARE SECTION;
+    int credit_amount;
+EXEC SQL END DECLARE SECTION;
+```
+
+**Cursors** — since a query can return many rows, you use a *cursor* to step through them one at a time. Think of it as a pointer that moves through the result set.
+
+```c
+/* 1. Declare the cursor */
+EXEC SQL 
+    DECLARE c CURSOR FOR
+    SELECT ID, name FROM student
+    WHERE tot_cred > :credit_amount;
+END_EXEC
+
+/* 2. Open it — this actually runs the query */
+EXEC SQL OPEN c;
+
+/* 3. Fetch rows one by one */
+EXEC SQL FETCH c INTO :si, :sn;
+
+/* 4. Close when done */
+EXEC SQL CLOSE c;
+```
+
+- `OPEN` — executes the query and stores results in a temporary relation
+- `FETCH` — retrieves the next row into your host variables
+- `SQLSTATE` is set to `'02000'` when there are no more rows to fetch
+- `CLOSE` — releases the temporary result
+
+**Updating through a cursor:**
+
+You can also modify rows as you fetch them by declaring the cursor `FOR UPDATE`:
+
+```c
+EXEC SQL DECLARE c CURSOR FOR
+    SELECT * FROM instructor
+    WHERE dept_name = 'Music'
+    FOR UPDATE;
+
+/* After fetching each row: */
+UPDATE instructor SET salary = salary + 1000 WHERE CURRENT OF c;
+```
+
+---
+
+## Connecting Python to PostgreSQL
+
+The most popular Python library for working with PostgreSQL is **psycopg2** — it's stable, actively maintained, thread-safe, and works with both Python 2 and 3.
+
+Install it with:
+```bash
+pip install psycopg2
+```
+
+Every interaction with the database follows the same six steps:
+
+| Step | What happens |
+|---|---|
+| 1. Create connection | `psycopg2.connect(...)` — opens a connection to the DB |
+| 2. Create cursor | `conn.cursor()` — creates a cursor to execute queries |
+| 3. Execute query | `cur.execute(sql)` — runs your SQL |
+| 4. Fetch results | `fetchone()`, `fetchmany()`, or `fetchall()` |
+| 5. Commit or rollback | `conn.commit()` to save, `conn.rollback()` to undo |
+| 6. Close | `cur.close()` then `conn.close()` |
+
+---
+
+## Key API Methods
+
+**Connection:**
+```python
+conn = psycopg2.connect(database="mydb", user="myuser",
+                         password="mypass", host="127.0.0.1", port="5432")
+conn.commit()    # saves changes
+conn.rollback()  # undoes changes since last commit
+conn.close()     # closes the connection
+```
+
+**Cursor:**
+```python
+cur = conn.cursor()
+cur.execute("INSERT INTO employee VALUES (%s, %s)", (id, name))  # parameterized query
+cur.rowcount     # number of rows affected by last operation
+cur.fetchone()   # returns next row, or None
+cur.fetchmany(n) # returns next n rows as a list
+cur.fetchall()   # returns all remaining rows as a list
+cur.close()
+```
+
+> Use `%s` as a placeholder in queries instead of string formatting — this protects against SQL injection.
+
+---
+
+## CRUD Operations in Python
+
+**CREATE table:**
+```python
+cur.execute('''CREATE TABLE EMPLOYEE (
+    emp_num  INT PRIMARY KEY NOT NULL,
+    emp_name VARCHAR(40) NOT NULL,
+    department VARCHAR(40) NOT NULL)''')
+conn.commit()
+```
+
+**INSERT:**
+```python
+cur.execute("INSERT INTO EMPLOYEE VALUES (%s, %s, %s)", (110, 'Bhaskar', 'HR'))
+conn.commit()
+```
+
+**UPDATE:**
+```python
+cur.execute("UPDATE EMPLOYEE SET department = %s WHERE emp_num = %s", ('Finance', 110))
+conn.commit()
+```
+
+**DELETE:**
+```python
+cur.execute("DELETE FROM EMPLOYEE WHERE emp_num = %s", (110,))
+conn.commit()
+```
+
+**SELECT:**
+```python
+cur.execute("SELECT emp_num, emp_name, department FROM EMPLOYEE")
+rows = cur.fetchall()
+for row in rows:
+    print(row[0], row[1], row[2])
+```
+
+---
