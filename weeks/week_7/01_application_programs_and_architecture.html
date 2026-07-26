@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>BCNF and Multivalued Dependencies – Database Management Systems</title>
+<title>Application Programs and Architecture – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,8 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_7/01_application_programs_and_architecture.html" rel="next">
-<link href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" rel="prev">
+<link href="../../weeks/week_7/02_sql_and_native_languages.html" rel="next">
+<link href="../../weeks/week_6/03_bcnf_and_4nf.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -289,7 +324,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/03_bcnf_and_4nf.html"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01_application_programs_and_architecture.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/01_application_programs_and_architecture.html"><span class="chapter-title">Application Programs and Architecture</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -475,13 +510,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-06</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
@@ -494,23 +529,23 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-07</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Application Programs and Architecture</span></a>
+  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Application Programs and Architecture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -556,29 +591,39 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#bcnf-boyce-codd-normal-form" id="toc-bcnf-boyce-codd-normal-form" class="nav-link active" data-scroll-target="#bcnf-boyce-codd-normal-form">BCNF (Boyce-Codd Normal Form)</a>
+  <li><a href="#application-programs" id="toc-application-programs" class="nav-link active" data-scroll-target="#application-programs">Application Programs</a></li>
+  <li><a href="#the-three-layer-architecture" id="toc-the-three-layer-architecture" class="nav-link" data-scroll-target="#the-three-layer-architecture">The Three-Layer Architecture</a>
   <ul class="collapse">
-  <li><a href="#note" id="toc-note" class="nav-link" data-scroll-target="#note"><strong>Note:</strong></a></li>
-  <li><a href="#bcnf-solved-example-1-success" id="toc-bcnf-solved-example-1-success" class="nav-link" data-scroll-target="#bcnf-solved-example-1-success"><strong>BCNF Solved Example 1: Success</strong></a></li>
-  <li><a href="#bcnf-solved-example-2-failure" id="toc-bcnf-solved-example-2-failure" class="nav-link" data-scroll-target="#bcnf-solved-example-2-failure"><strong>BCNF Solved Example 2: Failure</strong></a></li>
+  <li><a href="#presentation-layer-frontend" id="toc-presentation-layer-frontend" class="nav-link" data-scroll-target="#presentation-layer-frontend">Presentation Layer (Frontend)</a></li>
+  <li><a href="#business-logic-layer-middle-layer-tier-2" id="toc-business-logic-layer-middle-layer-tier-2" class="nav-link" data-scroll-target="#business-logic-layer-middle-layer-tier-2">Business Logic Layer (Middle Layer / Tier 2)</a></li>
+  <li><a href="#data-access-layer-backend-tier-3" id="toc-data-access-layer-backend-tier-3" class="nav-link" data-scroll-target="#data-access-layer-backend-tier-3">Data Access Layer (Backend / Tier 3)</a></li>
   </ul></li>
-  <li><a href="#multivalued-dependency-mvd" id="toc-multivalued-dependency-mvd" class="nav-link" data-scroll-target="#multivalued-dependency-mvd">Multivalued Dependency (MVD)</a>
+  <li><a href="#architecture-classification" id="toc-architecture-classification" class="nav-link" data-scroll-target="#architecture-classification">Architecture Classification</a></li>
+  <li><a href="#web-applications-and-scripting" id="toc-web-applications-and-scripting" class="nav-link" data-scroll-target="#web-applications-and-scripting">Web Applications and Scripting</a>
   <ul class="collapse">
-  <li><a href="#visualizing-mvd" id="toc-visualizing-mvd" class="nav-link" data-scroll-target="#visualizing-mvd"><strong>Visualizing MVD</strong></a></li>
-  <li><a href="#trivial-mvd" id="toc-trivial-mvd" class="nav-link" data-scroll-target="#trivial-mvd"><strong>Trivial MVD</strong></a></li>
+  <li><a href="#the-world-wide-web" id="toc-the-world-wide-web" class="nav-link" data-scroll-target="#the-world-wide-web">The World Wide Web</a></li>
+  <li><a href="#urls-uris-and-urns" id="toc-urls-uris-and-urns" class="nav-link" data-scroll-target="#urls-uris-and-urns">URLs, URIs, and URNs</a></li>
+  <li><a href="#html-and-http" id="toc-html-and-http" class="nav-link" data-scroll-target="#html-and-http">HTML and HTTP</a></li>
+  <li><a href="#sessions-and-cookies" id="toc-sessions-and-cookies" class="nav-link" data-scroll-target="#sessions-and-cookies">Sessions and Cookies</a></li>
   </ul></li>
-  <li><a href="#mvd-theory-rules" id="toc-mvd-theory-rules" class="nav-link" data-scroll-target="#mvd-theory-rules">MVD Theory Rules</a></li>
-  <li><a href="#nf-fourth-normal-form" id="toc-nf-fourth-normal-form" class="nav-link" data-scroll-target="#nf-fourth-normal-form">4NF (Fourth Normal Form)</a></li>
+  <li><a href="#scripting" id="toc-scripting" class="nav-link" data-scroll-target="#scripting">Scripting</a>
+  <ul class="collapse">
+  <li><a href="#client-side-scripting" id="toc-client-side-scripting" class="nav-link" data-scroll-target="#client-side-scripting">Client-Side Scripting</a></li>
+  <li><a href="#server-side-scripting" id="toc-server-side-scripting" class="nav-link" data-scroll-target="#server-side-scripting"><strong>Server-Side Scripting</strong></a></li>
+  <li><a href="#servlets" id="toc-servlets" class="nav-link" data-scroll-target="#servlets">Servlets</a></li>
+  <li><a href="#jsp-java-server-pages" id="toc-jsp-java-server-pages" class="nav-link" data-scroll-target="#jsp-java-server-pages">JSP (Java Server Pages)</a></li>
+  <li><a href="#php" id="toc-php" class="nav-link" data-scroll-target="#php">PHP</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/03_bcnf_and_4nf.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/01_application_programs_and_architecture.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/03_bcnf_and_4nf.html"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01_application_programs_and_architecture.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/01_application_programs_and_architecture.html"><span class="chapter-title">Application Programs and Architecture</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">BCNF and Multivalued Dependencies</span></h1>
+<h1 class="title"><span class="chapter-title">Application Programs and Architecture</span></h1>
 </div>
 
 
@@ -595,89 +640,23 @@ window.Quarto = {
 </header>
 
 
-<p><a href="thumb_bcnf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="thumb_bcnf.png" class="img-fluid"></a></p>
-<p>While 3NF is sufficient for most practical database designs, it still allows certain types of anomalies if there are overlapping candidate keys. Boyce-Codd Normal Form (BCNF) was introduced to handle these edge cases by applying a stricter rule.</p>
-<hr>
-<section id="bcnf-boyce-codd-normal-form" class="level1">
-<h1>BCNF (Boyce-Codd Normal Form)</h1>
-<p>A relational schema <span class="math inline">\(R\)</span> is in BCNF if for every non-trivial functional dependency <span class="math inline">\(A \rightarrow B\)</span> associated with <span class="math inline">\(R\)</span>, the following condition holds: - <strong><span class="math inline">\(A\)</span> must be a superkey</strong>.</p>
-<p><em>Simply put: The left side of every functional dependency must uniquely identify the entire row. The “prime attribute” loophole present in 3NF is removed.</em></p>
-<section id="note" class="level3">
-<h3 class="anchored" data-anchor-id="note"><strong>Note:</strong></h3>
-<ul>
-<li>BCNF decomposition is always <strong>lossless</strong>.</li>
-<li>BCNF decomposition <strong>may or may not be dependency preserving</strong>.</li>
-</ul>
-</section>
-<section id="bcnf-solved-example-1-success" class="level2">
-<h2 class="anchored" data-anchor-id="bcnf-solved-example-1-success"><strong>BCNF Solved Example 1: Success</strong></h2>
-<p>Consider <span class="math inline">\(R(A, B, C, D)\)</span> and its <span class="math inline">\(FD=\{A \rightarrow B, \space B \rightarrow C, \space C \rightarrow D, \space D \rightarrow A\}\)</span></p>
-<p><strong>Step 1: Find Candidate Keys</strong></p>
-<ul>
-<li><span class="math inline">\(A^+ = \{A, B, C, D\}\)</span></li>
-<li><span class="math inline">\(B^+ = \{B, C, D, A\}\)</span></li>
-<li><span class="math inline">\(C^+ = \{C, D, A, B\}\)</span></li>
-<li><span class="math inline">\(D^+ = \{D, A, B, C\}\)</span> Every single attribute is a candidate key (and thus, a superkey).</li>
-</ul>
-<p><strong>Step 2: Check BCNF Condition</strong></p>
-<ul>
-<li>For <span class="math inline">\(A \rightarrow B\)</span>, <span class="math inline">\(A\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(B \rightarrow C\)</span>, <span class="math inline">\(B\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(C \rightarrow D\)</span>, <span class="math inline">\(C\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(D \rightarrow A\)</span>, <span class="math inline">\(D\)</span> is a superkey.</li>
-</ul>
-<p><strong>Conclusion:</strong> All functional dependencies satisfy the BCNF condition. The relation <strong>is in BCNF</strong>.</p>
-</section>
-<section id="bcnf-solved-example-2-failure" class="level2">
-<h2 class="anchored" data-anchor-id="bcnf-solved-example-2-failure"><strong>BCNF Solved Example 2: Failure</strong></h2>
-<p>Let’s look back at the example from the 3NF chapter: <span class="math inline">\(R(A, B, C, D, E, F)\)</span> with <span class="math inline">\(FD=\{AB \rightarrow CDE, \space E \rightarrow F, \space BF \rightarrow A, \space C \rightarrow B\}\)</span>. We found the candidate keys were <span class="math inline">\(\{A, B\}, \{A, C\}, \{B, F\}\)</span>.</p>
-<p>Now let’s check the FDs against the strict BCNF rule:</p>
-<ul>
-<li><span class="math inline">\(E \rightarrow F\)</span>: Is <span class="math inline">\(E\)</span> a superkey? <strong>No.</strong></li>
-<li><span class="math inline">\(C \rightarrow B\)</span>: Is <span class="math inline">\(C\)</span> a superkey? <strong>No.</strong></li>
-</ul>
-<p><strong>Conclusion:</strong> Because <span class="math inline">\(E\)</span> and <span class="math inline">\(C\)</span> are not superkeys, the relation <strong>fails BCNF</strong>, even though it was successfully in 3NF!</p>
+<section id="application-programs" class="level2">
+<h2 class="anchored" data-anchor-id="application-programs">Application Programs</h2>
+<p>Databases don’t exist in isolation, they always live inside an <strong>application</strong> that users interact with. Database-backed applications show up in almost every corner of modern life, for example, travel, communication, education etc. Despite looking completely different, most are built the same way underneath — they all use an RDBMS and they are all split into three layers.</p>
 <hr>
 </section>
-</section>
-<section id="multivalued-dependency-mvd" class="level1">
-<h1>Multivalued Dependency (MVD)</h1>
-<p>As we move beyond BCNF, we encounter anomalies caused by independent multivalued facts about an entity. This introduces the concept of Multivalued Dependency, denoted as <span class="math inline">\(\twoheadrightarrow\)</span>.</p>
-<p>Let <span class="math inline">\(R\)</span> be a relation schema. The multivalued dependency <span class="math inline">\(X \twoheadrightarrow Y\)</span> holds if, for a single value of <span class="math inline">\(X\)</span>, there is a set of values for <span class="math inline">\(Y\)</span> that are completely independent of the other attributes in the table.</p>
-<p>For an MVD to exist:</p>
-<ul>
-<li>The total number of attributes in the table should be more than two.</li>
-<li>If there are exactly 3 attributes (<span class="math inline">\(X, Y, Z\)</span>), then <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> must be independent of each other, but both depend on <span class="math inline">\(X\)</span>.</li>
-</ul>
-<section id="visualizing-mvd" class="level2">
-<h2 class="anchored" data-anchor-id="visualizing-mvd"><strong>Visualizing MVD</strong></h2>
+<section id="the-three-layer-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="the-three-layer-architecture">The Three-Layer Architecture</h2>
+<p>Think of it like a restaurant : the waiter takes your order (Presentation), the chef decides how to prepare it (Business Logic), and the pantry stores all the ingredients (Data Access). Each role is distinct, and each has its own concerns.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="mvd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="MVD Example"><img src="mvd.png" class="img-fluid figure-img" alt="MVD Example"></a></p>
-<figcaption>MVD Example</figcaption>
+<p><a href="3_tier_architecture.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Three-Layer Architecture"><img src="3_tier_architecture.png" class="img-fluid figure-img" alt="Three-Layer Architecture"></a></p>
+<figcaption>Three-Layer Architecture</figcaption>
 </figure>
 </div>
-<p>In this example, an instructor teaches a course, and a course has recommended books.</p>
-<ul>
-<li>The instructors for a course are completely independent of the books for a course.</li>
-<li>Thus, <code>course_name</code> <span class="math inline">\(\twoheadrightarrow\)</span> <code>instructor</code></li>
-<li>And <code>course_name</code> <span class="math inline">\(\twoheadrightarrow\)</span> <code>{book, edition}</code></li>
-</ul>
-<p>If you try to store this in a single table, you must repeat every instructor for every book, causing massive data redundancy!</p>
-</section>
-<section id="trivial-mvd" class="level2">
-<h2 class="anchored" data-anchor-id="trivial-mvd"><strong>Trivial MVD</strong></h2>
-<p>An MVD <span class="math inline">\(X \twoheadrightarrow Y\)</span> is considered <strong>trivial</strong> if:</p>
-<ul>
-<li><span class="math inline">\(Y\)</span> is a subset of <span class="math inline">\(X\)</span> (<span class="math inline">\(Y \subseteq X\)</span>)</li>
-<li>Or, <span class="math inline">\(X \cup Y = R\)</span> (the entire table)</li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="mvd-theory-rules" class="level1">
-<h1>MVD Theory Rules</h1>
-<p>MVDs follow a set of inference rules, similar to regular functional dependencies:</p>
+<section id="presentation-layer-frontend" class="level3">
+<h3 class="anchored" data-anchor-id="presentation-layer-frontend">Presentation Layer (Frontend)</h3>
+<p>This is everything the user actually sees and touches. It collects input and displays results. Within the presentation layer, the most widely used design pattern is <strong>Model-View-Controller (MVC)</strong>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -685,47 +664,180 @@ window.Quarto = {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Rule</th>
+<th>Component</th>
+<th>Role</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Complementation</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span>, then <span class="math inline">\(X \twoheadrightarrow (R − (X \cup Y))\)</span></td>
+<td><strong>Model</strong></td>
+<td>Represents business data and rules</td>
 </tr>
 <tr class="even">
-<td>Augmentation</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and <span class="math inline">\(W \supseteq Z\)</span>, then <span class="math inline">\(WX \twoheadrightarrow YZ\)</span></td>
+<td><strong>View</strong></td>
+<td>Displays data to the user (depends on device/format)</td>
 </tr>
 <tr class="odd">
-<td>Transitivity</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and <span class="math inline">\(Y \twoheadrightarrow Z\)</span>, then <span class="math inline">\(X \twoheadrightarrow (Z−Y)\)</span></td>
+<td><strong>Controller</strong></td>
+<td>Receives user events, invokes model actions, selects the view to return</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="business-logic-layer-middle-layer-tier-2" class="level3">
+<h3 class="anchored" data-anchor-id="business-logic-layer-middle-layer-tier-2">Business Logic Layer (Middle Layer / Tier 2)</h3>
+<p>Implements the core functionalities, workflows, and rules of the application (such as authentication, search logic, pricing, payment gateways, and order management). It acts as the bridge that connects the frontend and backend layers.</p>
+<blockquote class="blockquote">
+<p>⚠️ The middle layer hides the database schema from the frontend. The frontend never needs to know which table a piece of data lives in.</p>
+</blockquote>
+</section>
+<section id="data-access-layer-backend-tier-3" class="level3">
+<h3 class="anchored" data-anchor-id="data-access-layer-backend-tier-3">Data Access Layer (Backend / Tier 3)</h3>
+<p>Manages persistent data. It is responsible for handling large volumes of information, ensuring high-speed access, maintaining data security, and interfacing directly with the database system .</p>
+<hr>
+</section>
+</section>
+<section id="architecture-classification" class="level2">
+<h2 class="anchored" data-anchor-id="architecture-classification">Architecture Classification</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tier</th>
+<th>What it looks like</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1-Tier</strong></td>
+<td>All components (user interface, middleware, and backend database) reside on a single server or platform. This is the simplest and most direct setup</td>
 </tr>
 <tr class="even">
-<td>Replication</td>
-<td>If <span class="math inline">\(X \rightarrow Y\)</span>, then <span class="math inline">\(X \twoheadrightarrow Y\)</span> (but the reverse is not true)</td>
+<td><strong>2-Tier</strong></td>
+<td>A classic client-server model where the client directly communicates with the database server with no intermediate application logic server.</td>
 </tr>
 <tr class="odd">
-<td>Coalescence</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and there is a <span class="math inline">\(W\)</span> such that <span class="math inline">\(W \cap Y\)</span> is empty, <span class="math inline">\(W \rightarrow Z\)</span>, and <span class="math inline">\(Z \subseteq Y\)</span>, then <span class="math inline">\(X \rightarrow Z\)</span></td>
+<td><strong>3-Tier</strong></td>
+<td>Presentation, Business Logic, and Data Access are separated into three independent layers. This is the de-facto standard for DBMS design.</td>
+</tr>
+<tr class="even">
+<td><strong>n-Tier</strong></td>
+<td>Extends 3-tier by distributing components across many servers with load balancers, caches, and microservices</td>
 </tr>
 </tbody>
 </table>
 <hr>
 </section>
-<section id="nf-fourth-normal-form" class="level1">
-<h1>4NF (Fourth Normal Form)</h1>
-<p>To resolve the redundancies caused by Multivalued Dependencies, we use the Fourth Normal Form.</p>
-<p>A relation schema <span class="math inline">\(R\)</span> is in 4NF if and only if the following conditions are satisfied:</p>
+<section id="web-applications-and-scripting" class="level2">
+<h2 class="anchored" data-anchor-id="web-applications-and-scripting">Web Applications and Scripting</h2>
+<section id="the-world-wide-web" class="level3">
+<h3 class="anchored" data-anchor-id="the-world-wide-web">The World Wide Web</h3>
+<p>The Web is a massive collection of <strong>hypertext documents</strong> (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.</p>
+<hr>
+</section>
+<section id="urls-uris-and-urns" class="level3">
+<h3 class="anchored" data-anchor-id="urls-uris-and-urns">URLs, URIs, and URNs</h3>
+<p>Every resource on the web needs an address. A URL like <code>http://www.acm.org/sigmod</code> has three parts:</p>
+<pre><code>http  ://  www.acm.org  /sigmod
+ ↑              ↑           ↑
+Protocol    Machine name   Document path</code></pre>
+<ul>
+<li><strong>URI</strong> — An umbrella term that covers both locators (URLs) and names (URNs).</li>
+<li><strong>URL</strong> — Specifies how to retrieve a resource and where it is located, functioning like a person’s <em>street address</em>.</li>
+<li><strong>URN</strong> — Serves as a unique identifier for a resource, functioning like a person’s <em>name</em>. It defines the identity of a resource but does not specify its location</li>
+</ul>
+<hr>
+</section>
+<section id="html-and-http" class="level3">
+<h3 class="anchored" data-anchor-id="html-and-http">HTML and HTTP</h3>
+<ul>
+<li><strong>HTML (Hypertext Markup Language)</strong> : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons).</li>
+<li><strong>HTTP (Hypertext Transfer Protocol)</strong> : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is <strong>connectionless</strong> — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).</li>
+</ul>
+<hr>
+</section>
+<section id="sessions-and-cookies" class="level3">
+<h3 class="anchored" data-anchor-id="sessions-and-cookies">Sessions and Cookies</h3>
+<p>HTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?</p>
+<p>The answer is <strong>cookies</strong>. Here’s how it works:</p>
 <ol type="1">
-<li><span class="math inline">\(R\)</span> is already in <strong>BCNF</strong>.</li>
-<li>It does not contain any <strong>non-trivial multi-valued dependencies</strong>.</li>
+<li>On your first visit, the server sends a small identifying token (cookie) to your browser</li>
+<li>Your browser stores it and automatically attaches it to every subsequent request</li>
+<li>The server reads it, looks it up, and knows exactly who you are</li>
 </ol>
-<p>If a table violates 4NF due to <span class="math inline">\(X \twoheadrightarrow Y\)</span>, we fix it by decomposing the table into two separate tables: one holding <span class="math inline">\((X, Y)\)</span> and the other holding <span class="math inline">\((X, \text{everything else})\)</span>.</p>
+<p>This is how Amazon keeps your cart alive across sessions. Cookies can be <strong>permanent</strong> (survive browser restarts) or <strong>session-only</strong> (deleted when you close the tab).</p>
+<hr>
+</section>
+</section>
+<section id="scripting" class="level2">
+<h2 class="anchored" data-anchor-id="scripting">Scripting</h2>
+<p>A <strong>script</strong> is a set of commands embedded in a web page or on the server, executed at runtime. Scripts are what make pages dynamic. Two types:</p>
+<section id="client-side-scripting" class="level3">
+<h3 class="anchored" data-anchor-id="client-side-scripting">Client-Side Scripting</h3>
+<p>Client-side scripts are downloaded directly to the client’s computer and run locally inside the web browser.</p>
+<ul>
+<li><strong>Primary Languages</strong> : JavaScript, VBScript.</li>
+<li><strong>Purpose</strong> : Handles immediate user interactions, validates form inputs locally, and updates page visuals without triggering a full page reload (e.g., AJAX technology).</li>
+<li><strong>Security Context</strong> : To prevent malicious scripts from accessing local hard drives, client-side scripts are executed in a heavily restricted <strong>safe-mode sandbox</strong> that prevents direct system calls or unauthorized file operations.</li>
+</ul>
+</section>
+<section id="server-side-scripting" class="level3">
+<h3 class="anchored" data-anchor-id="server-side-scripting"><strong>Server-Side Scripting</strong></h3>
+<p>Server-side scripts are executed entirely on the web server before the final HTML is generated and sent back to the client.</p>
+<ul>
+<li><strong>Primary Languages</strong> : PHP, JSP, ASP, Python, Perl.</li>
+<li><strong>Purpose</strong> : Simplifies database integration. Developers embed executable logic or database queries directly within HTML files. The server runs these queries, dynamically inserts the results into the HTML, and returns the finished static webpage to the user.</li>
+<li><strong>Security Context</strong> : Safe and secure. The client never sees the server’s proprietary code or database connection details—only the final, clean HTML output.</li>
+</ul>
+<hr>
+</section>
+<section id="servlets" class="level3">
+<h3 class="anchored" data-anchor-id="servlets">Servlets</h3>
+<p>A <strong>Java Servlet</strong> is a Java program that lives on a web/application server and handles HTTP requests. The flow:</p>
+<pre><code>User submits form
+    → HTTP request hits the server
+    → Server loads the Servlet
+    → Servlet reads parameters, runs SQL via JDBC
+    → Servlet writes HTML response
+    → Thread closes</code></pre>
+<p>Each request gets its own <strong>thread</strong>, so many users can be served simultaneously.</p>
+<p><strong>Session handling</strong> in Servlets uses cookies automatically:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>request<span class="op">.</span><span class="fu">getSession</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span>                      <span class="co">// create session</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a>session<span class="op">.</span><span class="fu">setAttribute</span><span class="op">(</span><span class="st">"userid"</span><span class="op">,</span> <span class="st">"alice"</span><span class="op">);</span>       <span class="co">// store data</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>session<span class="op">.</span><span class="fu">getAttribute</span><span class="op">(</span><span class="st">"userid"</span><span class="op">);</span>                <span class="co">// retrieve later</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Servlets run inside application servers like <strong>Apache Tomcat</strong>, GlassFish, or JBoss.</p>
+<hr>
+</section>
+<section id="jsp-java-server-pages" class="level3">
+<h3 class="anchored" data-anchor-id="jsp-java-server-pages">JSP (Java Server Pages)</h3>
+<p>Writing HTML entirely through <code>out.println()</code> in a Servlet is painful. JSP lets you write HTML normally and drop Java logic inside <code>&lt;% ... %&gt;</code> tags wherever needed:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>  <span class="er">&lt;</span>% if (request.getParameter("name") == null) { %&gt;</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>    Hello, World!</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>  <span class="er">&lt;</span>% } else { %&gt;</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>    Hello, <span class="er">&lt;</span>%= request.getParameter("name") %&gt;!</span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>  <span class="er">&lt;</span>% } %&gt;</span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The server compiles a JSP page into a Servlet the first time it’s requested, so performance is identical — JSP is just much easier to write and maintain.</p>
+<hr>
+</section>
+<section id="php" class="level3">
+<h3 class="anchored" data-anchor-id="php">PHP</h3>
+<p>PHP works exactly like JSP — embed logic inside HTML, server executes it, client gets plain HTML. It has extensive database libraries (ODBC) and was the dominant language for web development for many years.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>  <span class="er">&lt;?</span><span class="co">php</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="co">    if (!isset($_REQUEST['name'])) { echo "Hello World"; }</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a><span class="co">    else { echo "Hello, " . $_REQUEST['name']; }</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a><span class="co">  ?&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>PHP and JSP are conceptually the same. The choice between them comes down to the tech stack being used.</p>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1222,13 +1334,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="pagination-link" aria-label="Normal Forms (1NF to 3NF)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></span>
+      <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="pagination-link" aria-label="BCNF and Multivalued Dependencies">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">BCNF and Multivalued Dependencies</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="pagination-link" aria-label="Application Programs and Architecture">
-        <span class="nav-page-text"><span class="chapter-title">Application Programs and Architecture</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_7/02_sql_and_native_languages.html" class="pagination-link" aria-label="SQL and Native Languages">
+        <span class="nav-page-text"><span class="chapter-title">SQL and Native Languages</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1240,7 +1352,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/03_bcnf_and_4nf.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/01_application_programs_and_architecture.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

@@ -2,29 +2,61 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>BCNF and Multivalued Dependencies – Database Management Systems</title>
+<title>SQL and Native Languages – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -36,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_7/01_application_programs_and_architecture.html" rel="next">
-<link href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" rel="prev">
+<link href="../../weeks/week_7/03.html" rel="next">
+<link href="../../weeks/week_7/01.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -45,17 +77,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-a534e71cf44c863abd021fd9c01f7ed3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -83,7 +112,7 @@ ul.task-list li input[type="checkbox"] {
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -289,7 +318,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/03_bcnf_and_4nf.html"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/02.html"><span class="chapter-title">SQL and Native Languages</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -475,13 +504,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-06</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_6/01_intro_to_normalization.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Normalization</span></a>
@@ -494,33 +523,33 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
+  <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-07</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Application Programs and Architecture</span></a>
+  <a href="../../weeks/week_7/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Armstrong's Axioms &amp; Closure of Attribute Sets</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/02_sql_and_native_languages.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL and Native Languages</span></a>
+  <a href="../../weeks/week_7/02.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">SQL and Native Languages</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/03_rad.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
+  <a href="../../weeks/week_7/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
   </div>
 </li>
       </ul>
@@ -556,29 +585,26 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#bcnf-boyce-codd-normal-form" id="toc-bcnf-boyce-codd-normal-form" class="nav-link active" data-scroll-target="#bcnf-boyce-codd-normal-form">BCNF (Boyce-Codd Normal Form)</a>
+  <li><a href="#odbc-open-database-connectivity" id="toc-odbc-open-database-connectivity" class="nav-link active" data-scroll-target="#odbc-open-database-connectivity">ODBC (Open Database Connectivity)</a></li>
+  <li><a href="#jdbc-java-database-connectivity" id="toc-jdbc-java-database-connectivity" class="nav-link" data-scroll-target="#jdbc-java-database-connectivity">JDBC (Java Database Connectivity)</a></li>
+  <li><a href="#connectionist-bridges" id="toc-connectionist-bridges" class="nav-link" data-scroll-target="#connectionist-bridges">Connectionist Bridges</a></li>
+  <li><a href="#embedded-sql" id="toc-embedded-sql" class="nav-link" data-scroll-target="#embedded-sql">Embedded SQL</a>
   <ul class="collapse">
-  <li><a href="#note" id="toc-note" class="nav-link" data-scroll-target="#note"><strong>Note:</strong></a></li>
-  <li><a href="#bcnf-solved-example-1-success" id="toc-bcnf-solved-example-1-success" class="nav-link" data-scroll-target="#bcnf-solved-example-1-success"><strong>BCNF Solved Example 1: Success</strong></a></li>
-  <li><a href="#bcnf-solved-example-2-failure" id="toc-bcnf-solved-example-2-failure" class="nav-link" data-scroll-target="#bcnf-solved-example-2-failure"><strong>BCNF Solved Example 2: Failure</strong></a></li>
+  <li><a href="#key-concepts" id="toc-key-concepts" class="nav-link" data-scroll-target="#key-concepts">Key Concepts</a></li>
   </ul></li>
-  <li><a href="#multivalued-dependency-mvd" id="toc-multivalued-dependency-mvd" class="nav-link" data-scroll-target="#multivalued-dependency-mvd">Multivalued Dependency (MVD)</a>
-  <ul class="collapse">
-  <li><a href="#visualizing-mvd" id="toc-visualizing-mvd" class="nav-link" data-scroll-target="#visualizing-mvd"><strong>Visualizing MVD</strong></a></li>
-  <li><a href="#trivial-mvd" id="toc-trivial-mvd" class="nav-link" data-scroll-target="#trivial-mvd"><strong>Trivial MVD</strong></a></li>
-  </ul></li>
-  <li><a href="#mvd-theory-rules" id="toc-mvd-theory-rules" class="nav-link" data-scroll-target="#mvd-theory-rules">MVD Theory Rules</a></li>
-  <li><a href="#nf-fourth-normal-form" id="toc-nf-fourth-normal-form" class="nav-link" data-scroll-target="#nf-fourth-normal-form">4NF (Fourth Normal Form)</a></li>
+  <li><a href="#connecting-python-to-postgresql" id="toc-connecting-python-to-postgresql" class="nav-link" data-scroll-target="#connecting-python-to-postgresql">Connecting Python to PostgreSQL</a></li>
+  <li><a href="#key-api-methods" id="toc-key-api-methods" class="nav-link" data-scroll-target="#key-api-methods">Key API Methods</a></li>
+  <li><a href="#crud-operations-in-python" id="toc-crud-operations-in-python" class="nav-link" data-scroll-target="#crud-operations-in-python">CRUD Operations in Python</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/03_bcnf_and_4nf.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_6/01_intro_to_normalization.html"><strong>Week-06</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_6/03_bcnf_and_4nf.html"><span class="chapter-title">BCNF and Multivalued Dependencies</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/02.html"><span class="chapter-title">SQL and Native Languages</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">BCNF and Multivalued Dependencies</span></h1>
+<h1 class="title"><span class="chapter-title">SQL and Native Languages</span></h1>
 </div>
 
 
@@ -595,89 +621,75 @@ window.Quarto = {
 </header>
 
 
-<p><a href="thumb_bcnf.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="thumb_bcnf.png" class="img-fluid"></a></p>
-<p>While 3NF is sufficient for most practical database designs, it still allows certain types of anomalies if there are overlapping candidate keys. Boyce-Codd Normal Form (BCNF) was introduced to handle these edge cases by applying a stricter rule.</p>
+<p>When an application needs to talk to a database, it uses an <strong>API (Application Programming Interface)</strong> — a standard set of function calls that let you:</p>
+<ul>
+<li>Open a connection to the database server</li>
+<li>Send SQL queries or updates</li>
+<li>Fetch results back into your program’s variables</li>
+</ul>
+<p>There are two broad approaches to doing this:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>What it means</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Connectionist</strong></td>
+<td>SQL is sent as a string through a driver at runtime</td>
+<td>ODBC, JDBC</td>
+</tr>
+<tr class="even">
+<td><strong>Embedded SQL</strong></td>
+<td>SQL is written directly inside the host language code and processed before compilation</td>
+<td>Embedded SQL for C, Java (SQLJ)</td>
+</tr>
+</tbody>
+</table>
 <hr>
-<section id="bcnf-boyce-codd-normal-form" class="level1">
-<h1>BCNF (Boyce-Codd Normal Form)</h1>
-<p>A relational schema <span class="math inline">\(R\)</span> is in BCNF if for every non-trivial functional dependency <span class="math inline">\(A \rightarrow B\)</span> associated with <span class="math inline">\(R\)</span>, the following condition holds: - <strong><span class="math inline">\(A\)</span> must be a superkey</strong>.</p>
-<p><em>Simply put: The left side of every functional dependency must uniquely identify the entire row. The “prime attribute” loophole present in 3NF is removed.</em></p>
-<section id="note" class="level3">
-<h3 class="anchored" data-anchor-id="note"><strong>Note:</strong></h3>
-<ul>
-<li>BCNF decomposition is always <strong>lossless</strong>.</li>
-<li>BCNF decomposition <strong>may or may not be dependency preserving</strong>.</li>
-</ul>
-</section>
-<section id="bcnf-solved-example-1-success" class="level2">
-<h2 class="anchored" data-anchor-id="bcnf-solved-example-1-success"><strong>BCNF Solved Example 1: Success</strong></h2>
-<p>Consider <span class="math inline">\(R(A, B, C, D)\)</span> and its <span class="math inline">\(FD=\{A \rightarrow B, \space B \rightarrow C, \space C \rightarrow D, \space D \rightarrow A\}\)</span></p>
-<p><strong>Step 1: Find Candidate Keys</strong></p>
-<ul>
-<li><span class="math inline">\(A^+ = \{A, B, C, D\}\)</span></li>
-<li><span class="math inline">\(B^+ = \{B, C, D, A\}\)</span></li>
-<li><span class="math inline">\(C^+ = \{C, D, A, B\}\)</span></li>
-<li><span class="math inline">\(D^+ = \{D, A, B, C\}\)</span> Every single attribute is a candidate key (and thus, a superkey).</li>
-</ul>
-<p><strong>Step 2: Check BCNF Condition</strong></p>
-<ul>
-<li>For <span class="math inline">\(A \rightarrow B\)</span>, <span class="math inline">\(A\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(B \rightarrow C\)</span>, <span class="math inline">\(B\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(C \rightarrow D\)</span>, <span class="math inline">\(C\)</span> is a superkey.</li>
-<li>For <span class="math inline">\(D \rightarrow A\)</span>, <span class="math inline">\(D\)</span> is a superkey.</li>
-</ul>
-<p><strong>Conclusion:</strong> All functional dependencies satisfy the BCNF condition. The relation <strong>is in BCNF</strong>.</p>
-</section>
-<section id="bcnf-solved-example-2-failure" class="level2">
-<h2 class="anchored" data-anchor-id="bcnf-solved-example-2-failure"><strong>BCNF Solved Example 2: Failure</strong></h2>
-<p>Let’s look back at the example from the 3NF chapter: <span class="math inline">\(R(A, B, C, D, E, F)\)</span> with <span class="math inline">\(FD=\{AB \rightarrow CDE, \space E \rightarrow F, \space BF \rightarrow A, \space C \rightarrow B\}\)</span>. We found the candidate keys were <span class="math inline">\(\{A, B\}, \{A, C\}, \{B, F\}\)</span>.</p>
-<p>Now let’s check the FDs against the strict BCNF rule:</p>
-<ul>
-<li><span class="math inline">\(E \rightarrow F\)</span>: Is <span class="math inline">\(E\)</span> a superkey? <strong>No.</strong></li>
-<li><span class="math inline">\(C \rightarrow B\)</span>: Is <span class="math inline">\(C\)</span> a superkey? <strong>No.</strong></li>
-</ul>
-<p><strong>Conclusion:</strong> Because <span class="math inline">\(E\)</span> and <span class="math inline">\(C\)</span> are not superkeys, the relation <strong>fails BCNF</strong>, even though it was successfully in 3NF!</p>
+<section id="odbc-open-database-connectivity" class="level2">
+<h2 class="anchored" data-anchor-id="odbc-open-database-connectivity">ODBC (Open Database Connectivity)</h2>
+<p>ODBC is a standard API that lets applications talk to <em>any</em> database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.</p>
+<p>It was originally developed by Microsoft and works with <strong>C, C++, C#, Visual Basic, and Python</strong>.</p>
+<p>A typical ODBC workflow: 1. Open a connection to the database 2. Send a query or update 3. Fetch results 4. Close the connection</p>
 <hr>
 </section>
-</section>
-<section id="multivalued-dependency-mvd" class="level1">
-<h1>Multivalued Dependency (MVD)</h1>
-<p>As we move beyond BCNF, we encounter anomalies caused by independent multivalued facts about an entity. This introduces the concept of Multivalued Dependency, denoted as <span class="math inline">\(\twoheadrightarrow\)</span>.</p>
-<p>Let <span class="math inline">\(R\)</span> be a relation schema. The multivalued dependency <span class="math inline">\(X \twoheadrightarrow Y\)</span> holds if, for a single value of <span class="math inline">\(X\)</span>, there is a set of values for <span class="math inline">\(Y\)</span> that are completely independent of the other attributes in the table.</p>
-<p>For an MVD to exist:</p>
+<section id="jdbc-java-database-connectivity" class="level2">
+<h2 class="anchored" data-anchor-id="jdbc-java-database-connectivity">JDBC (Java Database Connectivity)</h2>
+<p>JDBC is the Java equivalent of ODBC. It’s the standard way for Java programs to talk to a database.</p>
+<p>The workflow is very similar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">// 1. Open a connection</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">Connection</span> con <span class="op">=</span> <span class="bu">DriverManager</span><span class="op">.</span><span class="fu">getConnection</span><span class="op">(</span>connectionUrl<span class="op">);</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">// 2. Create a statement object</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="bu">Statement</span> stmt <span class="op">=</span> con<span class="op">.</span><span class="fu">createStatement</span><span class="op">();</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">// 3. Execute a query and get results</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="bu">ResultSet</span> rs <span class="op">=</span> stmt<span class="op">.</span><span class="fu">executeQuery</span><span class="op">(</span><span class="st">"SELECT * FROM Production.Product"</span><span class="op">);</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">// 4. Iterate through results</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="cf">while</span> <span class="op">(</span>rs<span class="op">.</span><span class="fu">next</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"ProductID"</span><span class="op">)</span> <span class="op">+</span> <span class="st">" : "</span> <span class="op">+</span> rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"Name"</span><span class="op">));</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>The total number of attributes in the table should be more than two.</li>
-<li>If there are exactly 3 attributes (<span class="math inline">\(X, Y, Z\)</span>), then <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> must be independent of each other, but both depend on <span class="math inline">\(X\)</span>.</li>
-</ul>
-<section id="visualizing-mvd" class="level2">
-<h2 class="anchored" data-anchor-id="visualizing-mvd"><strong>Visualizing MVD</strong></h2>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="mvd.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="MVD Example"><img src="mvd.png" class="img-fluid figure-img" alt="MVD Example"></a></p>
-<figcaption>MVD Example</figcaption>
-</figure>
-</div>
-<p>In this example, an instructor teaches a course, and a course has recommended books.</p>
-<ul>
-<li>The instructors for a course are completely independent of the books for a course.</li>
-<li>Thus, <code>course_name</code> <span class="math inline">\(\twoheadrightarrow\)</span> <code>instructor</code></li>
-<li>And <code>course_name</code> <span class="math inline">\(\twoheadrightarrow\)</span> <code>{book, edition}</code></li>
-</ul>
-<p>If you try to store this in a single table, you must repeat every instructor for every book, causing massive data redundancy!</p>
-</section>
-<section id="trivial-mvd" class="level2">
-<h2 class="anchored" data-anchor-id="trivial-mvd"><strong>Trivial MVD</strong></h2>
-<p>An MVD <span class="math inline">\(X \twoheadrightarrow Y\)</span> is considered <strong>trivial</strong> if:</p>
-<ul>
-<li><span class="math inline">\(Y\)</span> is a subset of <span class="math inline">\(X\)</span> (<span class="math inline">\(Y \subseteq X\)</span>)</li>
-<li>Or, <span class="math inline">\(X \cup Y = R\)</span> (the entire table)</li>
+<li><code>DriverManager.getConnection()</code> — opens the connection using a connection URL</li>
+<li><code>Statement</code> — used to send SQL to the database</li>
+<li><code>ResultSet</code> — holds the rows returned by a query; you iterate through it with <code>rs.next()</code></li>
+<li>Errors are handled using standard Java <code>try-catch</code> blocks</li>
 </ul>
 <hr>
 </section>
-</section>
-<section id="mvd-theory-rules" class="level1">
-<h1>MVD Theory Rules</h1>
-<p>MVDs follow a set of inference rules, similar to regular functional dependencies:</p>
+<section id="connectionist-bridges" class="level2">
+<h2 class="anchored" data-anchor-id="connectionist-bridges">Connectionist Bridges</h2>
+<p>Sometimes the driver you need doesn’t exist — for example, you want to connect a Java app to a database that only has an ODBC driver. <strong>Bridges</strong> solve this by translating function calls from one standard to another.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -685,44 +697,168 @@ window.Quarto = {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Rule</th>
+<th>Bridge</th>
+<th>What it does</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Complementation</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span>, then <span class="math inline">\(X \twoheadrightarrow (R − (X \cup Y))\)</span></td>
+<td><strong>JDBC-to-ODBC</strong></td>
+<td>JDBC driver internally uses an ODBC driver to reach the database</td>
 </tr>
 <tr class="even">
-<td>Augmentation</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and <span class="math inline">\(W \supseteq Z\)</span>, then <span class="math inline">\(WX \twoheadrightarrow YZ\)</span></td>
+<td><strong>ODBC-to-JDBC</strong></td>
+<td>ODBC driver internally uses a JDBC driver</td>
 </tr>
 <tr class="odd">
-<td>Transitivity</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and <span class="math inline">\(Y \twoheadrightarrow Z\)</span>, then <span class="math inline">\(X \twoheadrightarrow (Z−Y)\)</span></td>
+<td><strong>OLE DB-to-ODBC</strong></td>
+<td>Microsoft’s OLE DB provider translated to ODBC calls</td>
 </tr>
 <tr class="even">
-<td>Replication</td>
-<td>If <span class="math inline">\(X \rightarrow Y\)</span>, then <span class="math inline">\(X \twoheadrightarrow Y\)</span> (but the reverse is not true)</td>
+<td><strong>ADO.NET-to-ODBC</strong></td>
+<td>ADO.NET provider (used in .NET apps) translated to ODBC</td>
+</tr>
+</tbody>
+</table>
+<p>Think of a bridge as a translator — it lets two systems that speak different languages work together.</p>
+<hr>
+</section>
+<section id="embedded-sql" class="level2">
+<h2 class="anchored" data-anchor-id="embedded-sql">Embedded SQL</h2>
+<p>With ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they’re even there. <strong>Embedded SQL</strong> takes a different approach: you write SQL <em>directly inside</em> the host language code, and a <strong>pre-processor</strong> converts it into regular function calls before compilation.</p>
+<p>Supported in: <strong>C, C++, Java (SQLJ), COBOL, FORTRAN</strong>.</p>
+<p>SQL statements are marked with <code>EXEC SQL</code> so the pre-processor knows what to handle:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>EXEC SQL <span class="op">&lt;</span>embedded SQL statement<span class="op">&gt;;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="key-concepts" class="level3">
+<h3 class="anchored" data-anchor-id="key-concepts">Key Concepts</h3>
+<p><strong>Connecting to the database:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>EXEC SQL CONNECT TO server USER username USING password<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Host variables</strong> — variables from your program that you use inside SQL queries. They’re prefixed with <code>:</code> to distinguish them from SQL column names:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1"></a>EXEC SQL BEGIN DECLARE SECTION<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>    <span class="dt">int</span> credit_amount<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>EXEC SQL END DECLARE SECTION<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cursors</strong> — since a query can return many rows, you use a <em>cursor</em> to step through them one at a time. Think of it as a pointer that moves through the result set.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">/* 1. Declare the cursor */</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>EXEC SQL DECLARE c CURSOR FOR</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    SELECT ID<span class="op">,</span> name FROM student</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    WHERE tot_cred <span class="op">&gt;</span> <span class="op">:</span>credit_amount<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">/* 2. Open it — this actually runs the query */</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>EXEC SQL OPEN c<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">/* 3. Fetch rows one by one */</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>EXEC SQL FETCH c INTO <span class="op">:</span>si<span class="op">,</span> <span class="op">:</span>sn<span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">/* 4. Close when done */</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a>EXEC SQL CLOSE c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>OPEN</code> — executes the query and stores results in a temporary relation</li>
+<li><code>FETCH</code> — retrieves the next row into your host variables</li>
+<li><code>SQLSTATE</code> is set to <code>'02000'</code> when there are no more rows to fetch</li>
+<li><code>CLOSE</code> — releases the temporary result</li>
+</ul>
+<p><strong>Updating through a cursor:</strong></p>
+<p>You can also modify rows as you fetch them by declaring the cursor <code>FOR UPDATE</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1"></a>EXEC SQL DECLARE c CURSOR FOR</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    SELECT <span class="op">*</span> FROM instructor</span>
+<span id="cb6-3"><a href="#cb6-3"></a>    WHERE dept_name <span class="op">=</span> <span class="ch">'M</span><span class="er">usic</span><span class="ch">'</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>    FOR UPDATE<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">/* After fetching each row: */</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>UPDATE instructor SET salary <span class="op">=</span> salary <span class="op">+</span> <span class="dv">1000</span> WHERE CURRENT OF c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="connecting-python-to-postgresql" class="level2">
+<h2 class="anchored" data-anchor-id="connecting-python-to-postgresql">Connecting Python to PostgreSQL</h2>
+<p>The most popular Python library for working with PostgreSQL is <strong>psycopg2</strong> — it’s stable, actively maintained, thread-safe, and works with both Python 2 and 3.</p>
+<p>Install it with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">pip</span> install psycopg2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Every interaction with the database follows the same six steps:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. Create connection</td>
+<td><code>psycopg2.connect(...)</code> — opens a connection to the DB</td>
+</tr>
+<tr class="even">
+<td>2. Create cursor</td>
+<td><code>conn.cursor()</code> — creates a cursor to execute queries</td>
 </tr>
 <tr class="odd">
-<td>Coalescence</td>
-<td>If <span class="math inline">\(X \twoheadrightarrow Y\)</span> and there is a <span class="math inline">\(W\)</span> such that <span class="math inline">\(W \cap Y\)</span> is empty, <span class="math inline">\(W \rightarrow Z\)</span>, and <span class="math inline">\(Z \subseteq Y\)</span>, then <span class="math inline">\(X \rightarrow Z\)</span></td>
+<td>3. Execute query</td>
+<td><code>cur.execute(sql)</code> — runs your SQL</td>
+</tr>
+<tr class="even">
+<td>4. Fetch results</td>
+<td><code>fetchone()</code>, <code>fetchmany()</code>, or <code>fetchall()</code></td>
+</tr>
+<tr class="odd">
+<td>5. Commit or rollback</td>
+<td><code>conn.commit()</code> to save, <code>conn.rollback()</code> to undo</td>
+</tr>
+<tr class="even">
+<td>6. Close</td>
+<td><code>cur.close()</code> then <code>conn.close()</code></td>
 </tr>
 </tbody>
 </table>
 <hr>
 </section>
-<section id="nf-fourth-normal-form" class="level1">
-<h1>4NF (Fourth Normal Form)</h1>
-<p>To resolve the redundancies caused by Multivalued Dependencies, we use the Fourth Normal Form.</p>
-<p>A relation schema <span class="math inline">\(R\)</span> is in 4NF if and only if the following conditions are satisfied:</p>
-<ol type="1">
-<li><span class="math inline">\(R\)</span> is already in <strong>BCNF</strong>.</li>
-<li>It does not contain any <strong>non-trivial multi-valued dependencies</strong>.</li>
-</ol>
-<p>If a table violates 4NF due to <span class="math inline">\(X \twoheadrightarrow Y\)</span>, we fix it by decomposing the table into two separate tables: one holding <span class="math inline">\((X, Y)\)</span> and the other holding <span class="math inline">\((X, \text{everything else})\)</span>.</p>
+<section id="key-api-methods" class="level2">
+<h2 class="anchored" data-anchor-id="key-api-methods">Key API Methods</h2>
+<p><strong>Connection:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>conn <span class="op">=</span> psycopg2.<span class="ex">connect</span>(database<span class="op">=</span><span class="st">"mydb"</span>, user<span class="op">=</span><span class="st">"myuser"</span>,</span>
+<span id="cb8-2"><a href="#cb8-2"></a>                         password<span class="op">=</span><span class="st">"mypass"</span>, host<span class="op">=</span><span class="st">"127.0.0.1"</span>, port<span class="op">=</span><span class="st">"5432"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a>conn.commit()    <span class="co"># saves changes</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>conn.rollback()  <span class="co"># undoes changes since last commit</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>conn.close()     <span class="co"># closes the connection</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cursor:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>cur <span class="op">=</span> conn.cursor()</span>
+<span id="cb9-2"><a href="#cb9-2"></a>cur.execute(<span class="st">"INSERT INTO employee VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="bu">id</span>, name))  <span class="co"># parameterized query</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>cur.rowcount     <span class="co"># number of rows affected by last operation</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>cur.fetchone()   <span class="co"># returns next row, or None</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>cur.fetchmany(n) <span class="co"># returns next n rows as a list</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>cur.fetchall()   <span class="co"># returns all remaining rows as a list</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>cur.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>Use <code>%s</code> as a placeholder in queries instead of string formatting — this protects against SQL injection.</p>
+</blockquote>
+<hr>
+</section>
+<section id="crud-operations-in-python" class="level2">
+<h2 class="anchored" data-anchor-id="crud-operations-in-python">CRUD Operations in Python</h2>
+<p><strong>CREATE table:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>cur.execute(<span class="st">'''CREATE TABLE EMPLOYEE (</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="st">    emp_num  INT PRIMARY KEY NOT NULL,</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="st">    emp_name VARCHAR(40) NOT NULL,</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="st">    department VARCHAR(40) NOT NULL)'''</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>INSERT:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>cur.execute(<span class="st">"INSERT INTO EMPLOYEE VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="dv">110</span>, <span class="st">'Bhaskar'</span>, <span class="st">'HR'</span>))</span>
+<span id="cb11-2"><a href="#cb11-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>UPDATE:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>cur.execute(<span class="st">"UPDATE EMPLOYEE SET department = </span><span class="sc">%s</span><span class="st"> WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="st">'Finance'</span>, <span class="dv">110</span>))</span>
+<span id="cb12-2"><a href="#cb12-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>DELETE:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>cur.execute(<span class="st">"DELETE FROM EMPLOYEE WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="dv">110</span>,))</span>
+<span id="cb13-2"><a href="#cb13-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>SELECT:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>cur.execute(<span class="st">"SELECT emp_num, emp_name, department FROM EMPLOYEE"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a>rows <span class="op">=</span> cur.fetchall()</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="cf">for</span> row <span class="kw">in</span> rows:</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="bu">print</span>(row[<span class="dv">0</span>], row[<span class="dv">1</span>], row[<span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 
 
 
@@ -1222,13 +1358,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_6/02_normal_forms_1nf_to_3nf.html" class="pagination-link" aria-label="Normal Forms (1NF to 3NF)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Normal Forms (1NF to 3NF)</span></span>
+      <a href="../../weeks/week_7/01.html" class="pagination-link" aria-label="Armstrong's Axioms &amp; Closure of Attribute Sets">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Armstrong’s Axioms &amp; Closure of Attribute Sets</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="pagination-link" aria-label="Application Programs and Architecture">
-        <span class="nav-page-text"><span class="chapter-title">Application Programs and Architecture</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_7/03.html" class="pagination-link" aria-label="RAD, Application Security, and Mobile Apps">
+        <span class="nav-page-text"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1240,44 +1376,12 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_6/03_bcnf_and_4nf.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 

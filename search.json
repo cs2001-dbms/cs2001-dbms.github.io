@@ -967,6 +967,215 @@
     ]
   },
   {
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html",
+    "title": "Application Programs and Architecture",
+    "section": "",
+    "text": "Application Programs\nDatabases don’t exist in isolation, they always live inside an application that users interact with. Database-backed applications show up in almost every corner of modern life, for example, travel, communication, education etc. Despite looking completely different, most are built the same way underneath — they all use an RDBMS and they are all split into three layers.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#the-three-layer-architecture",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html#the-three-layer-architecture",
+    "title": "Application Programs and Architecture",
+    "section": "The Three-Layer Architecture",
+    "text": "The Three-Layer Architecture\nThink of it like a restaurant : the waiter takes your order (Presentation), the chef decides how to prepare it (Business Logic), and the pantry stores all the ingredients (Data Access). Each role is distinct, and each has its own concerns.\n\n\n\nThree-Layer Architecture\n\n\n\nPresentation Layer (Frontend)\nThis is everything the user actually sees and touches. It collects input and displays results. Within the presentation layer, the most widely used design pattern is Model-View-Controller (MVC):\n\n\n\n\n\n\n\nComponent\nRole\n\n\n\n\nModel\nRepresents business data and rules\n\n\nView\nDisplays data to the user (depends on device/format)\n\n\nController\nReceives user events, invokes model actions, selects the view to return\n\n\n\n\n\nBusiness Logic Layer (Middle Layer / Tier 2)\nImplements the core functionalities, workflows, and rules of the application (such as authentication, search logic, pricing, payment gateways, and order management). It acts as the bridge that connects the frontend and backend layers.\n\n⚠️ The middle layer hides the database schema from the frontend. The frontend never needs to know which table a piece of data lives in.\n\n\n\nData Access Layer (Backend / Tier 3)\nManages persistent data. It is responsible for handling large volumes of information, ensuring high-speed access, maintaining data security, and interfacing directly with the database system .",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#architecture-classification",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html#architecture-classification",
+    "title": "Application Programs and Architecture",
+    "section": "Architecture Classification",
+    "text": "Architecture Classification\n\n\n\n\n\n\n\nTier\nWhat it looks like\n\n\n\n\n1-Tier\nAll components (user interface, middleware, and backend database) reside on a single server or platform. This is the simplest and most direct setup\n\n\n2-Tier\nA classic client-server model where the client directly communicates with the database server with no intermediate application logic server.\n\n\n3-Tier\nPresentation, Business Logic, and Data Access are separated into three independent layers. This is the de-facto standard for DBMS design.\n\n\nn-Tier\nExtends 3-tier by distributing components across many servers with load balancers, caches, and microservices",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
+    "title": "Application Programs and Architecture",
+    "section": "Web Applications and Scripting",
+    "text": "Web Applications and Scripting\n\nThe World Wide Web\nThe Web is a massive collection of hypertext documents (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.\n\n\n\nURLs, URIs, and URNs\nEvery resource on the web needs an address. A URL like http://www.acm.org/sigmod has three parts:\nhttp  ://  www.acm.org  /sigmod\n ↑              ↑           ↑\nProtocol    Machine name   Document path\n\nURI — An umbrella term that covers both locators (URLs) and names (URNs).\nURL — Specifies how to retrieve a resource and where it is located, functioning like a person’s street address.\nURN — Serves as a unique identifier for a resource, functioning like a person’s name. It defines the identity of a resource but does not specify its location\n\n\n\n\nHTML and HTTP\n\nHTML (Hypertext Markup Language) : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons).\nHTTP (Hypertext Transfer Protocol) : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is connectionless — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).\n\n\n\n\nSessions and Cookies\nHTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?\nThe answer is cookies. Here’s how it works:\n\nOn your first visit, the server sends a small identifying token (cookie) to your browser\nYour browser stores it and automatically attaches it to every subsequent request\nThe server reads it, looks it up, and knows exactly who you are\n\nThis is how Amazon keeps your cart alive across sessions. Cookies can be permanent (survive browser restarts) or session-only (deleted when you close the tab).",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#scripting",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html#scripting",
+    "title": "Application Programs and Architecture",
+    "section": "Scripting",
+    "text": "Scripting\nA script is a set of commands embedded in a web page or on the server, executed at runtime. Scripts are what make pages dynamic. Two types:\n\nClient-Side Scripting\nClient-side scripts are downloaded directly to the client’s computer and run locally inside the web browser.\n\nPrimary Languages : JavaScript, VBScript.\nPurpose : Handles immediate user interactions, validates form inputs locally, and updates page visuals without triggering a full page reload (e.g., AJAX technology).\nSecurity Context : To prevent malicious scripts from accessing local hard drives, client-side scripts are executed in a heavily restricted safe-mode sandbox that prevents direct system calls or unauthorized file operations.\n\n\n\nServer-Side Scripting\nServer-side scripts are executed entirely on the web server before the final HTML is generated and sent back to the client.\n\nPrimary Languages : PHP, JSP, ASP, Python, Perl.\nPurpose : Simplifies database integration. Developers embed executable logic or database queries directly within HTML files. The server runs these queries, dynamically inserts the results into the HTML, and returns the finished static webpage to the user.\nSecurity Context : Safe and secure. The client never sees the server’s proprietary code or database connection details—only the final, clean HTML output.\n\n\n\n\nServlets\nA Java Servlet is a Java program that lives on a web/application server and handles HTTP requests. The flow:\nUser submits form\n    → HTTP request hits the server\n    → Server loads the Servlet\n    → Servlet reads parameters, runs SQL via JDBC\n    → Servlet writes HTML response\n    → Thread closes\nEach request gets its own thread, so many users can be served simultaneously.\nSession handling in Servlets uses cookies automatically:\nrequest.getSession(true);                      // create session\nsession.setAttribute(\"userid\", \"alice\");       // store data\nsession.getAttribute(\"userid\");                // retrieve later\nServlets run inside application servers like Apache Tomcat, GlassFish, or JBoss.\n\n\n\nJSP (Java Server Pages)\nWriting HTML entirely through out.println() in a Servlet is painful. JSP lets you write HTML normally and drop Java logic inside &lt;% ... %&gt; tags wherever needed:\n&lt;body&gt;\n  &lt;% if (request.getParameter(\"name\") == null) { %&gt;\n    Hello, World!\n  &lt;% } else { %&gt;\n    Hello, &lt;%= request.getParameter(\"name\") %&gt;!\n  &lt;% } %&gt;\n&lt;/body&gt;\nThe server compiles a JSP page into a Servlet the first time it’s requested, so performance is identical — JSP is just much easier to write and maintain.\n\n\n\nPHP\nPHP works exactly like JSP — embed logic inside HTML, server executes it, client gets plain HTML. It has extensive database libraries (ODBC) and was the dominant language for web development for many years.\n&lt;body&gt;\n  &lt;?php\n    if (!isset($_REQUEST['name'])) { echo \"Hello World\"; }\n    else { echo \"Hello, \" . $_REQUEST['name']; }\n  ?&gt;\n&lt;/body&gt;\nPHP and JSP are conceptually the same. The choice between them comes down to the tech stack being used.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html",
+    "href": "weeks/week_7/02_sql_and_native_languages.html",
+    "title": "SQL and Native Languages",
+    "section": "",
+    "text": "ODBC (Open Database Connectivity)\nWhen an application needs to talk to a database, it uses an API (Application Programming Interface) — a standard set of function calls that let you:\nThere are two broad approaches to doing this:\nODBC is a standard API that lets applications talk to any database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.\nIt was originally developed by Microsoft and works with C, C++, C#, Visual Basic, and Python.\nA typical ODBC workflow:",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
+    "title": "SQL and Native Languages",
+    "section": "",
+    "text": "Open a connection to the database\nSend a query or update\nFetch results\nClose the connection",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#jdbc-java-database-connectivity",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#jdbc-java-database-connectivity",
+    "title": "SQL and Native Languages",
+    "section": "JDBC (Java Database Connectivity)",
+    "text": "JDBC (Java Database Connectivity)\nJDBC is the Java equivalent of ODBC. It’s the standard way for Java programs to talk to a database.\nThe workflow is very similar:\n// 1. Open a connection\nConnection con = DriverManager.getConnection(connectionUrl);\n\n// 2. Create a statement object\nStatement stmt = con.createStatement();\n\n// 3. Execute a query and get results\nResultSet rs = stmt.executeQuery(\"SELECT * FROM Production.Product\");\n\n// 4. Iterate through results\nwhile (rs.next()) {\n    System.out.println(rs.getString(\"ProductID\") + \" : \" + rs.getString(\"Name\"));\n    }\n\nDriverManager.getConnection() — opens the connection using a connection URL\nStatement — used to send SQL to the database\nResultSet — holds the rows returned by a query; you iterate through it with rs.next()",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#connectionist-bridges",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#connectionist-bridges",
+    "title": "SQL and Native Languages",
+    "section": "Connectionist Bridges",
+    "text": "Connectionist Bridges\nSometimes the driver you need doesn’t exist — for example, you want to connect a Java app to a database that only has an ODBC driver. Bridges solve this by translating function calls from one standard to another.\n\n\n\n\n\n\n\nBridge\nWhat it does\n\n\n\n\nJDBC-to-ODBC\nJDBC driver internally uses an ODBC driver to reach the database\n\n\nODBC-to-JDBC\nODBC driver internally uses a JDBC driver\n\n\nOLE DB-to-ODBC\nMicrosoft’s OLE DB provider translated to ODBC calls\n\n\nADO.NET-to-ODBC\nADO.NET provider (used in .NET apps) translated to ODBC\n\n\n\nThink of a bridge as a translator — it lets two systems that speak different languages work together.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#embedded-sql",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#embedded-sql",
+    "title": "SQL and Native Languages",
+    "section": "Embedded SQL",
+    "text": "Embedded SQL\nWith ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they’re even there. Embedded SQL takes a different approach: you write SQL directly inside the host language code, and a pre-processor converts it into regular function calls before compilation.\nSupported in: C, C++, Java (SQLJ), COBOL, FORTRAN.\nSQL statements are marked with EXEC SQL so the pre-processor knows what to handle:\nEXEC SQL &lt;embedded SQL statement&gt;;\n\nKey Concepts\nConnecting to the database:\nEXEC SQL CONNECT TO server USER username USING password;\nHost variables — variables from your program that you use inside SQL queries. They’re prefixed with : to distinguish them from SQL column names. Variables used within the Embedded SQL query must be declared within DECLARE section:\nEXEC SQL BEGIN DECLARE SECTION;\n    int credit_amount;\nEXEC SQL END DECLARE SECTION;\nCursors — since a query can return many rows, you use a cursor to step through them one at a time. Think of it as a pointer that moves through the result set.\n/* 1. Declare the cursor */\nEXEC SQL \n    DECLARE c CURSOR FOR\n    SELECT ID, name FROM student\n    WHERE tot_cred &gt; :credit_amount;\nEND_EXEC\n\n/* 2. Open it — this actually runs the query */\nEXEC SQL OPEN c;\n\n/* 3. Fetch rows one by one */\nEXEC SQL FETCH c INTO :si, :sn;\n\n/* 4. Close when done */\nEXEC SQL CLOSE c;\n\nOPEN — executes the query and stores results in a temporary relation\nFETCH — retrieves the next row into your host variables\nSQLSTATE is set to '02000' when there are no more rows to fetch\nCLOSE — releases the temporary result\n\nUpdating through a cursor:\nYou can also modify rows as you fetch them by declaring the cursor FOR UPDATE:\nEXEC SQL DECLARE c CURSOR FOR\n    SELECT * FROM instructor\n    WHERE dept_name = 'Music'\n    FOR UPDATE;\n\n/* After fetching each row: */\nUPDATE instructor SET salary = salary + 1000 WHERE CURRENT OF c;",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#connecting-python-to-postgresql",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#connecting-python-to-postgresql",
+    "title": "SQL and Native Languages",
+    "section": "Connecting Python to PostgreSQL",
+    "text": "Connecting Python to PostgreSQL\nThe most popular Python library for working with PostgreSQL is psycopg2 — it’s stable, actively maintained, thread-safe, and works with both Python 2 and 3.\nInstall it with:\npip install psycopg2\nEvery interaction with the database follows the same six steps:\n\n\n\n\n\n\n\nStep\nWhat happens\n\n\n\n\n1. Create connection\npsycopg2.connect(...) — opens a connection to the DB\n\n\n2. Create cursor\nconn.cursor() — creates a cursor to execute queries\n\n\n3. Execute query\ncur.execute(sql) — runs your SQL\n\n\n4. Fetch results\nfetchone(), fetchmany(), or fetchall()\n\n\n5. Commit or rollback\nconn.commit() to save, conn.rollback() to undo\n\n\n6. Close\ncur.close() then conn.close()",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#key-api-methods",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#key-api-methods",
+    "title": "SQL and Native Languages",
+    "section": "Key API Methods",
+    "text": "Key API Methods\nConnection:\nconn = psycopg2.connect(database=\"mydb\", user=\"myuser\",\n                         password=\"mypass\", host=\"127.0.0.1\", port=\"5432\")\nconn.commit()    # saves changes\nconn.rollback()  # undoes changes since last commit\nconn.close()     # closes the connection\nCursor:\ncur = conn.cursor()\ncur.execute(\"INSERT INTO employee VALUES (%s, %s)\", (id, name))  # parameterized query\ncur.rowcount     # number of rows affected by last operation\ncur.fetchone()   # returns next row, or None\ncur.fetchmany(n) # returns next n rows as a list\ncur.fetchall()   # returns all remaining rows as a list\ncur.close()\n\nUse %s as a placeholder in queries instead of string formatting — this protects against SQL injection.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#crud-operations-in-python",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#crud-operations-in-python",
+    "title": "SQL and Native Languages",
+    "section": "CRUD Operations in Python",
+    "text": "CRUD Operations in Python\nCREATE table:\ncur.execute('''CREATE TABLE EMPLOYEE (\n    emp_num  INT PRIMARY KEY NOT NULL,\n    emp_name VARCHAR(40) NOT NULL,\n    department VARCHAR(40) NOT NULL)''')\nconn.commit()\nINSERT:\ncur.execute(\"INSERT INTO EMPLOYEE VALUES (%s, %s, %s)\", (110, 'Bhaskar', 'HR'))\nconn.commit()\nUPDATE:\ncur.execute(\"UPDATE EMPLOYEE SET department = %s WHERE emp_num = %s\", ('Finance', 110))\nconn.commit()\nDELETE:\ncur.execute(\"DELETE FROM EMPLOYEE WHERE emp_num = %s\", (110,))\nconn.commit()\nSELECT:\ncur.execute(\"SELECT emp_num, emp_name, department FROM EMPLOYEE\")\nrows = cur.fetchall()\nfor row in rows:\n    print(row[0], row[1], row[2])",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html",
+    "href": "weeks/week_7/03_rad.html",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "",
+    "text": "Rapid Application Development (RAD)\nBuilding rich web application interfaces, especially the kind of interactive, dynamic pages we see today takes a lot of effort. RAD is an approach that aims to shorten that development cycle by focusing on fast prototyping, quick feedback, and iterative delivery rather than long planning phases.\nThe four phases of RAD are:\nThe key idea: prototypes are built quickly, feedback is collected early, and each iteration gets you closer to the final product.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html#rapid-application-development-rad",
+    "href": "weeks/week_7/03_rad.html#rapid-application-development-rad",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "",
+    "text": "Business Modeling — define what the application needs to do\nData Modeling — design the data structures\nProcess Modeling — design the workflows and logic\nTesting & Turnover — test, refine, and deploy",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html#application-performance",
+    "href": "weeks/week_7/03_rad.html#application-performance",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "Application Performance",
+    "text": "Application Performance\nPopular web applications can have millions of users, with thousands of requests hitting the server every second at peak times. Serving each request by running a fresh database query every single time would be extremely slow and expensive. Caching is the main tool used to tackle this.\n\nWhere Caching Happens\n\n\n\n\n\n\n\nLocation\nWhat gets cached\n\n\n\n\nServer — Connection Pool\nJDBC connections are kept open and reused across requests instead of opening a new one each time\n\n\nServer — Query Results\nResults of frequent database queries are stored in memory; the DB is only hit again if the underlying data changes\n\n\nServer — Generated HTML\nIf a page looks the same for many users, the rendered HTML is cached and served directly\n\n\nClient Network — Web Proxy\nPages are cached at the network level and served to nearby users without hitting the server\n\n\n\nConnection pooling in particular is a big win — opening a new database connection is expensive, so reusing existing ones across requests saves significant time.",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html#application-security",
+    "href": "weeks/week_7/03_rad.html#application-security",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "Application Security",
+    "text": "Application Security\nSecurity is one of the most critical and most commonly overlooked aspects of web application development. Here are the major threats and how to address them.\n\nSQL Injection\nThis is one of the most common and dangerous attacks. It happens when user input is directly concatenated into a SQL query string without sanitization.\nExample of a vulnerable query:\n\"SELECT * FROM instructor WHERE name = '\" + name + \"'\"\nIf a user types X' or 'Y' = 'Y as their name, the query becomes:\nSELECT * FROM instructor WHERE name = 'X' or 'Y' = 'Y'\nThis returns every row in the table. A malicious user could even inject:\nX'; UPDATE instructor SET salary = salary + 10000; --\nThe fix — always use prepared statements:\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM instructor WHERE name = ?\"\n);\nps.setString(1, name);\nThe ? placeholder ensures the input is treated as data, never as SQL code. Special characters get automatically escaped.\n\n⚠️ Note: conn.prepareStatement(\"SELECT ... WHERE name = '\" + name + \"'\") is not a prepared statement — it’s just a regular string with a misleading name. Always use ? placeholders.\n\n\n\nPassword Leakage\n\nNever store database passwords in plain text inside script files (.php, .jsp) that live in web-accessible directories.\nWeb servers execute script files but may accidentally serve backup files (e.g., file.jsp~ or .file.jsp.swp) as raw text, exposing credentials.\nRestrict database server access to only the IP addresses of your application servers.\n\n\n\nAuthentication\nPasswords alone are increasingly insufficient — they can be guessed, sniffed, reused across sites, or stolen by spyware.\nTwo-factor authentication (2FA) adds a second layer: - Password + OTP sent via SMS - Password + a hardware token that generates a new pseudo-random number every minute (both the device and the server compute the same sequence independently)\n\n\nApplication-Level Authorization\nStandard SQL authorization works at the table or column level — you can say “this user can read the takes table”, but you can’t say “this student can only see their own rows”. The database has no concept of who the application user is.\nWorkaround — use views:\nCREATE VIEW studentTakes AS\n    SELECT * FROM takes\n    WHERE takes.ID = syscontext.user_id();\nThis filters rows based on the currently logged-in user’s identity, which the application passes to the database. It works, but creating a view for every such rule gets unwieldy.\n\n\nAudit Trails\nEvery sensitive action in an application should be logged: who accessed what data, who made what change, and when. Audit trails are used after a breach to detect what happened, repair the damage and trace who was responsible.\nLogs are needed at both the database level (who ran which queries) and the application level (which user performed which action in the UI).",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html#challenges-in-web-application-development",
+    "href": "weeks/week_7/03_rad.html#challenges-in-web-application-development",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "Challenges in Web Application Development",
+    "text": "Challenges in Web Application Development\nBuilding a web application involves more than just writing code. The major challenges are:\n\nUser Interface & Experience — making interfaces that are intuitive and work across devices\nScalability — handling growth in users and data without redesigning the system\nPerformance — keeping response times low under heavy load\nFramework & Platform Knowledge — choosing and mastering the right tools\nSecurity — protecting against the threats covered above",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/03_rad.html#mobile-apps",
+    "href": "weeks/week_7/03_rad.html#mobile-apps",
+    "title": "RAD, Application Security, and Mobile Apps",
+    "section": "Mobile Apps",
+    "text": "Mobile Apps\n\nWhat is a Mobile App?\nA mobile app is application software designed to run on smartphones and tablets. The key difference from desktop development is the set of constraints the device imposes:\n\n\n\nConstraint\nCapability\n\n\n\n\nSmall screen / form factor\nTouchscreen & gesture-based navigation\n\n\nLimited memory & CPU\nAccelerometer, GPS, camera sensors\n\n\nLimited battery\nAlways-on connectivity (WiFi, 4G/5G)\n\n\nLimited bandwidth\nPush notifications\n\n\n\nDesign must account for both the limitations and the unique capabilities.\n\n\nArchitecture of a Mobile App\nMobile apps follow the same 3-tier architecture as web apps — Presentation, Business Logic, and Data Access. The main difference is in the Data layer, which is often split:\n\nLocal data — stored on the device (SQLite, cached files) for offline access and speed\nRemote data — fetched from a server API when connected\n\nThe app also needs to be customized per platform (Android, iOS, Windows), since each has its own OS, UI guidelines, and APIs.\n\n\nTypes of Mobile Apps\n\n\n\n\n\n\n\n\nType\nHow it works\nTrade-off\n\n\n\n\nNative\nWritten in the platform’s own language (Java/Kotlin for Android, Swift/Objective-C for iOS)\nBest performance and device integration, but separate codebase per platform\n\n\nWeb App\nRuns in a browser using HTML/CSS/JS\nFully portable, but limited access to device features\n\n\nHybrid\nWraps a web app in a native shell\nOne codebase for all platforms, but performance trade-offs",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -974,7 +1183,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -985,7 +1194,7 @@
     "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Python-DB Playground</span>"
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Python-DB Playground</span>"
     ]
   }
 ]

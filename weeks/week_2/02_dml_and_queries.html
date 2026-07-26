@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -77,14 +80,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-9b325c28454ee3ddedfcc241a9fdc2c7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-c5c7729b682c95a13659aba34ec0f1ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -115,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -534,12 +537,38 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-07</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Application Programs and Architecture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_7/02_sql_and_native_languages.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL and Native Languages</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_7/03_rad.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -638,16 +667,16 @@ window.Quarto = {
 <section id="insert-adding-new-records" class="level3">
 <h3 class="anchored" data-anchor-id="insert-adding-new-records">1. <code>INSERT</code>: Adding New Records</h3>
 <p>A new student, Pravin, has just enrolled. We need to add him to our database.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="kw">VALUES</span> (<span class="st">'26f10'</span>, <span class="st">'Pravin'</span>, <span class="st">'Degree'</span>, <span class="st">'DBMS'</span>, <span class="st">'27t1'</span>, <span class="st">'S'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>Tip:</strong> You <em>can</em> write an <code>INSERT</code> without listing the column names (e.g., <code>INSERT INTO student VALUES (...)</code>), but specifying the columns as shown above is much safer! It prevents errors if someone later adds a new column to the table.</p>
 </blockquote>
 <p><strong>Inserting Multiple Rows at Once:</strong> You can also insert several students in a single command by separating the values with commas!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">VALUES</span> </span>
-<span id="cb2-3"><a href="#cb2-3"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
-<span id="cb2-4"><a href="#cb2-4"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> student (roll_no, name, <span class="kw">level</span>, course, term, grade) </span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="kw">VALUES</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>    (<span class="st">'26f11'</span>, <span class="st">'Alice'</span>, <span class="st">'Degree'</span>, <span class="st">'Math'</span>, <span class="st">'27t1'</span>, <span class="st">'B'</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>    (<span class="st">'26f12'</span>, <span class="st">'Bob'</span>, <span class="st">'Diploma'</span>, <span class="st">'Physics'</span>, <span class="st">'27t1'</span>, <span class="st">'C'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Our Table Now:</strong></p>
 <table class="caption-top table">
 <thead>
@@ -675,9 +704,9 @@ window.Quarto = {
 <section id="update-modifying-existing-data" class="level3">
 <h3 class="anchored" data-anchor-id="update-modifying-existing-data">2. <code>UPDATE</code>: Modifying Existing Data</h3>
 <p>Oops! We made a mistake. Pravin actually got an ‘A’ grade, not an ‘S’. We don’t delete his record; we just <code>UPDATE</code> it.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">UPDATE</span> student </span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">UPDATE</span> student </span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">SET</span> grade <span class="op">=</span> <span class="st">'A'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>[WARNING]</strong> Always, <em>always</em> use a <code>WHERE</code> clause with <code>UPDATE</code>!</p>
 </blockquote>
@@ -736,8 +765,8 @@ window.Quarto = {
 <section id="delete-removing-records" class="level3">
 <h3 class="anchored" data-anchor-id="delete-removing-records">3. <code>DELETE</code>: Removing Records</h3>
 <p>Pravin has decided to transfer to another school. We need to remove his record completely.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> student </span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">WHERE</span> roll_no <span class="op">=</span> <span class="st">'26f10'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>(Just like <code>UPDATE</code>, forgetting the <code>WHERE</code> clause here would delete everyone!)</em></p>
 <hr>
 </section>
@@ -746,9 +775,9 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-anatomy-of-a-query">The Anatomy of a Query</h2>
 <p>Now that we have data, how do we ask the database questions? We write queries.</p>
 <p>Think of a SQL query like giving instructions to an incredibly fast, but very literal librarian. The fundamental structure requires three clauses:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">SELECT</span> <span class="op">&lt;</span><span class="kw">attributes</span><span class="op">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a><span class="kw">FROM</span> <span class="op">&lt;</span><span class="kw">tables</span><span class="op">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="kw">WHERE</span> <span class="op">&lt;</span>condition<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Here is the mental model of how the librarian thinks: 1. <strong><code>FROM</code></strong>: <em>“Which section of the library (tables) should I go to?”</em> 2. <strong><code>WHERE</code></strong>: <em>“Which specific books (rows) should I pull off the shelf?”</em> 3. <strong><code>SELECT</code></strong>: <em>“Which chapters (columns) should I photocopy and give to you?”</em></p>
 <section id="the-select-clause-in-detail" class="level3">
 <h3 class="anchored" data-anchor-id="the-select-clause-in-detail">The <code>SELECT</code> Clause in Detail</h3>
@@ -760,9 +789,9 @@ window.Quarto = {
 <li><p><code>TOP &lt;n&gt;</code> (or <code>LIMIT</code>): “Only show me the first <code>n</code> results.”</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">SELECT</span> <span class="kw">DISTINCT</span>(name) <span class="kw">AS</span> Instructor_Name</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="kw">WHERE</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-order-by-clause" class="level3">
 <h3 class="anchored" data-anchor-id="the-order-by-clause">The <code>ORDER BY</code> Clause</h3>
@@ -772,18 +801,18 @@ window.Quarto = {
 <li><code>DESC</code>: Descending order (Z-A, 10-1).</li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">SELECT</span> name, salary</span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">FROM</span> instructor</span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="co">-- Sort instructors by salary from highest to lowest</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a><span class="kw">SELECT</span> name, salary</span>
+<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a><span class="kw">FROM</span> instructor</span>
+<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a><span class="kw">ORDER</span> <span class="kw">BY</span> salary <span class="kw">DESC</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
 <section id="the-danger-of-cross-joins" class="level2">
 <h2 class="anchored" data-anchor-id="the-danger-of-cross-joins">The Danger of Cross Joins</h2>
 <p>What happens if you tell the librarian to get data from <em>two</em> places at once?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a><span class="kw">FROM</span> instructor, course;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>When you list multiple tables in the <code>FROM</code> clause without a <code>WHERE</code> condition, SQL performs a <strong>Cross Join</strong> (Cartesian Product). It pairs <em>every</em> row in the first table with <em>every</em> row in the second table.</p>
 <p><strong>Let’s visualize this:</strong> If you have 2 Instructors and 2 Courses:</p>
 <p><em>Instructors Table:</em></p>
@@ -866,10 +895,10 @@ window.Quarto = {
 <section id="fixing-the-cross-join" class="level3">
 <h3 class="anchored" data-anchor-id="fixing-the-cross-join">Fixing the Cross Join</h3>
 <p>To fix this, we use the <code>WHERE</code> clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
-<span id="cb9-4"><a href="#cb9-4"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">SELECT</span> <span class="op">*</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a><span class="kw">FROM</span> instructor <span class="kw">AS</span> i, course <span class="kw">AS</span> c</span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a><span class="kw">WHERE</span> i.course_id <span class="op">=</span> c.course_id </span>
+<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>  <span class="kw">AND</span> i.dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><em>(Notice how we used <code>AS i</code> and <code>AS c</code> to give our tables nicknames? This makes our <code>WHERE</code> clause much easier to read!)</em></p>
 
 
