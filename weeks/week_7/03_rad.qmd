@@ -1,0 +1,149 @@
+---
+title: "RAD, Application Security, and Mobile Apps"
+format:
+  html:
+    toc: true
+---
+## Rapid Application Development (RAD)
+
+Building rich web application interfaces, especially the kind of interactive, dynamic pages we see today takes a lot of effort. **RAD** is an approach that aims to shorten that development cycle by focusing on fast prototyping, quick feedback, and iterative delivery rather than long planning phases.
+
+The four phases of RAD are:
+
+1. **Business Modeling** — define what the application needs to do
+2. **Data Modeling** — design the data structures
+3. **Process Modeling** — design the workflows and logic
+4. **Testing & Turnover** — test, refine, and deploy
+
+The key idea: prototypes are built quickly, feedback is collected early, and each iteration gets you closer to the final product.
+
+---
+
+## Application Performance
+
+Popular web applications can have millions of users, with thousands of requests hitting the server every second at peak times. Serving each request by running a fresh database query every single time would be extremely slow and expensive. **Caching** is the main tool used to tackle this.
+
+### Where Caching Happens
+
+| Location | What gets cached |
+|---|---|
+| **Server — Connection Pool** | JDBC connections are kept open and reused across requests instead of opening a new one each time |
+| **Server — Query Results** | Results of frequent database queries are stored in memory; the DB is only hit again if the underlying data changes |
+| **Server — Generated HTML** | If a page looks the same for many users, the rendered HTML is cached and served directly |
+| **Client Network — Web Proxy** | Pages are cached at the network level and served to nearby users without hitting the server |
+
+Connection pooling in particular is a big win — opening a new database connection is expensive, so reusing existing ones across requests saves significant time.
+
+---
+
+## Application Security
+
+Security is one of the most critical and most commonly overlooked aspects of web application development. Here are the major threats and how to address them.
+
+### SQL Injection
+
+This is one of the most common and dangerous attacks. It happens when user input is directly concatenated into a SQL query string without sanitization.
+
+**Example of a vulnerable query:**
+```java
+"SELECT * FROM instructor WHERE name = '" + name + "'"
+```
+
+If a user types `X' or 'Y' = 'Y` as their name, the query becomes:
+```sql
+SELECT * FROM instructor WHERE name = 'X' or 'Y' = 'Y'
+```
+This returns every row in the table. A malicious user could even inject:
+```sql
+X'; UPDATE instructor SET salary = salary + 10000; --
+```
+
+**The fix — always use prepared statements:**
+```java
+PreparedStatement ps = conn.prepareStatement(
+    "SELECT * FROM instructor WHERE name = ?"
+);
+ps.setString(1, name);
+```
+The `?` placeholder ensures the input is treated as data, never as SQL code. Special characters get automatically escaped.
+
+> ⚠️ Note: `conn.prepareStatement("SELECT ... WHERE name = '" + name + "'")` is **not** a prepared statement — it's just a regular string with a misleading name. Always use `?` placeholders.
+
+### Password Leakage
+
+- Never store database passwords in plain text inside script files (`.php`, `.jsp`) that live in web-accessible directories.
+- Web servers execute script files but may accidentally serve backup files (e.g., `file.jsp~` or `.file.jsp.swp`) as raw text, exposing credentials.
+- Restrict database server access to only the IP addresses of your application servers.
+
+### Authentication
+
+Passwords alone are increasingly insufficient — they can be guessed, sniffed, reused across sites, or stolen by spyware.
+
+**Two-factor authentication (2FA)** adds a second layer:
+- Password + OTP sent via SMS
+- Password + a hardware token that generates a new pseudo-random number every minute (both the device and the server compute the same sequence independently)
+
+### Application-Level Authorization
+
+Standard SQL authorization works at the table or column level — you can say "this user can read the `takes` table", but you can't say "this student can only see *their own* rows". The database has no concept of who the *application user* is.
+
+**Workaround — use views:**
+```sql
+CREATE VIEW studentTakes AS
+    SELECT * FROM takes
+    WHERE takes.ID = syscontext.user_id();
+```
+This filters rows based on the currently logged-in user's identity, which the application passes to the database. It works, but creating a view for every such rule gets unwieldy.
+
+
+### Audit Trails
+
+Every sensitive action in an application should be **logged**: who accessed what data, who made what change, and when. Audit trails are used after a breach to detect what happened, repair the damage and trace who was responsible.
+
+Logs are needed at both the **database level** (who ran which queries) and the **application level** (which user performed which action in the UI).
+
+---
+
+## Challenges in Web Application Development
+
+Building a web application involves more than just writing code. The major challenges are:
+
+- **User Interface & Experience** — making interfaces that are intuitive and work across devices
+- **Scalability** — handling growth in users and data without redesigning the system
+- **Performance** — keeping response times low under heavy load
+- **Framework & Platform Knowledge** — choosing and mastering the right tools
+- **Security** — protecting against the threats covered above
+
+---
+
+## Mobile Apps
+
+### What is a Mobile App?
+
+A mobile app is application software designed to run on smartphones and tablets. The key difference from desktop development is the set of **constraints** the device imposes:
+
+| Constraint | Capability |
+|---|---|
+| Small screen / form factor | Touchscreen & gesture-based navigation |
+| Limited memory & CPU | Accelerometer, GPS, camera sensors |
+| Limited battery | Always-on connectivity (WiFi, 4G/5G) |
+| Limited bandwidth | Push notifications |
+
+Design must account for both the limitations *and* the unique capabilities.
+
+### Architecture of a Mobile App
+
+Mobile apps follow the same **3-tier architecture** as web apps — Presentation, Business Logic, and Data Access. The main difference is in the Data layer, which is often **split**:
+
+- **Local data** — stored on the device (SQLite, cached files) for offline access and speed
+- **Remote data** — fetched from a server API when connected
+
+The app also needs to be customized per platform (Android, iOS, Windows), since each has its own OS, UI guidelines, and APIs.
+
+### Types of Mobile Apps
+
+| Type | How it works | Trade-off |
+|---|---|---|
+| **Native** | Written in the platform's own language (Java/Kotlin for Android, Swift/Objective-C for iOS) | Best performance and device integration, but separate codebase per platform |
+| **Web App** | Runs in a browser using HTML/CSS/JS | Fully portable, but limited access to device features |
+| **Hybrid** | Wraps a web app in a native shell | One codebase for all platforms, but performance trade-offs |
