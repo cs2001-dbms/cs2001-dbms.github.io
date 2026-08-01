@@ -111,6 +111,12 @@ book:
         - weeks/week_7/01_application_programs_and_architecture.qmd
         - weeks/week_7/02_sql_and_native_languages.qmd
         - weeks/week_7/03_rad.qmd
+    - part: '**Week-08**'
+      chapters:
+        - weeks/week_8/01_algorithms_and_data_structures.qmd
+        - weeks/week_8/02_physical_storage_systems.qmd
+        - weeks/week_8/03_disk_performance_math.qmd
+        - weeks/week_8/04_file_organization_and_buffering.qmd
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd

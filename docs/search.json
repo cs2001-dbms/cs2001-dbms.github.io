@@ -1,12 +1,35 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Database Management Systems",
+    "objectID": "weeks/week_8/03_magnetic_disks.html",
+    "href": "weeks/week_8/03_magnetic_disks.html",
+    "title": "Magnetic Disks",
     "section": "",
-    "text": "Welcome to DBMS (CS2001) Course\nThis portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.\n\nCourse Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None\n\n\n\nTextbook\n\nTitle: Database System Concepts (7th Ed.)\nAuthors: Silberschatz, Korth, Sudarshan\nPublisher: McGraw-Hill\n\n\n\n\n\nCourse Faculty\nDr. Partha Pratim Das\nProfessor, Department of Computer Science and Engineering, IIT Kharagpur\n\n\nCourse Instructors:\nManidipa\nPravin\nBhaskar\nArshpreet\n\n\n\nHow to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar or click Start Course above to jump into specific topics.",
+    "text": "Inside a Magnetic Disk\nTo understand database performance, we must look at the physical mechanics of where our data actually lives: Magnetic Disks (or Hard Disk Drives / HDDs).",
     "crumbs": [
-      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Magnetic Disks</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_magnetic_disks.html#inside-a-magnetic-disk",
+    "href": "weeks/week_8/03_magnetic_disks.html#inside-a-magnetic-disk",
+    "title": "Magnetic Disks",
+    "section": "",
+    "text": "The inside of a typical magnetic disk.\n\n\n\nThe Record Player Analogy\nThink of a hard drive like an old-school vinyl record player, but instead of playing music, it reads and writes digital data.\n\nPlatter (The Record): The circular disk coated with magnetic material where data is stored. Disks usually have multiple platters stacked on top of each other.\nSpindle (The Turntable Motor): The central rod that spins the platters at high speeds (often measured in RPM - Revolutions Per Minute, like 5400 or 7200 RPM).\nRead/Write Head (The Needle): The tiny magnet that hovers just nanometers above the spinning platter to read or write data.\nActuator Arm (The Tonearm): The mechanical arm that moves the Read/Write head across the platter.\n\n\n\nThe Geometry of a Disk\nData is not just thrown onto the platter randomly. It is highly organized.\n\n\n\nA breakdown of disk geometry.\n\n\nLet’s break down the labels from the image:\n\n(A) Track: Think of the platter like a running track with many lanes. A track is a single, concentric circular ring on the surface of the platter.\n(C) Disk Sector: A track is divided into smaller arcs called sectors. A sector is the smallest unit of data that can be read or written to the disk (traditionally 512 bytes).\n(B) Geometrical Sector: A slice of the pie that cuts through all tracks.\n(D) Cluster: A grouping of contiguous sectors used by the operating system to allocate space more efficiently.\n\nNote: A Cylinder (not pictured above) is the set of all tracks that are at the exact same position across all platters in the stack.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Magnetic Disks</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_magnetic_disks.html#deconstructing-access-time",
+    "href": "weeks/week_8/03_magnetic_disks.html#deconstructing-access-time",
+    "title": "Magnetic Disks",
+    "section": "Deconstructing Access Time",
+    "text": "Deconstructing Access Time\nWhen a database asks the hard drive for a piece of data, the drive doesn’t instantly provide it. The mechanical parts have to move!\n\n\n\n\n\n\nImportantThe Access Time Equation\n\n\n\nThe total time it takes to begin reading the actual data is called Access Time.\nAccess Time = Seek Time + Rotational Latency\n\n\nLet’s break down what these terms mean in the real world:\n\n1. Seek Time\nBefore you can read the data, the actuator arm must move the read/write head to the correct Track. Seek Time is the time taken to physically reposition the arm over the correct track. Because it involves physical movement of an arm, it is relatively slow (usually measured in milliseconds).\n\n\n2. Rotational Latency\nOnce the head is over the correct track, the data we want might be on the other side of the platter! We have to wait for the platter to spin so the correct Sector arrives directly underneath the head. Rotational Latency is the time spent waiting for the sector to rotate into position.\n\n\n\n\n\n\nTipAverage Rotational Latency\n\n\n\nWe can’t predict exactly where the platter is at any given moment. Sometimes the sector is right there (0 latency), and sometimes it’s exactly one full rotation away. Therefore, the average rotational latency is considered to be exactly one-half of a single rotation.\n\\[Average \\ Rotational \\ Latency = \\frac{1}{2} \\times Time \\ Period \\ of \\ One \\ Rotation\\]\n\n\n\n\n3. Data-Transfer Rate\nOnce the head is in position and the sector is spinning underneath it, the data starts flowing! Data-Transfer Rate is the speed at which data can be retrieved from (or written to) the disk.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Magnetic Disks</span>"
     ]
   },
   {
@@ -967,501 +990,6 @@
     ]
   },
   {
-    "objectID": "weeks/week_7/01.html",
-    "href": "weeks/week_7/01.html",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "",
-    "text": "Application Programs\nDatabases don’t exist in isolation, they always live inside an application that users interact with. Database-backed applications show up in almost every corner of modern life, for example, travel, communication, education etc. Despite looking completely different, most are built the same way underneath — they all use an RDBMS and they are all split into three layers.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#what-are-application-programs",
-    "href": "weeks/week_7/01.html#what-are-application-programs",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "What Are Application Programs?",
-    "text": "What Are Application Programs?\nDatabase applications span every domain — finance (net banking, UPI), travel (IRCTC, Zomato), communication (Gmail, WhatsApp), education (SWAYAM, Coursera), and health (Aarogya Setu). Despite their differences, they all share a common underlying structure.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#the-three-layer-model",
-    "href": "weeks/week_7/01.html#the-three-layer-model",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "The Three-Layer Model",
-    "text": "The Three-Layer Model\nEvery application is split into three logical layers:\n\n\n\n\n\n\n\nLayer\nRole\n\n\n\n\nPresentation\nWhat the user sees and interacts with (browser, mobile app)\n\n\nBusiness Logic\nRules, decisions, and workflows\n\n\nData Access\nTalks to the database\n\n\n\nThe Presentation layer uses the MVC (Model-View-Controller) pattern — Model holds data/logic, View displays it, Controller handles user actions.\nThe Business Logic layer enforces rules (e.g., a student can register only if prerequisites are cleared) and workflows (multi-step processes like university admissions). It often uses ORM (Object-Relational Mapping) to map Java/Python objects to database tables.\nThe Data Access layer handles efficient storage, large volumes, and security.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#architecture-classification-and-evolution",
-    "href": "weeks/week_7/01.html#architecture-classification-and-evolution",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Architecture Classification and Evolution",
-    "text": "Architecture Classification and Evolution\nApplication architecture evolved across three major eras:\n\n\n\n\n\n\n\n\nEra\nTier\nWhat it looks like\n\n\n\n\nMainframe (1960s–70s)\n1-Tier\nEverything on one machine; users connect via dumb terminals with no computing power of their own\n\n\nPC Era (1980s)\n2-Tier\nThe app runs on the client PC and talks directly to a DB server — no middleman, but updating business logic meant updating every machine\n\n\nWeb/Mobile (1990s–now)\n3-Tier\nBrowser/app → Application Server → Database. Logic lives on the server, so one update reaches every user instantly\n\n\nLarge-scale systems\nn-Tier\nExtends 3-tier by distributing components across many servers with load balancers, caches, and microservices\n\n\n\n3-tier is the most widely used architecture today. n-tier is just a scaled-up version of it.\n\n\n\nArchitecture Evolution",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#sample-application-breakdown",
-    "href": "weeks/week_7/01.html#sample-application-breakdown",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Sample Application Breakdown",
-    "text": "Sample Application Breakdown\n\n\n\n\n\n\n\n\n\nApplication\nPresentation\nLogic\nData\n\n\n\n\nWeb Mail\nInbox, Composer, Filters\nAuth, SMTP/IMAP, Encryption\nUsers, Contacts, Mails\n\n\nNet Banking\nAccount View, Fund Transfer\nTransaction Validation, Auth, Payment Gateway\nAccounts, Beneficiaries, Transactions\n\n\nTimetable System\nAdd Courses, Assign Rooms\nTimetable Assignment Logic, Auth\nCourses, Teachers, Rooms, Slots",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#the-world-wide-web",
-    "href": "weeks/week_7/01.html#the-world-wide-web",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "The World Wide Web",
-    "text": "The World Wide Web\nThe Web is a massive collection of hypertext documents (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#urls-uris-and-urns",
-    "href": "weeks/week_7/01.html#urls-uris-and-urns",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "URLs, URIs, and URNs",
-    "text": "URLs, URIs, and URNs\nEvery resource on the web needs an address. A URL like http://www.acm.org/sigmod has three parts:\nhttp  ://  www.acm.org  /sigmod\n ↑              ↑           ↑\nProtocol    Machine name   Document path\n\nURI — An umbrella term that covers both locators (URLs) and names (URNs).\nURL — Specifies how to retrieve a resource and where it is located, functioning like a person’s street address.\nURN — Serves as a unique identifier for a resource, functioning like a person’s name. It defines the identity of a resource but does not specify its location",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#html-and-http",
-    "href": "weeks/week_7/01.html#html-and-http",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "HTML and HTTP",
-    "text": "HTML and HTTP\nHTML structures pages and provides input elements (text boxes, dropdowns, radio buttons) grouped into forms that submit data to a server. - HTML (Hypertext Markup Language) : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons). - HTTP (Hypertext Transfer Protocol) : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is connectionless — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#sessions-and-cookies",
-    "href": "weeks/week_7/01.html#sessions-and-cookies",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Sessions and Cookies",
-    "text": "Sessions and Cookies\nHTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?\nThe answer is cookies. Here’s how it works:\n\nOn your first visit, the server sends a small identifying token (cookie) to your browser\nYour browser stores it and automatically attaches it to every subsequent request\nThe server reads it, looks it up, and knows exactly who you are\n\nThis is how Amazon keeps your cart alive across sessions. Cookies can be permanent (survive browser restarts) or session-only (deleted when you close the tab).",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#web-browser-and-web-server",
-    "href": "weeks/week_7/01.html#web-browser-and-web-server",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Web Browser and Web Server",
-    "text": "Web Browser and Web Server\nBrowser — fetches a URL via HTTP and uses a rendering engine to turn raw HTML/CSS/JS into the visual page you see.\nWeb Server — listens for HTTP requests and responds. If the URL points to a static file, it returns it directly. If it points to a program or script, the server runs it and returns the generated HTML. CGI (Common Gateway Interface) was the early standard that defined how a web server hands off a request to an external program.\nWeb Services — when a server needs to return data (not HTML) for another app to consume: - REST — uses standard HTTP; returns JSON or XML. How most modern APIs work (weather apps, maps, payment gateways). - SOAP (Big Web Services) — older standard; uses XML for both request and response.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#scripting-two-kinds",
-    "href": "weeks/week_7/01.html#scripting-two-kinds",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Scripting — Two Kinds",
-    "text": "Scripting — Two Kinds\n\n\n\nType\nRuns Where\nExamples\n\n\n\n\nClient-Side\nBrowser\nJavaScript, Applets\n\n\nServer-Side\nServer\nJSP, PHP, Perl, Python\n\n\n\n\nClient-Side Scripting\nScripts are downloaded with the page and executed by the browser. Used for input validation, dynamic page updates, and AJAX (fetching data without a full page reload). Browsers run scripts in a sandbox to prevent malicious access to the client machine.\n\n\nServer-Side Scripting\nScripts run on the server; the client only receives the final HTML. Allows embedding SQL queries inside a web page to generate dynamic content from the database.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#servlets",
-    "href": "weeks/week_7/01.html#servlets",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Servlets",
-    "text": "Servlets\nA Java Servlet is a Java program that lives on a web/application server and handles HTTP requests. The flow:\nUser submits form\n    → HTTP request hits the server\n    → Server loads the Servlet\n    → Servlet reads parameters, runs SQL via JDBC\n    → Servlet writes HTML response\n    → Thread closes\nEach request gets its own thread, so many users can be served simultaneously.\nSession handling in Servlets uses cookies automatically:\nrequest.getSession(true);                      // create session\nsession.setAttribute(\"userid\", \"alice\");       // store data\nsession.getAttribute(\"userid\");                // retrieve later\nServlets run inside application servers like Apache Tomcat, GlassFish, or JBoss.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#jsp-java-server-pages",
-    "href": "weeks/week_7/01.html#jsp-java-server-pages",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "JSP (Java Server Pages)",
-    "text": "JSP (Java Server Pages)\nWriting HTML entirely through out.println() in a Servlet is painful. JSP lets you write HTML normally and drop Java logic inside &lt;% ... %&gt; tags wherever needed:\n&lt;body&gt;\n  &lt;% if (request.getParameter(\"name\") == null) { %&gt;\n    Hello, World!\n  &lt;% } else { %&gt;\n    Hello, &lt;%= request.getParameter(\"name\") %&gt;!\n  &lt;% } %&gt;\n&lt;/body&gt;\nThe server compiles a JSP page into a Servlet the first time it’s requested, so performance is identical — JSP is just much easier to write and maintain.\n\n\n\n\n\n\n\nComparison\nKey Point\n\n\n\n\nJSP vs. ASP\nJSP is platform-independent; ASP is Microsoft-only\n\n\nJSP vs. Pure Servlets\nJSP is cleaner when the page is mostly HTML\n\n\nJSP vs. JavaScript\nJSP runs server-side before response; JS runs client-side after\n\n\nJSP vs. Static HTML\nJSP generates dynamic content; static HTML is fixed",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#php",
-    "href": "weeks/week_7/01.html#php",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "PHP",
-    "text": "PHP\nPHP works exactly like JSP — embed logic inside HTML, server executes it, client gets plain HTML. It has extensive database libraries (ODBC) and was the dominant language for web development for many years.\n&lt;body&gt;\n  &lt;?php\n    if (!isset($_REQUEST['name'])) { echo \"Hello World\"; }\n    else { echo \"Hello, \" . $_REQUEST['name']; }\n  ?&gt;\n&lt;/body&gt;\nPHP and JSP are conceptually the same. The choice between them comes down to the tech stack being used.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#quick-comparison",
-    "href": "weeks/week_7/01.html#quick-comparison",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Quick Comparison",
-    "text": "Quick Comparison\n\n\n\nTechnology\nRuns Where\nPurpose\n\n\n\n\nJavaScript\nBrowser\nValidation, dynamic UI, AJAX\n\n\nJSP\nServer\nHTML + Java → dynamic pages\n\n\nPHP\nServer\nHTML + PHP → dynamic pages\n\n\nServlet\nServer\nPure Java HTTP handler\n\n\nREST\nServer\nReturns JSON/XML for clients",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "sql_playground.html",
-    "href": "sql_playground.html",
-    "title": "SQL Playground",
-    "section": "",
-    "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
-    "crumbs": [
-      "**Playground**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL Playground</span>"
-    ]
-  },
-  {
-    "objectID": "pythonDB_playground.html",
-    "href": "pythonDB_playground.html",
-    "title": "Python-DB Playground",
-    "section": "",
-    "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
-    "crumbs": [
-      "**Playground**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>Python-DB Playground</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#application-programs",
-    "href": "weeks/week_7/01.html#application-programs",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Application Programs",
-    "text": "Application Programs\nDatabase applications exist across every domain — finance (net banking, UPI), travel (IRCTC, Zomato), communication (Gmail, WhatsApp), education (Coursera, SWAYAM), health (Aarogya Setu), and organizational ERPs (hospital, banking, manufacturing systems).\nDespite the differences, they all have two things in common: - Most use an RDBMS (Oracle, MySQL, PostgreSQL) to manage data. - They are all split into three functional layers.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#the-three-layer-architecture",
-    "href": "weeks/week_7/01.html#the-three-layer-architecture",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "The Three-Layer Architecture",
-    "text": "The Three-Layer Architecture\nThink of it like a restaurant : the waiter takes your order (Presentation), the chef decides how to prepare it (Business Logic), and the pantry stores all the ingredients (Data Access). Each role is distinct, and each has its own concerns.\n\n\n\nThree-Layer Architecture\n\n\n\nPresentation Layer (Frontend)\nThis is everything the user actually sees and touches. It collects input and displays results. Within the presentation layer, the most widely used design pattern is Model-View-Controller (MVC):\n\n\n\n\n\n\n\nComponent\nRole\n\n\n\n\nModel\nRepresents business data and rules\n\n\nView\nDisplays data to the user (depends on device/format)\n\n\nController\nReceives user events, invokes model actions, selects the view to return\n\n\n\n\n\nBusiness Logic Layer (Middle Layer / Tier 2)\nImplements the core functionalities, workflows, and rules of the application (such as authentication, search logic, pricing, payment gateways, and order management). It acts as the bridge that connects the frontend and backend layers.\n\n⚠️ The middle layer hides the database schema from the frontend. The frontend never needs to know which table a piece of data lives in.\n\n\nData Access Layer (Backend / Tier 3)\nManages persistent data. It is responsible for handling large volumes of information, ensuring high-speed access, maintaining data security, and interfacing directly with the database system .",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#scripting",
-    "href": "weeks/week_7/01.html#scripting",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Scripting",
-    "text": "Scripting\nA script is a set of commands embedded in a web page or on the server, executed at runtime. Scripts are what make pages dynamic. Two types:\n\nClient-Side Scripting\nClient-side scripts are downloaded directly to the client’s computer and run locally inside the web browser. - Primary Languages : JavaScript, VBScript. - Purpose : Handles immediate user interactions, validates form inputs locally, and updates page visuals without triggering a full page reload (e.g., AJAX technology). - Security Context : To prevent malicious scripts from accessing local hard drives, client-side scripts are executed in a heavily restricted safe-mode sandbox that prevents direct system calls or unauthorized file operations.\n\n\nServer-Side Scripting\nServer-side scripts are executed entirely on the web server before the final HTML is generated and sent back to the client. - Primary Languages : PHP, JSP, ASP, Python, Perl. - Purpose : Simplifies database integration. Developers embed executable logic or database queries directly within HTML files. The server runs these queries, dynamically inserts the results into the HTML, and returns the finished static webpage to the user. - Security Context : Safe and secure. The client never sees the server’s proprietary code or database connection details—only the final, clean HTML output.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#part-1-lecture-7.1-application-design-and-architecture",
-    "href": "weeks/week_7/01.html#part-1-lecture-7.1-application-design-and-architecture",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "",
-    "text": "1. Introduction: Application Programs\nAn Application Program is software designed to perform specific tasks for businesses or organizations [2]. Modern applications span across various domains including finance, commerce, travel, education, communication, and health [9].\n\nThe Balance of Diversity and Unity\nWhile application programs are highly diverse, they share a common foundational structure: * Diversity: Applications vary wildly in their domain, functionalities, scale, user base, and response times [1]. * Unity: Almost all modern applications rely on a Relational Database Management System (RDBMS) for managing data and are functionally split into three layers (or tiers) [1].\n\n\n\n\n2. The 3-Tier Architecture\nModern database applications are typically organized into three separate functional layers [1]. This design pattern separates the user interface, business rules, and data storage to make systems easier to develop, scale, and maintain [10].\n\n\n\n3-Tier Application Architecture\n\n\n\nThe Three Layers Explained\n\n\n\n\n\n\n\n\nLayer / Tier\nMain Function\nKey Responsibilities\n\n\n\n\nPresentation Layer (Frontend) [11]\nInteracts directly with the user. It receives inputs and displays the outputs [11].\n- Visual rendering (Views) [11]- Browser-based interfaces, mobile apps, or custom clients [11]- Simple client-side formatting and interactions [11]\n\n\nApplication Layer (Middle / Business Logic) [11]\nImplements the application’s core functionality and links the front and back ends [11].\n- User authentication [11]- Core business workflows and rules [12]- Transaction coordination (pricing, cart management, payments) [11]\n\n\nData Access Layer (Backend) [13]\nManages persistent data, ensuring efficient access, security, and integrity [13].\n- Interface between business logic and the database [14]- Mapping data models to the database schema [14]- Efficient data retrieval and storage [13]\n\n\n\n\n\n\n\n3. Key Architectural Concepts\n\nModel-View-Controller (MVC) Design Pattern\nThe Presentation Layer often uses the MVC architecture to split visual components from application behavior [15]: * Model: Represents the underlying business logic and data state [15]. * View: Handles the presentation of data. It depends on the display device (e.g., mobile vs. desktop) [15]. * Controller: Receives user events, executes appropriate business logic actions, and returns the updated View to the user [15].\n\n\n\nMVC and Web Application Flow\n\n\n\n\nObject-Relational Mapping (ORM)\nIn application code, developers write software using an Object-Oriented (OO) data model (representing entities like students or courses as objects) [16, 17]. However, databases store data in a Relational model (tables of rows and columns) [16]. * Definition: ORM is a technology that allows application code to be written using object-oriented principles while automatically mapping those objects into standard relational database tables [16]. * How it Works: The database designer provides a mapping (e.g., Java class Student maps to the student table) [17]. The application opens a session and can save an object using commands like session.save(object), which the ORM framework translates into SQL INSERT commands under the hood [17].\n\n\n\n\n4. Classification and Evolution of Architectures\n\nThe Three Architectural Eras\nDatabase applications have evolved through three distinct technological eras [18]: 1. Mainframe Era (1960s-1970s): Users interacted with a central mainframe computer through simple terminal interfaces over proprietary networks [18]. 2. Personal Computer Era (1980s): Application programs ran directly on local desktop PCs, communicating over a Local Area Network (LAN) to access a central database server [18]. 3. Web / Mobile Era (1990s-Present): De-facto standard interfaces became web browsers and mobile apps communicating over the Internet to highly scalable application and database servers [6, 18, 19].\n\n\n\nEvolution of Architectures\n\n\n\n\nTier Classifications\n\n1-Tier: All components—user interface, business logic, and backend data—reside on a single server or platform [20]. It is the simplest and most direct setup [20].\n2-Tier: A classic client-server model [21]. The client application directly communicates with the database server with no intermediate logic layer [21].\n3-Tier: Separates Presentation, Logic, and Data Access into independent layers based on user complexity [10]. This is the most common architecture for DBMS design [10].\nn-Tier: Distributes the components of a 3-tier architecture across multiple physical servers to implement load balancing and workload optimization [22].",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#part-2-lecture-7.2-web-applications-and-fundamentals",
-    "href": "weeks/week_7/01.html#part-2-lecture-7.2-web-applications-and-fundamentals",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Part 2: Lecture 7.2 – Web Applications and Fundamentals",
-    "text": "Part 2: Lecture 7.2 – Web Applications and Fundamentals\n\n1. Web Basics: WWW, URI, URL, and URN\nThe World Wide Web (WWW) is a distributed information system based on hypertext [3]. Documents are primarily written in HTML (HyperText Markup Language) and connected via hyperlinks [3].\n\nUnderstanding URI, URL, and URN\nA URI (Uniform Resource Identifier) is an umbrella term that includes both URLs and URNs [23].\n\n\n\nURI vs URN vs URL\n\n\n\nURN (Uniform Resource Name): Functions like a person’s name [23]. It defines an item’s unique identity but does not tell you where to find it [23].\nURL (Uniform Resource Locator): Functions like a person’s street address [23]. It provides the exact method and location to retrieve a resource [23].\n\n\nURL Structure Example\nConsider: http://www.acm.org/sigmod [24] 1. http represents the Protocol (HyperText Transfer Protocol) [24]. 2. www.acm.org represents the Machine Name on the Internet [25]. 3. /sigmod represents the local path to the resource or executable program [25, 26].\n\n\n\n\n\n2. HTML, HTTP, and Cookies\n\nHTML and HTTP\n\nHTML: Formats content, displays tables, displays images, and collects user data using forms (via text boxes, dropdowns, and checkboxes) [3, 27, 28].\nHTTP: The communication protocol used between web browsers and servers [28].\nThe Connectionless Nature of HTTP: Once a server replies to a client’s request, it immediately closes the connection and “forgets” the client [7].\n\nWhy? It drastically reduces server load because operating systems have strict limits on open connections [29].\n\n\n\n\nSession Management & Cookies\nSince HTTP is connectionless, information systems need a way to maintain state (such as keeping a user logged in across different pages) [7, 29]. This is achieved using Cookies [29]. 1. Issue: The server generates a small piece of identifying text (a cookie) on the first interaction and sends it to the browser [30]. 2. Storage: The browser saves this cookie (permanently or temporarily) [30]. 3. Return: On every subsequent page request, the browser automatically sends the cookie back to the server, allowing the server to recognize the session and retrieve the user’s login status or preferences [30].\n\n\n\n\n3. Web Clients, Servers, and Services\n\nWeb Browsers (Clients)\nAn application that fetches web content and uses a Rendering Engine to transform HTML, CSS, and resources into an interactive visual interface on desktop or mobile devices [31, 32].\n\n\nWeb Servers\nSoftware and hardware that accept HTTP/HTTPS requests and respond with resources or error messages [26]. If a requested URL points to an executable program, the server runs the program, captures its output, and sends it back as HTML [26]. The standard protocol for this is CGI (Common Gateway Interface) [26].\n\n\nWeb Services\nEnable applications to access data on the web using remote procedure calls [33]. Two main styles exist: 1. REST (Representational State Transfer): Uses standard HTTP requests to interact with URLs and returns lightweight data formatted in JSON or XML [33]. 2. Big Web Services: Uses formal XML schemas to send requests and return results, creating a structured protocol layer on top of HTTP [34].\n\n\n\n\n4. Web Scripting: Client-Side vs. Server-Side\nA Script is a sequence of text-based commands embedded in a web page or server, interpreted and run by a scripting engine [35].\n\n\n\nClient-Side vs Server-Side Scripting\n\n\n\nComparing Scripting Types\n\n\n\n\n\n\n\n\nFeature\nClient-Side Scripting [36]\nServer-Side Scripting [36]\n\n\n\n\nExecution\nDownloaded to the client’s machine and run locally inside the browser [36].\nExecuted entirely on the web server before sending the response back to the client [36].\n\n\nPrimary Languages\nJavaScript [35, 37]\nPHP, JSP, ASP, Python, Perl [35]\n\n\nMain Use Cases\n- Interactive animations [37]- Validating user inputs locally [37]- Fast UI updates (AJAX) without refreshing the whole page [38, 39]\n- Connecting to backend databases safely [40]- Constructing dynamic HTML based on query parameters [40]\n\n\nSecurity\nHarder to secure. Must run in a “safe mode” sandbox to prevent malicious code from accessing the local computer’s files [38].\nSecure, as code execution is isolated on the server. The client only sees the final HTML output [36].\n\n\n\n\n\n\n\n5. Java Servlets and JSP\n\nJava Servlets\nA Servlet is a Java program loaded into an application server (like Apache Tomcat or Glassfish) that uses the Java Servlet API to manage requests and responses [41, 42]. * Workflow: Each incoming client request spawns a new thread in the server, which is closed as soon as the request is completed [41, 43]. * Session Support: The Servlet API natively handles sessions by automatically setting and reading cookies, allowing developers to save session attributes (e.g., session.setAttribute(\"userid\", userid)) [44].\n\n\nJava Server Pages (JSP) and its Advantages\nWhile pure Servlets require developers to write HTML inside Java print statements (e.g., out.println(\"&lt;html&gt;\")), JSP reverses this by allowing Java code to be embedded directly inside standard HTML pages using &lt;% ... %&gt; tags [43, 45, 46]. JSP pages are compiled into standard Servlets behind the scenes [45].\n\nWhy Use JSP? (The USPs of JSP)\n\nJSP vs. ASP: JSP is platform-independent and portable, whereas Microsoft’s Active Server Pages (ASP) is proprietary and tied to VBScript [46].\nJSP vs. Pure Servlets: Writing pure HTML in JSP is far easier than using millions of servlet print statements [46]. It allows designers to build the web layout while programmers insert dynamic content [46, 47].\nJSP vs. Client-side JavaScript: JSP executes entirely on the server before sending the response, giving it full access to server resources like databases [47]. JavaScript runs on the browser after the page is sent and cannot directly access the database [47].",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#where-do-we-see-database-applications",
-    "href": "weeks/week_7/01.html#where-do-we-see-database-applications",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "",
-    "text": "Domain\nExamples\n\n\n\n\nFinance\nNet banking (SBI, HDFC), UPI (GPay, PhonePe), e-commerce (Amazon)\n\n\nTravel\nIRCTC, Zomato, Google Maps, Uber\n\n\nCommunication\nGmail, WhatsApp, YouTube\n\n\nEducation\nSWAYAM, Coursera, BYJU’s\n\n\nHealth\nAarogya Setu, CoWin, telemedicine apps\n\n\nOrganizations\nHospital systems, bank ERPs, manufacturing systems",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01.html#architecture-classification",
-    "href": "weeks/week_7/01.html#architecture-classification",
-    "title": "Armstrong’s Axioms & Closure of Attribute Sets",
-    "section": "Architecture Classification",
-    "text": "Architecture Classification\n\n\n\n\n\n\n\nTier\nWhat it looks like\n\n\n\n\n1-Tier\nAll components (user interface, middleware, and backend database) reside on a single server or platform. This is the simplest and most direct setup\n\n\n2-Tier\nA classic client-server model where the client directly communicates with the database server with no intermediate application logic server.\n\n\n3-Tier\nPresentation, Business Logic, and Data Access are separated into three independent layers [27]. This is the de-facto standard for DBMS design.\n\n\nn-Tier\nExtends 3-tier by distributing components across many servers with load balancers, caches, and microservices\n\n\n\n\n\n\nArchitecture Evolution\n\n\n\n\nWeb Applications and Scripting",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Armstrong's Axioms & Closure of Attribute Sets</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html",
-    "href": "weeks/week_7/02.html",
-    "title": "SQL and Native Languages",
-    "section": "",
-    "text": "ODBC (Open Database Connectivity)\nWhen an application needs to talk to a database, it uses an API (Application Programming Interface) — a standard set of function calls that let you:\nThere are two broad approaches to doing this:\nODBC is a standard API that lets applications talk to any database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.\nIt was originally developed by Microsoft and works with C, C++, C#, Visual Basic, and Python.\nA typical ODBC workflow: 1. Open a connection to the database 2. Send a query or update 3. Fetch results 4. Close the connection",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#the-big-picture",
-    "href": "weeks/week_7/02.html#the-big-picture",
-    "title": "Working with SQL and Native Languages",
-    "section": "The Big Picture",
-    "text": "The Big Picture\nWhen an application needs to talk to a database, it uses an API (Application Programming Interface) — a standard set of function calls that let you:\n\nOpen a connection to the database server\nSend SQL queries or updates\nFetch results back into your program’s variables\n\nThere are two broad approaches to doing this:\n\n\n\n\n\n\n\n\nApproach\nWhat it means\nExamples\n\n\n\n\nConnectionist\nSQL is sent as a string through a driver at runtime\nODBC, JDBC\n\n\nEmbedded SQL\nSQL is written directly inside the host language code and processed before compilation\nEmbedded SQL for C, Java (SQLJ)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Working with SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#odbc-open-database-connectivity",
-    "href": "weeks/week_7/02.html#odbc-open-database-connectivity",
-    "title": "Working with SQL and Native Languages",
-    "section": "ODBC (Open Database Connectivity)",
-    "text": "ODBC (Open Database Connectivity)\nODBC is a standard API that lets applications talk to any database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.\nIt was originally developed by Microsoft and works with C, C++, C#, Visual Basic, and Python.\nA typical ODBC workflow: 1. Open a connection to the database 2. Send a query or update 3. Fetch results 4. Close the connection",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#jdbc-java-database-connectivity",
-    "href": "weeks/week_7/02.html#jdbc-java-database-connectivity",
-    "title": "SQL and Native Languages",
-    "section": "JDBC (Java Database Connectivity)",
-    "text": "JDBC (Java Database Connectivity)\nJDBC is the Java equivalent of ODBC. It’s the standard way for Java programs to talk to a database.\nThe workflow is very similar:\n// 1. Open a connection\nConnection con = DriverManager.getConnection(connectionUrl);\n\n// 2. Create a statement object\nStatement stmt = con.createStatement();\n\n// 3. Execute a query and get results\nResultSet rs = stmt.executeQuery(\"SELECT * FROM Production.Product\");\n\n// 4. Iterate through results\nwhile (rs.next()) {\n    System.out.println(rs.getString(\"ProductID\") + \" : \" + rs.getString(\"Name\"));\n}\n\nDriverManager.getConnection() — opens the connection using a connection URL\nStatement — used to send SQL to the database\nResultSet — holds the rows returned by a query; you iterate through it with rs.next()\nErrors are handled using standard Java try-catch blocks",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#connectionist-bridges",
-    "href": "weeks/week_7/02.html#connectionist-bridges",
-    "title": "SQL and Native Languages",
-    "section": "Connectionist Bridges",
-    "text": "Connectionist Bridges\nSometimes the driver you need doesn’t exist — for example, you want to connect a Java app to a database that only has an ODBC driver. Bridges solve this by translating function calls from one standard to another.\n\n\n\n\n\n\n\nBridge\nWhat it does\n\n\n\n\nJDBC-to-ODBC\nJDBC driver internally uses an ODBC driver to reach the database\n\n\nODBC-to-JDBC\nODBC driver internally uses a JDBC driver\n\n\nOLE DB-to-ODBC\nMicrosoft’s OLE DB provider translated to ODBC calls\n\n\nADO.NET-to-ODBC\nADO.NET provider (used in .NET apps) translated to ODBC\n\n\n\nThink of a bridge as a translator — it lets two systems that speak different languages work together.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#embedded-sql",
-    "href": "weeks/week_7/02.html#embedded-sql",
-    "title": "SQL and Native Languages",
-    "section": "Embedded SQL",
-    "text": "Embedded SQL\nWith ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they’re even there. Embedded SQL takes a different approach: you write SQL directly inside the host language code, and a pre-processor converts it into regular function calls before compilation.\nSupported in: C, C++, Java (SQLJ), COBOL, FORTRAN.\nSQL statements are marked with EXEC SQL so the pre-processor knows what to handle:\nEXEC SQL &lt;embedded SQL statement&gt;;\n\nKey Concepts\nConnecting to the database:\nEXEC SQL CONNECT TO server USER username USING password;\nHost variables — variables from your program that you use inside SQL queries. They’re prefixed with : to distinguish them from SQL column names:\nEXEC SQL BEGIN DECLARE SECTION;\n    int credit_amount;\nEXEC SQL END DECLARE SECTION;\nCursors — since a query can return many rows, you use a cursor to step through them one at a time. Think of it as a pointer that moves through the result set.\n/* 1. Declare the cursor */\nEXEC SQL DECLARE c CURSOR FOR\n    SELECT ID, name FROM student\n    WHERE tot_cred &gt; :credit_amount;\n\n/* 2. Open it — this actually runs the query */\nEXEC SQL OPEN c;\n\n/* 3. Fetch rows one by one */\nEXEC SQL FETCH c INTO :si, :sn;\n\n/* 4. Close when done */\nEXEC SQL CLOSE c;\n\nOPEN — executes the query and stores results in a temporary relation\nFETCH — retrieves the next row into your host variables\nSQLSTATE is set to '02000' when there are no more rows to fetch\nCLOSE — releases the temporary result\n\nUpdating through a cursor:\nYou can also modify rows as you fetch them by declaring the cursor FOR UPDATE:\nEXEC SQL DECLARE c CURSOR FOR\n    SELECT * FROM instructor\n    WHERE dept_name = 'Music'\n    FOR UPDATE;\n\n/* After fetching each row: */\nUPDATE instructor SET salary = salary + 1000 WHERE CURRENT OF c;",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#connecting-python-to-postgresql",
-    "href": "weeks/week_7/02.html#connecting-python-to-postgresql",
-    "title": "SQL and Native Languages",
-    "section": "Connecting Python to PostgreSQL",
-    "text": "Connecting Python to PostgreSQL\nThe most popular Python library for working with PostgreSQL is psycopg2 — it’s stable, actively maintained, thread-safe, and works with both Python 2 and 3.\nInstall it with:\npip install psycopg2\nEvery interaction with the database follows the same six steps:\n\n\n\n\n\n\n\nStep\nWhat happens\n\n\n\n\n1. Create connection\npsycopg2.connect(...) — opens a connection to the DB\n\n\n2. Create cursor\nconn.cursor() — creates a cursor to execute queries\n\n\n3. Execute query\ncur.execute(sql) — runs your SQL\n\n\n4. Fetch results\nfetchone(), fetchmany(), or fetchall()\n\n\n5. Commit or rollback\nconn.commit() to save, conn.rollback() to undo\n\n\n6. Close\ncur.close() then conn.close()",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#key-api-methods",
-    "href": "weeks/week_7/02.html#key-api-methods",
-    "title": "SQL and Native Languages",
-    "section": "Key API Methods",
-    "text": "Key API Methods\nConnection:\nconn = psycopg2.connect(database=\"mydb\", user=\"myuser\",\n                         password=\"mypass\", host=\"127.0.0.1\", port=\"5432\")\nconn.commit()    # saves changes\nconn.rollback()  # undoes changes since last commit\nconn.close()     # closes the connection\nCursor:\ncur = conn.cursor()\ncur.execute(\"INSERT INTO employee VALUES (%s, %s)\", (id, name))  # parameterized query\ncur.rowcount     # number of rows affected by last operation\ncur.fetchone()   # returns next row, or None\ncur.fetchmany(n) # returns next n rows as a list\ncur.fetchall()   # returns all remaining rows as a list\ncur.close()\n\nUse %s as a placeholder in queries instead of string formatting — this protects against SQL injection.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#crud-operations-in-python",
-    "href": "weeks/week_7/02.html#crud-operations-in-python",
-    "title": "SQL and Native Languages",
-    "section": "CRUD Operations in Python",
-    "text": "CRUD Operations in Python\nCREATE table:\ncur.execute('''CREATE TABLE EMPLOYEE (\n    emp_num  INT PRIMARY KEY NOT NULL,\n    emp_name VARCHAR(40) NOT NULL,\n    department VARCHAR(40) NOT NULL)''')\nconn.commit()\nINSERT:\ncur.execute(\"INSERT INTO EMPLOYEE VALUES (%s, %s, %s)\", (110, 'Bhaskar', 'HR'))\nconn.commit()\nUPDATE:\ncur.execute(\"UPDATE EMPLOYEE SET department = %s WHERE emp_num = %s\", ('Finance', 110))\nconn.commit()\nDELETE:\ncur.execute(\"DELETE FROM EMPLOYEE WHERE emp_num = %s\", (110,))\nconn.commit()\nSELECT:\ncur.execute(\"SELECT emp_num, emp_name, department FROM EMPLOYEE\")\nrows = cur.fetchall()\nfor row in rows:\n    print(row[0], row[1], row[2])",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#flask-building-a-web-app-with-python-and-postgresql",
-    "href": "weeks/week_7/02.html#flask-building-a-web-app-with-python-and-postgresql",
-    "title": "Working with SQL and Native Languages",
-    "section": "Flask — Building a Web App with Python and PostgreSQL",
-    "text": "Flask — Building a Web App with Python and PostgreSQL\nFlask is a lightweight Python web framework. It lets you build web applications quickly without a lot of boilerplate. It wraps around Werkzeug (handles HTTP) and Jinja (handles HTML templates).\nInstall it with:\npip install -U Flask\n\nHow Flask Works\nYou define routes — URLs that map to Python functions. When a user visits that URL, Flask calls the function and returns whatever it sends back.\nfrom flask import Flask\napp = Flask(__name__)\n\n@app.route('/')\ndef hello_world():\n    return \"Hello World\"\n\nif __name__ == '__main__':\n    app.run(host='127.0.0.1', port=5000, debug=True)\n\n@app.route('/') — binds the URL / to the function below it\napp.run() — starts the local development server at http://127.0.0.1:5000\n\n\n\nA Full Example — Candidate Email Database\nThis example builds a small web app with two pages: one to add a candidate’s details, and one to view all candidates. The data is stored in a PostgreSQL table Candidate(cno, name, email).\nProject structure:\napp.py\ntemplates/\n    index.html\n    add.html\n    viewall.html\nRendering pages:\n@app.route(\"/\")\ndef index():\n    return render_template(\"index.html\")\n\n@app.route(\"/add\")\ndef add():\n    return render_template(\"add.html\")\nSaving form data to the database:\n@app.route(\"/savedetails\", methods=[\"POST\"])\ndef saveDetails():\n    cno   = request.form[\"cno\"]\n    name  = request.form[\"name\"]\n    email = request.form[\"email\"]\n\n    conn = psycopg2.connect(database=\"mydb\", user=\"myuser\",\n                             password=\"mypass\", host=\"127.0.0.1\", port=\"5432\")\n    cur = conn.cursor()\n    cur.execute(\"INSERT INTO Candidate VALUES (%s, %s, %s)\", (cno, name, email))\n    conn.commit()\n    cur.close()\n    conn.close()\n    return render_template(\"success.html\")\nFetching and displaying all records:\n@app.route(\"/viewall\")\ndef viewAll():\n    conn = psycopg2.connect(database=\"mydb\", user=\"myuser\",\n                             password=\"mypass\", host=\"127.0.0.1\", port=\"5432\")\n    cur = conn.cursor()\n    cur.execute(\"SELECT cno, name, email FROM Candidate\")\n    results = cur.fetchall()\n    cur.close()\n    conn.close()\n    return render_template(\"viewall.html\", rows=results)\nIn viewall.html, Flask’s Jinja templating lets you loop through the results directly in HTML:\n{% for row in rows %}\n&lt;tr&gt;\n    &lt;td&gt;{{ row[0] }}&lt;/td&gt;\n    &lt;td&gt;{{ row[1] }}&lt;/td&gt;\n    &lt;td&gt;{{ row[2] }}&lt;/td&gt;\n&lt;/tr&gt;\n{% endfor %}\nThis is essentially the same pattern as a JSP or PHP page — the server runs the Python, queries the database, and returns a fully rendered HTML page to the browser.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>Working with SQL and Native Languages</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html",
-    "href": "weeks/week_7/03.html",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "",
-    "text": "Rapid Application Development (RAD)\nBuilding a database application is one thing — building it well, quickly, and securely is another. This module covers three practical areas: how to speed up development, how to protect your application, and how mobile apps fit into the picture.\nBuilding rich web application interfaces — especially the kind of interactive, dynamic pages we see today — takes a lot of effort. RAD is an approach that aims to shorten that development cycle by focusing on fast prototyping, quick feedback, and iterative delivery rather than long planning phases.\nThe four phases of RAD are: 1. Business Modeling — define what the application needs to do 2. Data Modeling — design the data structures 3. Process Modeling — design the workflows and logic 4. Testing & Turnover — test, refine, and deploy\nThe key idea: prototypes are built quickly, feedback is collected early, and each iteration gets you closer to the final product.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#sql-injection",
-    "href": "weeks/week_7/03.html#sql-injection",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "SQL Injection",
-    "text": "SQL Injection\nThis is one of the most common and dangerous attacks. It happens when user input is directly concatenated into a SQL query string without sanitization.\nExample of a vulnerable query:\n\"SELECT * FROM instructor WHERE name = '\" + name + \"'\"\nIf a user types X' or 'Y' = 'Y as their name, the query becomes:\nSELECT * FROM instructor WHERE name = 'X' or 'Y' = 'Y'\nThis returns every row in the table. A malicious user could even inject:\nX'; UPDATE instructor SET salary = salary + 10000; --\nThe fix — always use prepared statements:\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM instructor WHERE name = ?\"\n);\nps.setString(1, name);\nThe ? placeholder ensures the input is treated as data, never as SQL code. Special characters get automatically escaped.\n\n⚠️ Note: conn.prepareStatement(\"SELECT ... WHERE name = '\" + name + \"'\") is not a prepared statement — it’s just a regular string with a misleading name. Always use ? placeholders.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#password-leakage",
-    "href": "weeks/week_7/03.html#password-leakage",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Password Leakage",
-    "text": "Password Leakage\n\nNever store database passwords in plain text inside script files (.php, .jsp) that live in web-accessible directories.\nWeb servers execute script files but may accidentally serve backup files (e.g., file.jsp~ or .file.jsp.swp) as raw text, exposing credentials.\nRestrict database server access to only the IP addresses of your application servers.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#authentication",
-    "href": "weeks/week_7/03.html#authentication",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Authentication",
-    "text": "Authentication\nPasswords alone are increasingly insufficient — they can be guessed, sniffed, reused across sites, or stolen by spyware.\nTwo-factor authentication (2FA) adds a second layer: - Password + OTP sent via SMS - Password + a hardware token that generates a new pseudo-random number every minute (both the device and the server compute the same sequence independently)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#application-level-authorization",
-    "href": "weeks/week_7/03.html#application-level-authorization",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Application-Level Authorization",
-    "text": "Application-Level Authorization\nStandard SQL authorization works at the table or column level — you can say “this user can read the takes table”, but you can’t say “this student can only see their own rows”. The database has no concept of who the application user is.\nWorkaround — use views:\nCREATE VIEW studentTakes AS\n    SELECT * FROM takes\n    WHERE takes.ID = syscontext.user_id();\nThis filters rows based on the currently logged-in user’s identity, which the application passes to the database. It works, but creating a view for every such rule gets unwieldy.\nBetter approach — fine-grained authorization (row-level security): Some databases like Oracle (Virtual Private Database) let you attach predicates to queries transparently — e.g., automatically appending WHERE ID = current_user_id to every query on the student table for student users.\nCurrently, most authorization logic lives in the application layer, which means the entire codebase has access to the entire database — a large attack surface.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#audit-trails",
-    "href": "weeks/week_7/03.html#audit-trails",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Audit Trails",
-    "text": "Audit Trails\nEvery sensitive action in an application should be logged — who accessed what data, who made what change, and when. Audit trails are used after a breach to: - Detect what happened - Repair the damage - Trace who was responsible\nLogs are needed at both the database level (who ran which queries) and the application level (which user performed which action in the UI).",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#what-is-a-mobile-app",
-    "href": "weeks/week_7/03.html#what-is-a-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "What is a Mobile App?",
-    "text": "What is a Mobile App?\nA mobile app is application software designed to run on smartphones and tablets. The key difference from desktop development is the set of constraints the device imposes:\n\n\n\nConstraint\nCapability\n\n\n\n\nSmall screen / form factor\nTouchscreen & gesture-based navigation\n\n\nLimited memory & CPU\nAccelerometer, GPS, camera sensors\n\n\nLimited battery\nAlways-on connectivity (WiFi, 4G/5G)\n\n\nLimited bandwidth\nPush notifications\n\n\n\nDesign must account for both the limitations and the unique capabilities.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#mobile-website-vs.-mobile-app",
-    "href": "weeks/week_7/03.html#mobile-website-vs.-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Mobile Website vs. Mobile App",
-    "text": "Mobile Website vs. Mobile App\n\n\n\n\n\n\n\n\n\nMobile Website\nMobile App\n\n\n\n\nAccess\nBrowser, no install needed\nDownloaded from App Store / Play Store\n\n\nOffline use\nNo\nCan cache content for offline access\n\n\nDevice features\nLimited (click-to-call, basic location)\nFull access (camera, sensors, GPS)\n\n\nPortability\nWorks on any device\nPlatform-specific (Android, iOS)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#architecture-of-a-mobile-app",
-    "href": "weeks/week_7/03.html#architecture-of-a-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Architecture of a Mobile App",
-    "text": "Architecture of a Mobile App\nMobile apps follow the same 3-tier architecture as web apps — Presentation, Business Logic, and Data Access. The main difference is in the Data layer, which is often split:\n\nLocal data — stored on the device (SQLite, cached files) for offline access and speed\nRemote data — fetched from a server API when connected\n\nThe app also needs to be customized per platform (Android, iOS, Windows), since each has its own OS, UI guidelines, and APIs.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03.html#types-of-mobile-apps",
-    "href": "weeks/week_7/03.html#types-of-mobile-apps",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Types of Mobile Apps",
-    "text": "Types of Mobile Apps\n\n\n\n\n\n\n\n\nType\nHow it works\nTrade-off\n\n\n\n\nNative\nWritten in the platform’s own language (Java/Kotlin for Android, Swift/Objective-C for iOS)\nBest performance and device integration, but separate codebase per platform\n\n\nWeb App\nRuns in a browser using HTML/CSS/JS\nFully portable, but limited access to device features\n\n\nHybrid\nWraps a web app in a native shell\nOne codebase for all platforms, but performance trade-offs\n\n\n\n\nKey Design Decisions for Mobile\n\nWhich device and OS to target\nHow much to rely on network vs. local storage\nWhich architecture layers to include\nHow to navigate (tabs, gestures, back stack)\nHow to handle low bandwidth and intermittent connectivity",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02.html#sql-and-native-languages",
-    "href": "weeks/week_7/02.html#sql-and-native-languages",
-    "title": "Working with SQL and Native Languages",
-    "section": "",
-    "text": "Open a connection to the database server\nSend SQL queries or updates\nFetch results back into your program’s variables\n\n\n\n\n\n\n\n\n\n\nApproach\nWhat it means\nExamples\n\n\n\n\nConnectionist\nSQL is sent as a string through a driver at runtime\nODBC, JDBC\n\n\nEmbedded SQL\nSQL is written directly inside the host language code and processed before compilation\nEmbedded SQL for C, Java (SQLJ)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
     "objectID": "weeks/week_7/01_application_programs_and_architecture.html",
     "href": "weeks/week_7/01_application_programs_and_architecture.html",
     "title": "Application Programs and Architecture",
@@ -1495,44 +1023,11 @@
     ]
   },
   {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#the-world-wide-web",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#the-world-wide-web",
+    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
+    "href": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
     "title": "Application Programs and Architecture",
-    "section": "The World Wide Web",
-    "text": "The World Wide Web\nThe Web is a massive collection of hypertext documents (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#urls-uris-and-urns",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#urls-uris-and-urns",
-    "title": "Application Programs and Architecture",
-    "section": "URLs, URIs, and URNs",
-    "text": "URLs, URIs, and URNs\nEvery resource on the web needs an address. A URL like http://www.acm.org/sigmod has three parts:\nhttp  ://  www.acm.org  /sigmod\n ↑              ↑           ↑\nProtocol    Machine name   Document path\n\nURI — An umbrella term that covers both locators (URLs) and names (URNs).\nURL — Specifies how to retrieve a resource and where it is located, functioning like a person’s street address.\nURN — Serves as a unique identifier for a resource, functioning like a person’s name. It defines the identity of a resource but does not specify its location",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#html-and-http",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#html-and-http",
-    "title": "Application Programs and Architecture",
-    "section": "HTML and HTTP",
-    "text": "HTML and HTTP\nHTML structures pages and provides input elements (text boxes, dropdowns, radio buttons) grouped into forms that submit data to a server. - HTML (Hypertext Markup Language) : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons). - HTTP (Hypertext Transfer Protocol) : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is connectionless — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#sessions-and-cookies",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#sessions-and-cookies",
-    "title": "Application Programs and Architecture",
-    "section": "Sessions and Cookies",
-    "text": "Sessions and Cookies\nHTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?\nThe answer is cookies. Here’s how it works:\n\nOn your first visit, the server sends a small identifying token (cookie) to your browser\nYour browser stores it and automatically attaches it to every subsequent request\nThe server reads it, looks it up, and knows exactly who you are\n\nThis is how Amazon keeps your cart alive across sessions. Cookies can be permanent (survive browser restarts) or session-only (deleted when you close the tab).",
+    "section": "Web Applications and Scripting",
+    "text": "Web Applications and Scripting\n\nThe World Wide Web\nThe Web is a massive collection of hypertext documents (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.\n\n\n\nURLs, URIs, and URNs\nEvery resource on the web needs an address. A URL like http://www.acm.org/sigmod has three parts:\nhttp  ://  www.acm.org  /sigmod\n ↑              ↑           ↑\nProtocol    Machine name   Document path\n\nURI — An umbrella term that covers both locators (URLs) and names (URNs).\nURL — Specifies how to retrieve a resource and where it is located, functioning like a person’s street address.\nURN — Serves as a unique identifier for a resource, functioning like a person’s name. It defines the identity of a resource but does not specify its location\n\n\n\n\nHTML and HTTP\n\nHTML (Hypertext Markup Language) : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons).\nHTTP (Hypertext Transfer Protocol) : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is connectionless — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).\n\n\n\n\nSessions and Cookies\nHTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?\nThe answer is cookies. Here’s how it works:\n\nOn your first visit, the server sends a small identifying token (cookie) to your browser\nYour browser stores it and automatically attaches it to every subsequent request\nThe server reads it, looks it up, and knows exactly who you are\n\nThis is how Amazon keeps your cart alive across sessions. Cookies can be permanent (survive browser restarts) or session-only (deleted when you close the tab).",
     "crumbs": [
       "**Week-07**",
       "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
@@ -1550,44 +1045,22 @@
     ]
   },
   {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#servlets",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#servlets",
-    "title": "Application Programs and Architecture",
-    "section": "Servlets",
-    "text": "Servlets\nA Java Servlet is a Java program that lives on a web/application server and handles HTTP requests. The flow:\nUser submits form\n    → HTTP request hits the server\n    → Server loads the Servlet\n    → Servlet reads parameters, runs SQL via JDBC\n    → Servlet writes HTML response\n    → Thread closes\nEach request gets its own thread, so many users can be served simultaneously.\nSession handling in Servlets uses cookies automatically:\nrequest.getSession(true);                      // create session\nsession.setAttribute(\"userid\", \"alice\");       // store data\nsession.getAttribute(\"userid\");                // retrieve later\nServlets run inside application servers like Apache Tomcat, GlassFish, or JBoss.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#jsp-java-server-pages",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#jsp-java-server-pages",
-    "title": "Application Programs and Architecture",
-    "section": "JSP (Java Server Pages)",
-    "text": "JSP (Java Server Pages)\nWriting HTML entirely through out.println() in a Servlet is painful. JSP lets you write HTML normally and drop Java logic inside &lt;% ... %&gt; tags wherever needed:\n&lt;body&gt;\n  &lt;% if (request.getParameter(\"name\") == null) { %&gt;\n    Hello, World!\n  &lt;% } else { %&gt;\n    Hello, &lt;%= request.getParameter(\"name\") %&gt;!\n  &lt;% } %&gt;\n&lt;/body&gt;\nThe server compiles a JSP page into a Servlet the first time it’s requested, so performance is identical — JSP is just much easier to write and maintain.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#php",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#php",
-    "title": "Application Programs and Architecture",
-    "section": "PHP",
-    "text": "PHP\nPHP works exactly like JSP — embed logic inside HTML, server executes it, client gets plain HTML. It has extensive database libraries (ODBC) and was the dominant language for web development for many years.\n&lt;body&gt;\n  &lt;?php\n    if (!isset($_REQUEST['name'])) { echo \"Hello World\"; }\n    else { echo \"Hello, \" . $_REQUEST['name']; }\n  ?&gt;\n&lt;/body&gt;\nPHP and JSP are conceptually the same. The choice between them comes down to the tech stack being used.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
-    ]
-  },
-  {
     "objectID": "weeks/week_7/02_sql_and_native_languages.html",
     "href": "weeks/week_7/02_sql_and_native_languages.html",
     "title": "SQL and Native Languages",
     "section": "",
     "text": "ODBC (Open Database Connectivity)\nWhen an application needs to talk to a database, it uses an API (Application Programming Interface) — a standard set of function calls that let you:\nThere are two broad approaches to doing this:\nODBC is a standard API that lets applications talk to any database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.\nIt was originally developed by Microsoft and works with C, C++, C#, Visual Basic, and Python.\nA typical ODBC workflow:",
+    "crumbs": [
+      "**Week-07**",
+      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
+    "href": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
+    "title": "SQL and Native Languages",
+    "section": "",
+    "text": "Open a connection to the database\nSend a query or update\nFetch results\nClose the connection",
     "crumbs": [
       "**Week-07**",
       "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
@@ -1671,116 +1144,6 @@
     ]
   },
   {
-    "objectID": "weeks/week_7/03_rad.html#sql-injection",
-    "href": "weeks/week_7/03_rad.html#sql-injection",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "SQL Injection",
-    "text": "SQL Injection\nThis is one of the most common and dangerous attacks. It happens when user input is directly concatenated into a SQL query string without sanitization.\nExample of a vulnerable query:\n\"SELECT * FROM instructor WHERE name = '\" + name + \"'\"\nIf a user types X' or 'Y' = 'Y as their name, the query becomes:\nSELECT * FROM instructor WHERE name = 'X' or 'Y' = 'Y'\nThis returns every row in the table. A malicious user could even inject:\nX'; UPDATE instructor SET salary = salary + 10000; --\nThe fix — always use prepared statements:\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM instructor WHERE name = ?\"\n);\nps.setString(1, name);\nThe ? placeholder ensures the input is treated as data, never as SQL code. Special characters get automatically escaped.\n\n⚠️ Note: conn.prepareStatement(\"SELECT ... WHERE name = '\" + name + \"'\") is not a prepared statement — it’s just a regular string with a misleading name. Always use ? placeholders.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#password-leakage",
-    "href": "weeks/week_7/03_rad.html#password-leakage",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Password Leakage",
-    "text": "Password Leakage\n\nNever store database passwords in plain text inside script files (.php, .jsp) that live in web-accessible directories.\nWeb servers execute script files but may accidentally serve backup files (e.g., file.jsp~ or .file.jsp.swp) as raw text, exposing credentials.\nRestrict database server access to only the IP addresses of your application servers.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#authentication",
-    "href": "weeks/week_7/03_rad.html#authentication",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Authentication",
-    "text": "Authentication\nPasswords alone are increasingly insufficient — they can be guessed, sniffed, reused across sites, or stolen by spyware.\nTwo-factor authentication (2FA) adds a second layer: - Password + OTP sent via SMS - Password + a hardware token that generates a new pseudo-random number every minute (both the device and the server compute the same sequence independently)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#application-level-authorization",
-    "href": "weeks/week_7/03_rad.html#application-level-authorization",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Application-Level Authorization",
-    "text": "Application-Level Authorization\nStandard SQL authorization works at the table or column level — you can say “this user can read the takes table”, but you can’t say “this student can only see their own rows”. The database has no concept of who the application user is.\nWorkaround — use views:\nCREATE VIEW studentTakes AS\n    SELECT * FROM takes\n    WHERE takes.ID = syscontext.user_id();\nThis filters rows based on the currently logged-in user’s identity, which the application passes to the database. It works, but creating a view for every such rule gets unwieldy.\nBetter approach — fine-grained authorization (row-level security): Some databases like Oracle (Virtual Private Database) let you attach predicates to queries transparently — e.g., automatically appending WHERE ID = current_user_id to every query on the student table for student users.\nCurrently, most authorization logic lives in the application layer, which means the entire codebase has access to the entire database — a large attack surface.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#audit-trails",
-    "href": "weeks/week_7/03_rad.html#audit-trails",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Audit Trails",
-    "text": "Audit Trails\nEvery sensitive action in an application should be logged — who accessed what data, who made what change, and when. Audit trails are used after a breach to: - Detect what happened - Repair the damage - Trace who was responsible\nLogs are needed at both the database level (who ran which queries) and the application level (which user performed which action in the UI).",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#what-is-a-mobile-app",
-    "href": "weeks/week_7/03_rad.html#what-is-a-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "What is a Mobile App?",
-    "text": "What is a Mobile App?\nA mobile app is application software designed to run on smartphones and tablets. The key difference from desktop development is the set of constraints the device imposes:\n\n\n\nConstraint\nCapability\n\n\n\n\nSmall screen / form factor\nTouchscreen & gesture-based navigation\n\n\nLimited memory & CPU\nAccelerometer, GPS, camera sensors\n\n\nLimited battery\nAlways-on connectivity (WiFi, 4G/5G)\n\n\nLimited bandwidth\nPush notifications\n\n\n\nDesign must account for both the limitations and the unique capabilities.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#mobile-website-vs.-mobile-app",
-    "href": "weeks/week_7/03_rad.html#mobile-website-vs.-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Mobile Website vs. Mobile App",
-    "text": "Mobile Website vs. Mobile App\n\n\n\n\n\n\n\n\n\nMobile Website\nMobile App\n\n\n\n\nAccess\nBrowser, no install needed\nDownloaded from App Store / Play Store\n\n\nOffline use\nNo\nCan cache content for offline access\n\n\nDevice features\nLimited (click-to-call, basic location)\nFull access (camera, sensors, GPS)\n\n\nPortability\nWorks on any device\nPlatform-specific (Android, iOS)",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#architecture-of-a-mobile-app",
-    "href": "weeks/week_7/03_rad.html#architecture-of-a-mobile-app",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Architecture of a Mobile App",
-    "text": "Architecture of a Mobile App\nMobile apps follow the same 3-tier architecture as web apps — Presentation, Business Logic, and Data Access. The main difference is in the Data layer, which is often split:\n\nLocal data — stored on the device (SQLite, cached files) for offline access and speed\nRemote data — fetched from a server API when connected\n\nThe app also needs to be customized per platform (Android, iOS, Windows), since each has its own OS, UI guidelines, and APIs.",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/03_rad.html#types-of-mobile-apps",
-    "href": "weeks/week_7/03_rad.html#types-of-mobile-apps",
-    "title": "RAD, Application Security, and Mobile Apps",
-    "section": "Types of Mobile Apps",
-    "text": "Types of Mobile Apps\n\n\n\n\n\n\n\n\nType\nHow it works\nTrade-off\n\n\n\n\nNative\nWritten in the platform’s own language (Java/Kotlin for Android, Swift/Objective-C for iOS)\nBest performance and device integration, but separate codebase per platform\n\n\nWeb App\nRuns in a browser using HTML/CSS/JS\nFully portable, but limited access to device features\n\n\nHybrid\nWraps a web app in a native shell\nOne codebase for all platforms, but performance trade-offs\n\n\n\n\nKey Design Decisions for Mobile\n\nWhich device and OS to target\nHow much to rely on network vs. local storage\nWhich architecture layers to include\nHow to navigate (tabs, gestures, back stack)\nHow to handle low bandwidth and intermittent connectivity",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>24</span>  <span class='chapter-title'>RAD, Application Security, and Mobile Apps</span>"
-    ]
-  },
-  {
-    "objectID": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
-    "href": "weeks/week_7/02_sql_and_native_languages.html#odbc-open-database-connectivity",
-    "title": "SQL and Native Languages",
-    "section": "",
-    "text": "Open a connection to the database\nSend a query or update\nFetch results\nClose the connection",
-    "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>23</span>  <span class='chapter-title'>SQL and Native Languages</span>"
-    ]
-  },
-  {
     "objectID": "weeks/week_7/03_rad.html#rapid-application-development-rad",
     "href": "weeks/week_7/03_rad.html#rapid-application-development-rad",
     "title": "RAD, Application Security, and Mobile Apps",
@@ -1836,14 +1199,300 @@
     ]
   },
   {
-    "objectID": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
-    "href": "weeks/week_7/01_application_programs_and_architecture.html#web-applications-and-scripting",
-    "title": "Application Programs and Architecture",
-    "section": "Web Applications and Scripting",
-    "text": "Web Applications and Scripting\n\nThe World Wide Web\nThe Web is a massive collection of hypertext documents (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.\n\n\n\nURLs, URIs, and URNs\nEvery resource on the web needs an address. A URL like http://www.acm.org/sigmod has three parts:\nhttp  ://  www.acm.org  /sigmod\n ↑              ↑           ↑\nProtocol    Machine name   Document path\n\nURI — An umbrella term that covers both locators (URLs) and names (URNs).\nURL — Specifies how to retrieve a resource and where it is located, functioning like a person’s street address.\nURN — Serves as a unique identifier for a resource, functioning like a person’s name. It defines the identity of a resource but does not specify its location\n\n\n\n\nHTML and HTTP\n\nHTML (Hypertext Markup Language) : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons).\nHTTP (Hypertext Transfer Protocol) : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is connectionless — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).\n\n\n\n\nSessions and Cookies\nHTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?\nThe answer is cookies. Here’s how it works:\n\nOn your first visit, the server sends a small identifying token (cookie) to your browser\nYour browser stores it and automatically attaches it to every subsequent request\nThe server reads it, looks it up, and knows exactly who you are\n\nThis is how Amazon keeps your cart alive across sessions. Cookies can be permanent (survive browser restarts) or session-only (deleted when you close the tab).",
+    "objectID": "weeks/week_8/01_tree_data_structures.html",
+    "href": "weeks/week_8/01_tree_data_structures.html",
+    "title": "Tree Data Structures",
+    "section": "",
+    "text": "Introduction to Trees\nIn the previous weeks, we explored linear data models and the relational model. As we move deeper into the physical storage and organization of data (especially for indexes), we will frequently encounter Trees.\nUnlike arrays or linked lists, a tree is a hierarchical data structure.",
     "crumbs": [
-      "**Week-07**",
-      "<span class='chapter-number'>22</span>  <span class='chapter-title'>Application Programs and Architecture</span>"
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Tree Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_tree_data_structures.html#introduction-to-trees",
+    "href": "weeks/week_8/01_tree_data_structures.html#introduction-to-trees",
+    "title": "Tree Data Structures",
+    "section": "",
+    "text": "A visual representation of a binary tree structure.\n\n\n\nUnderstanding Tree Properties\nLet’s break down the terminology using the tree above:\n\nRoot: The topmost node in the tree.\nInternal Nodes: Any node which has at least one child. They act as the “branches”.\nLeaf Nodes: Nodes with no children (the endpoints of the tree).\nSubtree: A portion of the tree that itself forms a complete tree, rooted at one of the nodes.\nSiblings: Nodes that share the exact same parent node.\nArity (or Degree): The number of children a specific node has. The Arity of a Tree is the maximum arity of any node within that tree.\nLevel / Depth: The distance from the root. The root is at level 0, its children at level 1, and so on.\nHeight: The maximum level (or depth) in the tree.\n\n\n\n\n\n\n\nTipKey Mathematical Facts about Trees\n\n\n\n\nEdges vs. Nodes: A tree with \\(n\\) nodes will always have exactly \\(n-1\\) edges.\nMaximum nodes at a level: The maximum number of nodes at level \\(l\\) of a binary tree is \\(2^l\\).\nMaximum nodes by height: The maximum number of nodes in a binary tree of height \\(h\\) is \\(2^{h+1} - 1\\).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Tree Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_tree_data_structures.html#binary-search-trees-bst",
+    "href": "weeks/week_8/01_tree_data_structures.html#binary-search-trees-bst",
+    "title": "Tree Data Structures",
+    "section": "Binary Search Trees (BST)",
+    "text": "Binary Search Trees (BST)\nA Binary Search Tree is a special type of binary tree that maintains a strict ordering property, making searching incredibly efficient.\n\n\n\n\n\n\nImportantThe BST Property\n\n\n\nFor every node in a Binary Search Tree: - All values in the left subtree are strictly less than the node’s value. - All values in the right subtree are strictly greater than the node’s value.\n\n\n\nStep-by-Step Construction\nLet’s build a BST from the following sequence of data: 17, 22, 12, 10, 14, 25, 19.\nImagine inserting these numbers one by one:\n\nInsert 17: This is our first number, so it becomes the Root.\nInsert 22: We compare 22 with 17. Since \\(22 &gt; 17\\), it goes to the right.\nInsert 12: Compare 12 with 17. Since \\(12 &lt; 17\\), it goes to the left.\nInsert 10: Compare 10 with 17 (left), then compare with 12. Since \\(10 &lt; 12\\), it goes to the left of 12.\nInsert 14: Compare 14 with 17 (left), then compare with 12. Since \\(14 &gt; 12\\), it goes to the right of 12.\nInsert 25: Compare 25 with 17 (right), then compare with 22. Since \\(25 &gt; 22\\), it goes to the right of 22.\nInsert 19: Compare 19 with 17 (right), then compare with 22. Since \\(19 &lt; 22\\), it goes to the left of 22.\n\nThe final result is the beautiful structure shown below!\n\n\n\nThe fully constructed Binary Search Tree.\n\n\nNotice how you can pick any node (like 22), and instantly see that its left child (19) is smaller and its right child (25) is larger. This property allows us to search for any number in \\(O(\\log n)\\) time on average, which is foundational for database indexes.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Tree Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_storage_hierarchy.html",
+    "href": "weeks/week_8/02_storage_hierarchy.html",
+    "title": "Storage Hierarchy",
+    "section": "",
+    "text": "Physical Storage Media\nData needs a place to live! Depending on how fast we need to access the data and how long we want it to survive without power, we use different types of storage media.\nThere is a fundamental divide in storage media: Volatile vs. Non-Volatile.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Storage Hierarchy</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_storage_hierarchy.html#physical-storage-media",
+    "href": "weeks/week_8/02_storage_hierarchy.html#physical-storage-media",
+    "title": "Storage Hierarchy",
+    "section": "",
+    "text": "NoteVolatile Storage\n\n\n\nVolatile storage devices lose all their data when the power is interrupted or turned off.\n\nPrimary characteristic: Extremely fast but temporary.\nExamples: Cache Memory, Random Access Memory (RAM).\n\n\n\n\n\n\n\n\n\nNoteNon-Volatile Storage\n\n\n\nNon-volatile storage devices retain their data regardless of whether the power is on or off.\n\nPrimary characteristic: Slower than volatile storage, but permanent (until deleted).\nExamples: Hard Disk Drives (HDD), Solid State Drives (SSD), Pen Drives, Magnetic Tapes.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Storage Hierarchy</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_storage_hierarchy.html#the-storage-hierarchy-pyramid",
+    "href": "weeks/week_8/02_storage_hierarchy.html#the-storage-hierarchy-pyramid",
+    "title": "Storage Hierarchy",
+    "section": "The Storage Hierarchy Pyramid",
+    "text": "The Storage Hierarchy Pyramid\nIn computer architecture, we can’t build a single storage device that is infinitely fast, infinitely large, and extremely cheap. We have to make trade-offs.\n\nIf you want speed, it costs more and you get less capacity.\nIf you want capacity, it costs less per gigabyte, but you sacrifice speed.\n\nThis trade-off creates the Storage Hierarchy.\n\n\n\n\n\ngraph TD\n    classDef volatile fill:#f9d0c4,stroke:#333,stroke-width:2px;\n    classDef nonvolatile fill:#d4edda,stroke:#333,stroke-width:2px;\n\n    subgraph Speed_vs_Capacity [ ]\n    direction BT\n    L1[Registers]:::volatile\n    L2[Cache]:::volatile\n    L3[Main Memory / RAM]:::volatile\n    L4[Flash Memory / SSD]:::nonvolatile\n    L5[Magnetic Disks / HDD]:::nonvolatile\n    L6[Magnetic Tapes / Optical Disks]:::nonvolatile\n    \n    L6 --&gt; L5 --&gt; L4 --&gt; L3 --&gt; L2 --&gt; L1\n    end\n\n\n\n\n\n\n\nBreaking Down the Layers\n\nPrimary Storage (Top 3 layers):\n\nRegisters & Cache: The fastest and most costly forms of storage. Cache is managed by the computer hardware to hold frequently accessed data close to the CPU.\nMain Memory (RAM): Very fast, but volatile. When your database is running, the active queries and data are held here for immediate processing.\n\nSecondary Storage:\n\nFlash Memory (SSDs) & Magnetic Disks (HDDs): Moderately fast and non-volatile. This is where your entire database is permanently stored. When a query is made, data is fetched from here and moved into Main Memory.\n\nTertiary Storage:\n\nMagnetic Tapes & Optical Disks: Very slow and non-volatile. They offer massive capacity for extremely cheap prices. They are primarily used for archival backups (e.g., storing 10 years of historical data that is rarely accessed).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Storage Hierarchy</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_disk_performance_math.html",
+    "href": "weeks/week_8/04_disk_performance_math.html",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "Intuition Behind the Math\nMemorizing formulas can be difficult. It is much easier if we understand why the formulas exist. Let’s look at the basic math behind disk performance.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_disk_performance_math.html#intuition-behind-the-math",
+    "href": "weeks/week_8/04_disk_performance_math.html#intuition-behind-the-math",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "1. Capacity of a Disk\nHow much data can a disk hold? Imagine you have a bookshelf. The capacity of the shelf is the number of books it holds times the pages in one book. Similarly, a disk is made of sectors. \\[Capacity = Total \\ No. \\ of \\ Sectors \\times Size \\ of \\ One \\ Sector\\]\n\n\n2. Time Period of One Rotation\nIf a disk spins at \\(RPM\\) (Revolutions Per Minute), how long does one single rotation take? If it does \\(RPM\\) revolutions in 60,000 milliseconds (1 minute), then one revolution takes: \\[Time \\ Period = \\frac{1 \\ minute}{RPM} = \\frac{60,000 \\ ms}{RPM}\\]\n\n\n3. Transfer Rate\nHow much data can we read per unit of time? In one single rotation (Time Period), the head sweeps over an entire track. Therefore, the data transferred in one rotation is exactly the capacity of one track. \\[Transfer \\ Rate = \\frac{Bytes \\ on \\ one \\ Track}{Time \\ Period}\\]\n\n\n4. Transfer Time\nIf we know our speed (Transfer Rate) and the distance we need to cover (File Size), we can find the time! This is just \\(Time = Distance \\div Speed\\). \\[Transfer \\ Time = \\frac{File \\ Size}{Transfer \\ Rate}\\]\n\n\n5. Addressing Sectors\nEvery sector needs a unique ID (binary address) so the OS can find it. If you have 8 sectors, you need 3 bits to address them (\\(000\\) to \\(111\\)). This is because \\(2^3 = 8\\). To find the number of bits required for \\(N\\) sectors, we take the base-2 logarithm. \\[Minimum \\ Bits = \\lceil \\log_2(Total \\ No. \\ of \\ Sectors) \\rceil\\] (We use the ceiling function \\(\\lceil \\rceil\\) because we can’t have a fraction of a bit).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_disk_performance_math.html#solved-examples",
+    "href": "weeks/week_8/04_disk_performance_math.html#solved-examples",
+    "title": "Disk Performance Math",
+    "section": "Solved Examples",
+    "text": "Solved Examples\nLet’s put our intuition to work with some structured numerical problems.\n\n\n\n\n\n\nImportantSolved Example 1: Reading a File\n\n\n\nProblem Statement: Consider you have a file named “IITM BSc” in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.\n\nWhat is the transfer rate of your hard-disk (in KB/ms)?\nConsidering the fact that the file data is stored in all non-consecutive sectors, how much time will be required to read the whole file after the read request is made? (Note: Consider Access time + Transfer time)\n\nPart A: Finding the Transfer Rate\n\nGiven:\n\n\\(RPM = 30,000\\)\n\\(Sectors \\ per \\ Track = 200\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\nStep-by-step Solution:\n\nFirst, find the Time Period for one rotation: \\(Time \\ Period = \\frac{60,000 \\ ms}{30,000} = 2 \\ ms\\)\nSecond, find the capacity of one track (Bytes on one track): \\(Track \\ Capacity = 200 \\ sectors \\times 512 \\ bytes = 102,400 \\ Bytes = 100 \\ KB\\) (Note: we assume \\(1024 \\ Bytes = 1 \\ KB\\))\nFinally, calculate Transfer Rate: \\(Transfer \\ Rate = \\frac{100 \\ KB}{2 \\ ms} = \\mathbf{50 \\ KB/ms}\\)\n\n\nPart B: Finding Total Read Time (Non-Consecutive Sectors)\n\nGiven:\n\n\\(File \\ Size = 1000 \\ KB\\)\n\\(Seek \\ Time = 3 \\ ms\\)\nData is stored in non-consecutive sectors. This is a critical detail! It means for every single sector we read, we have to suffer Seek Time and Rotational Latency!\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors the file occupies: \\(File \\ Size \\ in \\ Bytes = 1000 \\ KB \\times 1024 = 1,024,000 \\ Bytes\\) \\(Number \\ of \\ Sectors = \\frac{1,024,000 \\ Bytes}{512 \\ Bytes} = 2000 \\ Sectors\\)\nNext, find the Access Time for one sector: \\(Average \\ Rotational \\ Latency = \\frac{1}{2} \\times Time \\ Period = \\frac{1}{2} \\times 2 \\ ms = 1 \\ ms\\) \\(Access \\ Time = Seek \\ Time + Rotational \\ Latency = 3 \\ ms + 1 \\ ms = 4 \\ ms\\)\nNext, find the Transfer Time for one sector: \\(Transfer \\ Time \\ (1 \\ Sector) = \\frac{Sector \\ Size}{Transfer \\ Rate} = \\frac{0.5 \\ KB}{50 \\ KB/ms} = 0.01 \\ ms\\)\nFinally, calculate the total time for all 2000 non-consecutive sectors: \\(Time \\ per \\ Sector = Access \\ Time + Transfer \\ Time = 4 \\ ms + 0.01 \\ ms = 4.01 \\ ms\\) \\(Total \\ Time = 2000 \\times 4.01 \\ ms = \\mathbf{8020 \\ ms}\\) (or 8.02 seconds)\n\n\n\n\n\n\n\n\n\n\n\nImportantSolved Example 2: Disk Geometry and Addressing\n\n\n\nProblem Statement: Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).\n\nHow much free space is available for use (in MB, upto two decimal places)?\nHow many bits are required for addressing all the sectors?\n\nPart A: Finding Free Space\n\nGiven:\n\n\\(Platters = 10\\) (Note: A platter has 2 surfaces! So \\(Surfaces = 20\\))\n\\(Tracks \\ per \\ Surface = 64\\)\n\\(Sectors \\ per \\ Track = 256\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\\(Reserved \\ Space = 4 \\ Bytes / sector\\)\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors on the entire disk: \\(Total \\ Sectors = Surfaces \\times Tracks/Surface \\times Sectors/Track\\) \\(Total \\ Sectors = 20 \\times 64 \\times 256 = 327,680 \\ Sectors\\)\nNext, calculate the usable space per sector: \\(Usable \\ Sector \\ Size = 512 - 4 = 508 \\ Bytes\\)\nFinally, calculate the total free space: \\(Total \\ Free \\ Space = 327,680 \\times 508 \\ Bytes = 166,461,440 \\ Bytes\\) Convert to MB (divide by \\(1024^2\\)): \\(Free \\ Space \\ in \\ MB = \\frac{166,461,440}{1,048,576} \\approx \\mathbf{158.75 \\ MB}\\)\n\n\nPart B: Addressing Sectors\n\nStep-by-step Solution:\n\nWe know there are \\(327,680\\) total sectors on the disk.\nWe apply the addressing formula: \\(Minimum \\ Bits = \\lceil \\log_2(327,680) \\rceil\\) Since \\(2^{18} = 262,144\\) and \\(2^{19} = 524,288\\), we know we need more than 18 bits. \\(Minimum \\ Bits = \\mathbf{19 \\ bits}\\)",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "sql_playground.html",
+    "href": "sql_playground.html",
+    "title": "SQL Playground",
+    "section": "",
+    "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
+    "crumbs": [
+      "**Playground**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>SQL Playground</span>"
+    ]
+  },
+  {
+    "objectID": "pythonDB_playground.html",
+    "href": "pythonDB_playground.html",
+    "title": "Python-DB Playground",
+    "section": "",
+    "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
+    "crumbs": [
+      "**Playground**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Python-DB Playground</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html",
+    "title": "Algorithms & Data Structures",
+    "section": "",
+    "text": "Algorithms and Complexity Analysis",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#algorithms-and-complexity-analysis",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#algorithms-and-complexity-analysis",
+    "title": "Algorithms & Data Structures",
+    "section": "",
+    "text": "Basics and Definitions\n\nAlgorithm vs. Program: An algorithm is a finite sequence of well-defined, computer-implementable instructions to solve a class of problems or to perform a computation. Crucially, an algorithm must terminate. A program, such as an operating system, is an implementation that may run indefinitely without terminating.\n\n\n\nMotivation for Analysis\nWhy do we analyze algorithms? - To predict performance (how fast will this run on a billion rows?). - To avoid bugs and provide guarantees on execution boundaries. - To understand the theoretical limits of computational problems.\n\n\nFactors of Analysis\nWhen we analyze an algorithm, we measure the “cost” based on several factors:\n\nTime Complexity: How long does it take to execute?\nSpace/Storage Complexity: How much memory (RAM) does it consume?\nOther factors: Power consumption and network bandwidth (especially relevant in cloud databases).\n\n\n\nMethodologies\n\nCounting Model: A simplified theoretical model (Random-Access Machine) where we sum the cost and frequency of primitive operations (like addition, assignment, etc.).\nAsymptotic Analysis: We use Big-Oh (\\(O\\)) notation to measure the growth of resource requirements as the input size (\\(n\\)) increases toward infinity. We typically focus on the Worst case and Average case scenarios.\n\n\nComplexity Classes\nFrom fastest (best) to slowest (worst):\n\n\\(O(1)\\) - Constant Time\n\\(O(\\log n)\\) - Logarithmic Time\n\\(O(n)\\) - Linear Time\n\\(O(n \\log n)\\) - Linearithmic Time\n\\(O(n^2)\\) - Quadratic Time\n\\(O(n^3)\\) - Cubic Time\n\\(O(2^n)\\) - Exponential Time",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#data-structures",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#data-structures",
+    "title": "Algorithms & Data Structures",
+    "section": "Data Structures",
+    "text": "Data Structures\nA Data Structure is a specialized format for organizing, processing, retrieving and storing data in memory. Standard operations on any data structure include: Create, Insert, Delete, Find (Search), Update, and Close.\n\nLinear Data Structures\n\nArrays: Contiguous blocks of memory.\n\nAdvantage: Extremely fast indexed/random access (\\(O(1)\\)).\nDisadvantage: Very slow insertion/deletion (\\(O(n)\\)) because all subsequent elements must be shifted.\n\nLinked Lists: Elements are stored in nodes that contain pointers to the next node.\n\nAdvantage: Very fast insertion/deletion (\\(O(1)\\) if you are already at the position).\nDisadvantage: Slow sequential access (\\(O(n)\\)) since you must traverse from the head.\n\nQueues: Follow First-In-First-Out (FIFO) logic (like a line at a grocery store).\nStacks: Follow Last-In-First-Out (LIFO) logic (like a stack of plates).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#non-linear-data-structures-trees",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#non-linear-data-structures-trees",
+    "title": "Algorithms & Data Structures",
+    "section": "Non-Linear Data Structures: Trees",
+    "text": "Non-Linear Data Structures: Trees\nUnlike arrays or linked lists, a tree is a hierarchical data structure. They are absolutely critical for database indexing.\n\n\n\nA visual representation of a binary tree structure.\n\n\nLet’s break down the terminology:\n\nRoot: The topmost node.\nParent/Child: A node connected to nodes directly below it is a parent.\nLeaf Nodes: Nodes with no children.\nArity (or Degree): The number of children a specific node has.\nLevel / Depth: The distance from the root.\nHeight: The maximum level in the tree.\n\n\nBinary Search Trees (BST)\nA Binary Search Tree maintains a strict ordering property. For every node, all values in the left subtree are strictly less than the node’s value, and all values in the right subtree are greater.\nLet’s build a BST from the data: 17, 22, 12, 10, 14, 25, 19.\n\nInsert 17: This is our first number, so it becomes the Root.\nInsert 22: We compare 22 with 17. Since \\(22 &gt; 17\\), it goes to the right.\nInsert 12: Compare 12 with 17. Since \\(12 &lt; 17\\), it goes to the left.\nInsert 10: Compare 10 with 17 (left), then compare with 12. Since \\(10 &lt; 12\\), it goes to the left of 12. … and so on.\n\nThe final result is the beautiful structure shown below!\n\n\n\nThe fully constructed Binary Search Tree.\n\n\nIf the tree remains balanced, this property allows us to search, insert, and delete in \\(O(\\log n)\\) time, making it immensely faster than scanning an array.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#search-and-sorting",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#search-and-sorting",
+    "title": "Algorithms & Data Structures",
+    "section": "Search and Sorting",
+    "text": "Search and Sorting\n\nLinear Search: Sequential checking of every element. Complexity is \\(O(n)\\).\nBinary Search: An extremely efficient search on sorted arrays (or Binary Search Trees). At each step, it halves the search space. Complexity is \\(O(\\log n)\\).\nSorting Algorithms: Common algorithms to organize data include Quicksort (\\(O(n \\log n)\\)), Mergesort (\\(O(n \\log n)\\)), Heap Sort (\\(O(n \\log n)\\)), and the much slower Insertion Sort (\\(O(n^2)\\)).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html",
+    "href": "weeks/week_8/02_physical_storage_systems.html",
+    "title": "Physical Storage Systems",
+    "section": "",
+    "text": "Physical Storage Media\nData needs a place to live! Depending on how fast we need to access the data and how long we want it to survive without power, we use different types of storage media.\nThere is a fundamental divide in storage media: Volatile vs. Non-Volatile.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#physical-storage-media",
+    "href": "weeks/week_8/02_physical_storage_systems.html#physical-storage-media",
+    "title": "Physical Storage Systems",
+    "section": "",
+    "text": "Volatile Storage: Loses all data when the power is interrupted (e.g., Cache Memory, Main Memory / RAM). Extremely fast but temporary.\nNon-Volatile Storage: Retains data regardless of power status (e.g., Flash memory, Magnetic Disks, Optical Disks, Magnetic Tapes). Slower, but permanent.\n\n\nThe Storage Hierarchy Pyramid\nIn computer architecture, we make trade-offs. If you want speed, it costs more and you get less capacity. If you want capacity, it costs less per gigabyte, but you sacrifice speed.\n\n\n\n\n\ngraph TD\n    classDef volatile fill:#f9d0c4,stroke:#333,stroke-width:2px;\n    classDef nonvolatile fill:#d4edda,stroke:#333,stroke-width:2px;\n\n    subgraph Speed_vs_Capacity [ ]\n    direction BT\n    L1[Registers]:::volatile\n    L2[Cache]:::volatile\n    L3[Main Memory / RAM]:::volatile\n    L4[Flash Memory / SSD]:::nonvolatile\n    L5[Magnetic Disks / HDD]:::nonvolatile\n    L6[Magnetic Tapes / Optical Disks]:::nonvolatile\n    \n    L6 --&gt; L5 --&gt; L4 --&gt; L3 --&gt; L2 --&gt; L1\n    end\n\n\n\n\n\n\nNote: As you move UP the pyramid, Speed and Cost per bit INCREASES. As you move DOWN the pyramid, Capacity and Access Time INCREASES.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#inside-a-magnetic-disk-hdd",
+    "href": "weeks/week_8/02_physical_storage_systems.html#inside-a-magnetic-disk-hdd",
+    "title": "Physical Storage Systems",
+    "section": "Inside a Magnetic Disk (HDD)",
+    "text": "Inside a Magnetic Disk (HDD)\nTo understand database performance, we must look at the physical mechanics of where our data actually lives: Magnetic Disks.\n\n\n\nThe inside of a typical magnetic disk.\n\n\nThink of a hard drive like an old-school vinyl record player:\n\nPlatter (The Record): The circular disk coated with magnetic material.\nSpindle (The Turntable Motor): The central rod that spins the platters at high speeds (e.g., 7200 RPM).\nRead/Write Head (The Needle): The tiny magnet that hovers above the platter.\nActuator Arm (The Tonearm): The mechanical arm that moves the Read/Write head.\n\n\nData Organization on the Disk\n\n\n\nA breakdown of disk geometry.\n\n\n\n(A) Track: A single, concentric circular ring on the surface of the platter.\n(C) Sector: A track is divided into smaller arcs called sectors. It is the smallest unit of data that can be read or written (traditionally 512 bytes).\nCylinder: The set of all tracks that are at the exact same position across all stacked platters.\n(D) Block / Cluster: A grouping of contiguous sectors used by the operating system to allocate space efficiently.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#disk-performance-metrics",
+    "href": "weeks/week_8/02_physical_storage_systems.html#disk-performance-metrics",
+    "title": "Physical Storage Systems",
+    "section": "Disk Performance Metrics",
+    "text": "Disk Performance Metrics\nWhen a database asks the hard drive for a piece of data, the mechanical parts have to move.\n\n1. Access Time\nThe total time it takes to begin reading the actual data. \\[Access \\ Time = Seek \\ Time + Rotational \\ Latency\\]\n\nSeek Time: The time taken to physically reposition the arm over the correct track.\nRotational Latency: The time spent waiting for the correct sector to rotate directly underneath the head.\n\n\n\n2. Data Transfer Rate\nThe speed at which data is moved from the disk to the main memory once the head is in position.\n\n\n3. Reliability (MTTF)\nHard drives are mechanical, which means they will eventually break. Reliability is measured by Mean Time To Failure (MTTF). An MTTF of 5 years doesn’t mean it will break in exactly 5 years, but it provides a statistical average of expected lifespan.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#emerging-technologies",
+    "href": "weeks/week_8/02_physical_storage_systems.html#emerging-technologies",
+    "title": "Physical Storage Systems",
+    "section": "Emerging Technologies",
+    "text": "Emerging Technologies\nWhile Magnetic Disks are still widely used, new technologies are constantly evolving storage:\n\nSolid State Drives (SSD): Use flash memory to store data persistently without any moving parts, significantly reducing Access Time.\nCloud Storage: Abstracting the physical hardware entirely, relying on distributed remote servers.\nDNA Digital Storage: A futuristic approach using synthetic DNA to store massive amounts of data with extreme longevity.\nQuantum Memory: Theoretical storage systems leveraging quantum states for unprecedented speeds and security.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html",
+    "href": "weeks/week_8/03_disk_performance_math.html",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "Intuition Behind the Math\nMemorizing formulas can be difficult. It is much easier if we understand why the formulas exist. Let’s look at the basic math behind disk performance.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html#intuition-behind-the-math",
+    "href": "weeks/week_8/03_disk_performance_math.html#intuition-behind-the-math",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "1. Capacity of a Disk\nHow much data can a disk hold? Imagine you have a bookshelf. The capacity of the shelf is the number of books it holds times the pages in one book. Similarly, a disk is made of sectors. \\[Capacity = Total \\ No. \\ of \\ Sectors \\times Size \\ of \\ One \\ Sector\\]\n\n\n2. Time Period of One Rotation\nIf a disk spins at \\(RPM\\) (Revolutions Per Minute), how long does one single rotation take? If it does \\(RPM\\) revolutions in 60,000 milliseconds (1 minute), then one revolution takes: \\[Time \\ Period = \\frac{1 \\ minute}{RPM} = \\frac{60,000 \\ ms}{RPM}\\]\n\n\n3. Transfer Rate\nHow much data can we read per unit of time? In one single rotation (Time Period), the head sweeps over an entire track. Therefore, the data transferred in one rotation is exactly the capacity of one track. \\[Transfer \\ Rate = \\frac{Bytes \\ on \\ one \\ Track}{Time \\ Period}\\]\n\n\n4. Transfer Time\nIf we know our speed (Transfer Rate) and the distance we need to cover (File Size), we can find the time! This is just \\(Time = Distance \\div Speed\\). \\[Transfer \\ Time = \\frac{File \\ Size}{Transfer \\ Rate}\\]\n\n\n5. Addressing Sectors\nEvery sector needs a unique ID (binary address) so the OS can find it. If you have 8 sectors, you need 3 bits to address them (\\(000\\) to \\(111\\)). This is because \\(2^3 = 8\\). To find the number of bits required for \\(N\\) sectors, we take the base-2 logarithm. \\[Minimum \\ Bits = \\lceil \\log_2(Total \\ No. \\ of \\ Sectors) \\rceil\\] (We use the ceiling function \\(\\lceil \\rceil\\) because we can’t have a fraction of a bit).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html#solved-examples",
+    "href": "weeks/week_8/03_disk_performance_math.html#solved-examples",
+    "title": "Disk Performance Math",
+    "section": "Solved Examples",
+    "text": "Solved Examples\nLet’s put our intuition to work with some structured numerical problems.\n\n\n\n\n\n\nImportantSolved Example 1: Reading a File\n\n\n\nProblem Statement: Consider you have a file named “IITM BSc” in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.\n\nWhat is the transfer rate of your hard-disk (in KB/ms)?\nConsidering the fact that the file data is stored in all non-consecutive sectors, how much time will be required to read the whole file after the read request is made? (Note: Consider Access time + Transfer time)\n\nPart A: Finding the Transfer Rate\n\nGiven:\n\n\\(RPM = 30,000\\)\n\\(Sectors \\ per \\ Track = 200\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\nStep-by-step Solution:\n\nFirst, find the Time Period for one rotation: \\(Time \\ Period = \\frac{60,000 \\ ms}{30,000} = 2 \\ ms\\)\nSecond, find the capacity of one track (Bytes on one track): \\(Track \\ Capacity = 200 \\ sectors \\times 512 \\ bytes = 102,400 \\ Bytes = 100 \\ KB\\) (Note: we assume \\(1024 \\ Bytes = 1 \\ KB\\))\nFinally, calculate Transfer Rate: \\(Transfer \\ Rate = \\frac{100 \\ KB}{2 \\ ms} = \\mathbf{50 \\ KB/ms}\\)\n\n\nPart B: Finding Total Read Time (Non-Consecutive Sectors)\n\nGiven:\n\n\\(File \\ Size = 1000 \\ KB\\)\n\\(Seek \\ Time = 3 \\ ms\\)\nData is stored in non-consecutive sectors. This is a critical detail! It means for every single sector we read, we have to suffer Seek Time and Rotational Latency!\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors the file occupies: \\(File \\ Size \\ in \\ Bytes = 1000 \\ KB \\times 1024 = 1,024,000 \\ Bytes\\) \\(Number \\ of \\ Sectors = \\frac{1,024,000 \\ Bytes}{512 \\ Bytes} = 2000 \\ Sectors\\)\nNext, find the Access Time for one sector: \\(Average \\ Rotational \\ Latency = \\frac{1}{2} \\times Time \\ Period = \\frac{1}{2} \\times 2 \\ ms = 1 \\ ms\\) \\(Access \\ Time = Seek \\ Time + Rotational \\ Latency = 3 \\ ms + 1 \\ ms = 4 \\ ms\\)\nNext, find the Transfer Time for one sector: \\(Transfer \\ Time \\ (1 \\ Sector) = \\frac{Sector \\ Size}{Transfer \\ Rate} = \\frac{0.5 \\ KB}{50 \\ KB/ms} = 0.01 \\ ms\\)\nFinally, calculate the total time for all 2000 non-consecutive sectors: \\(Time \\ per \\ Sector = Access \\ Time + Transfer \\ Time = 4 \\ ms + 0.01 \\ ms = 4.01 \\ ms\\) \\(Total \\ Time = 2000 \\times 4.01 \\ ms = \\mathbf{8020 \\ ms}\\) (or 8.02 seconds)\n\n\n\n\n\n\n\n\n\n\n\nImportantSolved Example 2: Disk Geometry and Addressing\n\n\n\nProblem Statement: Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).\n\nHow much free space is available for use (in MB, upto two decimal places)?\nHow many bits are required for addressing all the sectors?\n\nPart A: Finding Free Space\n\nGiven:\n\n\\(Platters = 10\\) (Note: A platter has 2 surfaces! So \\(Surfaces = 20\\))\n\\(Tracks \\ per \\ Surface = 64\\)\n\\(Sectors \\ per \\ Track = 256\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\\(Reserved \\ Space = 4 \\ Bytes / sector\\)\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors on the entire disk: \\(Total \\ Sectors = Surfaces \\times Tracks/Surface \\times Sectors/Track\\) \\(Total \\ Sectors = 20 \\times 64 \\times 256 = 327,680 \\ Sectors\\)\nNext, calculate the usable space per sector: \\(Usable \\ Sector \\ Size = 512 - 4 = 508 \\ Bytes\\)\nFinally, calculate the total free space: \\(Total \\ Free \\ Space = 327,680 \\times 508 \\ Bytes = 166,461,440 \\ Bytes\\) Convert to MB (divide by \\(1024^2\\)): \\(Free \\ Space \\ in \\ MB = \\frac{166,461,440}{1,048,576} \\approx \\mathbf{158.75 \\ MB}\\)\n\n\nPart B: Addressing Sectors\n\nStep-by-step Solution:\n\nWe know there are \\(327,680\\) total sectors on the disk.\nWe apply the addressing formula: \\(Minimum \\ Bits = \\lceil \\log_2(327,680) \\rceil\\) Since \\(2^{18} = 262,144\\) and \\(2^{19} = 524,288\\), we know we need more than 18 bits. \\(Minimum \\ Bits = \\mathbf{19 \\ bits}\\)",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html",
+    "title": "File Organization & Buffering",
+    "section": "",
+    "text": "File Structure and Organization\nBefore we can query a database, the raw data must be mapped onto the physical disk blocks we discussed in the previous chapters.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html#file-structure-and-organization",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html#file-structure-and-organization",
+    "title": "File Organization & Buffering",
+    "section": "",
+    "text": "The Data Hierarchy\n\nDatabase: The highest level, containing multiple files.\nFile: A collection of related records (e.g., the Instructor table).\nRecord: A single instance of data (e.g., a specific instructor’s row).\nField / Attribute: The individual data points within a record (e.g., Name, Salary).\n\n\n\nRecord Management\n\nFixed-length Records: Every record takes up the exact same amount of space. This makes math easy, but deletions leave “holes”. These are managed via periodic compaction, shifting records, or using a “Free List” to track empty spaces.\nVariable-length Records: Used when attributes vary in size (like VARCHAR). These are much harder to manage and usually require storing offsets and using Slotted Pages to organize the data block dynamically.\n\n\n\nFile Organization Types\nHow do we arrange these records inside a file?\n\nHeap Organization: Records are placed wherever there is free space. Completely unordered.\nSequential Organization: Records are strictly ordered by a “Search Key” (like ordering a dictionary alphabetically). Excellent for sequential processing.\nMulti-table Clustering: Purposely grouping related records from different tables (e.g., a Department record physically stored right next to all its Instructor records) into the same disk block. This minimizes expensive disk I/O when performing SQL JOIN operations.\n\nNote: The Data Dictionary (System Catalog) is a special file that stores metadata—data about the data itself! It tracks schemas, users, and integrity constraints.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html#storage-access-and-buffer-management",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html#storage-access-and-buffer-management",
+    "title": "File Organization & Buffering",
+    "section": "Storage Access and Buffer Management",
+    "text": "Storage Access and Buffer Management\nWe’ve established a crucial fact: Disks are slow, but Main Memory (RAM) is fast. Every time the database needs to read or write a record, it must transfer an entire Block of data between the disk and main memory. This disk I/O is the biggest bottleneck in database performance.\nEnter the Buffer Manager.\n\nThe Role of the Buffer Manager\nThe Buffer Manager is a software subsystem responsible for allocating space in main memory to temporarily hold blocks fetched from the disk.\nWhen a query requests data:\n\nThe Buffer Manager checks if the required block is already in the buffer (Main Memory).\nIf YES, this is a “Cache Hit”. The data is served instantly.\nIf NO, this is a “Cache Miss”. The Buffer Manager must fetch the block from the slow magnetic disk.\n\n\n\nReplacement Policies\nIf the buffer is completely full of blocks, and we need to fetch a new one from the disk, which old block should we evict (throw out) to make room? This is determined by a Replacement Policy.\n\n\n\n\n\n\nTipLeast Recently Used (LRU)\n\n\n\nThe most common strategy. The Buffer Manager evicts the block that hasn’t been accessed for the longest time.\nIntuition: If you haven’t looked at a block in a long time, you probably won’t need it again soon.\n\n\n\n\n\n\n\n\nImportantMost Recently Used (MRU)\n\n\n\nSometimes LRU is a terrible idea! Consider a query using a Nested Loop Join where we repeatedly scan the same large relation (e.g., scanning the entire Instructor table for every single row in the Department table).\nIf the Instructor table is larger than our buffer, LRU will evict the beginning of the table just before we need to scan it again! In this specific scenario, Most Recently Used (MRU) is better. We evict the block we just finished reading, because in a looping scan, we won’t need it again until the next full loop.\n\n\n\n\nPinned Blocks\nSome operations are so critical that a block cannot be evicted under any circumstances, even if it’s the LRU or MRU. For example, if a block is currently being actively updated by a transaction, the Buffer Manager will Pin the block, restricting it from being written back to disk prematurely.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
     ]
   }
 ]
