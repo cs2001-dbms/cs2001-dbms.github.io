@@ -2,61 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>SQL and Native Languages – Database Management Systems</title>
+<title>Disk Performance Math – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -68,8 +36,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_7/03.html" rel="next">
-<link href="../../weeks/week_7/01.html" rel="prev">
+<link href="../../weeks/week_8/04_file_organization_and_buffering.html" rel="next">
+<link href="../../weeks/week_8/02_physical_storage_systems.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -77,14 +45,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a534e71cf44c863abd021fd9c01f7ed3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -112,7 +80,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -318,7 +286,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/02.html"><span class="chapter-title">SQL and Native Languages</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/03_disk_performance_math.html"><span class="chapter-title">Disk Performance Math</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -530,39 +498,70 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-07</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Armstrong's Axioms &amp; Closure of Attribute Sets</span></a>
+  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Application Programs and Architecture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/02.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">SQL and Native Languages</span></a>
+  <a href="../../weeks/week_7/02_sql_and_native_languages.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL and Native Languages</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
+  <a href="../../weeks/week_7/03_rad.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Week-08</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms &amp; Data Structures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/02_physical_storage_systems.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Physical Storage Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/03_disk_performance_math.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Disk Performance Math</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">File Organization &amp; Buffering</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -585,26 +584,25 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#odbc-open-database-connectivity" id="toc-odbc-open-database-connectivity" class="nav-link active" data-scroll-target="#odbc-open-database-connectivity">ODBC (Open Database Connectivity)</a></li>
-  <li><a href="#jdbc-java-database-connectivity" id="toc-jdbc-java-database-connectivity" class="nav-link" data-scroll-target="#jdbc-java-database-connectivity">JDBC (Java Database Connectivity)</a></li>
-  <li><a href="#connectionist-bridges" id="toc-connectionist-bridges" class="nav-link" data-scroll-target="#connectionist-bridges">Connectionist Bridges</a></li>
-  <li><a href="#embedded-sql" id="toc-embedded-sql" class="nav-link" data-scroll-target="#embedded-sql">Embedded SQL</a>
+  <li><a href="#intuition-behind-the-math" id="toc-intuition-behind-the-math" class="nav-link active" data-scroll-target="#intuition-behind-the-math">Intuition Behind the Math</a>
   <ul class="collapse">
-  <li><a href="#key-concepts" id="toc-key-concepts" class="nav-link" data-scroll-target="#key-concepts">Key Concepts</a></li>
+  <li><a href="#capacity-of-a-disk" id="toc-capacity-of-a-disk" class="nav-link" data-scroll-target="#capacity-of-a-disk">1. Capacity of a Disk</a></li>
+  <li><a href="#time-period-of-one-rotation" id="toc-time-period-of-one-rotation" class="nav-link" data-scroll-target="#time-period-of-one-rotation">2. Time Period of One Rotation</a></li>
+  <li><a href="#transfer-rate" id="toc-transfer-rate" class="nav-link" data-scroll-target="#transfer-rate">3. Transfer Rate</a></li>
+  <li><a href="#transfer-time" id="toc-transfer-time" class="nav-link" data-scroll-target="#transfer-time">4. Transfer Time</a></li>
+  <li><a href="#addressing-sectors" id="toc-addressing-sectors" class="nav-link" data-scroll-target="#addressing-sectors">5. Addressing Sectors</a></li>
   </ul></li>
-  <li><a href="#connecting-python-to-postgresql" id="toc-connecting-python-to-postgresql" class="nav-link" data-scroll-target="#connecting-python-to-postgresql">Connecting Python to PostgreSQL</a></li>
-  <li><a href="#key-api-methods" id="toc-key-api-methods" class="nav-link" data-scroll-target="#key-api-methods">Key API Methods</a></li>
-  <li><a href="#crud-operations-in-python" id="toc-crud-operations-in-python" class="nav-link" data-scroll-target="#crud-operations-in-python">CRUD Operations in Python</a></li>
+  <li><a href="#solved-examples" id="toc-solved-examples" class="nav-link" data-scroll-target="#solved-examples">Solved Examples</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/03_disk_performance_math.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/02.html"><span class="chapter-title">SQL and Native Languages</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/03_disk_performance_math.html"><span class="chapter-title">Disk Performance Math</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">SQL and Native Languages</span></h1>
+<h1 class="title"><span class="chapter-title">Disk Performance Math</span></h1>
 </div>
 
 
@@ -621,244 +619,125 @@ window.Quarto = {
 </header>
 
 
-<p>When an application needs to talk to a database, it uses an <strong>API (Application Programming Interface)</strong> — a standard set of function calls that let you:</p>
+<section id="intuition-behind-the-math" class="level2">
+<h2 class="anchored" data-anchor-id="intuition-behind-the-math">Intuition Behind the Math</h2>
+<p>Memorizing formulas can be difficult. It is much easier if we understand <em>why</em> the formulas exist. Let’s look at the basic math behind disk performance.</p>
+<section id="capacity-of-a-disk" class="level3">
+<h3 class="anchored" data-anchor-id="capacity-of-a-disk">1. Capacity of a Disk</h3>
+<p>How much data can a disk hold? Imagine you have a bookshelf. The capacity of the shelf is the number of books it holds times the pages in one book. Similarly, a disk is made of sectors. <span class="math display">\[Capacity = Total \ No. \ of \ Sectors \times Size \ of \ One \ Sector\]</span></p>
+</section>
+<section id="time-period-of-one-rotation" class="level3">
+<h3 class="anchored" data-anchor-id="time-period-of-one-rotation">2. Time Period of One Rotation</h3>
+<p>If a disk spins at <span class="math inline">\(RPM\)</span> (Revolutions Per Minute), how long does <em>one</em> single rotation take? If it does <span class="math inline">\(RPM\)</span> revolutions in 60,000 milliseconds (1 minute), then one revolution takes: <span class="math display">\[Time \ Period = \frac{1 \ minute}{RPM} = \frac{60,000 \ ms}{RPM}\]</span></p>
+</section>
+<section id="transfer-rate" class="level3">
+<h3 class="anchored" data-anchor-id="transfer-rate">3. Transfer Rate</h3>
+<p>How much data can we read per unit of time? In one single rotation (Time Period), the head sweeps over an entire track. Therefore, the data transferred in one rotation is exactly the capacity of one track. <span class="math display">\[Transfer \ Rate = \frac{Bytes \ on \ one \ Track}{Time \ Period}\]</span></p>
+</section>
+<section id="transfer-time" class="level3">
+<h3 class="anchored" data-anchor-id="transfer-time">4. Transfer Time</h3>
+<p>If we know our speed (Transfer Rate) and the distance we need to cover (File Size), we can find the time! This is just <span class="math inline">\(Time = Distance \div Speed\)</span>. <span class="math display">\[Transfer \ Time = \frac{File \ Size}{Transfer \ Rate}\]</span></p>
+</section>
+<section id="addressing-sectors" class="level3">
+<h3 class="anchored" data-anchor-id="addressing-sectors">5. Addressing Sectors</h3>
+<p>Every sector needs a unique ID (binary address) so the OS can find it. If you have 8 sectors, you need 3 bits to address them (<span class="math inline">\(000\)</span> to <span class="math inline">\(111\)</span>). This is because <span class="math inline">\(2^3 = 8\)</span>. To find the number of bits required for <span class="math inline">\(N\)</span> sectors, we take the base-2 logarithm. <span class="math display">\[Minimum \ Bits = \lceil \log_2(Total \ No. \ of \ Sectors) \rceil\]</span> <em>(We use the ceiling function <span class="math inline">\(\lceil \rceil\)</span> because we can’t have a fraction of a bit).</em></p>
+<hr>
+</section>
+</section>
+<section id="solved-examples" class="level2">
+<h2 class="anchored" data-anchor-id="solved-examples">Solved Examples</h2>
+<p>Let’s put our intuition to work with some structured numerical problems.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Solved Example 1: Reading a File">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Solved Example 1: Reading a File
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Problem Statement:</strong> Consider you have a file named “IITM BSc” in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.</p>
+<ol type="a">
+<li>What is the transfer rate of your hard-disk (in KB/ms)?</li>
+<li>Considering the fact that the file data is stored in all non-consecutive sectors, how much time will be required to read the whole file after the read request is made? (Note: Consider Access time + Transfer time)</li>
+</ol>
+<p><strong>Part A: Finding the Transfer Rate</strong></p>
+<ol type="1">
+<li><strong>Given:</strong>
 <ul>
-<li>Open a connection to the database server</li>
-<li>Send SQL queries or updates</li>
-<li>Fetch results back into your program’s variables</li>
-</ul>
-<p>There are two broad approaches to doing this:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Approach</th>
-<th>What it means</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Connectionist</strong></td>
-<td>SQL is sent as a string through a driver at runtime</td>
-<td>ODBC, JDBC</td>
-</tr>
-<tr class="even">
-<td><strong>Embedded SQL</strong></td>
-<td>SQL is written directly inside the host language code and processed before compilation</td>
-<td>Embedded SQL for C, Java (SQLJ)</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<section id="odbc-open-database-connectivity" class="level2">
-<h2 class="anchored" data-anchor-id="odbc-open-database-connectivity">ODBC (Open Database Connectivity)</h2>
-<p>ODBC is a standard API that lets applications talk to <em>any</em> database, regardless of which RDBMS is being used. The same Python or C code can connect to MySQL, PostgreSQL, or SQL Server with minimal changes, you just swap the driver.</p>
-<p>It was originally developed by Microsoft and works with <strong>C, C++, C#, Visual Basic, and Python</strong>.</p>
-<p>A typical ODBC workflow: 1. Open a connection to the database 2. Send a query or update 3. Fetch results 4. Close the connection</p>
-<hr>
-</section>
-<section id="jdbc-java-database-connectivity" class="level2">
-<h2 class="anchored" data-anchor-id="jdbc-java-database-connectivity">JDBC (Java Database Connectivity)</h2>
-<p>JDBC is the Java equivalent of ODBC. It’s the standard way for Java programs to talk to a database.</p>
-<p>The workflow is very similar:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">// 1. Open a connection</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">Connection</span> con <span class="op">=</span> <span class="bu">DriverManager</span><span class="op">.</span><span class="fu">getConnection</span><span class="op">(</span>connectionUrl<span class="op">);</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">// 2. Create a statement object</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="bu">Statement</span> stmt <span class="op">=</span> con<span class="op">.</span><span class="fu">createStatement</span><span class="op">();</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">// 3. Execute a query and get results</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="bu">ResultSet</span> rs <span class="op">=</span> stmt<span class="op">.</span><span class="fu">executeQuery</span><span class="op">(</span><span class="st">"SELECT * FROM Production.Product"</span><span class="op">);</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">// 4. Iterate through results</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="cf">while</span> <span class="op">(</span>rs<span class="op">.</span><span class="fu">next</span><span class="op">())</span> <span class="op">{</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"ProductID"</span><span class="op">)</span> <span class="op">+</span> <span class="st">" : "</span> <span class="op">+</span> rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"Name"</span><span class="op">));</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<li><span class="math inline">\(RPM = 30,000\)</span></li>
+<li><span class="math inline">\(Sectors \ per \ Track = 200\)</span></li>
+<li><span class="math inline">\(Sector \ Size = 512 \ Bytes\)</span></li>
+</ul></li>
+<li><strong>Step-by-step Solution:</strong>
 <ul>
-<li><code>DriverManager.getConnection()</code> — opens the connection using a connection URL</li>
-<li><code>Statement</code> — used to send SQL to the database</li>
-<li><code>ResultSet</code> — holds the rows returned by a query; you iterate through it with <code>rs.next()</code></li>
-<li>Errors are handled using standard Java <code>try-catch</code> blocks</li>
-</ul>
-<hr>
-</section>
-<section id="connectionist-bridges" class="level2">
-<h2 class="anchored" data-anchor-id="connectionist-bridges">Connectionist Bridges</h2>
-<p>Sometimes the driver you need doesn’t exist — for example, you want to connect a Java app to a database that only has an ODBC driver. <strong>Bridges</strong> solve this by translating function calls from one standard to another.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Bridge</th>
-<th>What it does</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>JDBC-to-ODBC</strong></td>
-<td>JDBC driver internally uses an ODBC driver to reach the database</td>
-</tr>
-<tr class="even">
-<td><strong>ODBC-to-JDBC</strong></td>
-<td>ODBC driver internally uses a JDBC driver</td>
-</tr>
-<tr class="odd">
-<td><strong>OLE DB-to-ODBC</strong></td>
-<td>Microsoft’s OLE DB provider translated to ODBC calls</td>
-</tr>
-<tr class="even">
-<td><strong>ADO.NET-to-ODBC</strong></td>
-<td>ADO.NET provider (used in .NET apps) translated to ODBC</td>
-</tr>
-</tbody>
-</table>
-<p>Think of a bridge as a translator — it lets two systems that speak different languages work together.</p>
-<hr>
-</section>
-<section id="embedded-sql" class="level2">
-<h2 class="anchored" data-anchor-id="embedded-sql">Embedded SQL</h2>
-<p>With ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they’re even there. <strong>Embedded SQL</strong> takes a different approach: you write SQL <em>directly inside</em> the host language code, and a <strong>pre-processor</strong> converts it into regular function calls before compilation.</p>
-<p>Supported in: <strong>C, C++, Java (SQLJ), COBOL, FORTRAN</strong>.</p>
-<p>SQL statements are marked with <code>EXEC SQL</code> so the pre-processor knows what to handle:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>EXEC SQL <span class="op">&lt;</span>embedded SQL statement<span class="op">&gt;;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="key-concepts" class="level3">
-<h3 class="anchored" data-anchor-id="key-concepts">Key Concepts</h3>
-<p><strong>Connecting to the database:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>EXEC SQL CONNECT TO server USER username USING password<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Host variables</strong> — variables from your program that you use inside SQL queries. They’re prefixed with <code>:</code> to distinguish them from SQL column names:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1"></a>EXEC SQL BEGIN DECLARE SECTION<span class="op">;</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="dt">int</span> credit_amount<span class="op">;</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>EXEC SQL END DECLARE SECTION<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Cursors</strong> — since a query can return many rows, you use a <em>cursor</em> to step through them one at a time. Think of it as a pointer that moves through the result set.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">/* 1. Declare the cursor */</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>EXEC SQL DECLARE c CURSOR FOR</span>
-<span id="cb5-3"><a href="#cb5-3"></a>    SELECT ID<span class="op">,</span> name FROM student</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    WHERE tot_cred <span class="op">&gt;</span> <span class="op">:</span>credit_amount<span class="op">;</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">/* 2. Open it — this actually runs the query */</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a>EXEC SQL OPEN c<span class="op">;</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">/* 3. Fetch rows one by one */</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a>EXEC SQL FETCH c INTO <span class="op">:</span>si<span class="op">,</span> <span class="op">:</span>sn<span class="op">;</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">/* 4. Close when done */</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a>EXEC SQL CLOSE c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<li>First, find the Time Period for one rotation: <span class="math inline">\(Time \ Period = \frac{60,000 \ ms}{30,000} = 2 \ ms\)</span></li>
+<li>Second, find the capacity of one track (Bytes on one track): <span class="math inline">\(Track \ Capacity = 200 \ sectors \times 512 \ bytes = 102,400 \ Bytes = 100 \ KB\)</span> <em>(Note: we assume <span class="math inline">\(1024 \ Bytes = 1 \ KB\)</span>)</em></li>
+<li>Finally, calculate Transfer Rate: <span class="math inline">\(Transfer \ Rate = \frac{100 \ KB}{2 \ ms} = \mathbf{50 \ KB/ms}\)</span></li>
+</ul></li>
+</ol>
+<p><strong>Part B: Finding Total Read Time (Non-Consecutive Sectors)</strong></p>
+<ol type="1">
+<li><strong>Given:</strong>
 <ul>
-<li><code>OPEN</code> — executes the query and stores results in a temporary relation</li>
-<li><code>FETCH</code> — retrieves the next row into your host variables</li>
-<li><code>SQLSTATE</code> is set to <code>'02000'</code> when there are no more rows to fetch</li>
-<li><code>CLOSE</code> — releases the temporary result</li>
-</ul>
-<p><strong>Updating through a cursor:</strong></p>
-<p>You can also modify rows as you fetch them by declaring the cursor <code>FOR UPDATE</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1"></a>EXEC SQL DECLARE c CURSOR FOR</span>
-<span id="cb6-2"><a href="#cb6-2"></a>    SELECT <span class="op">*</span> FROM instructor</span>
-<span id="cb6-3"><a href="#cb6-3"></a>    WHERE dept_name <span class="op">=</span> <span class="ch">'M</span><span class="er">usic</span><span class="ch">'</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    FOR UPDATE<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">/* After fetching each row: */</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a>UPDATE instructor SET salary <span class="op">=</span> salary <span class="op">+</span> <span class="dv">1000</span> WHERE CURRENT OF c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="connecting-python-to-postgresql" class="level2">
-<h2 class="anchored" data-anchor-id="connecting-python-to-postgresql">Connecting Python to PostgreSQL</h2>
-<p>The most popular Python library for working with PostgreSQL is <strong>psycopg2</strong> — it’s stable, actively maintained, thread-safe, and works with both Python 2 and 3.</p>
-<p>Install it with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">pip</span> install psycopg2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Every interaction with the database follows the same six steps:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Step</th>
-<th>What happens</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1. Create connection</td>
-<td><code>psycopg2.connect(...)</code> — opens a connection to the DB</td>
-</tr>
-<tr class="even">
-<td>2. Create cursor</td>
-<td><code>conn.cursor()</code> — creates a cursor to execute queries</td>
-</tr>
-<tr class="odd">
-<td>3. Execute query</td>
-<td><code>cur.execute(sql)</code> — runs your SQL</td>
-</tr>
-<tr class="even">
-<td>4. Fetch results</td>
-<td><code>fetchone()</code>, <code>fetchmany()</code>, or <code>fetchall()</code></td>
-</tr>
-<tr class="odd">
-<td>5. Commit or rollback</td>
-<td><code>conn.commit()</code> to save, <code>conn.rollback()</code> to undo</td>
-</tr>
-<tr class="even">
-<td>6. Close</td>
-<td><code>cur.close()</code> then <code>conn.close()</code></td>
-</tr>
-</tbody>
-</table>
-<hr>
-</section>
-<section id="key-api-methods" class="level2">
-<h2 class="anchored" data-anchor-id="key-api-methods">Key API Methods</h2>
-<p><strong>Connection:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>conn <span class="op">=</span> psycopg2.<span class="ex">connect</span>(database<span class="op">=</span><span class="st">"mydb"</span>, user<span class="op">=</span><span class="st">"myuser"</span>,</span>
-<span id="cb8-2"><a href="#cb8-2"></a>                         password<span class="op">=</span><span class="st">"mypass"</span>, host<span class="op">=</span><span class="st">"127.0.0.1"</span>, port<span class="op">=</span><span class="st">"5432"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3"></a>conn.commit()    <span class="co"># saves changes</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>conn.rollback()  <span class="co"># undoes changes since last commit</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>conn.close()     <span class="co"># closes the connection</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Cursor:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>cur <span class="op">=</span> conn.cursor()</span>
-<span id="cb9-2"><a href="#cb9-2"></a>cur.execute(<span class="st">"INSERT INTO employee VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="bu">id</span>, name))  <span class="co"># parameterized query</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>cur.rowcount     <span class="co"># number of rows affected by last operation</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a>cur.fetchone()   <span class="co"># returns next row, or None</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>cur.fetchmany(n) <span class="co"># returns next n rows as a list</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>cur.fetchall()   <span class="co"># returns all remaining rows as a list</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>cur.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>Use <code>%s</code> as a placeholder in queries instead of string formatting — this protects against SQL injection.</p>
-</blockquote>
-<hr>
-</section>
-<section id="crud-operations-in-python" class="level2">
-<h2 class="anchored" data-anchor-id="crud-operations-in-python">CRUD Operations in Python</h2>
-<p><strong>CREATE table:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>cur.execute(<span class="st">'''CREATE TABLE EMPLOYEE (</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="st">    emp_num  INT PRIMARY KEY NOT NULL,</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="st">    emp_name VARCHAR(40) NOT NULL,</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="st">    department VARCHAR(40) NOT NULL)'''</span>)</span>
-<span id="cb10-5"><a href="#cb10-5"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>INSERT:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>cur.execute(<span class="st">"INSERT INTO EMPLOYEE VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="dv">110</span>, <span class="st">'Bhaskar'</span>, <span class="st">'HR'</span>))</span>
-<span id="cb11-2"><a href="#cb11-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>UPDATE:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>cur.execute(<span class="st">"UPDATE EMPLOYEE SET department = </span><span class="sc">%s</span><span class="st"> WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="st">'Finance'</span>, <span class="dv">110</span>))</span>
-<span id="cb12-2"><a href="#cb12-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>DELETE:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>cur.execute(<span class="st">"DELETE FROM EMPLOYEE WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="dv">110</span>,))</span>
-<span id="cb13-2"><a href="#cb13-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>SELECT:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>cur.execute(<span class="st">"SELECT emp_num, emp_name, department FROM EMPLOYEE"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>rows <span class="op">=</span> cur.fetchall()</span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="cf">for</span> row <span class="kw">in</span> rows:</span>
-<span id="cb14-4"><a href="#cb14-4"></a>    <span class="bu">print</span>(row[<span class="dv">0</span>], row[<span class="dv">1</span>], row[<span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<li><span class="math inline">\(File \ Size = 1000 \ KB\)</span></li>
+<li><span class="math inline">\(Seek \ Time = 3 \ ms\)</span></li>
+<li>Data is stored in <strong>non-consecutive</strong> sectors. This is a critical detail! It means for <em>every single sector</em> we read, we have to suffer Seek Time and Rotational Latency!</li>
+</ul></li>
+<li><strong>Step-by-step Solution:</strong>
+<ul>
+<li>First, find the total number of sectors the file occupies: <span class="math inline">\(File \ Size \ in \ Bytes = 1000 \ KB \times 1024 = 1,024,000 \ Bytes\)</span> <span class="math inline">\(Number \ of \ Sectors = \frac{1,024,000 \ Bytes}{512 \ Bytes} = 2000 \ Sectors\)</span></li>
+<li>Next, find the Access Time for <em>one</em> sector: <span class="math inline">\(Average \ Rotational \ Latency = \frac{1}{2} \times Time \ Period = \frac{1}{2} \times 2 \ ms = 1 \ ms\)</span> <span class="math inline">\(Access \ Time = Seek \ Time + Rotational \ Latency = 3 \ ms + 1 \ ms = 4 \ ms\)</span></li>
+<li>Next, find the Transfer Time for <em>one</em> sector: <span class="math inline">\(Transfer \ Time \ (1 \ Sector) = \frac{Sector \ Size}{Transfer \ Rate} = \frac{0.5 \ KB}{50 \ KB/ms} = 0.01 \ ms\)</span></li>
+<li>Finally, calculate the total time for all 2000 non-consecutive sectors: <span class="math inline">\(Time \ per \ Sector = Access \ Time + Transfer \ Time = 4 \ ms + 0.01 \ ms = 4.01 \ ms\)</span> <span class="math inline">\(Total \ Time = 2000 \times 4.01 \ ms = \mathbf{8020 \ ms}\)</span> (or 8.02 seconds)</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<p><br></p>
+<div class="callout callout-style-default callout-important callout-titled" title="Solved Example 2: Disk Geometry and Addressing">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Solved Example 2: Disk Geometry and Addressing
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Problem Statement:</strong> Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).</p>
+<ol type="a">
+<li>How much free space is available for use (in MB, upto two decimal places)?</li>
+<li>How many bits are required for addressing all the sectors?</li>
+</ol>
+<p><strong>Part A: Finding Free Space</strong></p>
+<ol type="1">
+<li><strong>Given:</strong>
+<ul>
+<li><span class="math inline">\(Platters = 10\)</span> (Note: A platter has 2 surfaces! So <span class="math inline">\(Surfaces = 20\)</span>)</li>
+<li><span class="math inline">\(Tracks \ per \ Surface = 64\)</span></li>
+<li><span class="math inline">\(Sectors \ per \ Track = 256\)</span></li>
+<li><span class="math inline">\(Sector \ Size = 512 \ Bytes\)</span></li>
+<li><span class="math inline">\(Reserved \ Space = 4 \ Bytes / sector\)</span></li>
+</ul></li>
+<li><strong>Step-by-step Solution:</strong>
+<ul>
+<li>First, find the total number of sectors on the entire disk: <span class="math inline">\(Total \ Sectors = Surfaces \times Tracks/Surface \times Sectors/Track\)</span> <span class="math inline">\(Total \ Sectors = 20 \times 64 \times 256 = 327,680 \ Sectors\)</span></li>
+<li>Next, calculate the <em>usable</em> space per sector: <span class="math inline">\(Usable \ Sector \ Size = 512 - 4 = 508 \ Bytes\)</span></li>
+<li>Finally, calculate the total free space: <span class="math inline">\(Total \ Free \ Space = 327,680 \times 508 \ Bytes = 166,461,440 \ Bytes\)</span> Convert to MB (divide by <span class="math inline">\(1024^2\)</span>): <span class="math inline">\(Free \ Space \ in \ MB = \frac{166,461,440}{1,048,576} \approx \mathbf{158.75 \ MB}\)</span></li>
+</ul></li>
+</ol>
+<p><strong>Part B: Addressing Sectors</strong></p>
+<ol type="1">
+<li><strong>Step-by-step Solution:</strong>
+<ul>
+<li>We know there are <span class="math inline">\(327,680\)</span> total sectors on the disk.</li>
+<li>We apply the addressing formula: <span class="math inline">\(Minimum \ Bits = \lceil \log_2(327,680) \rceil\)</span> Since <span class="math inline">\(2^{18} = 262,144\)</span> and <span class="math inline">\(2^{19} = 524,288\)</span>, we know we need more than 18 bits. <span class="math inline">\(Minimum \ Bits = \mathbf{19 \ bits}\)</span></li>
+</ul></li>
+</ol>
+</div>
+</div>
 
 
 
@@ -1358,13 +1237,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_7/01.html" class="pagination-link" aria-label="Armstrong's Axioms &amp; Closure of Attribute Sets">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Armstrong’s Axioms &amp; Closure of Attribute Sets</span></span>
+      <a href="../../weeks/week_8/02_physical_storage_systems.html" class="pagination-link" aria-label="Physical Storage Systems">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Physical Storage Systems</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_7/03.html" class="pagination-link" aria-label="RAD, Application Security, and Mobile Apps">
-        <span class="nav-page-text"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="pagination-link" aria-label="File Organization &amp; Buffering">
+        <span class="nav-page-text"><span class="chapter-title">File Organization &amp; Buffering</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1376,7 +1255,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/02.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/03_disk_performance_math.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

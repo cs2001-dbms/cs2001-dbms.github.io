@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Nested Subqueries – Database Management Systems</title>
+<title>Physical Storage Systems – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -71,8 +36,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_3/joins.html" rel="next">
-<link href="../../weeks/week_2/03_advanced_sql.html" rel="prev">
+<link href="../../weeks/week_8/03_disk_performance_math.html" rel="next">
+<link href="../../weeks/week_8/01_algorithms_and_data_structures.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -88,6 +53,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -324,7 +292,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><span class="chapter-title">Nested Subqueries</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/02_physical_storage_systems.html"><span class="chapter-title">Physical Storage Systems</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -422,16 +390,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-03</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Nested Subqueries</span></a>
+  <a href="../../weeks/week_3/nested_subqueries.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nested Subqueries</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -562,13 +530,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-08</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms &amp; Data Structures</span></a>
@@ -576,7 +544,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_8/02_physical_storage_systems.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Physical Storage Systems</span></a>
+  <a href="../../weeks/week_8/02_physical_storage_systems.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Physical Storage Systems</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -622,35 +590,31 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#nested-subqueries" id="toc-nested-subqueries" class="nav-link active" data-scroll-target="#nested-subqueries">Nested Subqueries</a></li>
-  <li><a href="#subqueries-in-the-where-clause" id="toc-subqueries-in-the-where-clause" class="nav-link" data-scroll-target="#subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</a>
+  <li><a href="#physical-storage-media" id="toc-physical-storage-media" class="nav-link active" data-scroll-target="#physical-storage-media">Physical Storage Media</a>
   <ul class="collapse">
-  <li><a href="#set-membership-in-not-in" id="toc-set-membership-in-not-in" class="nav-link" data-scroll-target="#set-membership-in-not-in">Set Membership: <code>IN</code> / <code>NOT IN</code></a></li>
-  <li><a href="#set-comparison-some-and-all" id="toc-set-comparison-some-and-all" class="nav-link" data-scroll-target="#set-comparison-some-and-all">Set Comparison: <code>SOME</code> and <code>ALL</code></a></li>
-  <li><a href="#test-for-empty-sets-exists" id="toc-test-for-empty-sets-exists" class="nav-link" data-scroll-target="#test-for-empty-sets-exists">Test for Empty Sets: <code>EXISTS</code></a></li>
-  <li><a href="#test-for-duplicates-unique" id="toc-test-for-duplicates-unique" class="nav-link" data-scroll-target="#test-for-duplicates-unique">Test for Duplicates: <code>UNIQUE</code></a></li>
+  <li><a href="#the-storage-hierarchy-pyramid" id="toc-the-storage-hierarchy-pyramid" class="nav-link" data-scroll-target="#the-storage-hierarchy-pyramid">The Storage Hierarchy Pyramid</a></li>
   </ul></li>
-  <li><a href="#subqueries-in-the-from-clause" id="toc-subqueries-in-the-from-clause" class="nav-link" data-scroll-target="#subqueries-in-the-from-clause">Subqueries in the FROM Clause</a>
+  <li><a href="#inside-a-magnetic-disk-hdd" id="toc-inside-a-magnetic-disk-hdd" class="nav-link" data-scroll-target="#inside-a-magnetic-disk-hdd">Inside a Magnetic Disk (HDD)</a>
   <ul class="collapse">
-  <li><a href="#the-with-clause" id="toc-the-with-clause" class="nav-link" data-scroll-target="#the-with-clause">The <code>WITH</code> Clause</a></li>
+  <li><a href="#data-organization-on-the-disk" id="toc-data-organization-on-the-disk" class="nav-link" data-scroll-target="#data-organization-on-the-disk">Data Organization on the Disk</a></li>
   </ul></li>
-  <li><a href="#subqueries-in-the-select-clause" id="toc-subqueries-in-the-select-clause" class="nav-link" data-scroll-target="#subqueries-in-the-select-clause">Subqueries in the SELECT Clause</a></li>
-  <li><a href="#modifying-the-database" id="toc-modifying-the-database" class="nav-link" data-scroll-target="#modifying-the-database">Modifying the Database</a>
+  <li><a href="#disk-performance-metrics" id="toc-disk-performance-metrics" class="nav-link" data-scroll-target="#disk-performance-metrics">Disk Performance Metrics</a>
   <ul class="collapse">
-  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
-  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
-  <li><a href="#updates" id="toc-updates" class="nav-link" data-scroll-target="#updates">Updates</a></li>
+  <li><a href="#access-time" id="toc-access-time" class="nav-link" data-scroll-target="#access-time">1. Access Time</a></li>
+  <li><a href="#data-transfer-rate" id="toc-data-transfer-rate" class="nav-link" data-scroll-target="#data-transfer-rate">2. Data Transfer Rate</a></li>
+  <li><a href="#reliability-mttf" id="toc-reliability-mttf" class="nav-link" data-scroll-target="#reliability-mttf">3. Reliability (MTTF)</a></li>
   </ul></li>
+  <li><a href="#emerging-technologies" id="toc-emerging-technologies" class="nav-link" data-scroll-target="#emerging-technologies">Emerging Technologies</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/nested_subqueries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/02_physical_storage_systems.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><strong>Week-03</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_3/nested_subqueries.html"><span class="chapter-title">Nested Subqueries</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/02_physical_storage_systems.html"><span class="chapter-title">Physical Storage Systems</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Nested Subqueries</span></h1>
+<h1 class="title"><span class="chapter-title">Physical Storage Systems</span></h1>
 </div>
 
 
@@ -667,240 +631,113 @@ window.Quarto = {
 </header>
 
 
-<section id="nested-subqueries" class="level2">
-<h2 class="anchored" data-anchor-id="nested-subqueries">Nested Subqueries</h2>
-<p>A <strong>subquery</strong> is simply a <code>select-from-where</code> block placed <em>inside</em> another query. SQL lets you nest subqueries in the <code>WHERE</code>, <code>FROM</code>, and <code>SELECT</code> clauses.</p>
+<section id="physical-storage-media" class="level2">
+<h2 class="anchored" data-anchor-id="physical-storage-media">Physical Storage Media</h2>
+<p>Data needs a place to live! Depending on how fast we need to access the data and how long we want it to survive without power, we use different types of storage media.</p>
+<p>There is a fundamental divide in storage media: <strong>Volatile</strong> vs.&nbsp;<strong>Non-Volatile</strong>.</p>
 <ul>
-<li><code>select</code> : Must return a single scalar value.</li>
-<li><code>from</code> : Can return any valid relation (table).</li>
-<li><code>where</code> : Used in expressions like <code>Attribute &lt;operation&gt; (subquery)</code>.</li>
+<li><strong>Volatile Storage:</strong> Loses all data when the power is interrupted (e.g., Cache Memory, Main Memory / RAM). Extremely fast but temporary.</li>
+<li><strong>Non-Volatile Storage:</strong> Retains data regardless of power status (e.g., Flash memory, Magnetic Disks, Optical Disks, Magnetic Tapes). Slower, but permanent.</li>
 </ul>
-<hr>
-</section>
-<section id="subqueries-in-the-where-clause" class="level2">
-<h2 class="anchored" data-anchor-id="subqueries-in-the-where-clause">Subqueries in the <code>WHERE</code> Clause</h2>
-<p>Typically used to test <strong>set membership</strong>, <strong>set comparison</strong>, and <strong>set cardinality</strong>.</p>
-<section id="set-membership-in-not-in" class="level3">
-<h3 class="anchored" data-anchor-id="set-membership-in-not-in">Set Membership: <code>IN</code> / <code>NOT IN</code></h3>
-<p><em>Example:</em> Find employees who worked on Project A <strong>and</strong> Project B.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">select</span> <span class="kw">distinct</span> emp_id</span>
-<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="kw">from</span> assignment</span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="kw">where</span> project <span class="op">=</span> <span class="st">'Project A'</span> <span class="kw">and</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>      emp_id <span class="kw">in</span> (<span class="kw">select</span> emp_id</span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a>                 <span class="kw">from</span> assignment</span>
-<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>                 <span class="kw">where</span> project <span class="op">=</span> <span class="st">'Project B'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>Swap <code>in</code> for <code>not in</code> to find employees on Project A <strong>but not</strong> Project B.</p>
-</blockquote>
-</section>
-<section id="set-comparison-some-and-all" class="level3">
-<h3 class="anchored" data-anchor-id="set-comparison-some-and-all">Set Comparison: <code>SOME</code> and <code>ALL</code></h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Clause</th>
-<th>Meaning</th>
-<th>Logic</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong><code>some</code></strong></td>
-<td>True if comparison holds for <strong>at least one</strong> row in subquery</td>
-<td><span class="math inline">\(\exists\, t \in r : F \langle\text{comp}\rangle\, t\)</span></td>
-</tr>
-<tr class="even">
-<td><strong><code>all</code></strong></td>
-<td>True if comparison holds for <strong>every</strong> row in subquery</td>
-<td><span class="math inline">\(\forall\, t \in r : F \langle\text{comp}\rangle\, t\)</span></td>
-</tr>
-</tbody>
-</table>
-<blockquote class="blockquote">
-<p>📌 &lt;comp&gt; can be: &lt;, ≤, &gt;, ≥, =, ≠</p>
-</blockquote>
-<p><em>Example:</em> Employees earning more than <strong>some</strong> employee in Sales:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">select</span> name</span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="kw">from</span> employee</span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">where</span> salary <span class="op">&gt;</span> <span class="kw">some</span> (<span class="kw">select</span> salary</span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>                      <span class="kw">from</span> employee</span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>                      <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Sales'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Example:</em> Employees earning more than <strong>all</strong> employees in Sales:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">select</span> name</span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">from</span> employee</span>
-<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="kw">where</span> salary <span class="op">&gt;</span> <span class="kw">all</span> (<span class="kw">select</span> salary</span>
-<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>                     <span class="kw">from</span> employee</span>
-<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>                     <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Sales'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="test-for-empty-sets-exists" class="level3">
-<h3 class="anchored" data-anchor-id="test-for-empty-sets-exists">Test for Empty Sets: <code>EXISTS</code></h3>
-<ul>
-<li><code>exists r</code> is true if <code>r</code> is non-empty.</li>
-<li><code>not exists r</code> is true if <code>r</code> is empty.</li>
-</ul>
-<p><em>Example:</em> Find projects active in both Q1 2025 and Q2 2025, using a <strong>correlated subquery</strong> (inner query refers to the outer query’s variable).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">select</span> project_id</span>
-<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">from</span> timeline <span class="kw">as</span> S</span>
-<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a><span class="kw">where</span> quarter <span class="op">=</span> <span class="st">'Q1'</span> <span class="kw">and</span> <span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span> <span class="kw">and</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>      <span class="kw">exists</span> (<span class="kw">select</span> <span class="op">*</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>              <span class="kw">from</span> timeline <span class="kw">as</span> T</span>
-<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>              <span class="kw">where</span> quarter <span class="op">=</span> <span class="st">'Q2'</span> <span class="kw">and</span> <span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a>                    <span class="kw">and</span> S.project_id <span class="op">=</span> T.project_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li><code>S</code> is the <strong>correlation name</strong> (outer query variable)</li>
-<li>The inner query referencing <code>S</code> is the <strong>correlated subquery</strong></li>
-</ul>
-<p><em>Example:</em> Find employees who have worked on <strong>all</strong> projects in the Marketing department (uses <code>not exists</code> + set difference logic):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">select</span> <span class="kw">distinct</span> S.emp_id, S.name</span>
-<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a><span class="kw">from</span> employee <span class="kw">as</span> S</span>
-<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="kw">where</span> <span class="kw">not</span> <span class="kw">exists</span> (</span>
-<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    (<span class="kw">select</span> project_id <span class="kw">from</span> project <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Marketing'</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    <span class="kw">except</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>    (<span class="kw">select</span> T.project_id <span class="kw">from</span> assignment <span class="kw">as</span> T <span class="kw">where</span> S.emp_id <span class="op">=</span> T.emp_id)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="test-for-duplicates-unique" class="level3">
-<h3 class="anchored" data-anchor-id="test-for-duplicates-unique">Test for Duplicates: <code>UNIQUE</code></h3>
-<p><code>unique (subquery)</code> is true if the subquery’s result has <strong>no duplicate rows</strong>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">select</span> T.project_id</span>
-<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">from</span> project <span class="kw">as</span> T</span>
-<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="kw">where</span> <span class="kw">unique</span> (<span class="kw">select</span> R.project_id</span>
-<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a>              <span class="kw">from</span> assignment <span class="kw">as</span> R</span>
-<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a>              <span class="kw">where</span> T.project_id <span class="op">=</span> R.project_id <span class="kw">and</span> R.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>(Finds projects staffed by at most one employee in 2025.)</em></p>
-<hr>
-</section>
-</section>
-<section id="subqueries-in-the-from-clause" class="level2">
-<h2 class="anchored" data-anchor-id="subqueries-in-the-from-clause">Subqueries in the FROM Clause</h2>
-<p>A subquery can stand in for a table, letting you filter on an <strong>aggregate</strong> without <code>HAVING</code>.</p>
-<p><em>Example:</em> Average salary of departments where average salary exceeds $60,000:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">select</span> dept_name, avg_salary</span>
-<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a><span class="kw">from</span> (<span class="kw">select</span> dept_name, <span class="fu">avg</span>(salary) <span class="kw">as</span> avg_salary</span>
-<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a>      <span class="kw">from</span> employee</span>
-<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a>      <span class="kw">group</span> <span class="kw">by</span> dept_name) <span class="kw">as</span> dept_avg</span>
-<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="kw">where</span> avg_salary <span class="op">&gt;</span> <span class="dv">60000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="the-with-clause" class="level3">
-<h3 class="anchored" data-anchor-id="the-with-clause">The <code>WITH</code> Clause</h3>
-<p><code>with</code> defines a <strong>temporary, named result</strong> (like a scratchpad table) visible only to the query that follows.</p>
-<p><em>Example:</em> Find the name of the department that has the maximum budget.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="kw">with</span> max_budget(<span class="fu">value</span>) <span class="kw">as</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>    (<span class="kw">select</span> <span class="fu">max</span>(budget) <span class="kw">from</span> department)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a><span class="kw">select</span> department.name</span>
-<span id="cb8-4"><a href="#cb8-4" aria-label="4"></a><span class="kw">from</span> department, max_budget</span>
-<span id="cb8-5"><a href="#cb8-5" aria-label="5"></a><span class="kw">where</span> department.budget <span class="op">=</span> max_budget.<span class="fu">value</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Multiple <code>with</code> blocks can be chained for multi-step logic:</p>
-<p><em>Example:</em> Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">with</span> dept_total(dept_name, <span class="fu">value</span>) <span class="kw">as</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>    (<span class="kw">select</span> dept_name, <span class="fu">sum</span>(salary)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>     <span class="kw">from</span> employee</span>
-<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>     <span class="kw">group</span> <span class="kw">by</span> dept_name),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a>dept_total_avg(<span class="fu">value</span>) <span class="kw">as</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-label="6"></a>    (<span class="kw">select</span> <span class="fu">avg</span>(<span class="fu">value</span>) <span class="kw">from</span> dept_total)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-label="7"></a><span class="kw">select</span> dept_name</span>
-<span id="cb9-8"><a href="#cb9-8" aria-label="8"></a><span class="kw">from</span> dept_total, dept_total_avg</span>
-<span id="cb9-9"><a href="#cb9-9" aria-label="9"></a><span class="kw">where</span> dept_total.<span class="fu">value</span> <span class="op">&gt;</span> dept_total_avg.<span class="fu">value</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="subqueries-in-the-select-clause" class="level2">
-<h2 class="anchored" data-anchor-id="subqueries-in-the-select-clause">Subqueries in the SELECT Clause</h2>
-<p>A <strong>scalar subquery</strong> returns exactly one value, used wherever a single value is expected.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="kw">select</span> dept_name,</span>
-<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a>       (<span class="kw">select</span> <span class="fu">count</span>(<span class="op">*</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a>        <span class="kw">from</span> employee</span>
-<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a>        <span class="kw">where</span> department.dept_name <span class="op">=</span> employee.dept_name) <span class="kw">as</span> num_employees</span>
-<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a><span class="kw">from</span> department;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>⚠️ If the subquery returns more than one row, this causes a <strong>runtime error</strong>.</p>
-</blockquote>
-<hr>
-</section>
-<section id="modifying-the-database" class="level2">
-<h2 class="anchored" data-anchor-id="modifying-the-database">Modifying the Database</h2>
-<div class="cell" data-layout-align="default">
+<section id="the-storage-hierarchy-pyramid" class="level3">
+<h3 class="anchored" data-anchor-id="the-storage-hierarchy-pyramid">The Storage Hierarchy Pyramid</h3>
+<p>In computer architecture, we make trade-offs. If you want <strong>speed</strong>, it costs more and you get <strong>less capacity</strong>. If you want <strong>capacity</strong>, it costs less per gigabyte, but you sacrifice <strong>speed</strong>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    M["Database Modification"] --&gt; D["DELETE — remove tuples"]
-    M --&gt; I["INSERT — add tuples"]
-    M --&gt; U["UPDATE — change values"]
+<pre class="mermaid mermaid-js">graph TD
+    classDef volatile fill:#f9d0c4,stroke:#333,stroke-width:2px;
+    classDef nonvolatile fill:#d4edda,stroke:#333,stroke-width:2px;
+
+    subgraph Speed_vs_Capacity [ ]
+    direction BT
+    L1[Registers]:::volatile
+    L2[Cache]:::volatile
+    L3[Main Memory / RAM]:::volatile
+    L4[Flash Memory / SSD]:::nonvolatile
+    L5[Magnetic Disks / HDD]:::nonvolatile
+    L6[Magnetic Tapes / Optical Disks]:::nonvolatile
+    
+    L6 --&gt; L5 --&gt; L4 --&gt; L3 --&gt; L2 --&gt; L1
+    end
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
-<section id="deletion" class="level3">
-<h3 class="anchored" data-anchor-id="deletion">Deletion</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="co">-- Delete all employees</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a><span class="kw">delete</span> <span class="kw">from</span> employee;</span>
-<span id="cb11-3"><a href="#cb11-3" aria-label="3"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-label="4"></a><span class="co">-- Delete employees from one department</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-label="5"></a><span class="kw">delete</span> <span class="kw">from</span> employee <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Finance'</span>;</span>
-<span id="cb11-6"><a href="#cb11-6" aria-label="6"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-label="7"></a><span class="co">-- Delete employees in departments located in a specific building</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-label="8"></a><span class="kw">delete</span> <span class="kw">from</span> employee</span>
-<span id="cb11-9"><a href="#cb11-9" aria-label="9"></a><span class="kw">where</span> dept_name <span class="kw">in</span> (<span class="kw">select</span> dept_name</span>
-<span id="cb11-10"><a href="#cb11-10" aria-label="10"></a>                     <span class="kw">from</span> department</span>
-<span id="cb11-11"><a href="#cb11-11" aria-label="11"></a>                     <span class="kw">where</span> building <span class="op">=</span> <span class="st">'Tower B'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Tricky case:</strong> Delete employees earning less than the average salary.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="kw">delete</span> <span class="kw">from</span> employee</span>
-<span id="cb12-2"><a href="#cb12-2" aria-label="2"></a><span class="kw">where</span> salary <span class="op">&lt;</span> (<span class="kw">select</span> <span class="fu">avg</span>(salary) <span class="kw">from</span> employee);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>⚠️ As rows are deleted, the average changes! Solution: <strong>(1)</strong> computing the average and identifying all rows to delete <em>first</em>, then <strong>(2)</strong> deleting them — without recomputing mid-way.</p>
-</blockquote>
+<p><em>Note: As you move UP the pyramid, Speed and Cost per bit INCREASES. As you move DOWN the pyramid, Capacity and Access Time INCREASES.</em></p>
+<hr>
 </section>
-<section id="insertion" class="level3">
-<h3 class="anchored" data-anchor-id="insertion">Insertion</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="kw">insert</span> <span class="kw">into</span> course</span>
-<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a><span class="kw">values</span> (<span class="st">'CS-437'</span>, <span class="st">'Database Systems'</span>, <span class="st">'Comp. Sci.'</span>, <span class="dv">4</span>);</span>
-<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a><span class="co">-- with tot_creds set to null</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a><span class="kw">insert</span> <span class="kw">into</span> student</span>
-<span id="cb13-6"><a href="#cb13-6" aria-label="6"></a><span class="kw">values</span> (<span class="st">'3003'</span>, <span class="st">'Green'</span>, <span class="st">'Finance'</span>, <span class="kw">null</span>);</span>
-<span id="cb13-7"><a href="#cb13-7" aria-label="7"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-label="8"></a><span class="co">-- insert from another query's results</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-label="9"></a><span class="kw">insert</span> <span class="kw">into</span> student</span>
-<span id="cb13-10"><a href="#cb13-10" aria-label="10"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name, <span class="dv">0</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-label="11"></a><span class="kw">from</span> employee;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>📌 The entire <code>select-from-where</code> is evaluated <strong>before</strong> any row is inserted — otherwise <code>insert into table1 select * from table1</code> would loop infinitely.</p>
-</blockquote>
 </section>
-<section id="updates" class="level3">
-<h3 class="anchored" data-anchor-id="updates">Updates</h3>
-<p><strong>Conditional updates</strong> — give a 3% raise above $100K, 5% below (order matters!):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="kw">update</span> employee <span class="kw">set</span> salary <span class="op">=</span> salary <span class="op">*</span> <span class="fl">1.03</span> <span class="kw">where</span> salary <span class="op">&gt;</span> <span class="dv">100000</span>;</span>
-<span id="cb14-2"><a href="#cb14-2" aria-label="2"></a><span class="kw">update</span> employee <span class="kw">set</span> salary <span class="op">=</span> salary <span class="op">*</span> <span class="fl">1.05</span> <span class="kw">where</span> salary <span class="op">&lt;=</span> <span class="dv">100000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Cleaner with a <strong><code>case</code></strong> statement (single pass, no ordering issues):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="kw">update</span> employee</span>
-<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="kw">set</span> salary <span class="op">=</span> <span class="cf">case</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-label="3"></a>    <span class="cf">when</span> salary <span class="op">&lt;=</span> <span class="dv">100000</span> <span class="cf">then</span> salary <span class="op">*</span> <span class="fl">1.05</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-label="4"></a>    <span class="cf">else</span> salary <span class="op">*</span> <span class="fl">1.03</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-label="5"></a><span class="cf">end</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Updates with scalar subqueries</strong> — recompute total credits per student:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="kw">update</span> student S</span>
-<span id="cb16-2"><a href="#cb16-2" aria-label="2"></a><span class="kw">set</span> tot_creds <span class="op">=</span> (<span class="kw">select</span> <span class="fu">sum</span>(credits)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-label="3"></a>                  <span class="kw">from</span> takes, course</span>
-<span id="cb16-4"><a href="#cb16-4" aria-label="4"></a>                  <span class="kw">where</span> takes.course_id <span class="op">=</span> course.course_id <span class="kw">and</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-label="5"></a>                        S.<span class="kw">id</span> <span class="op">=</span> takes.<span class="kw">id</span> <span class="kw">and</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-label="6"></a>                        takes.grade <span class="op">&lt;&gt;</span> <span class="st">'F'</span> <span class="kw">and</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-label="7"></a>                        takes.grade <span class="kw">is</span> <span class="kw">not</span> <span class="kw">null</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)</em></p>
+<section id="inside-a-magnetic-disk-hdd" class="level2">
+<h2 class="anchored" data-anchor-id="inside-a-magnetic-disk-hdd">Inside a Magnetic Disk (HDD)</h2>
+<p>To understand database performance, we must look at the physical mechanics of where our data actually lives: <strong>Magnetic Disks</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="magnetic_disk.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The inside of a typical magnetic disk."><img src="magnetic_disk.jpg" class="img-fluid figure-img" style="width:50.0%" alt="The inside of a typical magnetic disk."></a></p>
+<figcaption>The inside of a typical magnetic disk.</figcaption>
+</figure>
+</div>
+<p>Think of a hard drive like an old-school vinyl record player:</p>
+<ul>
+<li><p><strong>Platter (The Record):</strong> The circular disk coated with magnetic material.</p></li>
+<li><p><strong>Spindle (The Turntable Motor):</strong> The central rod that spins the platters at high speeds (e.g., 7200 RPM).</p></li>
+<li><p><strong>Read/Write Head (The Needle):</strong> The tiny magnet that hovers above the platter.</p></li>
+<li><p><strong>Actuator Arm (The Tonearm):</strong> The mechanical arm that moves the Read/Write head.</p></li>
+</ul>
+<section id="data-organization-on-the-disk" class="level3">
+<h3 class="anchored" data-anchor-id="data-organization-on-the-disk">Data Organization on the Disk</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="Disk-structure.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A breakdown of disk geometry."><img src="Disk-structure.svg" class="img-fluid figure-img" style="width:50.0%" alt="A breakdown of disk geometry."></a></p>
+<figcaption>A breakdown of disk geometry.</figcaption>
+</figure>
+</div>
+<ul>
+<li><strong>(A) Track:</strong> A single, concentric circular ring on the surface of the platter.</li>
+<li><strong>(C) Sector:</strong> A track is divided into smaller arcs called sectors. It is the <strong>smallest unit of data</strong> that can be read or written (traditionally 512 bytes).</li>
+<li><strong>Cylinder:</strong> The set of all tracks that are at the exact same position across all stacked platters.</li>
+<li><strong>(D) Block / Cluster:</strong> A grouping of contiguous sectors used by the operating system to allocate space efficiently.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="disk-performance-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="disk-performance-metrics">Disk Performance Metrics</h2>
+<p>When a database asks the hard drive for a piece of data, the mechanical parts have to move.</p>
+<section id="access-time" class="level3">
+<h3 class="anchored" data-anchor-id="access-time">1. Access Time</h3>
+<p>The total time it takes to begin reading the actual data. <span class="math display">\[Access \ Time = Seek \ Time + Rotational \ Latency\]</span></p>
+<ul>
+<li><strong>Seek Time:</strong> The time taken to physically reposition the arm over the correct track.</li>
+<li><strong>Rotational Latency:</strong> The time spent waiting for the correct sector to rotate directly underneath the head.</li>
+</ul>
+</section>
+<section id="data-transfer-rate" class="level3">
+<h3 class="anchored" data-anchor-id="data-transfer-rate">2. Data Transfer Rate</h3>
+<p>The speed at which data is moved from the disk to the main memory once the head is in position.</p>
+</section>
+<section id="reliability-mttf" class="level3">
+<h3 class="anchored" data-anchor-id="reliability-mttf">3. Reliability (MTTF)</h3>
+<p>Hard drives are mechanical, which means they will eventually break. Reliability is measured by <strong>Mean Time To Failure (MTTF)</strong>. An MTTF of 5 years doesn’t mean it will break in exactly 5 years, but it provides a statistical average of expected lifespan.</p>
+<hr>
+</section>
+</section>
+<section id="emerging-technologies" class="level2">
+<h2 class="anchored" data-anchor-id="emerging-technologies">Emerging Technologies</h2>
+<p>While Magnetic Disks are still widely used, new technologies are constantly evolving storage:</p>
+<ul>
+<li><p><strong>Solid State Drives (SSD):</strong> Use flash memory to store data persistently without any moving parts, significantly reducing Access Time.</p></li>
+<li><p><strong>Cloud Storage:</strong> Abstracting the physical hardware entirely, relying on distributed remote servers.</p></li>
+<li><p><strong>DNA Digital Storage:</strong> A futuristic approach using synthetic DNA to store massive amounts of data with extreme longevity.</p></li>
+<li><p><strong>Quantum Memory:</strong> Theoretical storage systems leveraging quantum states for unprecedented speeds and security.</p></li>
+</ul>
 
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1397,13 +1234,13 @@ graph LR
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_2/03_advanced_sql.html" class="pagination-link" aria-label="Advanced SQL Filtering, Sets &amp; Aggregation">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced SQL Filtering, Sets &amp; Aggregation</span></span>
+      <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="pagination-link" aria-label="Algorithms &amp; Data Structures">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Algorithms &amp; Data Structures</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_3/joins.html" class="pagination-link" aria-label="Joins">
-        <span class="nav-page-text"><span class="chapter-title">Joins</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_8/03_disk_performance_math.html" class="pagination-link" aria-label="Disk Performance Math">
+        <span class="nav-page-text"><span class="chapter-title">Disk Performance Math</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1415,12 +1252,44 @@ graph LR
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_3/nested_subqueries.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/02_physical_storage_systems.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

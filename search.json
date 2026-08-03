@@ -1176,6 +1176,182 @@
     ]
   },
   {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html",
+    "title": "Algorithms & Data Structures",
+    "section": "",
+    "text": "Algorithms and Complexity Analysis",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#algorithms-and-complexity-analysis",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#algorithms-and-complexity-analysis",
+    "title": "Algorithms & Data Structures",
+    "section": "",
+    "text": "Basics and Definitions\n\nAlgorithm vs. Program: An algorithm is a finite sequence of well-defined, computer-implementable instructions to solve a class of problems or to perform a computation. Crucially, an algorithm must terminate. A program, such as an operating system, is an implementation that may run indefinitely without terminating.\n\n\n\nMotivation for Analysis\nWhy do we analyze algorithms? - To predict performance (how fast will this run on a billion rows?). - To avoid bugs and provide guarantees on execution boundaries. - To understand the theoretical limits of computational problems.\n\n\nFactors of Analysis\nWhen we analyze an algorithm, we measure the “cost” based on several factors:\n\nTime Complexity: How long does it take to execute?\nSpace/Storage Complexity: How much memory (RAM) does it consume?\nOther factors: Power consumption and network bandwidth (especially relevant in cloud databases).\n\n\n\nMethodologies\n\nCounting Model: A simplified theoretical model (Random-Access Machine) where we sum the cost and frequency of primitive operations (like addition, assignment, etc.).\nAsymptotic Analysis: We use Big-Oh (\\(O\\)) notation to measure the growth of resource requirements as the input size (\\(n\\)) increases toward infinity. We typically focus on the Worst case and Average case scenarios.\n\n\nComplexity Classes\nFrom fastest (best) to slowest (worst):\n\n\\(O(1)\\) - Constant Time\n\\(O(\\log n)\\) - Logarithmic Time\n\\(O(n)\\) - Linear Time\n\\(O(n \\log n)\\) - Linearithmic Time\n\\(O(n^2)\\) - Quadratic Time\n\\(O(n^3)\\) - Cubic Time\n\\(O(2^n)\\) - Exponential Time",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#data-structures",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#data-structures",
+    "title": "Algorithms & Data Structures",
+    "section": "Data Structures",
+    "text": "Data Structures\nA Data Structure is a specialized format for organizing, processing, retrieving and storing data in memory. Standard operations on any data structure include: Create, Insert, Delete, Find (Search), Update, and Close.\n\nLinear Data Structures\n\nArrays: Contiguous blocks of memory.\n\nAdvantage: Extremely fast indexed/random access (\\(O(1)\\)).\nDisadvantage: Very slow insertion/deletion (\\(O(n)\\)) because all subsequent elements must be shifted.\n\nLinked Lists: Elements are stored in nodes that contain pointers to the next node.\n\nAdvantage: Very fast insertion/deletion (\\(O(1)\\) if you are already at the position).\nDisadvantage: Slow sequential access (\\(O(n)\\)) since you must traverse from the head.\n\nQueues: Follow First-In-First-Out (FIFO) logic (like a line at a grocery store).\nStacks: Follow Last-In-First-Out (LIFO) logic (like a stack of plates).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#non-linear-data-structures-trees",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#non-linear-data-structures-trees",
+    "title": "Algorithms & Data Structures",
+    "section": "Non-Linear Data Structures: Trees",
+    "text": "Non-Linear Data Structures: Trees\nUnlike arrays or linked lists, a tree is a hierarchical data structure. They are absolutely critical for database indexing.\n\n\n\nA visual representation of a binary tree structure.\n\n\nLet’s break down the terminology:\n\nRoot: The topmost node.\nParent/Child: A node connected to nodes directly below it is a parent.\nLeaf Nodes: Nodes with no children.\nArity (or Degree): The number of children a specific node has.\nLevel / Depth: The distance from the root.\nHeight: The maximum level in the tree.\n\n\nBinary Search Trees (BST)\nA Binary Search Tree maintains a strict ordering property. For every node, all values in the left subtree are strictly less than the node’s value, and all values in the right subtree are greater.\nLet’s build a BST from the data: 17, 22, 12, 10, 14, 25, 19.\n\nInsert 17: This is our first number, so it becomes the Root.\nInsert 22: We compare 22 with 17. Since \\(22 &gt; 17\\), it goes to the right.\nInsert 12: Compare 12 with 17. Since \\(12 &lt; 17\\), it goes to the left.\nInsert 10: Compare 10 with 17 (left), then compare with 12. Since \\(10 &lt; 12\\), it goes to the left of 12. … and so on.\n\nThe final result is the beautiful structure shown below!\n\n\n\nThe fully constructed Binary Search Tree.\n\n\nIf the tree remains balanced, this property allows us to search, insert, and delete in \\(O(\\log n)\\) time, making it immensely faster than scanning an array.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/01_algorithms_and_data_structures.html#search-and-sorting",
+    "href": "weeks/week_8/01_algorithms_and_data_structures.html#search-and-sorting",
+    "title": "Algorithms & Data Structures",
+    "section": "Search and Sorting",
+    "text": "Search and Sorting\n\nLinear Search: Sequential checking of every element. Complexity is \\(O(n)\\).\nBinary Search: An extremely efficient search on sorted arrays (or Binary Search Trees). At each step, it halves the search space. Complexity is \\(O(\\log n)\\).\nSorting Algorithms: Common algorithms to organize data include Quicksort (\\(O(n \\log n)\\)), Mergesort (\\(O(n \\log n)\\)), Heap Sort (\\(O(n \\log n)\\)), and the much slower Insertion Sort (\\(O(n^2)\\)).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>25</span>  <span class='chapter-title'>Algorithms & Data Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html",
+    "href": "weeks/week_8/02_physical_storage_systems.html",
+    "title": "Physical Storage Systems",
+    "section": "",
+    "text": "Physical Storage Media\nData needs a place to live! Depending on how fast we need to access the data and how long we want it to survive without power, we use different types of storage media.\nThere is a fundamental divide in storage media: Volatile vs. Non-Volatile.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#physical-storage-media",
+    "href": "weeks/week_8/02_physical_storage_systems.html#physical-storage-media",
+    "title": "Physical Storage Systems",
+    "section": "",
+    "text": "Volatile Storage: Loses all data when the power is interrupted (e.g., Cache Memory, Main Memory / RAM). Extremely fast but temporary.\nNon-Volatile Storage: Retains data regardless of power status (e.g., Flash memory, Magnetic Disks, Optical Disks, Magnetic Tapes). Slower, but permanent.\n\n\nThe Storage Hierarchy Pyramid\nIn computer architecture, we make trade-offs. If you want speed, it costs more and you get less capacity. If you want capacity, it costs less per gigabyte, but you sacrifice speed.\n\n\n\n\n\ngraph TD\n    classDef volatile fill:#f9d0c4,stroke:#333,stroke-width:2px;\n    classDef nonvolatile fill:#d4edda,stroke:#333,stroke-width:2px;\n\n    subgraph Speed_vs_Capacity [ ]\n    direction BT\n    L1[Registers]:::volatile\n    L2[Cache]:::volatile\n    L3[Main Memory / RAM]:::volatile\n    L4[Flash Memory / SSD]:::nonvolatile\n    L5[Magnetic Disks / HDD]:::nonvolatile\n    L6[Magnetic Tapes / Optical Disks]:::nonvolatile\n    \n    L6 --&gt; L5 --&gt; L4 --&gt; L3 --&gt; L2 --&gt; L1\n    end\n\n\n\n\n\n\nNote: As you move UP the pyramid, Speed and Cost per bit INCREASES. As you move DOWN the pyramid, Capacity and Access Time INCREASES.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#inside-a-magnetic-disk-hdd",
+    "href": "weeks/week_8/02_physical_storage_systems.html#inside-a-magnetic-disk-hdd",
+    "title": "Physical Storage Systems",
+    "section": "Inside a Magnetic Disk (HDD)",
+    "text": "Inside a Magnetic Disk (HDD)\nTo understand database performance, we must look at the physical mechanics of where our data actually lives: Magnetic Disks.\n\n\n\nThe inside of a typical magnetic disk.\n\n\nThink of a hard drive like an old-school vinyl record player:\n\nPlatter (The Record): The circular disk coated with magnetic material.\nSpindle (The Turntable Motor): The central rod that spins the platters at high speeds (e.g., 7200 RPM).\nRead/Write Head (The Needle): The tiny magnet that hovers above the platter.\nActuator Arm (The Tonearm): The mechanical arm that moves the Read/Write head.\n\n\nData Organization on the Disk\n\n\n\nA breakdown of disk geometry.\n\n\n\n(A) Track: A single, concentric circular ring on the surface of the platter.\n(C) Sector: A track is divided into smaller arcs called sectors. It is the smallest unit of data that can be read or written (traditionally 512 bytes).\nCylinder: The set of all tracks that are at the exact same position across all stacked platters.\n(D) Block / Cluster: A grouping of contiguous sectors used by the operating system to allocate space efficiently.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#disk-performance-metrics",
+    "href": "weeks/week_8/02_physical_storage_systems.html#disk-performance-metrics",
+    "title": "Physical Storage Systems",
+    "section": "Disk Performance Metrics",
+    "text": "Disk Performance Metrics\nWhen a database asks the hard drive for a piece of data, the mechanical parts have to move.\n\n1. Access Time\nThe total time it takes to begin reading the actual data. \\[Access \\ Time = Seek \\ Time + Rotational \\ Latency\\]\n\nSeek Time: The time taken to physically reposition the arm over the correct track.\nRotational Latency: The time spent waiting for the correct sector to rotate directly underneath the head.\n\n\n\n2. Data Transfer Rate\nThe speed at which data is moved from the disk to the main memory once the head is in position.\n\n\n3. Reliability (MTTF)\nHard drives are mechanical, which means they will eventually break. Reliability is measured by Mean Time To Failure (MTTF). An MTTF of 5 years doesn’t mean it will break in exactly 5 years, but it provides a statistical average of expected lifespan.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/02_physical_storage_systems.html#emerging-technologies",
+    "href": "weeks/week_8/02_physical_storage_systems.html#emerging-technologies",
+    "title": "Physical Storage Systems",
+    "section": "Emerging Technologies",
+    "text": "Emerging Technologies\nWhile Magnetic Disks are still widely used, new technologies are constantly evolving storage:\n\nSolid State Drives (SSD): Use flash memory to store data persistently without any moving parts, significantly reducing Access Time.\nCloud Storage: Abstracting the physical hardware entirely, relying on distributed remote servers.\nDNA Digital Storage: A futuristic approach using synthetic DNA to store massive amounts of data with extreme longevity.\nQuantum Memory: Theoretical storage systems leveraging quantum states for unprecedented speeds and security.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Physical Storage Systems</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html",
+    "href": "weeks/week_8/03_disk_performance_math.html",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "Intuition Behind the Math\nMemorizing formulas can be difficult. It is much easier if we understand why the formulas exist. Let’s look at the basic math behind disk performance.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html#intuition-behind-the-math",
+    "href": "weeks/week_8/03_disk_performance_math.html#intuition-behind-the-math",
+    "title": "Disk Performance Math",
+    "section": "",
+    "text": "1. Capacity of a Disk\nHow much data can a disk hold? Imagine you have a bookshelf. The capacity of the shelf is the number of books it holds times the pages in one book. Similarly, a disk is made of sectors. \\[Capacity = Total \\ No. \\ of \\ Sectors \\times Size \\ of \\ One \\ Sector\\]\n\n\n2. Time Period of One Rotation\nIf a disk spins at \\(RPM\\) (Revolutions Per Minute), how long does one single rotation take? If it does \\(RPM\\) revolutions in 60,000 milliseconds (1 minute), then one revolution takes: \\[Time \\ Period = \\frac{1 \\ minute}{RPM} = \\frac{60,000 \\ ms}{RPM}\\]\n\n\n3. Transfer Rate\nHow much data can we read per unit of time? In one single rotation (Time Period), the head sweeps over an entire track. Therefore, the data transferred in one rotation is exactly the capacity of one track. \\[Transfer \\ Rate = \\frac{Bytes \\ on \\ one \\ Track}{Time \\ Period}\\]\n\n\n4. Transfer Time\nIf we know our speed (Transfer Rate) and the distance we need to cover (File Size), we can find the time! This is just \\(Time = Distance \\div Speed\\). \\[Transfer \\ Time = \\frac{File \\ Size}{Transfer \\ Rate}\\]\n\n\n5. Addressing Sectors\nEvery sector needs a unique ID (binary address) so the OS can find it. If you have 8 sectors, you need 3 bits to address them (\\(000\\) to \\(111\\)). This is because \\(2^3 = 8\\). To find the number of bits required for \\(N\\) sectors, we take the base-2 logarithm. \\[Minimum \\ Bits = \\lceil \\log_2(Total \\ No. \\ of \\ Sectors) \\rceil\\] (We use the ceiling function \\(\\lceil \\rceil\\) because we can’t have a fraction of a bit).",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/03_disk_performance_math.html#solved-examples",
+    "href": "weeks/week_8/03_disk_performance_math.html#solved-examples",
+    "title": "Disk Performance Math",
+    "section": "Solved Examples",
+    "text": "Solved Examples\nLet’s put our intuition to work with some structured numerical problems.\n\n\n\n\n\n\nImportantSolved Example 1: Reading a File\n\n\n\nProblem Statement: Consider you have a file named “IITM BSc” in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.\n\nWhat is the transfer rate of your hard-disk (in KB/ms)?\nConsidering the fact that the file data is stored in all non-consecutive sectors, how much time will be required to read the whole file after the read request is made? (Note: Consider Access time + Transfer time)\n\nPart A: Finding the Transfer Rate\n\nGiven:\n\n\\(RPM = 30,000\\)\n\\(Sectors \\ per \\ Track = 200\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\nStep-by-step Solution:\n\nFirst, find the Time Period for one rotation: \\(Time \\ Period = \\frac{60,000 \\ ms}{30,000} = 2 \\ ms\\)\nSecond, find the capacity of one track (Bytes on one track): \\(Track \\ Capacity = 200 \\ sectors \\times 512 \\ bytes = 102,400 \\ Bytes = 100 \\ KB\\) (Note: we assume \\(1024 \\ Bytes = 1 \\ KB\\))\nFinally, calculate Transfer Rate: \\(Transfer \\ Rate = \\frac{100 \\ KB}{2 \\ ms} = \\mathbf{50 \\ KB/ms}\\)\n\n\nPart B: Finding Total Read Time (Non-Consecutive Sectors)\n\nGiven:\n\n\\(File \\ Size = 1000 \\ KB\\)\n\\(Seek \\ Time = 3 \\ ms\\)\nData is stored in non-consecutive sectors. This is a critical detail! It means for every single sector we read, we have to suffer Seek Time and Rotational Latency!\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors the file occupies: \\(File \\ Size \\ in \\ Bytes = 1000 \\ KB \\times 1024 = 1,024,000 \\ Bytes\\) \\(Number \\ of \\ Sectors = \\frac{1,024,000 \\ Bytes}{512 \\ Bytes} = 2000 \\ Sectors\\)\nNext, find the Access Time for one sector: \\(Average \\ Rotational \\ Latency = \\frac{1}{2} \\times Time \\ Period = \\frac{1}{2} \\times 2 \\ ms = 1 \\ ms\\) \\(Access \\ Time = Seek \\ Time + Rotational \\ Latency = 3 \\ ms + 1 \\ ms = 4 \\ ms\\)\nNext, find the Transfer Time for one sector: \\(Transfer \\ Time \\ (1 \\ Sector) = \\frac{Sector \\ Size}{Transfer \\ Rate} = \\frac{0.5 \\ KB}{50 \\ KB/ms} = 0.01 \\ ms\\)\nFinally, calculate the total time for all 2000 non-consecutive sectors: \\(Time \\ per \\ Sector = Access \\ Time + Transfer \\ Time = 4 \\ ms + 0.01 \\ ms = 4.01 \\ ms\\) \\(Total \\ Time = 2000 \\times 4.01 \\ ms = \\mathbf{8020 \\ ms}\\) (or 8.02 seconds)\n\n\n\n\n\n\n\n\n\n\n\nImportantSolved Example 2: Disk Geometry and Addressing\n\n\n\nProblem Statement: Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).\n\nHow much free space is available for use (in MB, upto two decimal places)?\nHow many bits are required for addressing all the sectors?\n\nPart A: Finding Free Space\n\nGiven:\n\n\\(Platters = 10\\) (Note: A platter has 2 surfaces! So \\(Surfaces = 20\\))\n\\(Tracks \\ per \\ Surface = 64\\)\n\\(Sectors \\ per \\ Track = 256\\)\n\\(Sector \\ Size = 512 \\ Bytes\\)\n\\(Reserved \\ Space = 4 \\ Bytes / sector\\)\n\nStep-by-step Solution:\n\nFirst, find the total number of sectors on the entire disk: \\(Total \\ Sectors = Surfaces \\times Tracks/Surface \\times Sectors/Track\\) \\(Total \\ Sectors = 20 \\times 64 \\times 256 = 327,680 \\ Sectors\\)\nNext, calculate the usable space per sector: \\(Usable \\ Sector \\ Size = 512 - 4 = 508 \\ Bytes\\)\nFinally, calculate the total free space: \\(Total \\ Free \\ Space = 327,680 \\times 508 \\ Bytes = 166,461,440 \\ Bytes\\) Convert to MB (divide by \\(1024^2\\)): \\(Free \\ Space \\ in \\ MB = \\frac{166,461,440}{1,048,576} \\approx \\mathbf{158.75 \\ MB}\\)\n\n\nPart B: Addressing Sectors\n\nStep-by-step Solution:\n\nWe know there are \\(327,680\\) total sectors on the disk.\nWe apply the addressing formula: \\(Minimum \\ Bits = \\lceil \\log_2(327,680) \\rceil\\) Since \\(2^{18} = 262,144\\) and \\(2^{19} = 524,288\\), we know we need more than 18 bits. \\(Minimum \\ Bits = \\mathbf{19 \\ bits}\\)",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>27</span>  <span class='chapter-title'>Disk Performance Math</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html",
+    "title": "File Organization & Buffering",
+    "section": "",
+    "text": "File Structure and Organization\nBefore we can query a database, the raw data must be mapped onto the physical disk blocks we discussed in the previous chapters.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html#file-structure-and-organization",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html#file-structure-and-organization",
+    "title": "File Organization & Buffering",
+    "section": "",
+    "text": "The Data Hierarchy\n\nDatabase: The highest level, containing multiple files.\nFile: A collection of related records (e.g., the Instructor table).\nRecord: A single instance of data (e.g., a specific instructor’s row).\nField / Attribute: The individual data points within a record (e.g., Name, Salary).\n\n\n\nRecord Management\n\nFixed-length Records: Every record takes up the exact same amount of space. This makes math easy, but deletions leave “holes”. These are managed via periodic compaction, shifting records, or using a “Free List” to track empty spaces.\nVariable-length Records: Used when attributes vary in size (like VARCHAR). These are much harder to manage and usually require storing offsets and using Slotted Pages to organize the data block dynamically.\n\n\n\nFile Organization Types\nHow do we arrange these records inside a file?\n\nHeap Organization: Records are placed wherever there is free space. Completely unordered.\nSequential Organization: Records are strictly ordered by a “Search Key” (like ordering a dictionary alphabetically). Excellent for sequential processing.\nMulti-table Clustering: Purposely grouping related records from different tables (e.g., a Department record physically stored right next to all its Instructor records) into the same disk block. This minimizes expensive disk I/O when performing SQL JOIN operations.\n\nNote: The Data Dictionary (System Catalog) is a special file that stores metadata—data about the data itself! It tracks schemas, users, and integrity constraints.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_8/04_file_organization_and_buffering.html#storage-access-and-buffer-management",
+    "href": "weeks/week_8/04_file_organization_and_buffering.html#storage-access-and-buffer-management",
+    "title": "File Organization & Buffering",
+    "section": "Storage Access and Buffer Management",
+    "text": "Storage Access and Buffer Management\nWe’ve established a crucial fact: Disks are slow, but Main Memory (RAM) is fast. Every time the database needs to read or write a record, it must transfer an entire Block of data between the disk and main memory. This disk I/O is the biggest bottleneck in database performance.\nEnter the Buffer Manager.\n\nThe Role of the Buffer Manager\nThe Buffer Manager is a software subsystem responsible for allocating space in main memory to temporarily hold blocks fetched from the disk.\nWhen a query requests data:\n\nThe Buffer Manager checks if the required block is already in the buffer (Main Memory).\nIf YES, this is a “Cache Hit”. The data is served instantly.\nIf NO, this is a “Cache Miss”. The Buffer Manager must fetch the block from the slow magnetic disk.\n\n\n\nReplacement Policies\nIf the buffer is completely full of blocks, and we need to fetch a new one from the disk, which old block should we evict (throw out) to make room? This is determined by a Replacement Policy.\n\n\n\n\n\n\nTipLeast Recently Used (LRU)\n\n\n\nThe most common strategy. The Buffer Manager evicts the block that hasn’t been accessed for the longest time.\nIntuition: If you haven’t looked at a block in a long time, you probably won’t need it again soon.\n\n\n\n\n\n\n\n\nImportantMost Recently Used (MRU)\n\n\n\nSometimes LRU is a terrible idea! Consider a query using a Nested Loop Join where we repeatedly scan the same large relation (e.g., scanning the entire Instructor table for every single row in the Department table).\nIf the Instructor table is larger than our buffer, LRU will evict the beginning of the table just before we need to scan it again! In this specific scenario, Most Recently Used (MRU) is better. We evict the block we just finished reading, because in a looping scan, we won’t need it again until the next full loop.\n\n\n\n\nPinned Blocks\nSome operations are so critical that a block cannot be evicted under any circumstances, even if it’s the LRU or MRU. For example, if a block is currently being actively updated by a transaction, the Buffer Manager will Pin the block, restricting it from being written back to disk prematurely.",
+    "crumbs": [
+      "**Week-08**",
+      "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -1183,7 +1359,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>25</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -1194,7 +1370,7 @@
     "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>26</span>  <span class='chapter-title'>Python-DB Playground</span>"
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Python-DB Playground</span>"
     ]
   }
 ]
