@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Model &amp; DDL – Database Management Systems</title>
+<title>Magnetic Disks – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,8 +33,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_2/02_dml_and_queries.html" rel="next">
-<link href="../../weeks/week_1/database_design.html" rel="prev">
+<link href="../../weeks/week_8/04_disk_performance_math.html" rel="next">
+<link href="../../weeks/week_8/02_storage_hierarchy.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -113,9 +78,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -324,7 +286,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><span class="chapter-title">Relational Model &amp; DDL</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_tree_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/03_magnetic_disks.html"><span class="chapter-title">Magnetic Disks</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -396,16 +358,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-02</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Relational Model &amp; DDL</span></a>
+  <a href="../../weeks/week_2/01_relational_and_ddl.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Relational Model &amp; DDL</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -562,13 +524,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-08</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_8/01_tree_data_structures.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Tree Data Structures</span></a>
@@ -581,7 +543,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_8/03_magnetic_disks.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Magnetic Disks</span></a>
+  <a href="../../weeks/week_8/03_magnetic_disks.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Magnetic Disks</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -622,36 +584,27 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#what-is-a-relational-database" id="toc-what-is-a-relational-database" class="nav-link active" data-scroll-target="#what-is-a-relational-database">What is a Relational Database?</a></li>
-  <li><a href="#the-concept-of-keys" id="toc-the-concept-of-keys" class="nav-link" data-scroll-target="#the-concept-of-keys">The Concept of Keys</a></li>
-  <li><a href="#relational-queries-the-pure-language" id="toc-relational-queries-the-pure-language" class="nav-link" data-scroll-target="#relational-queries-the-pure-language">Relational Queries &amp; The Pure Language</a></li>
-  <li><a href="#relational-operators-slicing-and-dicing" id="toc-relational-operators-slicing-and-dicing" class="nav-link" data-scroll-target="#relational-operators-slicing-and-dicing">Relational Operators: Slicing and Dicing</a>
+  <li><a href="#inside-a-magnetic-disk" id="toc-inside-a-magnetic-disk" class="nav-link active" data-scroll-target="#inside-a-magnetic-disk">Inside a Magnetic Disk</a>
   <ul class="collapse">
-  <li><a href="#the-big-two-select-vs.-project" id="toc-the-big-two-select-vs.-project" class="nav-link" data-scroll-target="#the-big-two-select-vs.-project">The Big Two: Select vs.&nbsp;Project</a></li>
-  <li><a href="#other-important-operators" id="toc-other-important-operators" class="nav-link" data-scroll-target="#other-important-operators">Other Important Operators</a></li>
+  <li><a href="#the-record-player-analogy" id="toc-the-record-player-analogy" class="nav-link" data-scroll-target="#the-record-player-analogy">The Record Player Analogy</a></li>
+  <li><a href="#the-geometry-of-a-disk" id="toc-the-geometry-of-a-disk" class="nav-link" data-scroll-target="#the-geometry-of-a-disk">The Geometry of a Disk</a></li>
   </ul></li>
-  <li><a href="#what-is-sql" id="toc-what-is-sql" class="nav-link" data-scroll-target="#what-is-sql">What is SQL?</a></li>
-  <li><a href="#domain-types-integrity-constraints" id="toc-domain-types-integrity-constraints" class="nav-link" data-scroll-target="#domain-types-integrity-constraints">Domain Types &amp; Integrity Constraints</a>
+  <li><a href="#deconstructing-access-time" id="toc-deconstructing-access-time" class="nav-link" data-scroll-target="#deconstructing-access-time">Deconstructing Access Time</a>
   <ul class="collapse">
-  <li><a href="#domain-types" id="toc-domain-types" class="nav-link" data-scroll-target="#domain-types">Domain Types</a></li>
-  <li><a href="#integrity-constraints" id="toc-integrity-constraints" class="nav-link" data-scroll-target="#integrity-constraints">Integrity Constraints</a></li>
-  </ul></li>
-  <li><a href="#ddl-building-the-blueprint" id="toc-ddl-building-the-blueprint" class="nav-link" data-scroll-target="#ddl-building-the-blueprint">DDL: Building the Blueprint</a>
-  <ul class="collapse">
-  <li><a href="#the-create-command" id="toc-the-create-command" class="nav-link" data-scroll-target="#the-create-command">1. The <code>CREATE</code> Command</a></li>
-  <li><a href="#the-alter-command" id="toc-the-alter-command" class="nav-link" data-scroll-target="#the-alter-command">2. The <code>ALTER</code> Command</a></li>
-  <li><a href="#the-drop-command" id="toc-the-drop-command" class="nav-link" data-scroll-target="#the-drop-command">3. The <code>DROP</code> Command</a></li>
+  <li><a href="#seek-time" id="toc-seek-time" class="nav-link" data-scroll-target="#seek-time">1. Seek Time</a></li>
+  <li><a href="#rotational-latency" id="toc-rotational-latency" class="nav-link" data-scroll-target="#rotational-latency">2. Rotational Latency</a></li>
+  <li><a href="#data-transfer-rate" id="toc-data-transfer-rate" class="nav-link" data-scroll-target="#data-transfer-rate">3. Data-Transfer Rate</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/01_relational_and_ddl.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/03_magnetic_disks.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><strong>Week-02</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_2/01_relational_and_ddl.html"><span class="chapter-title">Relational Model &amp; DDL</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_tree_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/03_magnetic_disks.html"><span class="chapter-title">Magnetic Disks</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Model &amp; DDL</span></h1>
+<h1 class="title"><span class="chapter-title">Magnetic Disks</span></h1>
 </div>
 
 
@@ -668,243 +621,87 @@ window.Quarto = {
 </header>
 
 
+<section id="inside-a-magnetic-disk" class="level2">
+<h2 class="anchored" data-anchor-id="inside-a-magnetic-disk">Inside a Magnetic Disk</h2>
+<p>To understand database performance, we must look at the physical mechanics of where our data actually lives: <strong>Magnetic Disks</strong> (or Hard Disk Drives / HDDs).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="relational_banner.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Relational Database Concepts"><img src="relational_banner.png" class="img-fluid figure-img" alt="Relational Database Concepts"></a></p>
-<figcaption>Relational Database Concepts</figcaption>
+<p><a href="magnetic_disk.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The inside of a typical magnetic disk."><img src="magnetic_disk.jpg" class="img-fluid figure-img" style="width:50.0%" alt="The inside of a typical magnetic disk."></a></p>
+<figcaption>The inside of a typical magnetic disk.</figcaption>
 </figure>
 </div>
-<section id="what-is-a-relational-database" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-a-relational-database">What is a Relational Database?</h2>
-<p>Before diving into commands, let’s build some intuition. Imagine a school register. You have a list of students, their roll numbers, and the courses they are taking. In a <strong>Relational Database</strong>, we store data in structured <strong>tables</strong> (also called <em>relations</em>). Every row represents a single entity (like one specific student), and every column represents an attribute of that entity (like their name or grade).</p>
-<p>The true power of relational databases isn’t just storing tables—it’s how we can <em>relate</em> them using Keys, and slice them using mathematical operations!</p>
-<hr>
-</section>
-<section id="the-concept-of-keys" class="level2">
-<h2 class="anchored" data-anchor-id="the-concept-of-keys">The Concept of Keys</h2>
-<p>In a database, we need a way to uniquely identify every row so we don’t confuse two students named “John Smith”. We do this using <strong>Keys</strong>.</p>
+<section id="the-record-player-analogy" class="level3">
+<h3 class="anchored" data-anchor-id="the-record-player-analogy">The Record Player Analogy</h3>
+<p>Think of a hard drive like an old-school vinyl record player, but instead of playing music, it reads and writes digital data.</p>
 <ul>
-<li><p><strong>Super Key</strong>: Any combination of columns that can uniquely identify a row. For a student, <code>[Roll Number, Name]</code> is a super key, but it’s bulkier than it needs to be.</p></li>
-<li><p><strong>Candidate Key</strong>: A <em>minimal</em> Super Key. It has no unnecessary columns. Both <code>[Roll Number]</code> and <code>[Email Address]</code> could be candidate keys.</p></li>
-<li><p><strong>Primary Key</strong>: The one Candidate Key you officially choose to identify your rows. Once chosen, no two rows can have the same Primary Key, and it cannot be empty.</p></li>
-<li><p><strong>Surrogate Key</strong>: Sometimes, natural data (like names) makes for bad keys. A Surrogate Key is an artificially generated ID (like an auto-incrementing <code>Student_ID = 1, 2, 3...</code>) created purely to act as the Primary Key.</p></li>
-<li><p><strong>Foreign Key</strong>: This is the literal glue that makes a database “relational”! A Foreign Key is a column in Table A that points exactly to the Primary Key in Table B. It links the two tables together.</p></li>
+<li><strong>Platter (The Record):</strong> The circular disk coated with magnetic material where data is stored. Disks usually have multiple platters stacked on top of each other.</li>
+<li><strong>Spindle (The Turntable Motor):</strong> The central rod that spins the platters at high speeds (often measured in RPM - Revolutions Per Minute, like 5400 or 7200 RPM).</li>
+<li><strong>Read/Write Head (The Needle):</strong> The tiny magnet that hovers just nanometers above the spinning platter to read or write data.</li>
+<li><strong>Actuator Arm (The Tonearm):</strong> The mechanical arm that moves the Read/Write head across the platter.</li>
 </ul>
-<p><em>Example:</em> The <code>student_id</code> column in the <code>Grades</code> table is a Foreign Key that points to the <code>student_id</code> Primary Key in the <code>Student</code> table.</p>
-<hr>
 </section>
-<section id="relational-queries-the-pure-language" class="level2">
-<h2 class="anchored" data-anchor-id="relational-queries-the-pure-language">Relational Queries &amp; The Pure Language</h2>
-<p>How do we ask a database for information? We use a <strong>Query Language</strong>.</p>
-<p>There’s a fundamental difference in how these languages work:</p>
-<ul>
-<li><p><strong>Imperative Languages</strong> (like Python or Java): You must write step-by-step instructions on <em>how</em> to find the data.</p></li>
-<li><p><strong>Declarative Languages</strong>: You simply describe <em>what</em> data you want, and the system figures out the best way to get it.</p></li>
-</ul>
-<p>Before modern SQL existed, computer scientists created “pure” theoretical languages to prove databases could work. <strong>Relational Algebra</strong> is one of these pure languages. It uses mathematical symbols to describe exactly how to slice and dice tables.</p>
-<hr>
-</section>
-<section id="relational-operators-slicing-and-dicing" class="level2">
-<h2 class="anchored" data-anchor-id="relational-operators-slicing-and-dicing">Relational Operators: Slicing and Dicing</h2>
-<p>Relational Algebra gives us <strong>Relational Operators</strong>—surgical tools to extract what we need.</p>
-<section id="the-big-two-select-vs.-project" class="level3">
-<h3 class="anchored" data-anchor-id="the-big-two-select-vs.-project">The Big Two: Select vs.&nbsp;Project</h3>
-<ul>
-<li><p><strong>Select (<span class="math inline">\(\sigma\)</span>)</strong>: Filters <strong>Rows</strong>. It scans horizontally. (e.g., “Find all students who got an ‘A’”).</p></li>
-<li><p><strong>Project (<span class="math inline">\(\pi\)</span>)</strong>: Filters <strong>Columns</strong>. It scans vertically. (e.g., “I only need to see Names and Roll Numbers”).</p></li>
-</ul>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    classDef sub fill:#f0f0f0,stroke:#666,stroke-width:2px,color:#000000;
-
-    subgraph original[Original Table]
-        A["Row 1, Col X, Col Y"]
-        B["Row 2, Col X, Col Y"]
-        C["Row 3, Col X, Col Y"]
-    end
-
-    subgraph select_op[Select Operation]
-        S1["Row 1, Col X, Col Y"]
-        desc1["(Filters Rows)"]
-    end
-    
-    subgraph project_op[Project Operation]
-        P1["Col X only"]
-        desc2["(Filters Columns)"]
-    end
-
-    original -- Select --&gt; select_op
-    original -- Project --&gt; project_op
-</pre>
+<section id="the-geometry-of-a-disk" class="level3">
+<h3 class="anchored" data-anchor-id="the-geometry-of-a-disk">The Geometry of a Disk</h3>
+<p>Data is not just thrown onto the platter randomly. It is highly organized.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="Disk-structure.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A breakdown of disk geometry."><img src="Disk-structure.svg" class="img-fluid figure-img" style="width:50.0%" alt="A breakdown of disk geometry."></a></p>
+<figcaption>A breakdown of disk geometry.</figcaption>
+</figure>
 </div>
-<p></p></figure><p></p>
+<p>Let’s break down the labels from the image:</p>
+<ul>
+<li><strong>(A) Track:</strong> Think of the platter like a running track with many lanes. A track is a single, concentric circular ring on the surface of the platter.</li>
+<li><strong>(C) Disk Sector:</strong> A track is divided into smaller arcs called sectors. A sector is the <strong>smallest unit of data</strong> that can be read or written to the disk (traditionally 512 bytes).</li>
+<li><strong>(B) Geometrical Sector:</strong> A slice of the pie that cuts through all tracks.</li>
+<li><strong>(D) Cluster:</strong> A grouping of contiguous sectors used by the operating system to allocate space more efficiently.</li>
+</ul>
+<p><em>Note: A <strong>Cylinder</strong> (not pictured above) is the set of all tracks that are at the exact same position across all platters in the stack.</em></p>
+</section>
+</section>
+<section id="deconstructing-access-time" class="level2">
+<h2 class="anchored" data-anchor-id="deconstructing-access-time">Deconstructing Access Time</h2>
+<p>When a database asks the hard drive for a piece of data, the drive doesn’t instantly provide it. The mechanical parts have to move!</p>
+<div class="callout callout-style-default callout-important callout-titled" title="The Access Time Equation">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Access Time Equation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The total time it takes to begin reading the actual data is called <strong>Access Time</strong>.</p>
+<p><strong>Access Time = Seek Time + Rotational Latency</strong></p>
+</div>
+</div>
+<p>Let’s break down what these terms mean in the real world:</p>
+<section id="seek-time" class="level3">
+<h3 class="anchored" data-anchor-id="seek-time">1. Seek Time</h3>
+<p>Before you can read the data, the actuator arm must move the read/write head to the correct <strong>Track</strong>. <strong>Seek Time</strong> is the time taken to physically reposition the arm over the correct track. Because it involves physical movement of an arm, it is relatively slow (usually measured in milliseconds).</p>
+</section>
+<section id="rotational-latency" class="level3">
+<h3 class="anchored" data-anchor-id="rotational-latency">2. Rotational Latency</h3>
+<p>Once the head is over the correct track, the data we want might be on the other side of the platter! We have to wait for the platter to spin so the correct <strong>Sector</strong> arrives directly underneath the head. <strong>Rotational Latency</strong> is the time spent waiting for the sector to rotate into position.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Average Rotational Latency">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Average Rotational Latency
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We can’t predict exactly where the platter is at any given moment. Sometimes the sector is right there (0 latency), and sometimes it’s exactly one full rotation away. Therefore, the <strong>average rotational latency</strong> is considered to be exactly <strong>one-half of a single rotation</strong>.</p>
+<p><span class="math display">\[Average \ Rotational \ Latency = \frac{1}{2} \times Time \ Period \ of \ One \ Rotation\]</span></p>
 </div>
 </div>
 </section>
-<section id="other-important-operators" class="level3">
-<h3 class="anchored" data-anchor-id="other-important-operators">Other Important Operators</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 35%">
-<col style="width: 21%">
-<col style="width: 21%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Operator</th>
-<th style="text-align: center;">Symbol</th>
-<th>Intuition</th>
-<th>Everyday Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Union</strong></td>
-<td style="text-align: center;"><span class="math inline">\(\cup\)</span></td>
-<td>Combines two sets into one big list.</td>
-<td>“Give me the list of students in the morning class PLUS the evening class.”</td>
-</tr>
-<tr class="even">
-<td><strong>Intersection</strong></td>
-<td style="text-align: center;"><span class="math inline">\(\cap\)</span></td>
-<td>Returns items present in <em>both</em> sets.</td>
-<td>“Who is taking BOTH Physics AND Chemistry?”</td>
-</tr>
-<tr class="odd">
-<td><strong>Set Difference</strong></td>
-<td style="text-align: center;"><span class="math inline">\(-\)</span></td>
-<td>Returns items in the first set but NOT in the second.</td>
-<td>“Students taking Physics but NOT taking Chemistry.”</td>
-</tr>
-<tr class="even">
-<td><strong>Cartesian Product</strong></td>
-<td style="text-align: center;"><span class="math inline">\(\times\)</span></td>
-<td>Combines <em>every</em> row of one table with <em>every</em> row of another.</td>
-<td>Matching every color of a shirt with every size available.</td>
-</tr>
-<tr class="odd">
-<td><strong>Natural Join</strong></td>
-<td style="text-align: center;"><span class="math inline">\(\bowtie\)</span></td>
-<td>Connects two tables seamlessly based on matching columns.</td>
-<td>Linking the <code>Student</code> table to the <code>Grades</code> table.</td>
-</tr>
-</tbody>
-</table>
-<hr>
-</section>
-</section>
-<section id="what-is-sql" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-sql">What is SQL?</h2>
-<p>While Relational Algebra is great for theory, we needed a real, practical language to type into a computer. Enter <strong>SQL</strong> (Structured Query Language).</p>
-<p><strong>A Brief History:</strong> Developed at IBM in the 1970s by Donald Chamberlin and Raymond Boyce, SQL was initially called “SEQUEL”. It was designed to manipulate data stored in IBM’s quasi-relational database management system. Over the decades, it became the undisputed, standardized language for relational databases globally.</p>
-<p>SQL is broadly divided into three main categories:</p>
-<ol type="1">
-<li><p><strong>DDL (Data Definition Language)</strong>: Used to define the structure (the blueprint).</p></li>
-<li><p><strong>DML (Data Manipulation Language)</strong>: Used to insert, update, and query the actual data (the furniture).</p></li>
-<li><p><strong>DCL (Data Control Language)</strong>: Used to manage permissions and security (the bouncers).</p></li>
-</ol>
-<hr>
-</section>
-<section id="domain-types-integrity-constraints" class="level2">
-<h2 class="anchored" data-anchor-id="domain-types-integrity-constraints">Domain Types &amp; Integrity Constraints</h2>
-<p>Before building our table, we must set the rules.</p>
-<section id="domain-types" class="level3">
-<h3 class="anchored" data-anchor-id="domain-types">Domain Types</h3>
-<p>We must tell the system <em>what kind</em> of data a column stores. This prevents someone from typing “Twenty” into an Age column.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Type</th>
-<th>Description</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong><code>char(n)</code></strong></td>
-<td>Fixed-length text. Good for Zip Codes.</td>
-<td><code>char(5)</code> pads “Hi” to <code>"Hi   "</code></td>
-</tr>
-<tr class="even">
-<td><strong><code>varchar(n)</code></strong></td>
-<td>Variable-length text. Good for names.</td>
-<td><code>varchar(50)</code> stores “Hi” as <code>"Hi"</code></td>
-</tr>
-<tr class="odd">
-<td><strong><code>int</code></strong></td>
-<td>A whole number.</td>
-<td><code>25</code></td>
-</tr>
-<tr class="even">
-<td><strong><code>numeric(p,d)</code></strong></td>
-<td>A decimal number. <code>p</code> is total digits, <code>d</code> is after the decimal.</td>
-<td><code>numeric(4,2)</code> allows <code>44.22</code> but rejects <code>100.22</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="integrity-constraints" class="level3">
-<h3 class="anchored" data-anchor-id="integrity-constraints">Integrity Constraints</h3>
-<p>Constraints are extra rules we apply to columns to ensure the data makes sense.</p>
-<ul>
-<li><p><strong><code>NOT NULL</code></strong>: The column cannot be left empty.</p></li>
-<li><p><strong><code>UNIQUE</code></strong>: No two rows can have the same value in this column.</p></li>
-<li><p><strong><code>CHECK(condition)</code></strong>: Ensures the value meets a specific requirement (e.g., <code>CHECK (age &gt;= 18)</code>).</p></li>
-<li><p><strong><code>PRIMARY KEY</code></strong>: Automatically enforces both <code>UNIQUE</code> and <code>NOT NULL</code>.</p></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="ddl-building-the-blueprint" class="level2">
-<h2 class="anchored" data-anchor-id="ddl-building-the-blueprint">DDL: Building the Blueprint</h2>
-<p><strong>Intuition:</strong> DDL is the architect. You use DDL to draw the blueprints and set the rules. DDL does <strong>not</strong> handle the actual data.</p>
-<section id="the-create-command" class="level3">
-<h3 class="anchored" data-anchor-id="the-create-command">1. The <code>CREATE</code> Command</h3>
-<p>We use <code>CREATE TABLE</code> to bring a new table into existence. Let’s create a <code>student</code> table with constraints!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> student (</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    roll_no <span class="dt">varchar</span>(<span class="dv">10</span>),</span>
-<span id="cb1-3"><a href="#cb1-3"></a>    name <span class="dt">varchar</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb1-4"><a href="#cb1-4"></a>    age <span class="dt">int</span> <span class="kw">CHECK</span> (age <span class="op">&gt;</span> <span class="dv">10</span>),</span>
-<span id="cb1-5"><a href="#cb1-5"></a>    email <span class="dt">varchar</span>(<span class="dv">100</span>) <span class="kw">UNIQUE</span>,</span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="kw">primary</span> <span class="kw">key</span> (roll_no)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>What happened here?</strong></p>
-<ul>
-<li><p><code>name</code> cannot be left blank (<code>NOT NULL</code>).</p></li>
-<li><p><code>age</code> must be greater than 10. If someone tries to insert a 9-year-old, the database will block it!</p></li>
-<li><p><code>email</code> must be <code>UNIQUE</code> across all students.</p></li>
-<li><p><code>roll_no</code> is our <code>PRIMARY KEY</code>.</p></li>
-</ul>
-</section>
-<section id="the-alter-command" class="level3">
-<h3 class="anchored" data-anchor-id="the-alter-command">2. The <code>ALTER</code> Command</h3>
-<p>What if we built our table, but later realized we forgot to add a phone number column? We use <code>ALTER</code> to carefully modify the blueprint without destroying the table.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">-- Adding a new column to an existing table</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> student <span class="kw">ADD</span> phone_number <span class="dt">varchar</span>(<span class="dv">15</span>);</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">-- Changing the data type of an existing column</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">ALTER</span> <span class="kw">TABLE</span> student <span class="kw">ALTER</span> <span class="kw">COLUMN</span> name <span class="dt">varchar</span>(<span class="dv">100</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="the-drop-command" class="level3">
-<h3 class="anchored" data-anchor-id="the-drop-command">3. The <code>DROP</code> Command</h3>
-<p>When a table is completely obsolete, we use <code>DROP</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> student;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p><strong>Warning:</strong> Use <code>DROP</code> very carefully! It wipes out the table structure and everything inside it instantly.</p>
-</blockquote>
+<section id="data-transfer-rate" class="level3">
+<h3 class="anchored" data-anchor-id="data-transfer-rate">3. Data-Transfer Rate</h3>
+<p>Once the head is in position and the sector is spinning underneath it, the data starts flowing! <strong>Data-Transfer Rate</strong> is the speed at which data can be retrieved from (or written to) the disk.</p>
 
 
 
@@ -1405,13 +1202,13 @@ graph LR
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_1/database_design.html" class="pagination-link" aria-label="Database Design">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Database Design</span></span>
+      <a href="../../weeks/week_8/02_storage_hierarchy.html" class="pagination-link" aria-label="Storage Hierarchy">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Storage Hierarchy</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_2/02_dml_and_queries.html" class="pagination-link" aria-label="Data Manipulation (DML) &amp; Basic Queries">
-        <span class="nav-page-text"><span class="chapter-title">Data Manipulation (DML) &amp; Basic Queries</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_8/04_disk_performance_math.html" class="pagination-link" aria-label="Disk Performance Math">
+        <span class="nav-page-text"><span class="chapter-title">Disk Performance Math</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1423,7 +1220,7 @@ graph LR
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_2/01_relational_and_ddl.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/03_magnetic_disks.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

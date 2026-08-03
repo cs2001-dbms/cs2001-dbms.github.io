@@ -1,0 +1,123 @@
+---
+title: "Disk Performance Math"
+---
+
+## Intuition Behind the Math
+
+Memorizing formulas can be difficult. It is much easier if we understand *why* the formulas exist. Let's look at the basic math behind disk performance.
+
+### 1. Capacity of a Disk
+How much data can a disk hold? 
+Imagine you have a bookshelf. The capacity of the shelf is the number of books it holds times the pages in one book.
+Similarly, a disk is made of sectors.
+$$Capacity = Total \ No. \ of \ Sectors \times Size \ of \ One \ Sector$$
+
+### 2. Time Period of One Rotation
+If a disk spins at $RPM$ (Revolutions Per Minute), how long does *one* single rotation take?
+If it does $RPM$ revolutions in 60,000 milliseconds (1 minute), then one revolution takes:
+$$Time \ Period = \frac{1 \ minute}{RPM} = \frac{60,000 \ ms}{RPM}$$
+
+### 3. Transfer Rate
+How much data can we read per unit of time?
+In one single rotation (Time Period), the head sweeps over an entire track. Therefore, the data transferred in one rotation is exactly the capacity of one track.
+$$Transfer \ Rate = \frac{Bytes \ on \ one \ Track}{Time \ Period}$$
+
+### 4. Transfer Time
+If we know our speed (Transfer Rate) and the distance we need to cover (File Size), we can find the time! This is just $Time = Distance \div Speed$.
+$$Transfer \ Time = \frac{File \ Size}{Transfer \ Rate}$$
+
+### 5. Addressing Sectors
+Every sector needs a unique ID (binary address) so the OS can find it.
+If you have 8 sectors, you need 3 bits to address them ($000$ to $111$). This is because $2^3 = 8$. 
+To find the number of bits required for $N$ sectors, we take the base-2 logarithm.
+$$Minimum \ Bits = \lceil \log_2(Total \ No. \ of \ Sectors) \rceil$$
+*(We use the ceiling function $\lceil \rceil$ because we can't have a fraction of a bit).*
+
+---
+
+## Solved Examples
+
+Let's put our intuition to work with some structured numerical problems.
+
+::: {.callout-important title="Solved Example 1: Reading a File"}
+**Problem Statement:**
+Consider you have a file named "IITM BSc" in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.
+
+a) What is the transfer rate of your hard-disk (in KB/ms)?
+b) Considering the fact that the file data is stored in all non-consecutive sectors, how much time will be required to read the whole file after the read request is made? (Note: Consider Access time + Transfer time)
+
+**Part A: Finding the Transfer Rate**
+
+1. **Given:**
+   - $RPM = 30,000$
+   - $Sectors \ per \ Track = 200$
+   - $Sector \ Size = 512 \ Bytes$
+
+2. **Step-by-step Solution:**
+   - First, find the Time Period for one rotation:
+     $Time \ Period = \frac{60,000 \ ms}{30,000} = 2 \ ms$
+   - Second, find the capacity of one track (Bytes on one track):
+     $Track \ Capacity = 200 \ sectors \times 512 \ bytes = 102,400 \ Bytes = 100 \ KB$
+     *(Note: we assume $1024 \ Bytes = 1 \ KB$)*
+   - Finally, calculate Transfer Rate:
+     $Transfer \ Rate = \frac{100 \ KB}{2 \ ms} = \mathbf{50 \ KB/ms}$
+
+**Part B: Finding Total Read Time (Non-Consecutive Sectors)**
+
+1. **Given:**
+   - $File \ Size = 1000 \ KB$
+   - $Seek \ Time = 3 \ ms$
+   - Data is stored in **non-consecutive** sectors. This is a critical detail! It means for *every single sector* we read, we have to suffer Seek Time and Rotational Latency!
+
+2. **Step-by-step Solution:**
+   - First, find the total number of sectors the file occupies:
+     $File \ Size \ in \ Bytes = 1000 \ KB \times 1024 = 1,024,000 \ Bytes$
+     $Number \ of \ Sectors = \frac{1,024,000 \ Bytes}{512 \ Bytes} = 2000 \ Sectors$
+   - Next, find the Access Time for *one* sector:
+     $Average \ Rotational \ Latency = \frac{1}{2} \times Time \ Period = \frac{1}{2} \times 2 \ ms = 1 \ ms$
+     $Access \ Time = Seek \ Time + Rotational \ Latency = 3 \ ms + 1 \ ms = 4 \ ms$
+   - Next, find the Transfer Time for *one* sector:
+     $Transfer \ Time \ (1 \ Sector) = \frac{Sector \ Size}{Transfer \ Rate} = \frac{0.5 \ KB}{50 \ KB/ms} = 0.01 \ ms$
+   - Finally, calculate the total time for all 2000 non-consecutive sectors:
+     $Time \ per \ Sector = Access \ Time + Transfer \ Time = 4 \ ms + 0.01 \ ms = 4.01 \ ms$
+     $Total \ Time = 2000 \times 4.01 \ ms = \mathbf{8020 \ ms}$ (or 8.02 seconds)
+:::
+
+<br>
+
+::: {.callout-important title="Solved Example 2: Disk Geometry and Addressing"}
+**Problem Statement:**
+Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).
+
+a) How much free space is available for use (in MB, upto two decimal places)?
+b) How many bits are required for addressing all the sectors?
+
+**Part A: Finding Free Space**
+
+1. **Given:**
+   - $Platters = 10$ (Note: A platter has 2 surfaces! So $Surfaces = 20$)
+   - $Tracks \ per \ Surface = 64$
+   - $Sectors \ per \ Track = 256$
+   - $Sector \ Size = 512 \ Bytes$
+   - $Reserved \ Space = 4 \ Bytes / sector$
+
+2. **Step-by-step Solution:**
+   - First, find the total number of sectors on the entire disk:
+     $Total \ Sectors = Surfaces \times Tracks/Surface \times Sectors/Track$
+     $Total \ Sectors = 20 \times 64 \times 256 = 327,680 \ Sectors$
+   - Next, calculate the *usable* space per sector:
+     $Usable \ Sector \ Size = 512 - 4 = 508 \ Bytes$
+   - Finally, calculate the total free space:
+     $Total \ Free \ Space = 327,680 \times 508 \ Bytes = 166,461,440 \ Bytes$
+     Convert to MB (divide by $1024^2$):
+     $Free \ Space \ in \ MB = \frac{166,461,440}{1,048,576} \approx \mathbf{158.75 \ MB}$
+
+**Part B: Addressing Sectors**
+
+1. **Step-by-step Solution:**
+   - We know there are $327,680$ total sectors on the disk.
+   - We apply the addressing formula:
+     $Minimum \ Bits = \lceil \log_2(327,680) \rceil$
+     Since $2^{18} = 262,144$ and $2^{19} = 524,288$, we know we need more than 18 bits.
+     $Minimum \ Bits = \mathbf{19 \ bits}$
+:::

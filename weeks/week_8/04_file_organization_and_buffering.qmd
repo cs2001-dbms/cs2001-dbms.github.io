@@ -1,0 +1,67 @@
+---
+title: "File Organization & Buffering"
+---
+
+## File Structure and Organization
+
+Before we can query a database, the raw data must be mapped onto the physical disk blocks we discussed in the previous chapters.
+
+### The Data Hierarchy
+1. **Database:** The highest level, containing multiple files.
+2. **File:** A collection of related records (e.g., the `Instructor` table).
+3. **Record:** A single instance of data (e.g., a specific instructor's row).
+4. **Field / Attribute:** The individual data points within a record (e.g., Name, Salary).
+
+### Record Management
+- **Fixed-length Records:** Every record takes up the exact same amount of space. This makes math easy, but deletions leave "holes". These are managed via periodic compaction, shifting records, or using a "Free List" to track empty spaces.
+- **Variable-length Records:** Used when attributes vary in size (like `VARCHAR`). These are much harder to manage and usually require storing offsets and using **Slotted Pages** to organize the data block dynamically.
+
+### File Organization Types
+How do we arrange these records inside a file?
+
+- **Heap Organization:** Records are placed wherever there is free space. Completely unordered.
+
+- **Sequential Organization:** Records are strictly ordered by a "Search Key" (like ordering a dictionary alphabetically). Excellent for sequential processing.
+
+- **Multi-table Clustering:** Purposely grouping related records from *different* tables (e.g., a `Department` record physically stored right next to all its `Instructor` records) into the same disk block. This minimizes expensive disk I/O when performing SQL `JOIN` operations.
+
+*Note: The **Data Dictionary (System Catalog)** is a special file that stores metadata—data about the data itself! It tracks schemas, users, and integrity constraints.*
+
+---
+
+## Storage Access and Buffer Management
+
+We've established a crucial fact: **Disks are slow, but Main Memory (RAM) is fast.**
+Every time the database needs to read or write a record, it must transfer an entire **Block** of data between the disk and main memory. This disk I/O is the biggest bottleneck in database performance.
+
+Enter the **Buffer Manager**.
+
+### The Role of the Buffer Manager
+The Buffer Manager is a software subsystem responsible for allocating space in main memory to temporarily hold blocks fetched from the disk. 
+
+When a query requests data:
+
+1. The Buffer Manager checks if the required block is already in the buffer (Main Memory).
+
+2. If **YES**, this is a "Cache Hit". The data is served instantly.
+
+3. If **NO**, this is a "Cache Miss". The Buffer Manager must fetch the block from the slow magnetic disk.
+
+### Replacement Policies
+
+If the buffer is completely full of blocks, and we need to fetch a new one from the disk, which old block should we evict (throw out) to make room? This is determined by a **Replacement Policy**.
+
+::: {.callout-tip title="Least Recently Used (LRU)"}
+The most common strategy. The Buffer Manager evicts the block that hasn't been accessed for the longest time. 
+
+**Intuition:** If you haven't looked at a block in a long time, you probably won't need it again soon.
+:::
+
+::: {.callout-important title="Most Recently Used (MRU)"}
+Sometimes LRU is a terrible idea! Consider a query using a **Nested Loop Join** where we repeatedly scan the same large relation (e.g., scanning the entire `Instructor` table for *every single row* in the `Department` table).
+
+If the `Instructor` table is larger than our buffer, LRU will evict the beginning of the table just before we need to scan it again! In this specific scenario, **Most Recently Used (MRU)** is better. We evict the block we *just* finished reading, because in a looping scan, we won't need it again until the next full loop.
+:::
+
+### Pinned Blocks
+Some operations are so critical that a block cannot be evicted under any circumstances, even if it's the LRU or MRU. For example, if a block is currently being actively updated by a transaction, the Buffer Manager will **Pin** the block, restricting it from being written back to disk prematurely.

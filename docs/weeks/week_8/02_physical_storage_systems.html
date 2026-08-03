@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Armstrong’s Axioms &amp; Closure of Attribute Sets – Database Management Systems</title>
+<title>Physical Storage Systems – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -68,8 +33,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_7/02.html" rel="next">
-<link href="../../weeks/week_6/03_bcnf_and_4nf.html" rel="prev">
+<link href="../../weeks/week_8/03_disk_performance_math.html" rel="next">
+<link href="../../weeks/week_8/01_algorithms_and_data_structures.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -77,9 +42,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
@@ -113,6 +78,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -321,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><span class="chapter-title">Armstrong's Axioms &amp; Closure of Attribute Sets</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/02_physical_storage_systems.html"><span class="chapter-title">Physical Storage Systems</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -533,39 +501,70 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-07</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/01.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Armstrong's Axioms &amp; Closure of Attribute Sets</span></a>
+  <a href="../../weeks/week_7/01_application_programs_and_architecture.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Application Programs and Architecture</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/02.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL and Native Languages</span></a>
+  <a href="../../weeks/week_7/02_sql_and_native_languages.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL and Native Languages</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_7/03.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
+  <a href="../../weeks/week_7/03_rad.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Week-08</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms &amp; Data Structures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/02_physical_storage_systems.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Physical Storage Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/03_disk_performance_math.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Disk Performance Math</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">File Organization &amp; Buffering</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -588,38 +587,31 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#application-programs" id="toc-application-programs" class="nav-link active" data-scroll-target="#application-programs">Application Programs</a></li>
-  <li><a href="#the-three-layer-architecture" id="toc-the-three-layer-architecture" class="nav-link" data-scroll-target="#the-three-layer-architecture">The Three-Layer Architecture</a>
+  <li><a href="#physical-storage-media" id="toc-physical-storage-media" class="nav-link active" data-scroll-target="#physical-storage-media">Physical Storage Media</a>
   <ul class="collapse">
-  <li><a href="#presentation-layer-frontend" id="toc-presentation-layer-frontend" class="nav-link" data-scroll-target="#presentation-layer-frontend">Presentation Layer (Frontend)</a></li>
-  <li><a href="#business-logic-layer-middle-layer-tier-2" id="toc-business-logic-layer-middle-layer-tier-2" class="nav-link" data-scroll-target="#business-logic-layer-middle-layer-tier-2">Business Logic Layer (Middle Layer / Tier 2)</a></li>
+  <li><a href="#the-storage-hierarchy-pyramid" id="toc-the-storage-hierarchy-pyramid" class="nav-link" data-scroll-target="#the-storage-hierarchy-pyramid">The Storage Hierarchy Pyramid</a></li>
   </ul></li>
-  <li><a href="#architecture-classification" id="toc-architecture-classification" class="nav-link" data-scroll-target="#architecture-classification">Architecture Classification</a>
+  <li><a href="#inside-a-magnetic-disk-hdd" id="toc-inside-a-magnetic-disk-hdd" class="nav-link" data-scroll-target="#inside-a-magnetic-disk-hdd">Inside a Magnetic Disk (HDD)</a>
   <ul class="collapse">
-  <li><a href="#web-applications-and-scripting" id="toc-web-applications-and-scripting" class="nav-link" data-scroll-target="#web-applications-and-scripting">Web Applications and Scripting</a></li>
+  <li><a href="#data-organization-on-the-disk" id="toc-data-organization-on-the-disk" class="nav-link" data-scroll-target="#data-organization-on-the-disk">Data Organization on the Disk</a></li>
   </ul></li>
-  <li><a href="#the-world-wide-web" id="toc-the-world-wide-web" class="nav-link" data-scroll-target="#the-world-wide-web">The World Wide Web</a></li>
-  <li><a href="#urls-uris-and-urns" id="toc-urls-uris-and-urns" class="nav-link" data-scroll-target="#urls-uris-and-urns">URLs, URIs, and URNs</a></li>
-  <li><a href="#html-and-http" id="toc-html-and-http" class="nav-link" data-scroll-target="#html-and-http">HTML and HTTP</a></li>
-  <li><a href="#sessions-and-cookies" id="toc-sessions-and-cookies" class="nav-link" data-scroll-target="#sessions-and-cookies">Sessions and Cookies</a></li>
-  <li><a href="#scripting" id="toc-scripting" class="nav-link" data-scroll-target="#scripting">Scripting</a>
+  <li><a href="#disk-performance-metrics" id="toc-disk-performance-metrics" class="nav-link" data-scroll-target="#disk-performance-metrics">Disk Performance Metrics</a>
   <ul class="collapse">
-  <li><a href="#client-side-scripting" id="toc-client-side-scripting" class="nav-link" data-scroll-target="#client-side-scripting">Client-Side Scripting</a></li>
-  <li><a href="#server-side-scripting" id="toc-server-side-scripting" class="nav-link" data-scroll-target="#server-side-scripting"><strong>Server-Side Scripting</strong></a></li>
+  <li><a href="#access-time" id="toc-access-time" class="nav-link" data-scroll-target="#access-time">1. Access Time</a></li>
+  <li><a href="#data-transfer-rate" id="toc-data-transfer-rate" class="nav-link" data-scroll-target="#data-transfer-rate">2. Data Transfer Rate</a></li>
+  <li><a href="#reliability-mttf" id="toc-reliability-mttf" class="nav-link" data-scroll-target="#reliability-mttf">3. Reliability (MTTF)</a></li>
   </ul></li>
-  <li><a href="#servlets" id="toc-servlets" class="nav-link" data-scroll-target="#servlets">Servlets</a></li>
-  <li><a href="#jsp-java-server-pages" id="toc-jsp-java-server-pages" class="nav-link" data-scroll-target="#jsp-java-server-pages">JSP (Java Server Pages)</a></li>
-  <li><a href="#php" id="toc-php" class="nav-link" data-scroll-target="#php">PHP</a></li>
+  <li><a href="#emerging-technologies" id="toc-emerging-technologies" class="nav-link" data-scroll-target="#emerging-technologies">Emerging Technologies</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/02_physical_storage_systems.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><strong>Week-07</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_7/01.html"><span class="chapter-title">Armstrong's Axioms &amp; Closure of Attribute Sets</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/02_physical_storage_systems.html"><span class="chapter-title">Physical Storage Systems</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Armstrong’s Axioms &amp; Closure of Attribute Sets</span></h1>
+<h1 class="title"><span class="chapter-title">Physical Storage Systems</span></h1>
 </div>
 
 
@@ -636,224 +628,110 @@ window.Quarto = {
 </header>
 
 
-<section id="application-programs" class="level2">
-<h2 class="anchored" data-anchor-id="application-programs">Application Programs</h2>
-<p>Databases don’t exist in isolation, they always live inside an <strong>application</strong> that users interact with. Database-backed applications show up in almost every corner of modern life, for example, travel, communication, education etc. Despite looking completely different, most are built the same way underneath — they all use an RDBMS and they are all split into three layers.</p>
-<hr>
-</section>
-<section id="the-three-layer-architecture" class="level2">
-<h2 class="anchored" data-anchor-id="the-three-layer-architecture">The Three-Layer Architecture</h2>
-<p>Think of it like a restaurant : the waiter takes your order (Presentation), the chef decides how to prepare it (Business Logic), and the pantry stores all the ingredients (Data Access). Each role is distinct, and each has its own concerns.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href=".png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Three-Layer Architecture"><img src=".png" class="img-fluid figure-img" alt="Three-Layer Architecture"></a></p>
-<figcaption>Three-Layer Architecture</figcaption>
-</figure>
-</div>
-<section id="presentation-layer-frontend" class="level3">
-<h3 class="anchored" data-anchor-id="presentation-layer-frontend">Presentation Layer (Frontend)</h3>
-<p>This is everything the user actually sees and touches. It collects input and displays results. Within the presentation layer, the most widely used design pattern is <strong>Model-View-Controller (MVC)</strong>:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Model</strong></td>
-<td>Represents business data and rules</td>
-</tr>
-<tr class="even">
-<td><strong>View</strong></td>
-<td>Displays data to the user (depends on device/format)</td>
-</tr>
-<tr class="odd">
-<td><strong>Controller</strong></td>
-<td>Receives user events, invokes model actions, selects the view to return</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="business-logic-layer-middle-layer-tier-2" class="level3">
-<h3 class="anchored" data-anchor-id="business-logic-layer-middle-layer-tier-2">Business Logic Layer (Middle Layer / Tier 2)</h3>
-<p>Implements the core functionalities, workflows, and rules of the application (such as authentication, search logic, pricing, payment gateways, and order management). It acts as the bridge that connects the frontend and backend layers.</p>
-<blockquote class="blockquote">
-<p>⚠️ The middle layer hides the database schema from the frontend. The frontend never needs to know which table a piece of data lives in.</p>
-</blockquote>
-<section id="data-access-layer-backend-tier-3" class="level4">
-<h4 class="anchored" data-anchor-id="data-access-layer-backend-tier-3">Data Access Layer (Backend / Tier 3)</h4>
-<p>Manages persistent data. It is responsible for handling large volumes of information, ensuring high-speed access, maintaining data security, and interfacing directly with the database system .</p>
-<hr>
-</section>
-</section>
-</section>
-<section id="architecture-classification" class="level2">
-<h2 class="anchored" data-anchor-id="architecture-classification">Architecture Classification</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Tier</th>
-<th>What it looks like</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>1-Tier</strong></td>
-<td>All components (user interface, middleware, and backend database) reside on a single server or platform. This is the simplest and most direct setup</td>
-</tr>
-<tr class="even">
-<td><strong>2-Tier</strong></td>
-<td>A classic client-server model where the client directly communicates with the database server with no intermediate application logic server.</td>
-</tr>
-<tr class="odd">
-<td><strong>3-Tier</strong></td>
-<td>Presentation, Business Logic, and Data Access are separated into three independent layers [27]. This is the de-facto standard for DBMS design.</td>
-</tr>
-<tr class="even">
-<td><strong>n-Tier</strong></td>
-<td>Extends 3-tier by distributing components across many servers with load balancers, caches, and microservices</td>
-</tr>
-</tbody>
-</table>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href=".png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Architecture Evolution"><img src=".png" class="img-fluid figure-img" alt="Architecture Evolution"></a></p>
-<figcaption>Architecture Evolution</figcaption>
-</figure>
-</div>
-<hr>
-<section id="web-applications-and-scripting" class="level3">
-<h3 class="anchored" data-anchor-id="web-applications-and-scripting">Web Applications and Scripting</h3>
-</section>
-</section>
-<section id="the-world-wide-web" class="level2">
-<h2 class="anchored" data-anchor-id="the-world-wide-web">The World Wide Web</h2>
-<p>The Web is a massive collection of <strong>hypertext documents</strong> (HTML pages) spread across servers worldwide, all linked to each other. HTML can contain text, images, hyperlinks, and forms — input fields that let users send data back to a server, which is the bridge between the user and the database.</p>
-<hr>
-</section>
-<section id="urls-uris-and-urns" class="level2">
-<h2 class="anchored" data-anchor-id="urls-uris-and-urns">URLs, URIs, and URNs</h2>
-<p>Every resource on the web needs an address. A URL like <code>http://www.acm.org/sigmod</code> has three parts:</p>
-<pre><code>http  ://  www.acm.org  /sigmod
- ↑              ↑           ↑
-Protocol    Machine name   Document path</code></pre>
+<section id="physical-storage-media" class="level2">
+<h2 class="anchored" data-anchor-id="physical-storage-media">Physical Storage Media</h2>
+<p>Data needs a place to live! Depending on how fast we need to access the data and how long we want it to survive without power, we use different types of storage media.</p>
+<p>There is a fundamental divide in storage media: <strong>Volatile</strong> vs.&nbsp;<strong>Non-Volatile</strong>.</p>
 <ul>
-<li><strong>URI</strong> — An umbrella term that covers both locators (URLs) and names (URNs).</li>
-<li><strong>URL</strong> — Specifies how to retrieve a resource and where it is located, functioning like a person’s <em>street address</em>.</li>
-<li><strong>URN</strong> — Serves as a unique identifier for a resource, functioning like a person’s <em>name</em>. It defines the identity of a resource but does not specify its location</li>
+<li><strong>Volatile Storage:</strong> Loses all data when the power is interrupted (e.g., Cache Memory, Main Memory / RAM). Extremely fast but temporary.</li>
+<li><strong>Non-Volatile Storage:</strong> Retains data regardless of power status (e.g., Flash memory, Magnetic Disks, Optical Disks, Magnetic Tapes). Slower, but permanent.</li>
+</ul>
+<section id="the-storage-hierarchy-pyramid" class="level3">
+<h3 class="anchored" data-anchor-id="the-storage-hierarchy-pyramid">The Storage Hierarchy Pyramid</h3>
+<p>In computer architecture, we make trade-offs. If you want <strong>speed</strong>, it costs more and you get <strong>less capacity</strong>. If you want <strong>capacity</strong>, it costs less per gigabyte, but you sacrifice <strong>speed</strong>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    classDef volatile fill:#f9d0c4,stroke:#333,stroke-width:2px;
+    classDef nonvolatile fill:#d4edda,stroke:#333,stroke-width:2px;
+
+    subgraph Speed_vs_Capacity [ ]
+    direction BT
+    L1[Registers]:::volatile
+    L2[Cache]:::volatile
+    L3[Main Memory / RAM]:::volatile
+    L4[Flash Memory / SSD]:::nonvolatile
+    L5[Magnetic Disks / HDD]:::nonvolatile
+    L6[Magnetic Tapes / Optical Disks]:::nonvolatile
+    
+    L6 --&gt; L5 --&gt; L4 --&gt; L3 --&gt; L2 --&gt; L1
+    end
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><em>Note: As you move UP the pyramid, Speed and Cost per bit INCREASES. As you move DOWN the pyramid, Capacity and Access Time INCREASES.</em></p>
+<hr>
+</section>
+</section>
+<section id="inside-a-magnetic-disk-hdd" class="level2">
+<h2 class="anchored" data-anchor-id="inside-a-magnetic-disk-hdd">Inside a Magnetic Disk (HDD)</h2>
+<p>To understand database performance, we must look at the physical mechanics of where our data actually lives: <strong>Magnetic Disks</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="magnetic_disk.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The inside of a typical magnetic disk."><img src="magnetic_disk.jpg" class="img-fluid figure-img" style="width:50.0%" alt="The inside of a typical magnetic disk."></a></p>
+<figcaption>The inside of a typical magnetic disk.</figcaption>
+</figure>
+</div>
+<p>Think of a hard drive like an old-school vinyl record player:</p>
+<ul>
+<li><p><strong>Platter (The Record):</strong> The circular disk coated with magnetic material.</p></li>
+<li><p><strong>Spindle (The Turntable Motor):</strong> The central rod that spins the platters at high speeds (e.g., 7200 RPM).</p></li>
+<li><p><strong>Read/Write Head (The Needle):</strong> The tiny magnet that hovers above the platter.</p></li>
+<li><p><strong>Actuator Arm (The Tonearm):</strong> The mechanical arm that moves the Read/Write head.</p></li>
+</ul>
+<section id="data-organization-on-the-disk" class="level3">
+<h3 class="anchored" data-anchor-id="data-organization-on-the-disk">Data Organization on the Disk</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="Disk-structure.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A breakdown of disk geometry."><img src="Disk-structure.svg" class="img-fluid figure-img" style="width:50.0%" alt="A breakdown of disk geometry."></a></p>
+<figcaption>A breakdown of disk geometry.</figcaption>
+</figure>
+</div>
+<ul>
+<li><strong>(A) Track:</strong> A single, concentric circular ring on the surface of the platter.</li>
+<li><strong>(C) Sector:</strong> A track is divided into smaller arcs called sectors. It is the <strong>smallest unit of data</strong> that can be read or written (traditionally 512 bytes).</li>
+<li><strong>Cylinder:</strong> The set of all tracks that are at the exact same position across all stacked platters.</li>
+<li><strong>(D) Block / Cluster:</strong> A grouping of contiguous sectors used by the operating system to allocate space efficiently.</li>
 </ul>
 <hr>
 </section>
-<section id="html-and-http" class="level2">
-<h2 class="anchored" data-anchor-id="html-and-http">HTML and HTTP</h2>
-<p><strong>HTML</strong> structures pages and provides input elements (text boxes, dropdowns, radio buttons) grouped into <strong>forms</strong> that submit data to a server. - <strong>HTML (Hypertext Markup Language)</strong> : Used to format content, embed links, display tables, and gather user input through interactive forms (including dropdown menus, text boxes, and buttons). - <strong>HTTP (Hypertext Transfer Protocol)</strong> : The primary communication protocol used between web clients and web servers . The key thing to know: HTTP is <strong>connectionless</strong> — once the server replies, it immediately forgets the conversation ever happened. Every new request is treated as brand new. This keeps server load manageable (imagine maintaining open connections with millions of users at once).</p>
-<hr>
 </section>
-<section id="sessions-and-cookies" class="level2">
-<h2 class="anchored" data-anchor-id="sessions-and-cookies">Sessions and Cookies</h2>
-<p>HTTP being connectionless creates a problem — how does a website remember you’re logged in as you move between pages?</p>
-<p>The answer is <strong>cookies</strong>. Here’s how it works:</p>
-<ol type="1">
-<li>On your first visit, the server sends a small identifying token (cookie) to your browser</li>
-<li>Your browser stores it and automatically attaches it to every subsequent request</li>
-<li>The server reads it, looks it up, and knows exactly who you are</li>
-</ol>
-<p>This is how Amazon keeps your cart alive across sessions. Cookies can be <strong>permanent</strong> (survive browser restarts) or <strong>session-only</strong> (deleted when you close the tab).</p>
-<hr>
+<section id="disk-performance-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="disk-performance-metrics">Disk Performance Metrics</h2>
+<p>When a database asks the hard drive for a piece of data, the mechanical parts have to move.</p>
+<section id="access-time" class="level3">
+<h3 class="anchored" data-anchor-id="access-time">1. Access Time</h3>
+<p>The total time it takes to begin reading the actual data. <span class="math display">\[Access \ Time = Seek \ Time + Rotational \ Latency\]</span></p>
+<ul>
+<li><strong>Seek Time:</strong> The time taken to physically reposition the arm over the correct track.</li>
+<li><strong>Rotational Latency:</strong> The time spent waiting for the correct sector to rotate directly underneath the head.</li>
+</ul>
 </section>
-<section id="scripting" class="level2">
-<h2 class="anchored" data-anchor-id="scripting">Scripting</h2>
-<p>A <strong>script</strong> is a set of commands embedded in a web page or on the server, executed at runtime. Scripts are what make pages dynamic. Two types:</p>
-<section id="client-side-scripting" class="level3">
-<h3 class="anchored" data-anchor-id="client-side-scripting">Client-Side Scripting</h3>
-<p>Client-side scripts are downloaded directly to the client’s computer and run locally inside the web browser. - <strong>Primary Languages</strong> : JavaScript, VBScript. - <strong>Purpose</strong> : Handles immediate user interactions, validates form inputs locally, and updates page visuals without triggering a full page reload (e.g., AJAX technology). - <strong>Security Context</strong> : To prevent malicious scripts from accessing local hard drives, client-side scripts are executed in a heavily restricted <strong>safe-mode sandbox</strong> that prevents direct system calls or unauthorized file operations.</p>
+<section id="data-transfer-rate" class="level3">
+<h3 class="anchored" data-anchor-id="data-transfer-rate">2. Data Transfer Rate</h3>
+<p>The speed at which data is moved from the disk to the main memory once the head is in position.</p>
 </section>
-<section id="server-side-scripting" class="level3">
-<h3 class="anchored" data-anchor-id="server-side-scripting"><strong>Server-Side Scripting</strong></h3>
-<p>Server-side scripts are executed entirely on the web server before the final HTML is generated and sent back to the client. - <strong>Primary Languages</strong> : PHP, JSP, ASP, Python, Perl. - <strong>Purpose</strong> : Simplifies database integration. Developers embed executable logic or database queries directly within HTML files. The server runs these queries, dynamically inserts the results into the HTML, and returns the finished static webpage to the user. - <strong>Security Context</strong> : Safe and secure. The client never sees the server’s proprietary code or database connection details—only the final, clean HTML output.</p>
+<section id="reliability-mttf" class="level3">
+<h3 class="anchored" data-anchor-id="reliability-mttf">3. Reliability (MTTF)</h3>
+<p>Hard drives are mechanical, which means they will eventually break. Reliability is measured by <strong>Mean Time To Failure (MTTF)</strong>. An MTTF of 5 years doesn’t mean it will break in exactly 5 years, but it provides a statistical average of expected lifespan.</p>
 <hr>
 </section>
 </section>
-<section id="servlets" class="level2">
-<h2 class="anchored" data-anchor-id="servlets">Servlets</h2>
-<p>A <strong>Java Servlet</strong> is a Java program that lives on a web/application server and handles HTTP requests. The flow:</p>
-<pre><code>User submits form
-    → HTTP request hits the server
-    → Server loads the Servlet
-    → Servlet reads parameters, runs SQL via JDBC
-    → Servlet writes HTML response
-    → Thread closes</code></pre>
-<p>Each request gets its own <strong>thread</strong>, so many users can be served simultaneously.</p>
-<p><strong>Session handling</strong> in Servlets uses cookies automatically:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb3-1"><a href="#cb3-1"></a>request<span class="op">.</span><span class="fu">getSession</span><span class="op">(</span><span class="kw">true</span><span class="op">);</span>                      <span class="co">// create session</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>session<span class="op">.</span><span class="fu">setAttribute</span><span class="op">(</span><span class="st">"userid"</span><span class="op">,</span> <span class="st">"alice"</span><span class="op">);</span>       <span class="co">// store data</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>session<span class="op">.</span><span class="fu">getAttribute</span><span class="op">(</span><span class="st">"userid"</span><span class="op">);</span>                <span class="co">// retrieve later</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Servlets run inside application servers like <strong>Apache Tomcat</strong>, GlassFish, or JBoss.</p>
-<hr>
-</section>
-<section id="jsp-java-server-pages" class="level2">
-<h2 class="anchored" data-anchor-id="jsp-java-server-pages">JSP (Java Server Pages)</h2>
-<p>Writing HTML entirely through <code>out.println()</code> in a Servlet is painful. JSP lets you write HTML normally and drop Java logic inside <code>&lt;% ... %&gt;</code> tags wherever needed:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="er">&lt;</span>% if (request.getParameter("name") == null) { %&gt;</span>
-<span id="cb4-3"><a href="#cb4-3"></a>    Hello, World!</span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="er">&lt;</span>% } else { %&gt;</span>
-<span id="cb4-5"><a href="#cb4-5"></a>    Hello, <span class="er">&lt;</span>%= request.getParameter("name") %&gt;!</span>
-<span id="cb4-6"><a href="#cb4-6"></a>  <span class="er">&lt;</span>% } %&gt;</span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The server compiles a JSP page into a Servlet the first time it’s requested, so performance is identical — JSP is just much easier to write and maintain.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Comparison</th>
-<th>Key Point</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>JSP vs.&nbsp;ASP</td>
-<td>JSP is platform-independent; ASP is Microsoft-only</td>
-</tr>
-<tr class="even">
-<td>JSP vs.&nbsp;Pure Servlets</td>
-<td>JSP is cleaner when the page is mostly HTML</td>
-</tr>
-<tr class="odd">
-<td>JSP vs.&nbsp;JavaScript</td>
-<td>JSP runs server-side before response; JS runs client-side after</td>
-</tr>
-<tr class="even">
-<td>JSP vs.&nbsp;Static HTML</td>
-<td>JSP generates dynamic content; static HTML is fixed</td>
-</tr>
-</tbody>
-</table>
-<hr>
-</section>
-<section id="php" class="level2">
-<h2 class="anchored" data-anchor-id="php">PHP</h2>
-<p>PHP works exactly like JSP — embed logic inside HTML, server executes it, client gets plain HTML. It has extensive database libraries (ODBC) and was the dominant language for web development for many years.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource html number-lines code-with-copy"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="er">&lt;?</span><span class="co">php</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">    if (!isset($_REQUEST['name'])) { echo "Hello World"; }</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">    else { echo "Hello, " . $_REQUEST['name']; }</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">  ?&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>PHP and JSP are conceptually the same. The choice between them comes down to the tech stack being used.</p>
+<section id="emerging-technologies" class="level2">
+<h2 class="anchored" data-anchor-id="emerging-technologies">Emerging Technologies</h2>
+<p>While Magnetic Disks are still widely used, new technologies are constantly evolving storage:</p>
+<ul>
+<li><p><strong>Solid State Drives (SSD):</strong> Use flash memory to store data persistently without any moving parts, significantly reducing Access Time.</p></li>
+<li><p><strong>Cloud Storage:</strong> Abstracting the physical hardware entirely, relying on distributed remote servers.</p></li>
+<li><p><strong>DNA Digital Storage:</strong> A futuristic approach using synthetic DNA to store massive amounts of data with extreme longevity.</p></li>
+<li><p><strong>Quantum Memory:</strong> Theoretical storage systems leveraging quantum states for unprecedented speeds and security.</p></li>
+</ul>
 
 
 
@@ -1353,13 +1231,13 @@ Protocol    Machine name   Document path</code></pre>
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_6/03_bcnf_and_4nf.html" class="pagination-link" aria-label="BCNF and Multivalued Dependencies">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">BCNF and Multivalued Dependencies</span></span>
+      <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="pagination-link" aria-label="Algorithms &amp; Data Structures">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Algorithms &amp; Data Structures</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_7/02.html" class="pagination-link" aria-label="SQL and Native Languages">
-        <span class="nav-page-text"><span class="chapter-title">SQL and Native Languages</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_8/03_disk_performance_math.html" class="pagination-link" aria-label="Disk Performance Math">
+        <span class="nav-page-text"><span class="chapter-title">Disk Performance Math</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1371,7 +1249,7 @@ Protocol    Machine name   Document path</code></pre>
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_7/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/02_physical_storage_systems.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
