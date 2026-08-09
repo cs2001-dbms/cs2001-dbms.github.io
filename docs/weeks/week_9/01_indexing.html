@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Algorithms &amp; Data Structures – Database Management Systems</title>
+<title>Indexing – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_8/02_physical_storage_systems.html" rel="next">
-<link href="../../weeks/week_7/03_rad.html" rel="prev">
+<link href="../../weeks/week_9/02_bst.html" rel="next">
+<link href="../../weeks/week_8/04_file_organization_and_buffering.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -286,7 +321,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><span class="chapter-title">Algorithms &amp; Data Structures</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -524,16 +559,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-08</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Algorithms &amp; Data Structures</span></a>
+  <a href="../../weeks/week_8/01_algorithms_and_data_structures.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Algorithms &amp; Data Structures</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -555,16 +590,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
+  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Indexing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -610,32 +645,32 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#algorithms-and-complexity-analysis" id="toc-algorithms-and-complexity-analysis" class="nav-link active" data-scroll-target="#algorithms-and-complexity-analysis">Algorithms and Complexity Analysis</a>
+  <li><a href="#what-is-an-index" id="toc-what-is-an-index" class="nav-link active" data-scroll-target="#what-is-an-index">What is an Index?</a></li>
+  <li><a href="#ordered-indices-primary-vs.-secondary" id="toc-ordered-indices-primary-vs.-secondary" class="nav-link" data-scroll-target="#ordered-indices-primary-vs.-secondary">Ordered Indices: Primary vs.&nbsp;Secondary</a></li>
+  <li><a href="#dense-vs.-sparse-indexes" id="toc-dense-vs.-sparse-indexes" class="nav-link" data-scroll-target="#dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</a>
   <ul class="collapse">
-  <li><a href="#basics-and-definitions" id="toc-basics-and-definitions" class="nav-link" data-scroll-target="#basics-and-definitions">Basics and Definitions</a></li>
-  <li><a href="#motivation-for-analysis" id="toc-motivation-for-analysis" class="nav-link" data-scroll-target="#motivation-for-analysis">Motivation for Analysis</a></li>
-  <li><a href="#factors-of-analysis" id="toc-factors-of-analysis" class="nav-link" data-scroll-target="#factors-of-analysis">Factors of Analysis</a></li>
-  <li><a href="#methodologies" id="toc-methodologies" class="nav-link" data-scroll-target="#methodologies">Methodologies</a></li>
+  <li><a href="#dense-index" id="toc-dense-index" class="nav-link" data-scroll-target="#dense-index">Dense Index</a></li>
+  <li><a href="#sparse-index" id="toc-sparse-index" class="nav-link" data-scroll-target="#sparse-index">Sparse Index</a></li>
   </ul></li>
-  <li><a href="#data-structures" id="toc-data-structures" class="nav-link" data-scroll-target="#data-structures">Data Structures</a>
+  <li><a href="#multilevel-index" id="toc-multilevel-index" class="nav-link" data-scroll-target="#multilevel-index">Multilevel Index</a></li>
+  <li><a href="#index-updates" id="toc-index-updates" class="nav-link" data-scroll-target="#index-updates">Index Updates</a>
   <ul class="collapse">
-  <li><a href="#linear-data-structures" id="toc-linear-data-structures" class="nav-link" data-scroll-target="#linear-data-structures">Linear Data Structures</a></li>
+  <li><a href="#on-deletion" id="toc-on-deletion" class="nav-link" data-scroll-target="#on-deletion">On Deletion</a></li>
+  <li><a href="#on-insertion" id="toc-on-insertion" class="nav-link" data-scroll-target="#on-insertion">On Insertion</a></li>
   </ul></li>
-  <li><a href="#non-linear-data-structures-trees" id="toc-non-linear-data-structures-trees" class="nav-link" data-scroll-target="#non-linear-data-structures-trees">Non-Linear Data Structures: Trees</a>
-  <ul class="collapse">
-  <li><a href="#binary-search-trees-bst" id="toc-binary-search-trees-bst" class="nav-link" data-scroll-target="#binary-search-trees-bst">Binary Search Trees (BST)</a></li>
-  </ul></li>
-  <li><a href="#search-and-sorting" id="toc-search-and-sorting" class="nav-link" data-scroll-target="#search-and-sorting">Search and Sorting</a></li>
+  <li><a href="#index-definition-in-sql" id="toc-index-definition-in-sql" class="nav-link" data-scroll-target="#index-definition-in-sql">Index Definition in SQL</a></li>
+  <li><a href="#guidelines-for-indexing" id="toc-guidelines-for-indexing" class="nav-link" data-scroll-target="#guidelines-for-indexing">Guidelines for Indexing</a></li>
+  <li><a href="#formulas-for-solving-the-problem" id="toc-formulas-for-solving-the-problem" class="nav-link" data-scroll-target="#formulas-for-solving-the-problem">Formulas for Solving the Problem</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/01_algorithms_and_data_structures.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><strong>Week-08</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_8/01_algorithms_and_data_structures.html"><span class="chapter-title">Algorithms &amp; Data Structures</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Algorithms &amp; Data Structures</span></h1>
+<h1 class="title"><span class="chapter-title">Indexing</span></h1>
 </div>
 
 
@@ -652,117 +687,161 @@ window.Quarto = {
 </header>
 
 
-<section id="algorithms-and-complexity-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="algorithms-and-complexity-analysis">Algorithms and Complexity Analysis</h2>
-<section id="basics-and-definitions" class="level3">
-<h3 class="anchored" data-anchor-id="basics-and-definitions">Basics and Definitions</h3>
+<section id="what-is-an-index" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-an-index">What is an Index?</h2>
+<p>Think of a database index like the index at the back of a textbook — instead of reading every page, you look up the term, get the page number, and jump straight there.</p>
+<p>An index is a smaller, separate data structure that maps <strong>search-key values</strong> to their records in the main table. Each entry in an index file is called an <strong>index entry</strong> and looks like this:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">search-key</th>
+<th style="text-align: center;">pointer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">“Pabitra Mitra”</td>
+<td style="text-align: center;">→ record #6</td>
+</tr>
+</tbody>
+</table>
+<p>There are two broad families:</p>
 <ul>
-<li><strong>Algorithm vs.&nbsp;Program:</strong> An <strong>algorithm</strong> is a finite sequence of well-defined, computer-implementable instructions to solve a class of problems or to perform a computation. Crucially, an algorithm <strong>must terminate</strong>. A <strong>program</strong>, such as an operating system, is an implementation that may run indefinitely without terminating.</li>
+<li><strong>Ordered indices</strong> — entries are sorted on the search key.</li>
+<li><strong>Hash indices</strong> — entries are scattered into buckets using a hash function. Fast for exact lookups, but can’t handle range queries.</li>
 </ul>
-</section>
-<section id="motivation-for-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="motivation-for-analysis">Motivation for Analysis</h3>
-<p>Why do we analyze algorithms? - To <strong>predict performance</strong> (how fast will this run on a billion rows?). - To <strong>avoid bugs</strong> and <strong>provide guarantees</strong> on execution boundaries. - To understand the theoretical limits of computational problems.</p>
-</section>
-<section id="factors-of-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="factors-of-analysis">Factors of Analysis</h3>
-<p>When we analyze an algorithm, we measure the “cost” based on several factors:</p>
-<ol type="1">
-<li><p><strong>Time Complexity:</strong> How long does it take to execute?</p></li>
-<li><p><strong>Space/Storage Complexity:</strong> How much memory (RAM) does it consume?</p></li>
-<li><p><strong>Other factors:</strong> Power consumption and network bandwidth (especially relevant in cloud databases).</p></li>
-</ol>
-</section>
-<section id="methodologies" class="level3">
-<h3 class="anchored" data-anchor-id="methodologies">Methodologies</h3>
-<ul>
-<li><strong>Counting Model:</strong> A simplified theoretical model (Random-Access Machine) where we sum the cost and frequency of primitive operations (like addition, assignment, etc.).</li>
-<li><strong>Asymptotic Analysis:</strong> We use <strong>Big-Oh (<span class="math inline">\(O\)</span>) notation</strong> to measure the growth of resource requirements as the input size (<span class="math inline">\(n\)</span>) increases toward infinity. We typically focus on the <strong>Worst case</strong> and <strong>Average case</strong> scenarios.</li>
-</ul>
-<section id="complexity-classes" class="level4">
-<h4 class="anchored" data-anchor-id="complexity-classes">Complexity Classes</h4>
-<p>From fastest (best) to slowest (worst):</p>
-<ol type="1">
-<li><p><strong><span class="math inline">\(O(1)\)</span></strong> - Constant Time</p></li>
-<li><p><strong><span class="math inline">\(O(\log n)\)</span></strong> - Logarithmic Time</p></li>
-<li><p><strong><span class="math inline">\(O(n)\)</span></strong> - Linear Time</p></li>
-<li><p><strong><span class="math inline">\(O(n \log n)\)</span></strong> - Linearithmic Time</p></li>
-<li><p><strong><span class="math inline">\(O(n^2)\)</span></strong> - Quadratic Time</p></li>
-<li><p><strong><span class="math inline">\(O(n^3)\)</span></strong> - Cubic Time</p></li>
-<li><p><strong><span class="math inline">\(O(2^n)\)</span></strong> - Exponential Time</p></li>
-</ol>
+<p>This section focuses on ordered indices.</p>
 <hr>
 </section>
-</section>
-</section>
-<section id="data-structures" class="level2">
-<h2 class="anchored" data-anchor-id="data-structures">Data Structures</h2>
-<p>A <strong>Data Structure</strong> is a specialized format for organizing, processing, retrieving and storing data in memory. Standard operations on any data structure include: <strong>Create, Insert, Delete, Find (Search), Update, and Close.</strong></p>
-<section id="linear-data-structures" class="level3">
-<h3 class="anchored" data-anchor-id="linear-data-structures">Linear Data Structures</h3>
-<ol type="1">
-<li><strong>Arrays:</strong> Contiguous blocks of memory.
-<ul>
-<li><em>Advantage:</em> Extremely fast indexed/random access (<span class="math inline">\(O(1)\)</span>).</li>
-<li><em>Disadvantage:</em> Very slow insertion/deletion (<span class="math inline">\(O(n)\)</span>) because all subsequent elements must be shifted.</li>
-</ul></li>
-<li><strong>Linked Lists:</strong> Elements are stored in nodes that contain pointers to the next node.
-<ul>
-<li><em>Advantage:</em> Very fast insertion/deletion (<span class="math inline">\(O(1)\)</span> if you are already at the position).</li>
-<li><em>Disadvantage:</em> Slow sequential access (<span class="math inline">\(O(n)\)</span>) since you must traverse from the head.</li>
-</ul></li>
-<li><strong>Queues:</strong> Follow First-In-First-Out (FIFO) logic (like a line at a grocery store).</li>
-<li><strong>Stacks:</strong> Follow Last-In-First-Out (LIFO) logic (like a stack of plates).</li>
-</ol>
+<section id="ordered-indices-primary-vs.-secondary" class="level2">
+<h2 class="anchored" data-anchor-id="ordered-indices-primary-vs.-secondary">Ordered Indices: Primary vs.&nbsp;Secondary</h2>
+<p><strong>Primary index (clustering index):</strong> The index whose search key matches the physical order of the data file. Efficient for sequential scans since adjacent records on disk are also logically adjacent.</p>
+<p><strong>Secondary index (non-clustering index):</strong> An index on a different attribute than the one the file is sorted on. Pointers are scattered across the disk, so sequential scans are expensive.</p>
+<blockquote class="blockquote">
+<p>⚠️ A table can have <strong>only one primary index</strong> but <strong>many secondary indices</strong>.</p>
+</blockquote>
+<p>An <strong>index-sequential file</strong> is a sequentially ordered file paired with its primary index, also called ISAM (Indexed Sequential Access Method).</p>
 <hr>
 </section>
-</section>
-<section id="non-linear-data-structures-trees" class="level2">
-<h2 class="anchored" data-anchor-id="non-linear-data-structures-trees">Non-Linear Data Structures: Trees</h2>
-<p>Unlike arrays or linked lists, a tree is a hierarchical data structure. They are absolutely critical for database indexing.</p>
+<section id="dense-vs.-sparse-indexes" class="level2">
+<h2 class="anchored" data-anchor-id="dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</h2>
+<section id="dense-index" class="level3">
+<h3 class="anchored" data-anchor-id="dense-index">Dense Index</h3>
+<p>One index entry for <strong>every record</strong> in the data file.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="Binary_tree_v2.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A visual representation of a binary tree structure."><img src="Binary_tree_v2.svg" class="img-fluid figure-img" style="width:70.0%" alt="A visual representation of a binary tree structure."></a></p>
-<figcaption>A visual representation of a binary tree structure.</figcaption>
+<p><a href="dense_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Dense Index"><img src="dense_index.png" class="img-fluid figure-img" alt="Dense Index"></a></p>
+<figcaption>Dense Index</figcaption>
 </figure>
 </div>
-<p>Let’s break down the terminology:</p>
-<ul>
-<li><p><strong>Root:</strong> The topmost node.</p></li>
-<li><p><strong>Parent/Child:</strong> A node connected to nodes directly below it is a parent.</p></li>
-<li><p><strong>Leaf Nodes:</strong> Nodes with no children.</p></li>
-<li><p><strong>Arity (or Degree):</strong> The number of children a specific node has.</p></li>
-<li><p><strong>Level / Depth:</strong> The distance from the root.</p></li>
-<li><p><strong>Height:</strong> The maximum level in the tree.</p></li>
-</ul>
-<section id="binary-search-trees-bst" class="level3">
-<h3 class="anchored" data-anchor-id="binary-search-trees-bst">Binary Search Trees (BST)</h3>
-<p>A <strong>Binary Search Tree</strong> maintains a strict ordering property. For every node, all values in the <strong>left subtree</strong> are strictly <em>less</em> than the node’s value, and all values in the <strong>right subtree</strong> are <em>greater</em>.</p>
-<p>Let’s build a BST from the data: <code>17, 22, 12, 10, 14, 25, 19</code>.</p>
-<ol type="1">
-<li><strong>Insert 17:</strong> This is our first number, so it becomes the <strong>Root</strong>.</li>
-<li><strong>Insert 22:</strong> We compare 22 with 17. Since <span class="math inline">\(22 &gt; 17\)</span>, it goes to the <strong>right</strong>.</li>
-<li><strong>Insert 12:</strong> Compare 12 with 17. Since <span class="math inline">\(12 &lt; 17\)</span>, it goes to the <strong>left</strong>.</li>
-<li><strong>Insert 10:</strong> Compare 10 with 17 (left), then compare with 12. Since <span class="math inline">\(10 &lt; 12\)</span>, it goes to the <strong>left</strong> of 12. … and so on.</li>
-</ol>
-<p>The final result is the beautiful structure shown below!</p>
+<p><em>Advantage</em>: Can check record existence from the index alone.<br>
+<em>Disadvantage</em>: Index grows proportionally with the data.</p>
+</section>
+<section id="sparse-index" class="level3">
+<h3 class="anchored" data-anchor-id="sparse-index">Sparse Index</h3>
+<p>One index entry per <strong>disk block</strong> (not per record).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="binary_tree.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="The fully constructed Binary Search Tree."><img src="binary_tree.png" class="img-fluid figure-img" style="width:60.0%" alt="The fully constructed Binary Search Tree."></a></p>
-<figcaption>The fully constructed Binary Search Tree.</figcaption>
+<p><a href="sparse_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Sparse Index"><img src="sparse_index.png" class="img-fluid figure-img" alt="Sparse Index"></a></p>
+<figcaption>Sparse Index</figcaption>
 </figure>
 </div>
-<p>If the tree remains balanced, this property allows us to search, insert, and delete in <strong><span class="math inline">\(O(\log n)\)</span></strong> time, making it immensely faster than scanning an array.</p>
+<p>To find key <span class="math inline">\(K\)</span>: find the largest index entry <span class="math inline">\(≤ K\)</span>, follow its pointer to the block, then scan within the block.</p>
+<p><em>Advantage</em>: Much smaller index, less maintenance.<br>
+<em>Disadvantage</em>: Slightly slower — requires a sequential scan within the block.</p>
+<blockquote class="blockquote">
+<p>💡 One sparse index entry per disk block is the standard trade-off — small enough for memory, granular enough to avoid long scans.</p>
+</blockquote>
+<p>Secondary indices must be dense because records with a given secondary key are scattered across the file — a sparse index would miss records not sitting at a block boundary.</p>
 <hr>
 </section>
 </section>
-<section id="search-and-sorting" class="level2">
-<h2 class="anchored" data-anchor-id="search-and-sorting">Search and Sorting</h2>
+<section id="multilevel-index" class="level2">
+<h2 class="anchored" data-anchor-id="multilevel-index">Multilevel Index</h2>
+<p><strong>Problem:</strong> If the primary index itself is too large to fit in memory, searching it becomes expensive.</p>
+<p><strong>Solution:</strong> Build a sparse index <em>on top of</em> the primary index.</p>
 <ul>
-<li><strong>Linear Search:</strong> Sequential checking of every element. Complexity is <span class="math inline">\(O(n)\)</span>.</li>
-<li><strong>Binary Search:</strong> An extremely efficient search on <strong>sorted arrays</strong> (or Binary Search Trees). At each step, it halves the search space. Complexity is <span class="math inline">\(O(\log n)\)</span>.</li>
-<li><strong>Sorting Algorithms:</strong> Common algorithms to organize data include Quicksort (<span class="math inline">\(O(n \log n)\)</span>), Mergesort (<span class="math inline">\(O(n \log n)\)</span>), Heap Sort (<span class="math inline">\(O(n \log n)\)</span>), and the much slower Insertion Sort (<span class="math inline">\(O(n^2)\)</span>).</li>
+<li><strong>Inner index</strong> — the primary index file (on disk).</li>
+<li><strong>Outer index</strong> — a sparse index of the inner index (fits in memory).</li>
 </ul>
+<p>Lookup path: outer index (memory) → inner index block → data record.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="multi_level_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Multilevel Index"><img src="multi_level_index.png" class="img-fluid figure-img" alt="Multilevel Index"></a></p>
+<figcaption>Multilevel Index</figcaption>
+</figure>
+</div>
+<p>If even the outer index is too large, add another level. This layering idea is the foundation of B-trees.</p>
+<hr>
+</section>
+<section id="index-updates" class="level2">
+<h2 class="anchored" data-anchor-id="index-updates">Index Updates</h2>
+<section id="on-deletion" class="level3">
+<h3 class="anchored" data-anchor-id="on-deletion">On Deletion</h3>
+<ul>
+<li>If the deleted record was the <strong>only</strong> one with that key value, remove the index entry.</li>
+<li><strong>Dense:</strong> treat like a sorted-list deletion.</li>
+<li><strong>Sparse:</strong> replace the entry with the next key in the block; if the next key already has its own entry, just delete the current one.</li>
+</ul>
+</section>
+<section id="on-insertion" class="level3">
+<h3 class="anchored" data-anchor-id="on-insertion">On Insertion</h3>
+<ul>
+<li><strong>Dense:</strong> if the key is absent from the index, insert a new entry in sorted order.</li>
+<li><strong>Sparse:</strong> no change needed unless a new disk block is created — if so, add an entry for the first key in that new block.</li>
+</ul>
+<p>Multilevel updates follow the same logic, applied at each level recursively.</p>
+<hr>
+</section>
+</section>
+<section id="index-definition-in-sql" class="level2">
+<h2 class="anchored" data-anchor-id="index-definition-in-sql">Index Definition in SQL</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">-- Create a basic index</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_ename <span class="kw">ON</span> emp_tab(ename);</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">-- Create a unique index (enforces candidate key constraint)</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">CREATE</span> <span class="kw">UNIQUE</span> <span class="kw">INDEX</span> emp_email <span class="kw">ON</span> emp_tab(email);</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">-- Create a composite index on two columns</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_comp <span class="kw">ON</span> emp_tab(ename, empno) <span class="kw">COMPUTE</span> <span class="kw">STATISTICS</span>;</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">-- Function-based index (precomputes the function result for each row)</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_upper <span class="kw">ON</span> emp_tab(<span class="fu">UPPER</span>(ename)) <span class="kw">COMPUTE</span> <span class="kw">STATISTICS</span>;</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">-- Bitmap index (best for columns with few distinct values)</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="kw">CREATE</span> <span class="kw">BITMAP</span> <span class="kw">INDEX</span> idx_gender <span class="kw">ON</span> student(gender);</span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="co">-- Drop an index</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="kw">DROP</span> <span class="kw">INDEX</span> emp_ename;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 <code>COMPUTE STATISTICS</code> tells the optimizer to gather column statistics at index creation time — important for the optimizer to make good decisions.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>📌 <code>CREATE UNIQUE INDEX</code> is technically redundant if you’ve already declared the column as <code>UNIQUE</code> in the table definition — the constraint is preferred.</p>
+</blockquote>
+<hr>
+</section>
+<section id="guidelines-for-indexing" class="level2">
+<h2 class="anchored" data-anchor-id="guidelines-for-indexing">Guidelines for Indexing</h2>
+<p>Indexing is an ongoing task — query patterns change, tables grow, and indexes need to be monitored and adjusted over time.</p>
+<ul>
+<li><em>Rule 1</em>: Index the Correct Tables</li>
+<li><em>Rule 2</em>: Index the Correct Columns</li>
+<li><em>Rule 3</em>: Limit the Number of Indexes for Each Table</li>
+<li><em>Rule 4</em>: Choose the Order of Columns in Composite Indexes</li>
+<li><em>Rule 5</em>: Gather Statistics to Make Index Usage More Accurate</li>
+<li><em>Rule 6</em>: Drop Indexes That Are No Longer Required</li>
+</ul>
+</section>
+<section id="formulas-for-solving-the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="formulas-for-solving-the-problem">Formulas for Solving the Problem</h2>
+<p><span class="math display">\[\text{Space of Index} = \text{Size of Key Field} + \text{Size of Pointer Field}\]</span></p>
+<p><span class="math display">\[\text{Total Index Space} = \text{Space of Index} \times \text{No. of Records}\]</span></p>
+<p><span class="math display">\[\text{One Block Size} = \frac{\text{Size of File}}{\text{No. of Blocks Used to Store the File}}\]</span></p>
+<p><span class="math display">\[\text{No. of Blocks for Index} = \left\lceil \frac{\text{Total Index Space}}{\text{One Block Size}} \right\rceil\]</span></p>
+<blockquote class="blockquote">
+<p>💡 Always round <strong>up</strong> — a partial block still occupies a full block on disk.</p>
+</blockquote>
 
 
 
@@ -1262,13 +1341,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_7/03_rad.html" class="pagination-link" aria-label="RAD, Application Security, and Mobile Apps">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">RAD, Application Security, and Mobile Apps</span></span>
+      <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="pagination-link" aria-label="File Organization &amp; Buffering">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">File Organization &amp; Buffering</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_8/02_physical_storage_systems.html" class="pagination-link" aria-label="Physical Storage Systems">
-        <span class="nav-page-text"><span class="chapter-title">Physical Storage Systems</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_9/02_bst.html" class="pagination-link" aria-label="Tree-Based Index Structures">
+        <span class="nav-page-text"><span class="chapter-title">Tree-Based Index Structures</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1280,7 +1359,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/01_algorithms_and_data_structures.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

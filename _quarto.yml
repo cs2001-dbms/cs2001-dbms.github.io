@@ -117,6 +117,11 @@ book:
         - weeks/week_8/02_physical_storage_systems.qmd
         - weeks/week_8/03_disk_performance_math.qmd
         - weeks/week_8/04_file_organization_and_buffering.qmd
+    - part: '**Week-09**'
+      chapters:
+        - weeks/week_9/01_indexing.qmd
+        - weeks/week_9/02_bst.qmd
+        - weeks/week_9/03_hashing.qmd
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd
