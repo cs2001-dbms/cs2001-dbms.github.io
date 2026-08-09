@@ -2,23 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Design: Redundancy, Anomalies &amp; Functional Dependencies – Database Management Systems</title>
+<title>Indexing and Hashing – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -36,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_5/02.html" rel="next">
-<link href="../../weeks/week_4/03_advanced_er_concepts.html" rel="prev">
+<link href="../../sql_playground.html" rel="next">
+<link href="../../weeks/week_8/04_file_organization_and_buffering.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -45,14 +42,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-a534e71cf44c863abd021fd9c01f7ed3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -80,7 +77,7 @@ ul.task-list li input[type="checkbox"] {
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -286,7 +283,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Functional Dependencies</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing_and_234_trees.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing_and_234_trees.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -441,16 +438,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-05</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Functional Dependencies</span></a>
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependencies</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -555,26 +552,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/02_bst.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Tree-Based Index Structures</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
+  <a href="../../weeks/week_9/01_indexing_and_234_trees.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Indexing</span></a>
   </div>
 </li>
       </ul>
@@ -610,28 +597,51 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#redundancy-and-anomalies" id="toc-redundancy-and-anomalies" class="nav-link active" data-scroll-target="#redundancy-and-anomalies">Redundancy and Anomalies</a>
+  <li><a href="#why-do-we-need-indexes" id="toc-why-do-we-need-indexes" class="nav-link active" data-scroll-target="#why-do-we-need-indexes">Why Do We Need Indexes?</a></li>
+  <li><a href="#how-do-we-judge-an-index" id="toc-how-do-we-judge-an-index" class="nav-link" data-scroll-target="#how-do-we-judge-an-index">How Do We Judge an Index?</a></li>
+  <li><a href="#ordered-indices" id="toc-ordered-indices" class="nav-link" data-scroll-target="#ordered-indices">Ordered Indices</a></li>
+  <li><a href="#dense-vs.-sparse-indexes" id="toc-dense-vs.-sparse-indexes" class="nav-link" data-scroll-target="#dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</a>
   <ul class="collapse">
-  <li><a href="#a-bad-schema" id="toc-a-bad-schema" class="nav-link" data-scroll-target="#a-bad-schema">A Bad Schema</a></li>
-  <li><a href="#anomalies" id="toc-anomalies" class="nav-link" data-scroll-target="#anomalies">Anomalies</a></li>
-  <li><a href="#why-this-happens-and-the-fix" id="toc-why-this-happens-and-the-fix" class="nav-link" data-scroll-target="#why-this-happens-and-the-fix">Why This Happens — and the Fix</a></li>
+  <li><a href="#dense-index" id="toc-dense-index" class="nav-link" data-scroll-target="#dense-index">Dense Index</a></li>
+  <li><a href="#sparse-index" id="toc-sparse-index" class="nav-link" data-scroll-target="#sparse-index">Sparse Index</a></li>
   </ul></li>
-  <li><a href="#functional-dependencies" id="toc-functional-dependencies" class="nav-link" data-scroll-target="#functional-dependencies">Functional Dependencies</a>
+  <li><a href="#primary-and-secondary-indices-the-trade-off" id="toc-primary-and-secondary-indices-the-trade-off" class="nav-link" data-scroll-target="#primary-and-secondary-indices-the-trade-off">Primary and Secondary Indices: The Trade-Off</a></li>
+  <li><a href="#multilevel-index" id="toc-multilevel-index" class="nav-link" data-scroll-target="#multilevel-index">Multilevel Index</a></li>
+  <li><a href="#index-updates-in-practice" id="toc-index-updates-in-practice" class="nav-link" data-scroll-target="#index-updates-in-practice">Index Updates in Practice</a>
   <ul class="collapse">
-  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
-  <li><a href="#keys-redefined-using-fds" id="toc-keys-redefined-using-fds" class="nav-link" data-scroll-target="#keys-redefined-using-fds">Keys, Redefined Using FDs</a></li>
-  <li><a href="#trivial-fds" id="toc-trivial-fds" class="nav-link" data-scroll-target="#trivial-fds">Trivial FDs</a></li>
+  <li><a href="#on-deletion" id="toc-on-deletion" class="nav-link" data-scroll-target="#on-deletion">On Deletion</a></li>
+  <li><a href="#on-insertion" id="toc-on-insertion" class="nav-link" data-scroll-target="#on-insertion">On Insertion</a></li>
   </ul></li>
+  <li><a href="#balanced-binary-search-trees-a-recap" id="toc-balanced-binary-search-trees-a-recap" class="nav-link" data-scroll-target="#balanced-binary-search-trees-a-recap">Balanced Binary Search Trees: A Recap</a>
+  <ul class="collapse">
+  <li><a href="#search-complexity-depends-on-height" id="toc-search-complexity-depends-on-height" class="nav-link" data-scroll-target="#search-complexity-depends-on-height">Search Complexity Depends on Height</a></li>
+  <li><a href="#keeping-it-balanced" id="toc-keeping-it-balanced" class="nav-link" data-scroll-target="#keeping-it-balanced">Keeping It Balanced</a></li>
+  </ul></li>
+  <li><a href="#the-2-3-4-tree-motivation" id="toc-the-2-3-4-tree-motivation" class="nav-link" data-scroll-target="#the-2-3-4-tree-motivation">The 2-3-4 Tree: Motivation</a></li>
+  <li><a href="#what-is-a-2-3-4-tree" id="toc-what-is-a-2-3-4-tree" class="nav-link" data-scroll-target="#what-is-a-2-3-4-tree">What Is a 2-3-4 Tree?</a></li>
+  <li><a href="#search-in-a-2-3-4-tree" id="toc-search-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#search-in-a-2-3-4-tree">Search in a 2-3-4 Tree</a></li>
+  <li><a href="#insertion-in-a-2-3-4-tree" id="toc-insertion-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#insertion-in-a-2-3-4-tree">Insertion in a 2-3-4 Tree</a>
+  <ul class="collapse">
+  <li><a href="#node-splitting" id="toc-node-splitting" class="nav-link" data-scroll-target="#node-splitting">Node Splitting</a></li>
+  <li><a href="#early-vs.-late-splitting" id="toc-early-vs.-late-splitting" class="nav-link" data-scroll-target="#early-vs.-late-splitting">Early vs.&nbsp;Late Splitting</a></li>
+  </ul></li>
+  <li><a href="#insertion-example-step-by-step" id="toc-insertion-example-step-by-step" class="nav-link" data-scroll-target="#insertion-example-step-by-step">Insertion Example: Step by Step</a></li>
+  <li><a href="#deletion-in-a-2-3-4-tree" id="toc-deletion-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#deletion-in-a-2-3-4-tree">Deletion in a 2-3-4 Tree</a>
+  <ul class="collapse">
+  <li><a href="#deletion-example" id="toc-deletion-example" class="nav-link" data-scroll-target="#deletion-example">Deletion Example</a></li>
+  </ul></li>
+  <li><a href="#advantages-and-disadvantages-of-2-3-4-trees" id="toc-advantages-and-disadvantages-of-2-3-4-trees" class="nav-link" data-scroll-target="#advantages-and-disadvantages-of-2-3-4-trees">Advantages and Disadvantages of 2-3-4 Trees</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting It All Together</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing_and_234_trees.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Functional Dependencies</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing_and_234_trees.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing_and_234_trees.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Design: Redundancy, Anomalies &amp; Functional Dependencies</span></h1>
+<h1 class="title"><span class="chapter-title">Indexing and Hashing</span></h1>
 </div>
 
 
@@ -648,143 +658,506 @@ window.Quarto = {
 </header>
 
 
-<section id="redundancy-and-anomalies" class="level2">
-<h2 class="anchored" data-anchor-id="redundancy-and-anomalies">Redundancy and Anomalies</h2>
-<p>A relational schema should reflect real-world structure, avoid storing the same fact twice, and stay easy to update correctly. When a schema fails at this, two related problems show up: <strong>redundancy</strong> and <strong>anomalies</strong>.</p>
-<section id="a-bad-schema" class="level3">
-<h3 class="anchored" data-anchor-id="a-bad-schema">A Bad Schema</h3>
-<pre><code>instructor_with_department(ID, name, salary, dept_name, building, budget)</code></pre>
-<ul>
-<li><code>ID</code>, <code>name</code>, <code>salary</code> — belong purely to the instructor, no repetition</li>
-<li><code>dept_name</code>, <code>building</code>, <code>budget</code> — belong to the <em>department</em></li>
-</ul>
-<p>Since a department has many instructors, <code>building</code> and <code>budget</code> get copied once per instructor in that department. That repetition is <strong>redundancy</strong> — the same data item stored in multiple places.</p>
-<p>Here’s what that looks like with actual rows:</p>
+<section id="why-do-we-need-indexes" class="level2">
+<h2 class="anchored" data-anchor-id="why-do-we-need-indexes">Why Do We Need Indexes?</h2>
+<p>Imagine a library with a million books stored in no particular order. Finding a specific title means scanning every shelf — that is linear search, and it is painfully slow for large collections.</p>
+<p>A <strong>database index</strong> solves exactly this problem. It is a separate, smaller data structure that maps search-key values to the actual records in the main table. Think of it like the index at the back of a textbook: you look up a keyword, get the page number, and jump straight there — no full scan needed.</p>
+<blockquote class="blockquote">
+<p>💡 <strong>Key insight:</strong> An index file is typically <em>much</em> smaller than the main data file, so searching the index is fast, and then the pointer takes you directly to the right record.</p>
+</blockquote>
+<p>The attribute (or set of attributes) you build the index on is called the <strong>search key</strong>. An index entry looks like this:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>ID</th>
-<th>name</th>
-<th>salary</th>
-<th>dept_name</th>
-<th>building</th>
-<th>budget</th>
+<th style="text-align: center;">search-key</th>
+<th style="text-align: center;">pointer</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>101</td>
-<td>Srinivasan</td>
-<td>65000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
-</tr>
-<tr class="even">
-<td>102</td>
-<td>Wu</td>
-<td>90000</td>
-<td>Finance</td>
-<td>Painter Hall</td>
-<td>120000</td>
-</tr>
-<tr class="odd">
-<td>103</td>
-<td>Gold</td>
-<td>87000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
-</tr>
-<tr class="even">
-<td>104</td>
-<td>Katz</td>
-<td>75000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
+<td style="text-align: center;">“Physics”</td>
+<td style="text-align: center;">→ record #5</td>
 </tr>
 </tbody>
 </table>
-<p>Notice <code>Taylor Hall</code> and <code>100000</code> repeat for every Comp. Sci. instructor — that’s the redundancy in action.</p>
+<p>There are two broad families of indexes:</p>
+<ul>
+<li><strong>Ordered indices</strong> — entries are sorted on the search key (like an alphabetical index)</li>
+<li><strong>Hash indices</strong> — entries are scattered into <em>buckets</em> by a hash function (faster for exact lookups, but can’t handle range queries well)</li>
+</ul>
+<p>This lecture focuses on <strong>ordered indices</strong>.</p>
+<hr>
 </section>
-<section id="anomalies" class="level3">
-<h3 class="anchored" data-anchor-id="anomalies">Anomalies</h3>
-<p>Redundancy causes <strong>anomalies</strong> — inconsistencies triggered by insert, delete, or update operations. Using the same table:</p>
+<section id="how-do-we-judge-an-index" class="level2">
+<h2 class="anchored" data-anchor-id="how-do-we-judge-an-index">How Do We Judge an Index?</h2>
+<p>Not all indexes are equally useful. We evaluate them on four metrics:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Anomaly</th>
-<th>What Goes Wrong</th>
-<th>On This Table</th>
+<th>Metric</th>
+<th>What it asks</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Insertion</strong></td>
-<td>Can’t add a record without unrelated data</td>
-<td>To add a brand-new “Physics” department with no instructors yet, we can’t — there’s no row to put it in until a physics instructor is hired</td>
+<td><strong>Access types</strong></td>
+<td>Can it handle point lookups <em>and</em> range queries efficiently?</td>
 </tr>
 <tr class="even">
-<td><strong>Deletion</strong></td>
-<td>Deleting one record erases unrelated info</td>
-<td>If Wu (row 102) resigns and we delete that row, we lose the fact that Finance’s building is Painter Hall and its budget is 120000 — nowhere else stores that</td>
+<td><strong>Access time</strong></td>
+<td>How fast can we find a record?</td>
 </tr>
 <tr class="odd">
-<td><strong>Update</strong></td>
-<td>One fact change needs many row updates</td>
-<td>If Comp. Sci.’s budget rises to 110000, we must update rows 101, 103, <em>and</em> 104 — miss one, and the table now claims two different budgets for the same department</td>
+<td><strong>Insertion/Deletion time</strong></td>
+<td>How much overhead does updating the index add?</td>
+</tr>
+<tr class="even">
+<td><strong>Space overhead</strong></td>
+<td>How much extra storage does the index consume?</td>
 </tr>
 </tbody>
 </table>
+<p>A good index strikes the right balance — fast lookups without ballooning storage or making every insert a nightmare.</p>
+<hr>
 </section>
-<section id="why-this-happens-and-the-fix" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-happens-and-the-fix">Why This Happens — and the Fix</h3>
-<p><code>dept_name</code> uniquely decides <code>building</code> and <code>budget</code> (a department can’t have two budgets). This dependency is exactly what forces <code>building</code>/<code>budget</code> to repeat across instructor rows:</p>
-<p><strong>Dependency → Redundancy → Anomaly</strong></p>
-<p>The fix is to <strong>decompose</strong> the table so each fact is stored exactly once — e.g., split <code>instructor_with_department</code> into <code>instructor(ID, name, salary, dept_name)</code> and <code>department(dept_name, building, budget)</code>. (Covered in detail under Lossless Join Decomposition.)</p>
-<p>Removing redundancy this way is what makes a schema easier to maintain: updates touch a single row, deletions don’t silently destroy unrelated facts, and inserts don’t need unrelated data just to go through. This is the core motivation behind everything else in normalization theory.</p>
+<section id="ordered-indices" class="level2">
+<h2 class="anchored" data-anchor-id="ordered-indices">Ordered Indices</h2>
+<p>In an <strong>ordered index</strong>, entries are sorted on the search key value — exactly like an author catalog in a library. Two important variants:</p>
+<ul>
+<li><p><strong>Primary index (clustering index):</strong> The index whose search key matches the physical order of the data file itself. If your <code>Employee</code> table is stored sorted by <code>emp_id</code>, then an index on <code>emp_id</code> is the primary index. Sequential scans using this index are very efficient because records physically adjacent on disk are also logically adjacent.</p></li>
+<li><p><strong>Secondary index (non-clustering index):</strong> An index on a different attribute — say, <code>salary</code> — while the file is still physically ordered by <code>emp_id</code>. The salary values in the index point all over the disk, so a sequential scan through this index is much more expensive (each lookup may fetch a fresh disk block).</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>⚠️ A table can have <strong>only one primary index</strong> (since the data has only one physical order) but <strong>many secondary indices</strong>.</p>
+</blockquote>
+<p>An <strong>index-sequential file</strong> is the combination: a sequentially ordered file together with its primary index. This is sometimes called ISAM (Indexed Sequential Access Method).</p>
+<hr>
+</section>
+<section id="dense-vs.-sparse-indexes" class="level2">
+<h2 class="anchored" data-anchor-id="dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</h2>
+<section id="dense-index" class="level3">
+<h3 class="anchored" data-anchor-id="dense-index">Dense Index</h3>
+<p>A <strong>dense index</strong> has one index entry for <em>every</em> record in the data file.</p>
+<p>Think of it as a full directory: every employee gets a line in the lookup table.</p>
+<pre><code>Index entry for emp_id = 101  →  record 1
+Index entry for emp_id = 102  →  record 2
+Index entry for emp_id = 103  →  record 3
+...</code></pre>
+<p><strong>Advantage:</strong> You can tell immediately from the index whether a record exists — no need to visit the data file at all for existence checks.</p>
+<p><strong>Disadvantage:</strong> The index can grow quite large.</p>
+<hr>
+</section>
+<section id="sparse-index" class="level3">
+<h3 class="anchored" data-anchor-id="sparse-index">Sparse Index</h3>
+<p>A <strong>sparse index</strong> has index entries for only <em>some</em> search-key values — typically one per disk block (or one per group of records).</p>
+<pre><code>Index entry for emp_id = 101  →  block 0  (covers records 101–200)
+Index entry for emp_id = 201  →  block 1  (covers records 201–300)
+...</code></pre>
+<p>To find a record with key <span class="math inline">\(K\)</span>: 1. Find the largest index entry with key <span class="math inline">\(&lt; K\)</span>. 2. Follow its pointer to the data block. 3. Scan sequentially within that block until you find <span class="math inline">\(K\)</span>.</p>
+<p><strong>Advantage:</strong> Much smaller index — fewer entries to store and maintain.</p>
+<p><strong>Disadvantage:</strong> Slightly slower lookup since you have to scan within a block.</p>
+<blockquote class="blockquote">
+<p>💡 <strong>Sweet spot:</strong> A sparse index with one entry per disk block is the standard recommended trade-off — small enough to fit in memory, yet granular enough to eliminate most of the sequential scan.</p>
+</blockquote>
 <hr>
 </section>
 </section>
-<section id="functional-dependencies" class="level2">
-<h2 class="anchored" data-anchor-id="functional-dependencies">Functional Dependencies</h2>
-<section id="definition" class="level3">
-<h3 class="anchored" data-anchor-id="definition">Definition</h3>
-<p>A <strong>functional dependency (FD)</strong> says: knowing the value of one set of attributes is enough to pin down another.</p>
-<p>For relation schema <span class="math inline">\(R\)</span>, with <span class="math inline">\(\alpha \subseteq R\)</span> and <span class="math inline">\(\beta \subseteq R\)</span>:</p>
-<p><span class="math display">\[\alpha \rightarrow \beta\]</span></p>
-<p>holds if, for any legal instance of <span class="math inline">\(R\)</span>, two tuples that agree on <span class="math inline">\(\alpha\)</span> must also agree on <span class="math inline">\(\beta\)</span>:</p>
-<p><span class="math display">\[t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]\]</span></p>
-<p><strong>Example:</strong> in <code>instructor_with_department</code>, we expect:</p>
-<pre><code>dept_name → building
-dept_name → budget</code></pre>
-<p>since a department has exactly one building and one budget. We would <em>not</em> expect <code>dept_name → salary</code> — a department tells you nothing about one specific instructor’s salary.</p>
+<section id="primary-and-secondary-indices-the-trade-off" class="level2">
+<h2 class="anchored" data-anchor-id="primary-and-secondary-indices-the-trade-off">Primary and Secondary Indices: The Trade-Off</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Primary (Clustering)</th>
+<th>Secondary (Non-Clustering)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data order</td>
+<td>Matches the index</td>
+<td>Different from the index</td>
+</tr>
+<tr class="even">
+<td>Sequential scan</td>
+<td>Very efficient</td>
+<td>Expensive — random I/O</td>
+</tr>
+<tr class="odd">
+<td>Can be sparse?</td>
+<td>Yes</td>
+<td>No — must be dense</td>
+</tr>
+<tr class="even">
+<td>Number per table</td>
+<td>One</td>
+<td>Many</td>
+</tr>
+</tbody>
+</table>
+<p>Why must secondary indices be dense? Because records of a given secondary key value are scattered throughout the file. A sparse index would miss records that don’t happen to be at a block boundary.</p>
 <blockquote class="blockquote">
-<p><strong>Note:</strong> An FD only “holds” if it’s true for <em>every</em> legal instance of the schema, not just today’s data. If the current rows happen to satisfy <code>name → ID</code> by coincidence (no two instructors currently share a name), that doesn’t mean the FD genuinely holds.</p>
+<p>⚠️ Updating indices adds overhead. Every insert, delete, or update to the table requires updating <strong>every</strong> index built on it. More indexes → faster reads, slower writes.</p>
 </blockquote>
+<hr>
 </section>
-<section id="keys-redefined-using-fds" class="level3">
-<h3 class="anchored" data-anchor-id="keys-redefined-using-fds">Keys, Redefined Using FDs</h3>
+<section id="multilevel-index" class="level2">
+<h2 class="anchored" data-anchor-id="multilevel-index">Multilevel Index</h2>
+<p>Here’s a practical problem: what if the primary index itself is too large to fit in main memory? Searching it becomes expensive again.</p>
+<p>The solution is to <strong>layer</strong> another sparse index on top:</p>
 <ul>
-<li><span class="math inline">\(K\)</span> is a <strong>superkey</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span> (K determines every attribute in R)</li>
-<li><span class="math inline">\(K\)</span> is a <strong>candidate key</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span>, <strong>and</strong> no proper subset <span class="math inline">\(\alpha \subset K\)</span> also satisfies <span class="math inline">\(\alpha \rightarrow R\)</span> (K is minimal)</li>
+<li><strong>Inner index</strong> — the original primary index (on disk)</li>
+<li><strong>Outer index</strong> — a sparse index built on the inner index (small enough for memory)</li>
+</ul>
+<p>Lookup: search the outer index (in memory) → jump to the right block of the inner index → follow the pointer to the actual data.</p>
+<p>If even the outer index is too large, add yet another level. This idea of layering sparse indexes is exactly where <strong>B-trees</strong> come from — which we will cover in the next section.</p>
+<blockquote class="blockquote">
+<p>⚠️ Indices at <em>all</em> levels must be updated whenever the data file changes.</p>
+</blockquote>
+<hr>
+</section>
+<section id="index-updates-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="index-updates-in-practice">Index Updates in Practice</h2>
+<section id="on-deletion" class="level3">
+<h3 class="anchored" data-anchor-id="on-deletion">On Deletion</h3>
+<ul>
+<li>If the deleted record was the <strong>only</strong> one with that search-key value, remove the entry from the index.</li>
+<li><strong>Dense index:</strong> treat it like any sorted-list deletion.</li>
+<li><strong>Sparse index:</strong> if the deleted record was the anchor for a block, replace its index entry with the next search-key value in that block. If the next value already has its own entry, just remove the current entry.</li>
 </ul>
 </section>
-<section id="trivial-fds" class="level3">
-<h3 class="anchored" data-anchor-id="trivial-fds">Trivial FDs</h3>
-<p>An FD <span class="math inline">\(\alpha \rightarrow \beta\)</span> is <strong>trivial</strong> if <span class="math inline">\(\beta \subseteq \alpha\)</span> — it’s automatically true for any relation and tells us nothing new.</p>
-<pre><code>ID, name → ID     -- trivial (ID is already on the left)
-name → name       -- trivial</code></pre>
-
-
-
+<section id="on-insertion" class="level3">
+<h3 class="anchored" data-anchor-id="on-insertion">On Insertion</h3>
+<ul>
+<li><strong>Dense index:</strong> look up the key; if absent, insert a new entry in sorted order.</li>
+<li><strong>Sparse index:</strong> no change needed unless a new disk block is created. If a new block is created, insert an entry for the first key in that new block.</li>
+</ul>
+<p>Multilevel insertion and deletion work the same way, recursively applied to each level.</p>
+<hr>
+<hr>
 </section>
+</section>
+<section id="balanced-binary-search-trees-a-recap" class="level2">
+<h2 class="anchored" data-anchor-id="balanced-binary-search-trees-a-recap">Balanced Binary Search Trees: A Recap</h2>
+<p>Before we can understand the tree structures databases use internally, it helps to revisit the classic Binary Search Tree (BST) and why “balance” matters so much.</p>
+<section id="search-complexity-depends-on-height" class="level3">
+<h3 class="anchored" data-anchor-id="search-complexity-depends-on-height">Search Complexity Depends on Height</h3>
+<p>In a BST with <span class="math inline">\(n\)</span> nodes, search costs <span class="math inline">\(O(h)\)</span> where <span class="math inline">\(h\)</span> is the tree’s <strong>height</strong>.</p>
+<ul>
+<li><strong>Best case (balanced):</strong> <span class="math inline">\(h \sim O(\log n)\)</span> — perfect, this is what we want.</li>
+<li><strong>Worst case (skewed):</strong> <span class="math inline">\(h = n - 1\)</span> — this happens when keys are inserted in sorted order. The tree degenerates into a linked list, and search becomes <span class="math inline">\(O(n)\)</span>.</li>
+</ul>
+<pre><code>Sorted insertion: 1, 2, 3, 4, 5
+Resulting "tree":
+  1
+   \
+    2
+     \
+      3  ← just a linked list, O(n) search</code></pre>
+</section>
+<section id="keeping-it-balanced" class="level3">
+<h3 class="anchored" data-anchor-id="keeping-it-balanced">Keeping It Balanced</h3>
+<p>A BST is <strong>balanced</strong> if <span class="math inline">\(h \sim O(\log n)\)</span>. This can be guaranteed by:</p>
+<ul>
+<li><strong>AVL Tree:</strong> After every insert, check if any node’s left and right subtree heights differ by more than 1. If so, perform a <strong>rotation</strong> to restore balance. Named after inventors Adelson-Velsky and Landis.</li>
+<li><strong>Randomized BST:</strong> Insert keys in a uniformly random order — on average, the tree stays balanced without explicit rebalancing.</li>
+<li><strong>Skip List:</strong> A probabilistic layered structure of sorted linked lists, effectively giving <span class="math inline">\(O(\log n)\)</span> expected performance.</li>
+<li><strong>Splay Tree:</strong> A self-adjusting BST that moves recently accessed elements to the root, giving good <em>amortized</em> performance for repeated lookups.</li>
+</ul>
+<p>All of these achieve <span class="math inline">\(O(\log n)\)</span> for search, insert, and delete. But they share a critical limitation:</p>
+<blockquote class="blockquote">
+<p>⚠️ Balanced BSTs work brilliantly <strong>in memory</strong> but do <strong>not scale</strong> to external storage (disk). Each node access is a separate disk read, and with <span class="math inline">\(O(\log n)\)</span> levels, that’s <span class="math inline">\(O(\log n)\)</span> disk reads — each taking 5–10 milliseconds. For a million records, that’s painfully slow.</p>
+</blockquote>
+<p>This is why databases need a different kind of tree.</p>
+<hr>
+</section>
+</section>
+<section id="the-2-3-4-tree-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="the-2-3-4-tree-motivation">The 2-3-4 Tree: Motivation</h2>
+<p>The problem with BSTs on disk is that each <strong>node holds only one key and has only two children</strong>. The tree must be very tall (<span class="math inline">\(O(\log n)\)</span> levels) to hold <span class="math inline">\(n\)</span> records.</p>
+<p>What if we could make each node <strong>fatter</strong> — storing multiple keys and having multiple children? Then the tree would be much <strong>shorter</strong>, and we’d need far fewer disk reads to reach any record.</p>
+<p>This idea leads to the <strong>2-3-4 Tree</strong> (and ultimately to B-trees, the actual structure used in most database engines).</p>
+<hr>
+</section>
+<section id="what-is-a-2-3-4-tree" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-2-3-4-tree">What Is a 2-3-4 Tree?</h2>
+<p>A 2-3-4 Tree is a balanced search tree where every node can hold <strong>1, 2, or 3 keys</strong> (and correspondingly have <strong>2, 3, or 4 children</strong>). That is where the name comes from.</p>
+<p><strong>The three node types:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Node type</th>
+<th style="text-align: center;">Keys stored</th>
+<th style="text-align: center;">Children</th>
+<th>Search key rule</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>2-node</strong></td>
+<td style="text-align: center;">1 (call it S)</td>
+<td style="text-align: center;">2</td>
+<td>left child &lt; S; right child &gt; S</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>3-node</strong></td>
+<td style="text-align: center;">2 (S and L)</td>
+<td style="text-align: center;">3</td>
+<td>left &lt; S; middle: S–L; right &gt; L</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>4-node</strong></td>
+<td style="text-align: center;">3 (S, M, L)</td>
+<td style="text-align: center;">4</td>
+<td>left &lt; S; second: S–M; third: M–L; right &gt; L</td>
+</tr>
+</tbody>
+</table>
+<p>A leaf node can hold 1, 2, or 3 data items.</p>
+<p><strong>Key properties:</strong> - All leaves sit at the <strong>same depth</strong> — the tree is always perfectly height-balanced. - <span class="math inline">\(h \sim O(\log n)\)</span>, so search, insert, and delete all cost <span class="math inline">\(O(\log n)\)</span>. - Data is always kept in <strong>sorted order</strong>. - The structure <strong>generalizes to larger nodes</strong> — the B-tree is exactly this idea extended to nodes with hundreds of children.</p>
+<hr>
+</section>
+<section id="search-in-a-2-3-4-tree" class="level2">
+<h2 class="anchored" data-anchor-id="search-in-a-2-3-4-tree">Search in a 2-3-4 Tree</h2>
+<p>Search is a straightforward extension of BST search. At each node, compare the target key against the node’s keys and follow the appropriate child pointer. Repeat until you reach a leaf or find the key.</p>
+<blockquote class="blockquote">
+<p>💡 Because all leaves are at the same depth, every search takes exactly <span class="math inline">\(O(h) = O(\log n)\)</span> steps — no worst-case skew possible.</p>
+</blockquote>
+<hr>
+</section>
+<section id="insertion-in-a-2-3-4-tree" class="level2">
+<h2 class="anchored" data-anchor-id="insertion-in-a-2-3-4-tree">Insertion in a 2-3-4 Tree</h2>
+<p>Insertion always happens at a <strong>leaf</strong>. The process:</p>
+<ol type="1">
+<li>Search for the expected location (the leaf where the key would go).</li>
+<li>If the leaf is a <strong>2-node</strong>, expand it to a <strong>3-node</strong> and insert. Done.</li>
+<li>If the leaf is a <strong>3-node</strong>, expand it to a <strong>4-node</strong> and insert. Done.</li>
+<li>If the leaf is a <strong>4-node</strong>, we can’t add another key — we must <strong>split</strong> it first.</li>
+</ol>
+<section id="node-splitting" class="level3">
+<h3 class="anchored" data-anchor-id="node-splitting">Node Splitting</h3>
+<p>Splitting a 4-node takes its <strong>middle key (M)</strong> and pushes it up to the parent. The original 4-node becomes two 2-nodes (one holding S, one holding L), both children of the parent which now absorbs M.</p>
+<p>There are three cases depending on the parent:</p>
+<p><strong>Case 1 — Parent is the root (a 4-node):</strong></p>
+<pre><code>    [S  M  L]          [M]
+   /  |  |  \    →    /   \
+  a   b  c   d      [S]   [L]
+                   / \   / \
+                  a   b c   d</code></pre>
+<p>The tree grows one level taller.</p>
+<p><strong>Case 2 — Parent is a 2-node:</strong></p>
+<p>The middle key M is absorbed into the parent, converting it from a 2-node to a 3-node. The split 4-node’s two halves (S and L) become two separate children.</p>
+<p><strong>Case 3 — Parent is a 3-node:</strong></p>
+<p>Same idea — M is absorbed, converting the parent from a 3-node to a 4-node.</p>
+</section>
+<section id="early-vs.-late-splitting" class="level3">
+<h3 class="anchored" data-anchor-id="early-vs.-late-splitting">Early vs.&nbsp;Late Splitting</h3>
+<p>There are two strategies for <em>when</em> to split:</p>
+<ul>
+<li><strong>Early splitting:</strong> Split any 4-node you <em>encounter</em> on the way down during a search, before you actually need to. This ensures you never have a full node at the insertion point. At most one split per level.</li>
+<li><strong>Late splitting:</strong> Only split when you actually need to insert into a 4-node. May cascade up <span class="math inline">\(O(h)\)</span> splits in the worst case.</li>
+</ul>
+<p>Both strategies produce valid trees with the same complexity <span class="math inline">\(O(h)\)</span>, but they produce different final shapes. The slides follow the <strong>early splitting</strong> strategy.</p>
+<hr>
+</section>
+</section>
+<section id="insertion-example-step-by-step" class="level2">
+<h2 class="anchored" data-anchor-id="insertion-example-step-by-step">Insertion Example: Step by Step</h2>
+<p>Inserting the sequence <strong>10, 30, 60, 20, 50, 40, 70, 80, 15, 90, 100</strong> using the <strong>early splitting</strong> strategy.</p>
+<hr>
+<p><strong>After inserting 10, 30, 60</strong> — all three fit into one leaf (a 4-node):</p>
+<pre><code>[10  30  60]</code></pre>
+<hr>
+<p><strong>Insert 20</strong> — the root is a 4-node, so we split it <em>before</em> descending. Middle key 30 becomes the new root; 10 and 60 become separate children. Then 20 is inserted into the left child:</p>
+<pre><code>        [30]
+       /    \
+  [10, 20]  [60]</code></pre>
+<hr>
+<p><strong>Insert 50</strong> — 50 &gt; 30, go right. [60] is a 2-node, so just expand it:</p>
+<pre><code>        [30]
+       /    \
+  [10, 20]  [50, 60]</code></pre>
+<hr>
+<p><strong>Insert 40</strong> — 40 &gt; 30, go right. [50, 60] is a 3-node, expand to 4-node and insert:</p>
+<pre><code>        [30]
+       /    \
+  [10, 20]  [40, 50, 60]</code></pre>
+<hr>
+<p><strong>Insert 70</strong> — root [30] is fine. 70 &gt; 30, descend right. [40, 50, 60] is a 4-node — split it immediately (early strategy). Middle key 50 rises to join the root:</p>
+<pre><code>           [30, 50]
+          /   |    \
+   [10,20]  [40]  [60]</code></pre>
+<p>Now insert 70 into the right child [60]:</p>
+<pre><code>           [30, 50]
+          /   |    \
+   [10,20]  [40]  [60, 70]</code></pre>
+<hr>
+<p><strong>Insert 80</strong> — 80 &gt; 50, go to right child [60, 70]. It’s a 3-node, expand it:</p>
+<pre><code>           [30, 50]
+          /   |    \
+   [10,20]  [40]  [60, 70, 80]</code></pre>
+<hr>
+<p><strong>Insert 15</strong> — 15 &lt; 30, go left. [10, 20] is a 3-node, expand it:</p>
+<pre><code>              [30, 50]
+             /   |    \
+  [10, 15, 20]  [40]  [60, 70, 80]</code></pre>
+<hr>
+<p><strong>Insert 90</strong> — root [30, 50] is fine. 90 &gt; 50, descend right. [60, 70, 80] is a 4-node — split it. Middle key 70 rises to join the root:</p>
+<pre><code>                [30, 50, 70]
+               /   |    |   \
+  [10,15,20]  [40] [60] [80]</code></pre>
+<p>Now insert 90 into the rightmost child [80]:</p>
+<pre><code>                [30, 50, 70]
+               /   |    |   \
+  [10,15,20]  [40] [60] [80, 90]</code></pre>
+<hr>
+<p><strong>Insert 100</strong> — root [30, 50, 70] is a 4-node — split it first. Middle key 50 becomes the new root; 30 and 70 become children:</p>
+<pre><code>                      [50]
+                     /    \
+                  [30]    [70]
+                 /    \   /   \
+          [10,15,20] [40] [60] [80,90]</code></pre>
+<p>Now insert 100. 100 &gt; 50 → go right to [70]. 100 &gt; 70 → go to right child [80, 90]. It’s a 3-node, expand it:</p>
+<pre><code>                      [50]
+                     /    \
+                  [30]    [70]
+                 /    \   /   \
+          [10,15,20] [40] [60] [80, 90, 100]</code></pre>
+<hr>
+<p><strong>Final tree</strong> after all 11 insertions:</p>
+<pre><code>                         [50]
+                        /    \
+                     [30]    [70]
+                    /    \   /   \
+             [10,15,20] [40][60] [80,90,100]</code></pre>
+<p>Height = 2. All 11 keys stored, all leaves at the same level. A plain BST with this input could have ended up with height 10 — the 2-3-4 tree keeps it to 2.</p>
+<hr>
+</section>
+<section id="deletion-in-a-2-3-4-tree" class="level2">
+<h2 class="anchored" data-anchor-id="deletion-in-a-2-3-4-tree">Deletion in a 2-3-4 Tree</h2>
+<p>Deletion is the reverse of insertion. The core idea:</p>
+<ol type="1">
+<li>Locate the node containing the target key.</li>
+<li>Swap it with its <strong>inorder successor</strong> (the smallest key in the right subtree). This reduces deletion to always happening at a <strong>leaf</strong>.</li>
+<li>If the leaf is a 3-node or 4-node, simply remove the key.</li>
+<li>If the leaf is a 2-node, removing its only key would leave an empty node — which is illegal. To prevent this, <strong>transform every 2-node you encounter</strong> (on the way down) into a 3-node or 4-node first. This is the reverse of the splitting cases from insertion.</li>
+</ol>
+<section id="deletion-example" class="level3">
+<h3 class="anchored" data-anchor-id="deletion-example">Deletion Example</h3>
+<p>We will delete <strong>30</strong> and then <strong>50</strong> from the final tree above.</p>
+<p><strong>Starting tree:</strong></p>
+<pre><code>                         [50]
+                        /    \
+                     [30]    [70]
+                    /    \   /   \
+             [10,15,20] [40][60] [80,90,100]</code></pre>
+<hr>
+<p><strong>Delete 30</strong></p>
+<p>30 is an internal node. Its inorder successor is <strong>40</strong> (smallest key in its right subtree). Swap 30 and 40:</p>
+<pre><code>                         [50]
+                        /    \
+                     [40]    [70]
+                    /    \   /   \
+             [10,15,20] [30][60] [80,90,100]</code></pre>
+<p>Now delete 30 from the leaf [30]. That leaf is a 2-node — but since 30 is the only key, removing it would leave an empty node.</p>
+<p>However, looking at its sibling [10, 15, 20] (a 4-node), we can <strong>borrow</strong> from it. The sibling’s largest key (20) rotates up to the parent, and the parent’s key (40) rotates down to fill the now-empty spot:</p>
+<pre><code>                         [50]
+                        /    \
+                     [40]    [70]
+                    /    \   /   \
+             [10,15]  [20][60] [80,90,100]</code></pre>
+<p>30 is deleted. The tree remains balanced and all leaves are still at the same depth. ✓</p>
+<hr>
+<p><strong>Delete 50</strong></p>
+<p>50 is the root. Its inorder successor is <strong>60</strong> (smallest key in its right subtree). Swap 50 and 60:</p>
+<pre><code>                         [60]
+                        /    \
+                     [40]    [70]
+                    /    \   /   \
+             [10,15]  [20][50] [80,90,100]</code></pre>
+<p>Now delete 50 from the leaf [50]. It is a 2-node with no siblings to borrow from (both [20] and [60] in the right subtree are also 2-nodes).</p>
+<p>In this case, we <strong>merge</strong>: combine the 2-node [50] with its sibling [60] (oops — actually [60] is now the root, not a sibling). Let’s be precise: the right child of the root is [70], whose left child is [50] and right child is [80,90,100]. Since [50] is a 2-node and we must delete from it, we can borrow from the rich sibling [80, 90, 100]. The sibling’s smallest key (80) rotates up to the parent [70], and 70 rotates down to fill the gap:</p>
+<pre><code>                         [60]
+                        /    \
+                     [40]    [80]
+                    /    \   /   \
+             [10,15] [20][70] [90,100]</code></pre>
+<p>50 is deleted. Final tree:</p>
+<pre><code>                         [60]
+                        /    \
+                     [40]    [80]
+                    /    \   /   \
+             [10,15] [20][70] [90,100]</code></pre>
+<p>Still height 2, all leaves at the same depth. ✓</p>
+<blockquote class="blockquote">
+<p>📌 <strong>Key takeaway from deletion:</strong> The 2-3-4 tree never lets a node go empty. If you need to delete from a 2-node, you always first fatten it up — either by borrowing from a sibling or by merging with a sibling — before removing the key. This is the structural guarantee that keeps the tree balanced after every operation.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="advantages-and-disadvantages-of-2-3-4-trees" class="level2">
+<h2 class="anchored" data-anchor-id="advantages-and-disadvantages-of-2-3-4-trees">Advantages and Disadvantages of 2-3-4 Trees</h2>
+<p><strong>Advantages:</strong> - <span class="math inline">\(O(\log n)\)</span> height — all operations guaranteed efficient. - All leaves at the same depth — no degenerate cases. - Sorted order maintained automatically. - Generalizes easily to larger nodes (B-trees). - Suitable as a foundation for <strong>external</strong> data structures (disk-based storage).</p>
+<p><strong>Disadvantage:</strong> - Multiple node types (2-node, 3-node, 4-node) — implementation requires constructing and destructing different node sizes during splits and merges, which is messy in practice.</p>
+<blockquote class="blockquote">
+<p>💡 <strong>The connection to B-trees:</strong> If you use a single uniform node type with space for 3 keys and 4 pointers (and allow it to be partially filled), you get a <strong>B-tree</strong>. A 2-3-4 tree is exactly a B-tree with parameter <span class="math inline">\(n = 4\)</span>. B-trees (and their variant, B+-trees) are what real database engines like PostgreSQL and MySQL actually use for their indexes.</p>
+</blockquote>
+<hr>
+</section>
+<section id="putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Concept</th>
+<th>What it solves</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ordered index</td>
+<td>Enables fast lookup without scanning the whole table</td>
+</tr>
+<tr class="even">
+<td>Dense vs.&nbsp;sparse</td>
+<td>Trade-off between index size and lookup speed</td>
+</tr>
+<tr class="odd">
+<td>Primary vs.&nbsp;secondary</td>
+<td>One physical order → one primary; unlimited secondaries</td>
+</tr>
+<tr class="even">
+<td>Multilevel index</td>
+<td>Handles indexes too large to fit in memory</td>
+</tr>
+<tr class="odd">
+<td>BST (balanced)</td>
+<td>Optimal in-memory search: <span class="math inline">\(O(\log n)\)</span></td>
+</tr>
+<tr class="even">
+<td>2-3-4 tree</td>
+<td>Extends balanced search to external storage; precursor to B-trees</td>
+</tr>
+</tbody>
+</table>
+<p>The progression is logical: plain indexing → layered indexing → tree-structured indexing → multi-key node trees → B/B+-trees (next topic).</p>
+
+
+
 </section>
 
 </main> <!-- /main -->
@@ -1281,13 +1654,13 @@ name → name       -- trivial</code></pre>
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span>
+      <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="pagination-link" aria-label="File Organization &amp; Buffering">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">File Organization &amp; Buffering</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_5/02.html" class="pagination-link" aria-label="Armstrong Axioms">
-        <span class="nav-page-text"><span class="chapter-title">Armstrong Axioms</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../sql_playground.html" class="pagination-link" aria-label="SQL Playground">
+        <span class="nav-page-text"><span class="chapter-title">SQL Playground</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1299,7 +1672,7 @@ name → name       -- trivial</code></pre>
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing_and_234_trees.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

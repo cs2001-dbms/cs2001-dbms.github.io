@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Relational Design: Redundancy, Anomalies &amp; Functional Dependencies – Database Management Systems</title>
+<title>Indexing – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,8 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_5/02.html" rel="next">
-<link href="../../weeks/week_4/03_advanced_er_concepts.html" rel="prev">
+<link href="../../weeks/week_9/02_bst.html" rel="next">
+<link href="../../weeks/week_8/04_file_organization_and_buffering.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,6 +88,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-057cdb05f8e9acb4edbf53c6d0967359.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-92bdeccfb1ea4d92368a17456e8b6be4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -286,7 +324,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Functional Dependencies</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -441,16 +479,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-05</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Functional Dependencies</span></a>
+  <a href="../../weeks/week_5/01.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Functional Dependencies</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -555,16 +593,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
+  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Indexing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -610,28 +648,32 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#redundancy-and-anomalies" id="toc-redundancy-and-anomalies" class="nav-link active" data-scroll-target="#redundancy-and-anomalies">Redundancy and Anomalies</a>
+  <li><a href="#what-is-an-index" id="toc-what-is-an-index" class="nav-link active" data-scroll-target="#what-is-an-index">What is an Index?</a></li>
+  <li><a href="#ordered-indices-primary-vs.-secondary" id="toc-ordered-indices-primary-vs.-secondary" class="nav-link" data-scroll-target="#ordered-indices-primary-vs.-secondary">Ordered Indices: Primary vs.&nbsp;Secondary</a></li>
+  <li><a href="#dense-vs.-sparse-indexes" id="toc-dense-vs.-sparse-indexes" class="nav-link" data-scroll-target="#dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</a>
   <ul class="collapse">
-  <li><a href="#a-bad-schema" id="toc-a-bad-schema" class="nav-link" data-scroll-target="#a-bad-schema">A Bad Schema</a></li>
-  <li><a href="#anomalies" id="toc-anomalies" class="nav-link" data-scroll-target="#anomalies">Anomalies</a></li>
-  <li><a href="#why-this-happens-and-the-fix" id="toc-why-this-happens-and-the-fix" class="nav-link" data-scroll-target="#why-this-happens-and-the-fix">Why This Happens — and the Fix</a></li>
+  <li><a href="#dense-index" id="toc-dense-index" class="nav-link" data-scroll-target="#dense-index">Dense Index</a></li>
+  <li><a href="#sparse-index" id="toc-sparse-index" class="nav-link" data-scroll-target="#sparse-index">Sparse Index</a></li>
   </ul></li>
-  <li><a href="#functional-dependencies" id="toc-functional-dependencies" class="nav-link" data-scroll-target="#functional-dependencies">Functional Dependencies</a>
+  <li><a href="#multilevel-index" id="toc-multilevel-index" class="nav-link" data-scroll-target="#multilevel-index">Multilevel Index</a></li>
+  <li><a href="#index-updates" id="toc-index-updates" class="nav-link" data-scroll-target="#index-updates">Index Updates</a>
   <ul class="collapse">
-  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
-  <li><a href="#keys-redefined-using-fds" id="toc-keys-redefined-using-fds" class="nav-link" data-scroll-target="#keys-redefined-using-fds">Keys, Redefined Using FDs</a></li>
-  <li><a href="#trivial-fds" id="toc-trivial-fds" class="nav-link" data-scroll-target="#trivial-fds">Trivial FDs</a></li>
+  <li><a href="#on-deletion" id="toc-on-deletion" class="nav-link" data-scroll-target="#on-deletion">On Deletion</a></li>
+  <li><a href="#on-insertion" id="toc-on-insertion" class="nav-link" data-scroll-target="#on-insertion">On Insertion</a></li>
   </ul></li>
+  <li><a href="#index-definition-in-sql" id="toc-index-definition-in-sql" class="nav-link" data-scroll-target="#index-definition-in-sql">Index Definition in SQL</a></li>
+  <li><a href="#guidelines-for-indexing" id="toc-guidelines-for-indexing" class="nav-link" data-scroll-target="#guidelines-for-indexing">Guidelines for Indexing</a></li>
+  <li><a href="#formulas-for-solving-the-problem" id="toc-formulas-for-solving-the-problem" class="nav-link" data-scroll-target="#formulas-for-solving-the-problem">Formulas for Solving the Problem</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><strong>Week-05</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_5/01.html"><span class="chapter-title">Functional Dependencies</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><span class="chapter-title">Indexing</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Relational Design: Redundancy, Anomalies &amp; Functional Dependencies</span></h1>
+<h1 class="title"><span class="chapter-title">Indexing</span></h1>
 </div>
 
 
@@ -648,143 +690,164 @@ window.Quarto = {
 </header>
 
 
-<section id="redundancy-and-anomalies" class="level2">
-<h2 class="anchored" data-anchor-id="redundancy-and-anomalies">Redundancy and Anomalies</h2>
-<p>A relational schema should reflect real-world structure, avoid storing the same fact twice, and stay easy to update correctly. When a schema fails at this, two related problems show up: <strong>redundancy</strong> and <strong>anomalies</strong>.</p>
-<section id="a-bad-schema" class="level3">
-<h3 class="anchored" data-anchor-id="a-bad-schema">A Bad Schema</h3>
-<pre><code>instructor_with_department(ID, name, salary, dept_name, building, budget)</code></pre>
+<section id="what-is-an-index" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-an-index">What is an Index?</h2>
+<p>Think of a database index like the index at the back of a textbook — instead of reading every page, you look up the term, get the page number, and jump straight there.</p>
+<p>An index is a smaller, separate data structure that maps <strong>search-key values</strong> to their records in the main table. Each entry in an index file is called an <strong>index entry</strong> and looks like this:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">search-key</th>
+<th style="text-align: center;">pointer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">“Pabitra Mitra”</td>
+<td style="text-align: center;">→ record #6</td>
+</tr>
+</tbody>
+</table>
+<p>There are two broad families:</p>
 <ul>
-<li><code>ID</code>, <code>name</code>, <code>salary</code> — belong purely to the instructor, no repetition</li>
-<li><code>dept_name</code>, <code>building</code>, <code>budget</code> — belong to the <em>department</em></li>
+<li><strong>Ordered indices</strong> — entries are sorted on the search key.</li>
+<li><strong>Hash indices</strong> — entries are scattered into buckets using a hash function. Fast for exact lookups, but can’t handle range queries.</li>
 </ul>
-<p>Since a department has many instructors, <code>building</code> and <code>budget</code> get copied once per instructor in that department. That repetition is <strong>redundancy</strong> — the same data item stored in multiple places.</p>
-<p>Here’s what that looks like with actual rows:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>ID</th>
-<th>name</th>
-<th>salary</th>
-<th>dept_name</th>
-<th>building</th>
-<th>budget</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>101</td>
-<td>Srinivasan</td>
-<td>65000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
-</tr>
-<tr class="even">
-<td>102</td>
-<td>Wu</td>
-<td>90000</td>
-<td>Finance</td>
-<td>Painter Hall</td>
-<td>120000</td>
-</tr>
-<tr class="odd">
-<td>103</td>
-<td>Gold</td>
-<td>87000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
-</tr>
-<tr class="even">
-<td>104</td>
-<td>Katz</td>
-<td>75000</td>
-<td>Comp. Sci.</td>
-<td>Taylor Hall</td>
-<td>100000</td>
-</tr>
-</tbody>
-</table>
-<p>Notice <code>Taylor Hall</code> and <code>100000</code> repeat for every Comp. Sci. instructor — that’s the redundancy in action.</p>
+<p>This section focuses on ordered indices.</p>
+<hr>
 </section>
-<section id="anomalies" class="level3">
-<h3 class="anchored" data-anchor-id="anomalies">Anomalies</h3>
-<p>Redundancy causes <strong>anomalies</strong> — inconsistencies triggered by insert, delete, or update operations. Using the same table:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Anomaly</th>
-<th>What Goes Wrong</th>
-<th>On This Table</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Insertion</strong></td>
-<td>Can’t add a record without unrelated data</td>
-<td>To add a brand-new “Physics” department with no instructors yet, we can’t — there’s no row to put it in until a physics instructor is hired</td>
-</tr>
-<tr class="even">
-<td><strong>Deletion</strong></td>
-<td>Deleting one record erases unrelated info</td>
-<td>If Wu (row 102) resigns and we delete that row, we lose the fact that Finance’s building is Painter Hall and its budget is 120000 — nowhere else stores that</td>
-</tr>
-<tr class="odd">
-<td><strong>Update</strong></td>
-<td>One fact change needs many row updates</td>
-<td>If Comp. Sci.’s budget rises to 110000, we must update rows 101, 103, <em>and</em> 104 — miss one, and the table now claims two different budgets for the same department</td>
-</tr>
-</tbody>
-</table>
+<section id="ordered-indices-primary-vs.-secondary" class="level2">
+<h2 class="anchored" data-anchor-id="ordered-indices-primary-vs.-secondary">Ordered Indices: Primary vs.&nbsp;Secondary</h2>
+<p><strong>Primary index (clustering index):</strong> The index whose search key matches the physical order of the data file. Efficient for sequential scans since adjacent records on disk are also logically adjacent.</p>
+<p><strong>Secondary index (non-clustering index):</strong> An index on a different attribute than the one the file is sorted on. Pointers are scattered across the disk, so sequential scans are expensive.</p>
+<blockquote class="blockquote">
+<p>⚠️ A table can have <strong>only one primary index</strong> but <strong>many secondary indices</strong>.</p>
+</blockquote>
+<p>An <strong>index-sequential file</strong> is a sequentially ordered file paired with its primary index, also called ISAM (Indexed Sequential Access Method).</p>
+<hr>
 </section>
-<section id="why-this-happens-and-the-fix" class="level3">
-<h3 class="anchored" data-anchor-id="why-this-happens-and-the-fix">Why This Happens — and the Fix</h3>
-<p><code>dept_name</code> uniquely decides <code>building</code> and <code>budget</code> (a department can’t have two budgets). This dependency is exactly what forces <code>building</code>/<code>budget</code> to repeat across instructor rows:</p>
-<p><strong>Dependency → Redundancy → Anomaly</strong></p>
-<p>The fix is to <strong>decompose</strong> the table so each fact is stored exactly once — e.g., split <code>instructor_with_department</code> into <code>instructor(ID, name, salary, dept_name)</code> and <code>department(dept_name, building, budget)</code>. (Covered in detail under Lossless Join Decomposition.)</p>
-<p>Removing redundancy this way is what makes a schema easier to maintain: updates touch a single row, deletions don’t silently destroy unrelated facts, and inserts don’t need unrelated data just to go through. This is the core motivation behind everything else in normalization theory.</p>
+<section id="dense-vs.-sparse-indexes" class="level2">
+<h2 class="anchored" data-anchor-id="dense-vs.-sparse-indexes">Dense vs.&nbsp;Sparse Indexes</h2>
+<section id="dense-index" class="level3">
+<h3 class="anchored" data-anchor-id="dense-index">Dense Index</h3>
+<p>One index entry for <strong>every record</strong> in the data file.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="dense_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Dense Index"><img src="dense_index.png" class="img-fluid figure-img" alt="Dense Index"></a></p>
+<figcaption>Dense Index</figcaption>
+</figure>
+</div>
+<p><em>Advantage</em>: Can check record existence from the index alone.<br>
+<em>Disadvantage</em>: Index grows proportionally with the data.</p>
+</section>
+<section id="sparse-index" class="level3">
+<h3 class="anchored" data-anchor-id="sparse-index">Sparse Index</h3>
+<p>One index entry per <strong>disk block</strong> (not per record).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="sparse_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Sparse Index"><img src="sparse_index.png" class="img-fluid figure-img" alt="Sparse Index"></a></p>
+<figcaption>Sparse Index</figcaption>
+</figure>
+</div>
+<p>To find key <span class="math inline">\(K\)</span>: find the largest index entry <span class="math inline">\(≤ K\)</span>, follow its pointer to the block, then scan within the block.</p>
+<p><em>Advantage</em>: Much smaller index, less maintenance.<br>
+<em>Disadvantage</em>: Slightly slower — requires a sequential scan within the block.</p>
+<blockquote class="blockquote">
+<p>💡 One sparse index entry per disk block is the standard trade-off — small enough for memory, granular enough to avoid long scans.</p>
+</blockquote>
+<p>Secondary indices must be dense because records with a given secondary key are scattered across the file — a sparse index would miss records not sitting at a block boundary.</p>
 <hr>
 </section>
 </section>
-<section id="functional-dependencies" class="level2">
-<h2 class="anchored" data-anchor-id="functional-dependencies">Functional Dependencies</h2>
-<section id="definition" class="level3">
-<h3 class="anchored" data-anchor-id="definition">Definition</h3>
-<p>A <strong>functional dependency (FD)</strong> says: knowing the value of one set of attributes is enough to pin down another.</p>
-<p>For relation schema <span class="math inline">\(R\)</span>, with <span class="math inline">\(\alpha \subseteq R\)</span> and <span class="math inline">\(\beta \subseteq R\)</span>:</p>
-<p><span class="math display">\[\alpha \rightarrow \beta\]</span></p>
-<p>holds if, for any legal instance of <span class="math inline">\(R\)</span>, two tuples that agree on <span class="math inline">\(\alpha\)</span> must also agree on <span class="math inline">\(\beta\)</span>:</p>
-<p><span class="math display">\[t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]\]</span></p>
-<p><strong>Example:</strong> in <code>instructor_with_department</code>, we expect:</p>
-<pre><code>dept_name → building
-dept_name → budget</code></pre>
-<p>since a department has exactly one building and one budget. We would <em>not</em> expect <code>dept_name → salary</code> — a department tells you nothing about one specific instructor’s salary.</p>
-<blockquote class="blockquote">
-<p><strong>Note:</strong> An FD only “holds” if it’s true for <em>every</em> legal instance of the schema, not just today’s data. If the current rows happen to satisfy <code>name → ID</code> by coincidence (no two instructors currently share a name), that doesn’t mean the FD genuinely holds.</p>
-</blockquote>
-</section>
-<section id="keys-redefined-using-fds" class="level3">
-<h3 class="anchored" data-anchor-id="keys-redefined-using-fds">Keys, Redefined Using FDs</h3>
+<section id="multilevel-index" class="level2">
+<h2 class="anchored" data-anchor-id="multilevel-index">Multilevel Index</h2>
+<p><strong>Problem:</strong> If the primary index itself is too large to fit in memory, searching it becomes expensive.</p>
+<p><strong>Solution:</strong> Build a sparse index <em>on top of</em> the primary index.</p>
 <ul>
-<li><span class="math inline">\(K\)</span> is a <strong>superkey</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span> (K determines every attribute in R)</li>
-<li><span class="math inline">\(K\)</span> is a <strong>candidate key</strong> for <span class="math inline">\(R\)</span> if and only if <span class="math inline">\(K \rightarrow R\)</span>, <strong>and</strong> no proper subset <span class="math inline">\(\alpha \subset K\)</span> also satisfies <span class="math inline">\(\alpha \rightarrow R\)</span> (K is minimal)</li>
+<li><strong>Inner index</strong> — the primary index file (on disk).</li>
+<li><strong>Outer index</strong> — a sparse index of the inner index (fits in memory).</li>
+</ul>
+<p>Lookup path: outer index (memory) → inner index block → data record.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="multi_level_index.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Multilevel Index"><img src="multi_level_index.png" class="img-fluid figure-img" alt="Multilevel Index"></a></p>
+<figcaption>Multilevel Index</figcaption>
+</figure>
+</div>
+<p>If even the outer index is too large, add another level. This layering idea is the foundation of B-trees.</p>
+<hr>
+</section>
+<section id="index-updates" class="level2">
+<h2 class="anchored" data-anchor-id="index-updates">Index Updates</h2>
+<section id="on-deletion" class="level3">
+<h3 class="anchored" data-anchor-id="on-deletion">On Deletion</h3>
+<ul>
+<li>If the deleted record was the <strong>only</strong> one with that key value, remove the index entry.</li>
+<li><strong>Dense:</strong> treat like a sorted-list deletion.</li>
+<li><strong>Sparse:</strong> replace the entry with the next key in the block; if the next key already has its own entry, just delete the current one.</li>
 </ul>
 </section>
-<section id="trivial-fds" class="level3">
-<h3 class="anchored" data-anchor-id="trivial-fds">Trivial FDs</h3>
-<p>An FD <span class="math inline">\(\alpha \rightarrow \beta\)</span> is <strong>trivial</strong> if <span class="math inline">\(\beta \subseteq \alpha\)</span> — it’s automatically true for any relation and tells us nothing new.</p>
-<pre><code>ID, name → ID     -- trivial (ID is already on the left)
-name → name       -- trivial</code></pre>
-
-
-
+<section id="on-insertion" class="level3">
+<h3 class="anchored" data-anchor-id="on-insertion">On Insertion</h3>
+<ul>
+<li><strong>Dense:</strong> if the key is absent from the index, insert a new entry in sorted order.</li>
+<li><strong>Sparse:</strong> no change needed unless a new disk block is created — if so, add an entry for the first key in that new block.</li>
+</ul>
+<p>Multilevel updates follow the same logic, applied at each level recursively.</p>
+<hr>
 </section>
+</section>
+<section id="index-definition-in-sql" class="level2">
+<h2 class="anchored" data-anchor-id="index-definition-in-sql">Index Definition in SQL</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">-- Create a basic index</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_ename <span class="kw">ON</span> emp_tab(ename);</span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">-- Create a unique index (enforces candidate key constraint)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="kw">CREATE</span> <span class="kw">UNIQUE</span> <span class="kw">INDEX</span> emp_email <span class="kw">ON</span> emp_tab(email);</span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co">-- Create a composite index on two columns</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_comp <span class="kw">ON</span> emp_tab(ename, empno) <span class="kw">COMPUTE</span> <span class="kw">STATISTICS</span>;</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="co">-- Function-based index (precomputes the function result for each row)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="kw">CREATE</span> <span class="kw">INDEX</span> emp_upper <span class="kw">ON</span> emp_tab(<span class="fu">UPPER</span>(ename)) <span class="kw">COMPUTE</span> <span class="kw">STATISTICS</span>;</span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a><span class="co">-- Bitmap index (best for columns with few distinct values)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-label="14"></a><span class="kw">CREATE</span> <span class="kw">BITMAP</span> <span class="kw">INDEX</span> idx_gender <span class="kw">ON</span> student(gender);</span>
+<span id="cb1-15"><a href="#cb1-15" aria-label="15"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-label="16"></a><span class="co">-- Drop an index</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-label="17"></a><span class="kw">DROP</span> <span class="kw">INDEX</span> emp_ename;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>💡 <code>COMPUTE STATISTICS</code> tells the optimizer to gather column statistics at index creation time — important for the optimizer to make good decisions.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>📌 <code>CREATE UNIQUE INDEX</code> is technically redundant if you’ve already declared the column as <code>UNIQUE</code> in the table definition — the constraint is preferred.</p>
+</blockquote>
+<hr>
+</section>
+<section id="guidelines-for-indexing" class="level2">
+<h2 class="anchored" data-anchor-id="guidelines-for-indexing">Guidelines for Indexing</h2>
+<p>Indexing is an ongoing task — query patterns change, tables grow, and indexes need to be monitored and adjusted over time.</p>
+<ul>
+<li><em>Rule 1</em>: Index the Correct Tables</li>
+<li><em>Rule 2</em>: Index the Correct Columns</li>
+<li><em>Rule 3</em>: Limit the Number of Indexes for Each Table</li>
+<li><em>Rule 4</em>: Choose the Order of Columns in Composite Indexes</li>
+<li><em>Rule 5</em>: Gather Statistics to Make Index Usage More Accurate</li>
+<li><em>Rule 6</em>: Drop Indexes That Are No Longer Required</li>
+</ul>
+</section>
+<section id="formulas-for-solving-the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="formulas-for-solving-the-problem">Formulas for Solving the Problem</h2>
+<p><span class="math display">\[\text{Space of Index} = \text{Size of Key Field} + \text{Size of Pointer Field}\]</span></p>
+<p><span class="math display">\[\text{Total Index Space} = \text{Space of Index} \times \text{No. of Records}\]</span></p>
+<p><span class="math display">\[\text{One Block Size} = \frac{\text{Size of File}}{\text{No. of Blocks Used to Store the File}}\]</span></p>
+<p><span class="math display">\[\text{No. of Blocks for Index} = \left\lceil \frac{\text{Total Index Space}}{\text{One Block Size}} \right\rceil\]</span></p>
+<blockquote class="blockquote">
+<p>💡 Always round <strong>up</strong> — a partial block still occupies a full block on disk.</p>
+</blockquote>
+
+
+
 </section>
 
 </main> <!-- /main -->
@@ -1281,13 +1344,13 @@ name → name       -- trivial</code></pre>
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_4/03_advanced_er_concepts.html" class="pagination-link" aria-label="Advanced ER Concepts">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Advanced ER Concepts</span></span>
+      <a href="../../weeks/week_8/04_file_organization_and_buffering.html" class="pagination-link" aria-label="File Organization &amp; Buffering">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">File Organization &amp; Buffering</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_5/02.html" class="pagination-link" aria-label="Armstrong Axioms">
-        <span class="nav-page-text"><span class="chapter-title">Armstrong Axioms</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_9/02_bst.html" class="pagination-link" aria-label="Tree-Based Index Structures">
+        <span class="nav-page-text"><span class="chapter-title">Tree-Based Index Structures</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1299,12 +1362,44 @@ name → name       -- trivial</code></pre>
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/01.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/01_indexing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
