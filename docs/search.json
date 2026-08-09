@@ -1494,5 +1494,862 @@
       "**Week-08**",
       "<span class='chapter-number'>28</span>  <span class='chapter-title'>File Organization & Buffering</span>"
     ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html",
+    "title": "Indexing and Hashing",
+    "section": "",
+    "text": "Why Do We Need Indexes?\nImagine a library with a million books stored in no particular order. Finding a specific title means scanning every shelf — that is linear search, and it is painfully slow for large collections.\nA database index solves exactly this problem. It is a separate, smaller data structure that maps search-key values to the actual records in the main table. Think of it like the index at the back of a textbook: you look up a keyword, get the page number, and jump straight there — no full scan needed.\nThe attribute (or set of attributes) you build the index on is called the search key. An index entry looks like this:\nThere are two broad families of indexes:\nThis lecture focuses on ordered indices.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#why-do-we-need-indexes",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#why-do-we-need-indexes",
+    "title": "Indexing and Hashing",
+    "section": "",
+    "text": "💡 Key insight: An index file is typically much smaller than the main data file, so searching the index is fast, and then the pointer takes you directly to the right record.\n\n\n\n\n\nsearch-key\npointer\n\n\n\n\n“Physics”\n→ record #5\n\n\n\n\n\nOrdered indices — entries are sorted on the search key (like an alphabetical index)\nHash indices — entries are scattered into buckets by a hash function (faster for exact lookups, but can’t handle range queries well)",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#how-do-we-judge-an-index",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#how-do-we-judge-an-index",
+    "title": "Indexing and Hashing",
+    "section": "How Do We Judge an Index?",
+    "text": "How Do We Judge an Index?\nNot all indexes are equally useful. We evaluate them on four metrics:\n\n\n\n\n\n\n\nMetric\nWhat it asks\n\n\n\n\nAccess types\nCan it handle point lookups and range queries efficiently?\n\n\nAccess time\nHow fast can we find a record?\n\n\nInsertion/Deletion time\nHow much overhead does updating the index add?\n\n\nSpace overhead\nHow much extra storage does the index consume?\n\n\n\nA good index strikes the right balance — fast lookups without ballooning storage or making every insert a nightmare.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#ordered-indices",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#ordered-indices",
+    "title": "Indexing and Hashing",
+    "section": "Ordered Indices",
+    "text": "Ordered Indices\nIn an ordered index, entries are sorted on the search key value — exactly like an author catalog in a library. Two important variants:\n\nPrimary index (clustering index): The index whose search key matches the physical order of the data file itself. If your Employee table is stored sorted by emp_id, then an index on emp_id is the primary index. Sequential scans using this index are very efficient because records physically adjacent on disk are also logically adjacent.\nSecondary index (non-clustering index): An index on a different attribute — say, salary — while the file is still physically ordered by emp_id. The salary values in the index point all over the disk, so a sequential scan through this index is much more expensive (each lookup may fetch a fresh disk block).\n\n\n⚠️ A table can have only one primary index (since the data has only one physical order) but many secondary indices.\n\nAn index-sequential file is the combination: a sequentially ordered file together with its primary index. This is sometimes called ISAM (Indexed Sequential Access Method).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#dense-vs.-sparse-indexes",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#dense-vs.-sparse-indexes",
+    "title": "Indexing and Hashing",
+    "section": "Dense vs. Sparse Indexes",
+    "text": "Dense vs. Sparse Indexes\n\nDense Index\nA dense index has one index entry for every record in the data file.\nThink of it as a full directory: every employee gets a line in the lookup table.\nIndex entry for emp_id = 101  →  record 1\nIndex entry for emp_id = 102  →  record 2\nIndex entry for emp_id = 103  →  record 3\n...\nAdvantage: You can tell immediately from the index whether a record exists — no need to visit the data file at all for existence checks.\nDisadvantage: The index can grow quite large.\n\n\n\nSparse Index\nA sparse index has index entries for only some search-key values — typically one per disk block (or one per group of records).\nIndex entry for emp_id = 101  →  block 0  (covers records 101–200)\nIndex entry for emp_id = 201  →  block 1  (covers records 201–300)\n...\nTo find a record with key \\(K\\): 1. Find the largest index entry with key \\(&lt; K\\). 2. Follow its pointer to the data block. 3. Scan sequentially within that block until you find \\(K\\).\nAdvantage: Much smaller index — fewer entries to store and maintain.\nDisadvantage: Slightly slower lookup since you have to scan within a block.\n\n💡 Sweet spot: A sparse index with one entry per disk block is the standard recommended trade-off — small enough to fit in memory, yet granular enough to eliminate most of the sequential scan.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#primary-and-secondary-indices-the-trade-off",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#primary-and-secondary-indices-the-trade-off",
+    "title": "Indexing and Hashing",
+    "section": "Primary and Secondary Indices: The Trade-Off",
+    "text": "Primary and Secondary Indices: The Trade-Off\n\n\n\n\nPrimary (Clustering)\nSecondary (Non-Clustering)\n\n\n\n\nData order\nMatches the index\nDifferent from the index\n\n\nSequential scan\nVery efficient\nExpensive — random I/O\n\n\nCan be sparse?\nYes\nNo — must be dense\n\n\nNumber per table\nOne\nMany\n\n\n\nWhy must secondary indices be dense? Because records of a given secondary key value are scattered throughout the file. A sparse index would miss records that don’t happen to be at a block boundary.\n\n⚠️ Updating indices adds overhead. Every insert, delete, or update to the table requires updating every index built on it. More indexes → faster reads, slower writes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#multilevel-index",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#multilevel-index",
+    "title": "Indexing and Hashing",
+    "section": "Multilevel Index",
+    "text": "Multilevel Index\nHere’s a practical problem: what if the primary index itself is too large to fit in main memory? Searching it becomes expensive again.\nThe solution is to layer another sparse index on top:\n\nInner index — the original primary index (on disk)\nOuter index — a sparse index built on the inner index (small enough for memory)\n\nLookup: search the outer index (in memory) → jump to the right block of the inner index → follow the pointer to the actual data.\nIf even the outer index is too large, add yet another level. This idea of layering sparse indexes is exactly where B-trees come from — which we will cover in the next section.\n\n⚠️ Indices at all levels must be updated whenever the data file changes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#index-updates-in-practice",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#index-updates-in-practice",
+    "title": "Indexing and Hashing",
+    "section": "Index Updates in Practice",
+    "text": "Index Updates in Practice\n\nOn Deletion\n\nIf the deleted record was the only one with that search-key value, remove the entry from the index.\nDense index: treat it like any sorted-list deletion.\nSparse index: if the deleted record was the anchor for a block, replace its index entry with the next search-key value in that block. If the next value already has its own entry, just remove the current entry.\n\n\n\nOn Insertion\n\nDense index: look up the key; if absent, insert a new entry in sorted order.\nSparse index: no change needed unless a new disk block is created. If a new block is created, insert an entry for the first key in that new block.\n\nMultilevel insertion and deletion work the same way, recursively applied to each level.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#balanced-binary-search-trees-a-recap",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#balanced-binary-search-trees-a-recap",
+    "title": "Indexing and Hashing",
+    "section": "Balanced Binary Search Trees: A Recap",
+    "text": "Balanced Binary Search Trees: A Recap\nBefore we can understand the tree structures databases use internally, it helps to revisit the classic Binary Search Tree (BST) and why “balance” matters so much.\n\nSearch Complexity Depends on Height\nIn a BST with \\(n\\) nodes, search costs \\(O(h)\\) where \\(h\\) is the tree’s height.\n\nBest case (balanced): \\(h \\sim O(\\log n)\\) — perfect, this is what we want.\nWorst case (skewed): \\(h = n - 1\\) — this happens when keys are inserted in sorted order. The tree degenerates into a linked list, and search becomes \\(O(n)\\).\n\nSorted insertion: 1, 2, 3, 4, 5\nResulting \"tree\":\n  1\n   \\\n    2\n     \\\n      3  ← just a linked list, O(n) search\n\n\nKeeping It Balanced\nA BST is balanced if \\(h \\sim O(\\log n)\\). This can be guaranteed by:\n\nAVL Tree: After every insert, check if any node’s left and right subtree heights differ by more than 1. If so, perform a rotation to restore balance. Named after inventors Adelson-Velsky and Landis.\nRandomized BST: Insert keys in a uniformly random order — on average, the tree stays balanced without explicit rebalancing.\nSkip List: A probabilistic layered structure of sorted linked lists, effectively giving \\(O(\\log n)\\) expected performance.\nSplay Tree: A self-adjusting BST that moves recently accessed elements to the root, giving good amortized performance for repeated lookups.\n\nAll of these achieve \\(O(\\log n)\\) for search, insert, and delete. But they share a critical limitation:\n\n⚠️ Balanced BSTs work brilliantly in memory but do not scale to external storage (disk). Each node access is a separate disk read, and with \\(O(\\log n)\\) levels, that’s \\(O(\\log n)\\) disk reads — each taking 5–10 milliseconds. For a million records, that’s painfully slow.\n\nThis is why databases need a different kind of tree.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#the-2-3-4-tree-motivation",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#the-2-3-4-tree-motivation",
+    "title": "Indexing and Hashing",
+    "section": "The 2-3-4 Tree: Motivation",
+    "text": "The 2-3-4 Tree: Motivation\nThe problem with BSTs on disk is that each node holds only one key and has only two children. The tree must be very tall (\\(O(\\log n)\\) levels) to hold \\(n\\) records.\nWhat if we could make each node fatter — storing multiple keys and having multiple children? Then the tree would be much shorter, and we’d need far fewer disk reads to reach any record.\nThis idea leads to the 2-3-4 Tree (and ultimately to B-trees, the actual structure used in most database engines).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#what-is-a-2-3-4-tree",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#what-is-a-2-3-4-tree",
+    "title": "Indexing and Hashing",
+    "section": "What Is a 2-3-4 Tree?",
+    "text": "What Is a 2-3-4 Tree?\nA 2-3-4 Tree is a balanced search tree where every node can hold 1, 2, or 3 keys (and correspondingly have 2, 3, or 4 children). That is where the name comes from.\nThe three node types:\n\n\n\n\n\n\n\n\n\nNode type\nKeys stored\nChildren\nSearch key rule\n\n\n\n\n2-node\n1 (call it S)\n2\nleft child &lt; S; right child &gt; S\n\n\n3-node\n2 (S and L)\n3\nleft &lt; S; middle: S–L; right &gt; L\n\n\n4-node\n3 (S, M, L)\n4\nleft &lt; S; second: S–M; third: M–L; right &gt; L\n\n\n\nA leaf node can hold 1, 2, or 3 data items.\nKey properties: - All leaves sit at the same depth — the tree is always perfectly height-balanced. - \\(h \\sim O(\\log n)\\), so search, insert, and delete all cost \\(O(\\log n)\\). - Data is always kept in sorted order. - The structure generalizes to larger nodes — the B-tree is exactly this idea extended to nodes with hundreds of children.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#search-in-a-2-3-4-tree",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#search-in-a-2-3-4-tree",
+    "title": "Indexing and Hashing",
+    "section": "Search in a 2-3-4 Tree",
+    "text": "Search in a 2-3-4 Tree\nSearch is a straightforward extension of BST search. At each node, compare the target key against the node’s keys and follow the appropriate child pointer. Repeat until you reach a leaf or find the key.\n\n💡 Because all leaves are at the same depth, every search takes exactly \\(O(h) = O(\\log n)\\) steps — no worst-case skew possible.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#insertion-in-a-2-3-4-tree",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#insertion-in-a-2-3-4-tree",
+    "title": "Indexing and Hashing",
+    "section": "Insertion in a 2-3-4 Tree",
+    "text": "Insertion in a 2-3-4 Tree\nInsertion always happens at a leaf. The process:\n\nSearch for the expected location (the leaf where the key would go).\nIf the leaf is a 2-node, expand it to a 3-node and insert. Done.\nIf the leaf is a 3-node, expand it to a 4-node and insert. Done.\nIf the leaf is a 4-node, we can’t add another key — we must split it first.\n\n\nNode Splitting\nSplitting a 4-node takes its middle key (M) and pushes it up to the parent. The original 4-node becomes two 2-nodes (one holding S, one holding L), both children of the parent which now absorbs M.\nThere are three cases depending on the parent:\nCase 1 — Parent is the root (a 4-node):\n    [S  M  L]          [M]\n   /  |  |  \\    →    /   \\\n  a   b  c   d      [S]   [L]\n                   / \\   / \\\n                  a   b c   d\nThe tree grows one level taller.\nCase 2 — Parent is a 2-node:\nThe middle key M is absorbed into the parent, converting it from a 2-node to a 3-node. The split 4-node’s two halves (S and L) become two separate children.\nCase 3 — Parent is a 3-node:\nSame idea — M is absorbed, converting the parent from a 3-node to a 4-node.\n\n\nEarly vs. Late Splitting\nThere are two strategies for when to split:\n\nEarly splitting: Split any 4-node you encounter on the way down during a search, before you actually need to. This ensures you never have a full node at the insertion point. At most one split per level.\nLate splitting: Only split when you actually need to insert into a 4-node. May cascade up \\(O(h)\\) splits in the worst case.\n\nBoth strategies produce valid trees with the same complexity \\(O(h)\\), but they produce different final shapes. The slides follow the early splitting strategy.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#insertion-example-step-by-step",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#insertion-example-step-by-step",
+    "title": "Indexing and Hashing",
+    "section": "Insertion Example: Step by Step",
+    "text": "Insertion Example: Step by Step\nInserting the sequence 10, 30, 60, 20, 50, 40, 70, 80, 15, 90, 100 using the early splitting strategy.\n\nAfter inserting 10, 30, 60 — all three fit into one leaf (a 4-node):\n[10  30  60]\n\nInsert 20 — the root is a 4-node, so we split it before descending. Middle key 30 becomes the new root; 10 and 60 become separate children. Then 20 is inserted into the left child:\n        [30]\n       /    \\\n  [10, 20]  [60]\n\nInsert 50 — 50 &gt; 30, go right. [60] is a 2-node, so just expand it:\n        [30]\n       /    \\\n  [10, 20]  [50, 60]\n\nInsert 40 — 40 &gt; 30, go right. [50, 60] is a 3-node, expand to 4-node and insert:\n        [30]\n       /    \\\n  [10, 20]  [40, 50, 60]\n\nInsert 70 — root [30] is fine. 70 &gt; 30, descend right. [40, 50, 60] is a 4-node — split it immediately (early strategy). Middle key 50 rises to join the root:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60]\nNow insert 70 into the right child [60]:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60, 70]\n\nInsert 80 — 80 &gt; 50, go to right child [60, 70]. It’s a 3-node, expand it:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60, 70, 80]\n\nInsert 15 — 15 &lt; 30, go left. [10, 20] is a 3-node, expand it:\n              [30, 50]\n             /   |    \\\n  [10, 15, 20]  [40]  [60, 70, 80]\n\nInsert 90 — root [30, 50] is fine. 90 &gt; 50, descend right. [60, 70, 80] is a 4-node — split it. Middle key 70 rises to join the root:\n                [30, 50, 70]\n               /   |    |   \\\n  [10,15,20]  [40] [60] [80]\nNow insert 90 into the rightmost child [80]:\n                [30, 50, 70]\n               /   |    |   \\\n  [10,15,20]  [40] [60] [80, 90]\n\nInsert 100 — root [30, 50, 70] is a 4-node — split it first. Middle key 50 becomes the new root; 30 and 70 become children:\n                      [50]\n                     /    \\\n                  [30]    [70]\n                 /    \\   /   \\\n          [10,15,20] [40] [60] [80,90]\nNow insert 100. 100 &gt; 50 → go right to [70]. 100 &gt; 70 → go to right child [80, 90]. It’s a 3-node, expand it:\n                      [50]\n                     /    \\\n                  [30]    [70]\n                 /    \\   /   \\\n          [10,15,20] [40] [60] [80, 90, 100]\n\nFinal tree after all 11 insertions:\n                         [50]\n                        /    \\\n                     [30]    [70]\n                    /    \\   /   \\\n             [10,15,20] [40][60] [80,90,100]\nHeight = 2. All 11 keys stored, all leaves at the same level. A plain BST with this input could have ended up with height 10 — the 2-3-4 tree keeps it to 2.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#deletion-in-a-2-3-4-tree",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#deletion-in-a-2-3-4-tree",
+    "title": "Indexing and Hashing",
+    "section": "Deletion in a 2-3-4 Tree",
+    "text": "Deletion in a 2-3-4 Tree\nDeletion is the reverse of insertion. The core idea:\n\nLocate the node containing the target key.\nSwap it with its inorder successor (the smallest key in the right subtree). This reduces deletion to always happening at a leaf.\nIf the leaf is a 3-node or 4-node, simply remove the key.\nIf the leaf is a 2-node, removing its only key would leave an empty node — which is illegal. To prevent this, transform every 2-node you encounter (on the way down) into a 3-node or 4-node first. This is the reverse of the splitting cases from insertion.\n\n\nDeletion Example\nWe will delete 30 and then 50 from the final tree above.\nStarting tree:\n                         [50]\n                        /    \\\n                     [30]    [70]\n                    /    \\   /   \\\n             [10,15,20] [40][60] [80,90,100]\n\nDelete 30\n30 is an internal node. Its inorder successor is 40 (smallest key in its right subtree). Swap 30 and 40:\n                         [50]\n                        /    \\\n                     [40]    [70]\n                    /    \\   /   \\\n             [10,15,20] [30][60] [80,90,100]\nNow delete 30 from the leaf [30]. That leaf is a 2-node — but since 30 is the only key, removing it would leave an empty node.\nHowever, looking at its sibling [10, 15, 20] (a 4-node), we can borrow from it. The sibling’s largest key (20) rotates up to the parent, and the parent’s key (40) rotates down to fill the now-empty spot:\n                         [50]\n                        /    \\\n                     [40]    [70]\n                    /    \\   /   \\\n             [10,15]  [20][60] [80,90,100]\n30 is deleted. The tree remains balanced and all leaves are still at the same depth. ✓\n\nDelete 50\n50 is the root. Its inorder successor is 60 (smallest key in its right subtree). Swap 50 and 60:\n                         [60]\n                        /    \\\n                     [40]    [70]\n                    /    \\   /   \\\n             [10,15]  [20][50] [80,90,100]\nNow delete 50 from the leaf [50]. It is a 2-node with no siblings to borrow from (both [20] and [60] in the right subtree are also 2-nodes).\nIn this case, we merge: combine the 2-node [50] with its sibling [60] (oops — actually [60] is now the root, not a sibling). Let’s be precise: the right child of the root is [70], whose left child is [50] and right child is [80,90,100]. Since [50] is a 2-node and we must delete from it, we can borrow from the rich sibling [80, 90, 100]. The sibling’s smallest key (80) rotates up to the parent [70], and 70 rotates down to fill the gap:\n                         [60]\n                        /    \\\n                     [40]    [80]\n                    /    \\   /   \\\n             [10,15] [20][70] [90,100]\n50 is deleted. Final tree:\n                         [60]\n                        /    \\\n                     [40]    [80]\n                    /    \\   /   \\\n             [10,15] [20][70] [90,100]\nStill height 2, all leaves at the same depth. ✓\n\n📌 Key takeaway from deletion: The 2-3-4 tree never lets a node go empty. If you need to delete from a 2-node, you always first fatten it up — either by borrowing from a sibling or by merging with a sibling — before removing the key. This is the structural guarantee that keeps the tree balanced after every operation.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#advantages-and-disadvantages-of-2-3-4-trees",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#advantages-and-disadvantages-of-2-3-4-trees",
+    "title": "Indexing and Hashing",
+    "section": "Advantages and Disadvantages of 2-3-4 Trees",
+    "text": "Advantages and Disadvantages of 2-3-4 Trees\nAdvantages: - \\(O(\\log n)\\) height — all operations guaranteed efficient. - All leaves at the same depth — no degenerate cases. - Sorted order maintained automatically. - Generalizes easily to larger nodes (B-trees). - Suitable as a foundation for external data structures (disk-based storage).\nDisadvantage: - Multiple node types (2-node, 3-node, 4-node) — implementation requires constructing and destructing different node sizes during splits and merges, which is messy in practice.\n\n💡 The connection to B-trees: If you use a single uniform node type with space for 3 keys and 4 pointers (and allow it to be partially filled), you get a B-tree. A 2-3-4 tree is exactly a B-tree with parameter \\(n = 4\\). B-trees (and their variant, B+-trees) are what real database engines like PostgreSQL and MySQL actually use for their indexes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#putting-it-all-together",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#putting-it-all-together",
+    "title": "Indexing and Hashing",
+    "section": "Putting It All Together",
+    "text": "Putting It All Together\n\n\n\n\n\n\n\nConcept\nWhat it solves\n\n\n\n\nOrdered index\nEnables fast lookup without scanning the whole table\n\n\nDense vs. sparse\nTrade-off between index size and lookup speed\n\n\nPrimary vs. secondary\nOne physical order → one primary; unlimited secondaries\n\n\nMultilevel index\nHandles indexes too large to fit in memory\n\n\nBST (balanced)\nOptimal in-memory search: \\(O(\\log n)\\)\n\n\n2-3-4 tree\nExtends balanced search to external storage; precursor to B-trees\n\n\n\nThe progression is logical: plain indexing → layered indexing → tree-structured indexing → multi-key node trees → B/B+-trees (next topic).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Database Management Systems",
+    "section": "",
+    "text": "Welcome to DBMS (CS2001) Course\nThis portal contains all the materials, interactive playgrounds, and textbook references for the Database Management Systems course.\n\nCourse Overview\n\nCourse ID: BSCS2001\nCourse Type: Programming\nCourse Credits: 4 Credits\nPre-requisites: None\n\n\n\nTextbook\n\nTitle: Database System Concepts (7th Ed.)\nAuthors: Silberschatz, Korth, Sudarshan\nPublisher: McGraw-Hill\n\n\n\n\n\nCourse Faculty\nDr. Partha Pratim Das\nProfessor, Department of Computer Science and Engineering, IIT Kharagpur\n\n\nCourse Instructors:\nManidipa\nPravin\nBhaskar\nArshpreet\n\n\n\nHow to Use This Portal\nThe content is organized chronologically. Just expand the navigation menu on the left sidebar or click Start Course above to jump into specific topics.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>About the Course</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#what-is-an-index",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#what-is-an-index",
+    "title": "Indexing",
+    "section": "",
+    "text": "search-key\npointer\n\n\n\n\n“Pabitra Mitra”\n→ record #6\n\n\n\n\n\nOrdered indices — entries are sorted on the search key.\nHash indices — entries are scattered into buckets using a hash function. Fast for exact lookups, but can’t handle range queries.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#ordered-indices-primary-vs.-secondary",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#ordered-indices-primary-vs.-secondary",
+    "title": "Indexing",
+    "section": "Ordered Indices: Primary vs. Secondary",
+    "text": "Ordered Indices: Primary vs. Secondary\nPrimary index (clustering index): The index whose search key matches the physical order of the data file. Efficient for sequential scans since adjacent records on disk are also logically adjacent.\nSecondary index (non-clustering index): An index on a different attribute than the one the file is sorted on. Pointers are scattered across the disk, so sequential scans are expensive.\n\n⚠️ A table can have only one primary index but many secondary indices.\n\nAn index-sequential file is a sequentially ordered file paired with its primary index, also called ISAM (Indexed Sequential Access Method).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#primary-vs.-secondary-key-differences",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#primary-vs.-secondary-key-differences",
+    "title": "Indexing",
+    "section": "Primary vs. Secondary: Key Differences",
+    "text": "Primary vs. Secondary: Key Differences\n\n\n\n\nPrimary\nSecondary\n\n\n\n\nMatches data order\nYes\nNo\n\n\nSequential scan\nEfficient\nExpensive (random I/O)\n\n\nCan be sparse\nYes\nNo — must be dense\n\n\nCount per table\nOne\nMany\n\n\n\nSecondary indices must be dense because records with a given secondary key are scattered across the file — a sparse index would miss records not sitting at a block boundary.\n\n⚠️ Every index on a table must be updated on every INSERT, DELETE, or UPDATE. More indexes = faster reads, slower writes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#index-updates",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#index-updates",
+    "title": "Indexing",
+    "section": "Index Updates",
+    "text": "Index Updates\n\nOn Deletion\n\nIf the deleted record was the only one with that key value, remove the index entry.\nDense: treat like a sorted-list deletion.\nSparse: replace the entry with the next key in the block; if the next key already has its own entry, just delete the current one.\n\n\n\nOn Insertion\n\nDense: if the key is absent from the index, insert a new entry in sorted order.\nSparse: no change needed unless a new disk block is created — if so, add an entry for the first key in that new block.\n\nMultilevel updates follow the same logic, applied at each level recursively.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#index-definition-in-sql",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#index-definition-in-sql",
+    "title": "Indexing",
+    "section": "Index Definition in SQL",
+    "text": "Index Definition in SQL\n-- Create a basic index\nCREATE INDEX emp_ename ON emp_tab(ename);\n\n-- Create a unique index (enforces candidate key constraint)\nCREATE UNIQUE INDEX emp_email ON emp_tab(email);\n\n-- Create a composite index on two columns\nCREATE INDEX emp_comp ON emp_tab(ename, empno) COMPUTE STATISTICS;\n\n-- Function-based index (precomputes the function result for each row)\nCREATE INDEX emp_upper ON emp_tab(UPPER(ename)) COMPUTE STATISTICS;\n\n-- Bitmap index (best for columns with few distinct values)\nCREATE BITMAP INDEX idx_gender ON student(gender);\n\n-- Drop an index\nDROP INDEX emp_ename;\n\n💡 COMPUTE STATISTICS tells the optimizer to gather column statistics at index creation time — important for the optimizer to make good decisions.\n\n\n📌 CREATE UNIQUE INDEX is technically redundant if you’ve already declared the column as UNIQUE in the table definition — the constraint is preferred.\n\n\nComposite Indexes and Column Order\nA composite index sorts entries lexicographically — first column first. An index on (dept_name, salary):\n\n✓ Works for WHERE dept_name = 'Finance' AND salary = 80000\n✓ Works for WHERE dept_name = 'Finance' AND salary &lt; 80000\n✗ Cannot efficiently handle WHERE dept_name &lt; 'Finance' AND salary = 80000\n\nThe first column is the “anchor” — put the most selective column (most distinct values) first.\n\n\nPrivileges Required\n\n\n\n\n\n\n\nAction\nPrivilege needed\n\n\n\n\nCreate index on your own table\nOwn the table, or have INDEX privilege on it\n\n\nCreate index in another user’s schema\nCREATE ANY INDEX system privilege\n\n\nFunction-based index\nQUERY_REWRITE privilege + QUERY_REWRITE_ENABLED = TRUE\n\n\nDrop an index\nOwn the index, or have DROP ANY INDEX privilege",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#multiple-key-access",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#multiple-key-access",
+    "title": "Indexing",
+    "section": "Multiple-Key Access",
+    "text": "Multiple-Key Access\nWhen a query filters on two columns, you have three strategies using single-attribute indexes:\nSELECT ID FROM instructor\nWHERE dept_name = 'Finance' AND salary = 80000;\n\nUse the dept_name index → fetch all Finance instructors → filter by salary.\nUse the salary index → fetch all at 80000 → filter by dept.\nUse both indexes → take the intersection of the two pointer sets.\n\nAll three are less efficient than a single composite index on (dept_name, salary), which fetches only the exact records that satisfy both conditions.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#guidelines-for-indexing",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#guidelines-for-indexing",
+    "title": "Indexing",
+    "section": "Guidelines for Indexing",
+    "text": "Guidelines for Indexing\nNormalization is a one-time design decision. Indexing is ongoing — query patterns change, tables grow, and indexes that once helped may eventually hurt. The approach is to collect statistics, monitor performance, and adjust.\nThere are seven practical ground rules:\n\nRule 0 — Indexes Lead to an Access–Update Trade-off\nEvery index speeds up reads but adds overhead to every write. Unnecessary indexes also consume disk space and slow memory operations.\n\n⚠️ Index deliberately. An index no query uses is pure overhead.\n\n\n\nRule 1 — Index the Correct Tables\nCreate an index when queries frequently retrieve less than ~15% of rows from a large table. Below that threshold, index lookup beats a full scan; above it, a full scan is often faster.\nAlso index: - Columns used in join conditions. - Foreign keys (primary/unique keys get indexes automatically; foreign keys usually don’t).\n\n📌 Small tables don’t need indexes. If a query on a small table is suddenly slow, the table has probably grown large.\n\n\n\nRule 2 — Index the Correct Columns\nGood candidates:\n\n\n\n\n\n\n\nColumn characteristic\nBest index type\n\n\n\n\nMany distinct values, wide range\nRegular (B-tree) index\n\n\nFew distinct values\nBitmap index\n\n\nMany NULLs, but queries filter non-NULLs\nIndex + rewrite IS NOT NULL as a range predicate\n\n\n\nPoor candidates: columns with many NULLs where queries don’t filter on non-NULL values; LONG/LONG RAW columns (cannot be indexed).\n\n\nRule 3 — Limit the Number of Indexes per Table\nEvery index on a table is updated on every INSERT, DELETE, or column UPDATE. The right count depends on the table’s workload:\n\nRead-heavy (reports, lookups) → more indexes are fine.\nWrite-heavy (transactions, event logs) → fewer indexes, lower write overhead.\n\n\n\nRule 4 — Choose Column Order in Composite Indexes Carefully\nPut the most selective column first. A composite index on (part_no, vendor_id) where there are 1000 part numbers but only 5 vendors:\nCREATE INDEX idx ON vendor_parts(part_no, vendor_id);\n\n✓ Helps queries on part_no alone (leading column).\n✗ A standalone index on vendor_id alone would be useless — only 5 values.\n\n\n\nRule 5 — Gather Statistics\nThe query optimizer uses statistics (row counts, value distributions) to decide whether to use an index. Stale stats → bad decisions.\n-- At creation time\nCREATE INDEX idx ON emp_tab(ename) COMPUTE STATISTICS;\n\n-- Periodic refresh (Oracle)\nDBMS_STATS.GATHER_TABLE_STATISTICS(...);\nDBMS_STATS.GATHER_SCHEMA_STATISTICS(...);\n\n\nRule 6 — Drop Indexes That Are No Longer Required\nDrop an index if: - It doesn’t speed up any current query. - The application no longer issues queries that use it. - You need to rebuild it (must drop first).\nDROP INDEX emp_ename;\nDropping an index returns its storage to the tablespace immediately.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing_and_234_trees.html#quick-reference-the-seven-rules",
+    "href": "weeks/week_9/01_indexing_and_234_trees.html#quick-reference-the-seven-rules",
+    "title": "Indexing",
+    "section": "Quick Reference: The Seven Rules",
+    "text": "Quick Reference: The Seven Rules\n\n\n\n\n\n\n\n\nRule\nName\nCore idea\n\n\n\n\n0\nAccess–Update Trade-off\nIndexes speed reads, slow writes — index deliberately\n\n\n1\nIndex the Correct Tables\nLarge tables, &lt; 15% row retrieval, join/FK columns\n\n\n2\nIndex the Correct Columns\nHigh cardinality for B-tree; low cardinality for bitmap\n\n\n3\nLimit Index Count\nFewer on write-heavy tables; more on read-heavy\n\n\n4\nComposite Column Order\nMost selective column first; leading column is free single-index\n\n\n5\nGather Statistics\nRefresh after significant data changes\n\n\n6\nDrop Unused Indexes\nUnused = pure overhead — remove them",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html",
+    "href": "weeks/week_9/01_indexing.html",
+    "title": "Indexing",
+    "section": "",
+    "text": "What is an Index?\nThink of a database index like the index at the back of a textbook — instead of reading every page, you look up the term, get the page number, and jump straight there.\nAn index is a smaller, separate data structure that maps search-key values to their records in the main table. Each entry in an index file is called an index entry and looks like this:\nThere are two broad families:\nThis section focuses on ordered indices.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#what-is-an-index",
+    "href": "weeks/week_9/01_indexing.html#what-is-an-index",
+    "title": "Indexing",
+    "section": "",
+    "text": "search-key\npointer\n\n\n\n\n“Pabitra Mitra”\n→ record #6\n\n\n\n\n\nOrdered indices — entries are sorted on the search key.\nHash indices — entries are scattered into buckets using a hash function. Fast for exact lookups, but can’t handle range queries.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#how-do-we-judge-an-index",
+    "href": "weeks/week_9/01_indexing.html#how-do-we-judge-an-index",
+    "title": "Indexing",
+    "section": "How Do We Judge an Index?",
+    "text": "How Do We Judge an Index?\n\n\n\n\n\n\n\nMetric\nWhat it measures\n\n\n\n\nAccess types\nCan it handle both point lookups and range queries?\n\n\nAccess time\nHow fast can it find a record?\n\n\nInsertion/Deletion time\nHow much overhead does maintaining it add?\n\n\nSpace overhead\nHow much extra storage does it consume?",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#ordered-indices-primary-vs.-secondary",
+    "href": "weeks/week_9/01_indexing.html#ordered-indices-primary-vs.-secondary",
+    "title": "Indexing",
+    "section": "Ordered Indices: Primary vs. Secondary",
+    "text": "Ordered Indices: Primary vs. Secondary\nPrimary index (clustering index): The index whose search key matches the physical order of the data file. Efficient for sequential scans since adjacent records on disk are also logically adjacent.\nSecondary index (non-clustering index): An index on a different attribute than the one the file is sorted on. Pointers are scattered across the disk, so sequential scans are expensive.\n\n⚠️ A table can have only one primary index but many secondary indices.\n\nAn index-sequential file is a sequentially ordered file paired with its primary index, also called ISAM (Indexed Sequential Access Method).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#dense-vs.-sparse-indexes",
+    "href": "weeks/week_9/01_indexing.html#dense-vs.-sparse-indexes",
+    "title": "Indexing",
+    "section": "Dense vs. Sparse Indexes",
+    "text": "Dense vs. Sparse Indexes\n\nDense Index\nOne index entry for every record in the data file.\n\n\n\nDense Index\n\n\nAdvantage: Can check record existence from the index alone.\nDisadvantage: Index grows proportionally with the data.\n\n\nSparse Index\nOne index entry per disk block (not per record).\n\n\n\nSparse Index\n\n\nTo find key \\(K\\): find the largest index entry \\(≤ K\\), follow its pointer to the block, then scan within the block.\nAdvantage: Much smaller index, less maintenance.\nDisadvantage: Slightly slower — requires a sequential scan within the block.\n\n💡 One sparse index entry per disk block is the standard trade-off — small enough for memory, granular enough to avoid long scans.\n\nSecondary indices must be dense because records with a given secondary key are scattered across the file — a sparse index would miss records not sitting at a block boundary.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#primary-vs.-secondary-key-differences",
+    "href": "weeks/week_9/01_indexing.html#primary-vs.-secondary-key-differences",
+    "title": "Indexing",
+    "section": "Primary vs. Secondary: Key Differences",
+    "text": "Primary vs. Secondary: Key Differences\n\n\n\n\nPrimary\nSecondary\n\n\n\n\nMatches data order\nYes\nNo\n\n\nSequential scan\nEfficient\nExpensive (random I/O)\n\n\nCan be sparse\nYes\nNo — must be dense\n\n\nCount per table\nOne\nMany\n\n\n\nSecondary indices must be dense because records with a given secondary key are scattered across the file — a sparse index would miss records not sitting at a block boundary.\n\n⚠️ Every index on a table must be updated on every INSERT, DELETE, or UPDATE. More indexes = faster reads, slower writes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#multilevel-index",
+    "href": "weeks/week_9/01_indexing.html#multilevel-index",
+    "title": "Indexing",
+    "section": "Multilevel Index",
+    "text": "Multilevel Index\nProblem: If the primary index itself is too large to fit in memory, searching it becomes expensive.\nSolution: Build a sparse index on top of the primary index.\n\nInner index — the primary index file (on disk).\nOuter index — a sparse index of the inner index (fits in memory).\n\nLookup path: outer index (memory) → inner index block → data record.\n\n\n\nMultilevel Index\n\n\nIf even the outer index is too large, add another level. This layering idea is the foundation of B-trees.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#index-updates",
+    "href": "weeks/week_9/01_indexing.html#index-updates",
+    "title": "Indexing",
+    "section": "Index Updates",
+    "text": "Index Updates\n\nOn Deletion\n\nIf the deleted record was the only one with that key value, remove the index entry.\nDense: treat like a sorted-list deletion.\nSparse: replace the entry with the next key in the block; if the next key already has its own entry, just delete the current one.\n\n\n\nOn Insertion\n\nDense: if the key is absent from the index, insert a new entry in sorted order.\nSparse: no change needed unless a new disk block is created — if so, add an entry for the first key in that new block.\n\nMultilevel updates follow the same logic, applied at each level recursively.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#index-definition-in-sql",
+    "href": "weeks/week_9/01_indexing.html#index-definition-in-sql",
+    "title": "Indexing",
+    "section": "Index Definition in SQL",
+    "text": "Index Definition in SQL\n-- Create a basic index\nCREATE INDEX emp_ename ON emp_tab(ename);\n\n-- Create a unique index (enforces candidate key constraint)\nCREATE UNIQUE INDEX emp_email ON emp_tab(email);\n\n-- Create a composite index on two columns\nCREATE INDEX emp_comp ON emp_tab(ename, empno) COMPUTE STATISTICS;\n\n-- Function-based index (precomputes the function result for each row)\nCREATE INDEX emp_upper ON emp_tab(UPPER(ename)) COMPUTE STATISTICS;\n\n-- Bitmap index (best for columns with few distinct values)\nCREATE BITMAP INDEX idx_gender ON student(gender);\n\n-- Drop an index\nDROP INDEX emp_ename;\n\n💡 COMPUTE STATISTICS tells the optimizer to gather column statistics at index creation time — important for the optimizer to make good decisions.\n\n\n📌 CREATE UNIQUE INDEX is technically redundant if you’ve already declared the column as UNIQUE in the table definition — the constraint is preferred.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#multiple-key-access",
+    "href": "weeks/week_9/01_indexing.html#multiple-key-access",
+    "title": "Indexing",
+    "section": "Multiple-Key Access",
+    "text": "Multiple-Key Access\nWhen a query filters on two columns, you have three strategies using single-attribute indexes:\nSELECT ID FROM instructor\nWHERE dept_name = 'Finance' AND salary = 80000;\n\nUse the dept_name index → fetch all Finance instructors → filter by salary.\nUse the salary index → fetch all at 80000 → filter by dept.\nUse both indexes → take the intersection of the two pointer sets.\n\nAll three are less efficient than a single composite index on (dept_name, salary), which fetches only the exact records that satisfy both conditions.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#guidelines-for-indexing",
+    "href": "weeks/week_9/01_indexing.html#guidelines-for-indexing",
+    "title": "Indexing",
+    "section": "Guidelines for Indexing",
+    "text": "Guidelines for Indexing\nIndexing is an ongoing task — query patterns change, tables grow, and indexes need to be monitored and adjusted over time.\n\nRule 1: Index the Correct Tables\nRule 2: Index the Correct Columns\nRule 3: Limit the Number of Indexes for Each Table\nRule 4: Choose the Order of Columns in Composite Indexes\nRule 5: Gather Statistics to Make Index Usage More Accurate\nRule 6: Drop Indexes That Are No Longer Required",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#quick-reference-the-seven-rules",
+    "href": "weeks/week_9/01_indexing.html#quick-reference-the-seven-rules",
+    "title": "Indexing",
+    "section": "Quick Reference: The Seven Rules",
+    "text": "Quick Reference: The Seven Rules\n\n\n\n\n\n\n\n\nRule\nName\nCore idea\n\n\n\n\n0\nAccess–Update Trade-off\nIndexes speed reads, slow writes — index deliberately\n\n\n1\nIndex the Correct Tables\nLarge tables, &lt; 15% row retrieval, join/FK columns\n\n\n2\nIndex the Correct Columns\nHigh cardinality for B-tree; low cardinality for bitmap\n\n\n3\nLimit Index Count\nFewer on write-heavy tables; more on read-heavy\n\n\n4\nComposite Column Order\nMost selective column first; leading column is free single-index\n\n\n5\nGather Statistics\nRefresh after significant data changes\n\n\n6\nDrop Unused Indexes\nUnused = pure overhead — remove them\n\n\n\n\nFormulas for Solving the Problem\n\nSpace of Index: (Size of key field + Pointer field)\nRequired Space to Store All Indexes: Space of index × No. of records\nOne Block Size: Size of file / No. of blocks used to store the file\nNo. of Blocks Required to Store the Index: Space occupied by the indices / One block size",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html",
+    "href": "weeks/week_9/02_bst.html",
+    "title": "Tree-Based Index Structures",
+    "section": "",
+    "text": "Why Trees for Indexing?\nThe multilevel index from Section 1 was a good idea, but it had one major problem: as the file grows, overflow blocks pile up and performance degrades. You eventually need to reorganize the whole file — expensive and disruptive.\nTree-based structures solve this by self-balancing on every insert and delete, keeping search cost at \\(O(\\log n)\\) always, without any manual reorganization.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#binary-search-trees-bst",
+    "href": "weeks/week_9/02_bst.html#binary-search-trees-bst",
+    "title": "Tree-Based Index Structures",
+    "section": "Binary Search Trees (BST)",
+    "text": "Binary Search Trees (BST)\nSearching \\(n\\) data items:\n\n\n\nMethod\nTime\nStructure\n\n\n\n\nLinear Search\n\\(O(n)\\)\nUnordered array or list\n\n\nBinary Search\n\\(O(\\log n)\\)\nSorted array\n\n\nBST Search\n\\(O(h)\\)\nTree, where \\(h\\) = height\n\n\n\nFor a BST with \\(n\\) nodes: \\(\\log n \\leq h &lt; n\\).\nThe problem: \\(h\\) depends on insertion order.\nSorted insertion: 1, 2, 3, 4, 5\nResult:\n  1\n   \\\n    2\n     \\\n      3   ← degenerate linked list, O(n) search\nA BST is only useful when \\(h \\sim O(\\log n)\\) — i.e., when it is balanced.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#balanced-bsts",
+    "href": "weeks/week_9/02_bst.html#balanced-bsts",
+    "title": "Tree-Based Index Structures",
+    "section": "Balanced BSTs",
+    "text": "Balanced BSTs\nA BST is balanced when \\(h \\sim O(\\log n)\\). Balancing can be guaranteed in different ways:\n\n\n\n\n\n\n\n\nType\nGuarantee\nHow\n\n\n\n\nAVL Tree\nWorst-case\n\\(\\|h_L - h_R\\| \\leq 1\\) at every node; rotations on violation\n\n\nRandomized BST\nExpected\nKeys inserted in random order — root has equal probability \\(\\frac{1}{n}\\)\n\n\nSkip List\nProbabilistic\nLayered linked lists built probabilistically\n\n\nSplay Tree\nAmortized\nRecently accessed nodes moved to root\n\n\n\nAll achieve \\(O(\\log n)\\) for search, insert, and delete.\nBut they all share a critical limitation:\n\n⚠️ Balanced BSTs work well in memory but do not scale to disk. Each node access = one disk read (~20ms). With \\(O(\\log n)\\) levels, searching 1 million records in a BST needs ~20 disk reads. That’s too slow.\n\nThe fix: make nodes fatter — store multiple keys per node, fewer levels, fewer disk reads.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#the-2-3-4-tree-motivation",
+    "href": "weeks/week_9/02_bst.html#the-2-3-4-tree-motivation",
+    "title": "Tree-Based Index Structures",
+    "section": "The 2-3-4 Tree: Motivation",
+    "text": "The 2-3-4 Tree: Motivation\nThe problem with BSTs on disk is that each node holds only one key and has only two children. The tree must be very tall (\\(O(\\log n)\\) levels) to hold \\(n\\) records.\nWhat if we could make each node fatter — storing multiple keys and having multiple children? Then the tree would be much shorter, and we’d need far fewer disk reads to reach any record. This idea leads to the 2-3-4 Tree.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#what-is-a-2-3-4-tree",
+    "href": "weeks/week_9/02_bst.html#what-is-a-2-3-4-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "What Is a 2-3-4 Tree?",
+    "text": "What Is a 2-3-4 Tree?\nA 2-3-4 Tree is a balanced search tree where every node can hold 1, 2, or 3 keys (and correspondingly have 2, 3, or 4 children). That is where the name comes from.\nThe three node types:\n\n\n\n\n\n\n\n\n\nNode type\nKeys stored\nChildren\nSearch key rule\n\n\n\n\n2-node\n1 (call it S)\n2\nleft child &lt; S; right child &gt; S\n\n\n3-node\n2 (S and L)\n3\nleft &lt; S; middle: S–L; right &gt; L\n\n\n4-node\n3 (S, M, L)\n4\nleft &lt; S; second: S–M; third: M–L; right &gt; L\n\n\n\nA leaf node can hold 1, 2, or 3 data items.\nKey properties:\n\nAll leaves sit at the same depth — the tree is always perfectly height-balanced.\n\\(h \\sim O(\\log n)\\), so search, insert, and delete all cost \\(O(\\log n)\\).\nData is always kept in sorted order.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#search-in-a-2-3-4-tree",
+    "href": "weeks/week_9/02_bst.html#search-in-a-2-3-4-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "Search in a 2-3-4 Tree",
+    "text": "Search in a 2-3-4 Tree\nSearch is a straightforward extension of BST search. At each node, compare the target key against the node’s keys and follow the appropriate child pointer. Repeat until you reach a leaf or find the key.\n\n💡 Because all leaves are at the same depth, every search takes exactly \\(O(h) = O(\\log n)\\) steps — no worst-case skew possible.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#insertion-in-a-2-3-4-tree",
+    "href": "weeks/week_9/02_bst.html#insertion-in-a-2-3-4-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "Insertion in a 2-3-4 Tree",
+    "text": "Insertion in a 2-3-4 Tree\nInsertion always happens at a leaf. The process:\n\nSearch for the expected location (the leaf where the key would go).\nIf the leaf is a 2-node, expand it to a 3-node and insert. Done.\nIf the leaf is a 3-node, expand it to a 4-node and insert. Done.\nIf the leaf is a 4-node, we can’t add another key — we must split it first.\n\n\nNode Splitting\nSplitting a 4-node takes its middle key (M) and pushes it up to the parent. The original 4-node becomes two 2-nodes (one holding S, one holding L), both children of the parent which now absorbs M.\nThere are three cases depending on the parent:\nCase 1 — Parent is the root (a 4-node):\n    [S  M  L]          [M]\n   /  |  |  \\    →    /   \\\n  a   b  c   d      [S]   [L]\n                   / \\   / \\\n                  a   b c   d\nThe tree grows one level taller.\nCase 2 — Parent is a 2-node:\nThe middle key M is absorbed into the parent, converting it from a 2-node to a 3-node. The split 4-node’s two halves (S and L) become two separate children.\nCase 3 — Parent is a 3-node:\nSame idea — M is absorbed, converting the parent from a 3-node to a 4-node.\n\n\nEarly vs. Late Splitting\nThere are two strategies for when to split:\n\nEarly splitting: Split any 4-node you encounter on the way down during a search, before you actually need to. This ensures you never have a full node at the insertion point. At most one split per level.\nLate splitting: Only split when you actually need to insert into a 4-node. May cascade up \\(O(h)\\) splits in the worst case.\n\nBoth strategies produce valid trees with the same complexity \\(O(h)\\), but they produce different final shapes. The slides follow the early splitting strategy.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#insertion-example-step-by-step",
+    "href": "weeks/week_9/02_bst.html#insertion-example-step-by-step",
+    "title": "Tree-Based Index Structures",
+    "section": "Insertion Example: Step by Step",
+    "text": "Insertion Example: Step by Step\nInserting the sequence 10, 30, 60, 20, 50, 40, 70, 80, 15, 90, 100 using the early splitting strategy.\n\nAfter inserting 10, 30, 60 — all three fit into one leaf (a 4-node):\n[10  30  60]\n\nInsert 20 — the root is a 4-node, so we split it before descending. Middle key 30 becomes the new root; 10 and 60 become separate children. Then 20 is inserted into the left child:\n        [30]\n       /    \\\n  [10, 20]  [60]\n\nInsert 50 — 50 &gt; 30, go right. [60] is a 2-node, so just expand it:\n        [30]\n       /    \\\n  [10, 20]  [50, 60]\n\nInsert 40 — 40 &gt; 30, go right. [50, 60] is a 3-node, expand to 4-node and insert:\n        [30]\n       /    \\\n  [10, 20]  [40, 50, 60]\n\nInsert 70 — root [30] is fine. 70 &gt; 30, descend right. [40, 50, 60] is a 4-node — split it immediately (early strategy). Middle key 50 rises to join the root:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60]\nNow insert 70 into the right child [60]:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60, 70]\n\nInsert 80 — 80 &gt; 50, go to right child [60, 70]. It’s a 3-node, expand it:\n           [30, 50]\n          /   |    \\\n   [10,20]  [40]  [60, 70, 80]\n\nInsert 15 — 15 &lt; 30, go left. [10, 20] is a 3-node, expand it:\n              [30, 50]\n             /   |    \\\n  [10, 15, 20]  [40]  [60, 70, 80]\n\nInsert 90 — root [30, 50] is fine. 90 &gt; 50, descend right. [60, 70, 80] is a 4-node — split it. Middle key 70 rises to join the root:\n                [30, 50, 70]\n               /   |    |   \\\n  [10,15,20]  [40] [60] [80]\nNow insert 90 into the rightmost child [80]:\n                [30, 50, 70]\n               /   |    |   \\\n  [10,15,20]  [40] [60] [80, 90]\n\nInsert 100 — root [30, 50, 70] is a 4-node — split it first. Middle key 50 becomes the new root; 30 and 70 become children:\n                      [50]\n                     /    \\\n                  [30]    [70]\n                 /    \\   /   \\\n          [10,15,20] [40] [60] [80,90]\nNow insert 100. 100 &gt; 50 → go right to [70]. 100 &gt; 70 → go to right child [80, 90]. It’s a 3-node, expand it:\n                      [50]\n                     /    \\\n                  [30]    [70]\n                 /    \\   /   \\\n          [10,15,20] [40] [60] [80, 90, 100]\n\nFinal tree after all 11 insertions:\n                         [50]\n                        /    \\\n                     [30]    [70]\n                    /    \\   /   \\\n             [10,15,20] [40][60] [80,90,100]\nHeight = 2. All 11 keys stored, all leaves at the same level.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#deletion-in-a-2-3-4-tree",
+    "href": "weeks/week_9/02_bst.html#deletion-in-a-2-3-4-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "Deletion in a 2-3-4 Tree",
+    "text": "Deletion in a 2-3-4 Tree\nDeletion is the reverse of insertion. The core idea:\n\nLocate the node containing the target key.\nSwap it with its inorder successor (the smallest key in the right subtree). This reduces deletion to always happening at a leaf.\nIf the leaf is a 3-node or 4-node, simply remove the key.\nIf the leaf is a 2-node, removing its only key would leave an empty node — which is illegal. To prevent this, transform every 2-node you encounter (on the way down) into a 3-node or 4-node first. This is the reverse of the splitting cases from insertion.\n\n\nDeletion Example\nWe will delete 30 and then 50 from the final tree above.\nStarting tree:\n                         [50]\n                        /    \\\n                     [30]    [70]\n                    /    \\   /   \\\n             [10,15,20] [40][60] [80,90,100]\n\nDelete 30\n30 is an internal node. Its inorder successor is 40 (smallest key in its right subtree). Swap 30 and 40:\n                         [50]\n                        /    \\\n                     [40]    [70]\n                    /    \\   /   \\\n             [10,15,20] [30][60] [80,90,100]\nNow delete 30 from the leaf [30]. That leaf is a 2-node — but since 30 is the only key, removing it would leave an empty node.\nHowever, looking at its sibling [10, 15, 20] (a 4-node), we can borrow from it. The sibling’s largest key (20) rotates up to the parent, and the parent’s key (40) rotates down to fill the now-empty spot:\n                         [50]\n                        /    \\\n                     [20]    [70]\n                    /    \\   /   \\\n             [10,15]  [40][60] [80,90,100]\n30 is deleted. The tree remains balanced and all leaves are still at the same depth.\n\nDelete 50\n50 is the root. Its inorder successor is 60 (smallest key in its right subtree). Swap 50 and 60:\n                         [60]\n                        /    \\\n                     [20]    [70]\n                    /    \\   /   \\\n             [10,15]    [40][50] [80,90,100]\nNow delete 50 from the leaf [50]. It is a 2-node with no siblings to borrow from (both [20] and [60] in the right subtree are also 2-nodes).\nIn this case, we merge: combine the 2-node [50] with its sibling [60] (oops — actually [60] is now the root, not a sibling). Let’s be precise: the right child of the root is [70], whose left child is [50] and right child is [80,90,100]. Since [50] is a 2-node and we must delete from it, we can borrow from the rich sibling [80, 90, 100]. The sibling’s smallest key (80) rotates up to the parent [70], and 70 rotates down to fill the gap:\n                         [60]\n                        /    \\\n                     [20]    [80]\n                    /    \\   /   \\\n             [10,15]    [40][70] [90,100]\n50 is deleted. Final tree:\n                         [60]\n                        /    \\\n                     [20]    [80]\n                    /    \\   /   \\\n               [10,15]  [40][70] [90,100]\nStill height 2, all leaves at the same depth.\n\n📌 Key takeaway from deletion: The 2-3-4 tree never lets a node go empty. If you need to delete from a 2-node, you always first fatten it up — either by borrowing from a sibling or by merging with a sibling — before removing the key. This is the structural guarantee that keeps the tree balanced after every operation.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#advantages-and-disadvantages-of-2-3-4-trees",
+    "href": "weeks/week_9/02_bst.html#advantages-and-disadvantages-of-2-3-4-trees",
+    "title": "Tree-Based Index Structures",
+    "section": "Advantages and Disadvantages of 2-3-4 Trees",
+    "text": "Advantages and Disadvantages of 2-3-4 Trees\nAdvantages: - \\(O(\\log n)\\) height — all operations guaranteed efficient. - All leaves at the same depth — no degenerate cases. - Sorted order maintained automatically. - Generalizes easily to larger nodes (B-trees). - Suitable as a foundation for external data structures (disk-based storage).\nDisadvantage: - Multiple node types (2-node, 3-node, 4-node) — implementation requires constructing and destructing different node sizes during splits and merges, which is messy in practice.\n\n💡 The connection to B-trees: If you use a single uniform node type with space for 3 keys and 4 pointers (and allow it to be partially filled), you get a B-tree. A 2-3-4 tree is exactly a B-tree with parameter \\(n = 4\\). B-trees (and their variant, B+-trees) are what real database engines like PostgreSQL and MySQL actually use for their indexes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#putting-it-all-together",
+    "href": "weeks/week_9/02_bst.html#putting-it-all-together",
+    "title": "Tree-Based Index Structures",
+    "section": "Putting It All Together",
+    "text": "Putting It All Together\n\n\n\n\n\n\n\nConcept\nWhat it solves\n\n\n\n\nOrdered index\nEnables fast lookup without scanning the whole table\n\n\nDense vs. sparse\nTrade-off between index size and lookup speed\n\n\nPrimary vs. secondary\nOne physical order → one primary; unlimited secondaries\n\n\nMultilevel index\nHandles indexes too large to fit in memory\n\n\nBST (balanced)\nOptimal in-memory search: \\(O(\\log n)\\)\n\n\n2-3-4 tree\nExtends balanced search to external storage; precursor to B-trees\n\n\n\nThe progression is logical: plain indexing → layered indexing → tree-structured indexing → multi-key node trees → B/B+-trees (next topic).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#the-b-tree",
+    "href": "weeks/week_9/02_bst.html#the-b-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "The B+ Tree",
+    "text": "The B+ Tree\nThe B+ tree is what databases actually use. It fixes the ISAM problem — no overflow blocks, no full-file reorganization, self-balancing on every change.\nWhy B+ over balanced BST?\nWith \\(n = 100\\) keys per node and 1 million records: B+ tree needs 4 disk reads vs ~20 for a balanced BST. Each read costs ~20ms — that difference matters at scale.\n\n\nStructure\nA B+ tree with parameter \\(n\\) satisfies:\n\n\n\n\n\n\n\nNode\nChildren / Values\n\n\n\n\nInternal node (non-root)\nBetween \\(\\lceil n/2 \\rceil\\) and \\(n\\) children\n\n\nRoot (non-leaf)\nAt least 2 children\n\n\nLeaf node\nBetween \\(\\lceil (n-1)/2 \\rceil\\) and \\(n-1\\) values\n\n\nRoot as leaf\nBetween 0 and \\(n-1\\) values\n\n\n\nAll paths from root to leaf are the same length.\nKey distinction from 2-3-4 tree: leaf nodes are linked together in a linked list, enabling efficient sequential (range) access in addition to random access.\n\n\n\nNode Layout\nEach node holds keys \\(K_1 &lt; K_2 &lt; \\cdots &lt; K_{n-1}\\) and pointers \\(P_1, P_2, \\ldots, P_n\\).\nLeaf node: \\(P_i\\) points to the actual data record with key \\(K_i\\). The last pointer \\(P_n\\) points to the next leaf in sorted order.\nInternal node: \\(P_i\\) points to a subtree. Routing rule: - Keys in subtree \\(P_1\\) are \\(&lt; K_1\\) - Keys in subtree \\(P_i\\) (\\(2 \\leq i \\leq n-1\\)) are \\(\\geq K_{i-1}\\) and \\(&lt; K_i\\) - Keys in subtree \\(P_n\\) are \\(\\geq K_{n-1}\\)\n\n📌 Example (n = 6): Leaf nodes hold 3–5 values. Internal nodes hold 3–6 children. Root has at least 2 children.\n\n\n\n\nSearch\nTo find value \\(V\\):\n\nStart at root \\(C\\).\nWhile \\(C\\) is not a leaf: find the least \\(i\\) such that \\(V \\leq K_i\\). If none exists, follow the last pointer. Otherwise follow \\(P_{i+1}\\) if \\(V = K_i\\), else \\(P_i\\).\nAt leaf \\(C\\): find least \\(i\\) such that \\(K_i = V\\). If found, follow \\(P_i\\) to the record. If not, the record doesn’t exist.\n\nHeight bound: at most \\(\\lceil \\log_{\\lceil n/2 \\rceil}(K) \\rceil\\) levels for \\(K\\) search-key values.\n\n\n\nHandling Duplicate Keys\nWith duplicates, the strict \\(K_1 &lt; K_2 &lt; \\cdots\\) ordering becomes \\(K_1 \\leq K_2 \\leq \\cdots\\).\nModified search: when \\(V = K_i\\) at an internal node, still descend into \\(P_i\\) (not \\(P_{i+1}\\)), since a duplicate of \\(V\\) may exist in the left subtree. At the leaf, if all values are \\(&lt; V\\), move to the right sibling before checking.\nTo find all occurrences: find the first occurrence, then traverse consecutive leaf nodes via the linked list.\n\n\n\nInsertion\n\nFind the leaf where the key belongs.\nIf space exists: insert the (key, pointer) pair in sorted order. Done.\nIf leaf is full: split the leaf.\n\n\nSplitting a Leaf Node\n\nTake all \\(n\\) (key, pointer) pairs including the new one, sorted.\nPut the first \\(\\lfloor n/2 \\rfloor\\) in the original node, the rest in a new node.\nLet \\(k\\) = smallest key in the new node. Insert \\((k, \\text{new node pointer})\\) into the parent.\nIf the parent is also full, split it — propagate upward.\n\n\n\nSplitting an Internal Node\n\nCopy the full node + new entry into a temporary buffer of \\(n+1\\) pointers and \\(n\\) keys.\nKeep \\(P_1, K_1, \\ldots, K_{\\lceil n/2 \\rceil - 1}, P_{\\lceil n/2 \\rceil}\\) in the original node.\nPut \\(P_{\\lceil n/2 \\rceil + 1}, K_{\\lceil n/2 \\rceil + 1}, \\ldots\\) in a new node.\nPush \\(K_{\\lceil n/2 \\rceil}\\) up to the parent.\n\nSplits propagate upward until a non-full node is found. In the worst case, the root splits and the tree grows one level taller.\n\n\n\n\nDeletion\n\nFind and remove the record from the file (and its bucket if applicable).\nRemove the (key, pointer) from the leaf.\nIf the node still has enough entries: done.\nIf underfull and can merge with sibling: combine both nodes into one; delete the separator key from the parent (recursively).\nIf underfull but cannot merge: redistribute — borrow from a sibling and update the separator key in the parent.\n\nDeletions can cascade upward. If the root ends up with only one child after a deletion, delete the root and promote its sole child as the new root.\n\n\n\nB+ Tree File Organization\nStandard B+ trees store pointers to records in leaf nodes. B+ tree file organization stores the actual records in leaf nodes instead.\n\nSolves data file degradation (not just index degradation).\nLeaf nodes must still be at least half full.\nSince records are larger than pointers, fewer entries fit per leaf than in an index B+ tree.\nInsertions and deletions work identically.\n\n\n💡 To improve space utilization, involve two siblings in redistribution during splits/merges. This guarantees each node has at least \\(\\lfloor 2n/3 \\rfloor\\) entries.\n\n\n\n\nNon-Unique Search Keys\nThree approaches when the same key value appears in multiple records:\n\n\n\n\n\n\n\n\nApproach\nOverhead\nNotes\n\n\n\n\nSeparate bucket blocks\nHigh space/IO\nGenerally a bad idea\n\n\nList of tuple pointers per key\nLow space\nDeletion is expensive with many duplicates\n\n\nAppend record-id to key\nSmall storage overhead\nSimplest code; most widely used\n\n\n\nThe record-id approach makes every key unique artificially, so standard insert/delete logic applies without modification.\n\n\n\nRecord Relocation and Secondary Indices\nWhen a record moves (e.g., due to a node split in B+ tree file organization), every secondary index storing a direct record pointer must be updated — expensive.\nSolution: store the primary index search key in the secondary index instead of a direct record pointer.\n\nLookup: secondary index → primary key → primary index → record (one extra traversal).\nNode splits only require updating the primary index; secondary indices are untouched.\nIf the primary key is non-unique, append the record-id.\n\n\n\n\nIndexing Strings\nVariable-length string keys introduce variable fanout — nodes can hold different numbers of keys depending on key lengths. Space utilization becomes the split criterion instead of a fixed pointer count.\nPrefix compression reduces this problem: - Internal nodes only need enough of a key to distinguish between subtrees. “Silas” and “Silberschatz” can be separated by just “Silb”. - Leaf nodes can compress keys by sharing common prefixes.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#b-tree-vs-b-tree",
+    "href": "weeks/week_9/02_bst.html#b-tree-vs-b-tree",
+    "title": "Tree-Based Index Structures",
+    "section": "B-Tree vs B+ Tree",
+    "text": "B-Tree vs B+ Tree\nB-tree eliminates key duplication — each key appears once across the whole tree, with record pointers directly in internal nodes.\n\n\n\nB Tree\n\n\n\n\n\n\n\n\n\n\n\nB+ Tree\nB-Tree\n\n\n\n\nKeys in internal nodes\nRouting copies only\nActual record pointers\n\n\nKey duplication\nYes\nNo\n\n\nLeaf nodes linked\nYes\nNo\n\n\nFan-out\nHigher\nLower\n\n\nSequential access\nEfficient\nInefficient\n\n\nEarly key find\nNo\nSometimes\n\n\nComplexity\nSimple\nMore complex",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#quick-reference",
+    "href": "weeks/week_9/02_bst.html#quick-reference",
+    "title": "Tree-Based Index Structures",
+    "section": "Quick Reference",
+    "text": "Quick Reference\n\n\n\n\n\n\n\n\n\nStructure\nHeight\nKey property\nUsed for\n\n\n\n\nBST (balanced)\n\\(O(\\log n)\\)\nBinary; in-memory only\nIn-memory search\n\n\n2-3-4 Tree\n\\(O(\\log n)\\)\nMulti-key nodes; precursor to B-tree\nConceptual foundation\n\n\nB+ Tree\n\\(O(\\log_{\\lceil n/2 \\rceil} K)\\)\nLinked leaves; self-balancing\nDatabase indexes\n\n\nB-Tree\n\\(O(\\log_{\\lceil n/2 \\rceil} K)\\)\nNo key duplication\nRarely used in practice",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html",
+    "href": "weeks/week_9/03_hashing.html",
+    "title": "Hashing and Bitmap Indices",
+    "section": "",
+    "text": "What is Hashing?\nInstead of searching through a sorted structure, hashing computes exactly which bucket a record lives in — no traversal needed. Think of it as a direct address calculator.\nA hash function \\(h\\) maps a search key to a bucket address:\n\\[h : \\text{search-key values} \\rightarrow \\text{bucket addresses}\\]\nA good hash function is uniform (distributes keys evenly across all buckets) and fast to compute.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#what-is-hashing",
+    "href": "weeks/week_9/03_hashing.html#what-is-hashing",
+    "title": "Hashing and Bitmap Indices",
+    "section": "",
+    "text": "A bucket is a unit of storage — typically one disk block — holding one or more records.\nIf \\(h(k_1) = h(k_2)\\) for \\(k_1 \\neq k_2\\), a collision has occurred.\n\n\n\n⚠️ The worst hash function maps every key to the same bucket — search degrades to \\(O(n)\\).",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#static-hashing",
+    "href": "weeks/week_9/03_hashing.html#static-hashing",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Static Hashing",
+    "text": "Static Hashing\nThe number of buckets \\(B\\) is fixed at creation time.\nLookup: compute \\(h(k)\\) → go directly to that bucket → scan within it sequentially.\nExample: 10 buckets, keys are department names. Hash = sum of character values mod 10.\nh(Music)      = 1    h(History)   = 2\nh(Physics)    = 3    h(Elec. Eng.) = 3   ← collision\nPhysics and Elec. Eng. both map to bucket 3. Both records are stored there and the bucket is scanned sequentially to find the right one.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#handling-bucket-overflow",
+    "href": "weeks/week_9/03_hashing.html#handling-bucket-overflow",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Handling Bucket Overflow",
+    "text": "Handling Bucket Overflow\nOverflow happens when a bucket fills up. Causes:\n\nToo few buckets allocated initially.\nSkew — many records share the same key, or the hash function distributes unevenly.\n\nSolution: overflow chaining — link overflow buckets to the original in a linked list.\nBucket 3: [Physics | Elec. Eng.] → [overflow block] → ...\nThis scheme is called closed hashing. The alternative, open hashing (probing for the next free slot), is not suitable for databases — records move around, breaking pointers.\n\n⚠️ The more overflow chains grow, the slower lookups become. This is the fundamental weakness of static hashing.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#hash-indices",
+    "href": "weeks/week_9/03_hashing.html#hash-indices",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Hash Indices",
+    "text": "Hash Indices\nHashing can also be used purely as an index structure (not file organization). A hash index organizes search keys and their record pointers into a hash structure.\n\nStrictly speaking, hash indices are always secondary indices — if the file is already hash-organized on the same key, a separate hash index is redundant.\nUsed like other secondary indices: compute \\(h(k)\\), find the bucket, scan for the pointer, follow it to the record.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#deficiencies-of-static-hashing",
+    "href": "weeks/week_9/03_hashing.html#deficiencies-of-static-hashing",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Deficiencies of Static Hashing",
+    "text": "Deficiencies of Static Hashing\nThe fixed bucket count \\(B\\) is the core problem:\n\n\n\n\n\n\n\nScenario\nProblem\n\n\n\n\nFile grows beyond initial estimate\nToo many overflow chains → poor performance\n\n\nFile shrinks\nMostly empty buckets → wasted space\n\n\n\\(B\\) set too large from the start\nSpace wasted immediately\n\n\n\nPeriodic full reorganization with a new hash function is possible but expensive and disruptive.\nBetter fix: let the number of buckets grow and shrink dynamically.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#dynamic-hashing-extendable-hashing",
+    "href": "weeks/week_9/03_hashing.html#dynamic-hashing-extendable-hashing",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Dynamic Hashing (Extendable Hashing)",
+    "text": "Dynamic Hashing (Extendable Hashing)\nInstead of a fixed bucket count, extendable hashing uses a directory (bucket address table) that doubles or halves as needed.\n\nCore Idea\n\nThe hash function produces a \\(b\\)-bit integer (typically \\(b = 32\\)).\nOnly the first \\(i\\) bits (global depth) are used to index into the directory.\nDirectory size = \\(2^i\\). Initially \\(i = 0\\).\nEach bucket \\(j\\) stores its own local depth \\(i_j\\) — how many bits actually identify its entries.\nMultiple directory entries can point to the same bucket when \\(i_j &lt; i\\).\n\n\n\n\nDynamic Hashing\n\n\n\n\n\nLookup\n\nCompute \\(h(k) = X\\).\nUse the first \\(i\\) bits of \\(X\\) as a directory index.\nFollow the pointer to the bucket and scan within it.\n\n\n\n\nInsertion\n\nLookup the target bucket \\(j\\).\nIf space exists → insert. Done.\nIf bucket \\(j\\) is full → split:\n\nCase 1 — \\(i &gt; i_j\\) (multiple entries point to \\(j\\)): - Allocate new bucket \\(z\\), set \\(i_j = i_z = i_j + 1\\). - Redirect the second half of entries that pointed to \\(j\\) → now point to \\(z\\). - Redistribute all records in \\(j\\) between \\(j\\) and \\(z\\) by recomputing hash prefixes. - Retry insertion.\nCase 2 — \\(i = i_j\\) (only one entry points to \\(j\\)): - Increment \\(i\\), double the directory (each old entry becomes two entries pointing to the same bucket). - Now \\(i &gt; i_j\\) → apply Case 1. - If \\(i\\) hits limit \\(b\\) or too many splits occur, use an overflow bucket instead.\n\n\n\nDeletion\n\nRemove the record from its bucket.\nIf the bucket empties, it can be removed.\nCoalesce with a “buddy” bucket — a bucket with the same \\(i_j\\) and the same \\((i_j - 1)\\)-bit prefix.\nShrink the directory if the actual bucket count becomes much smaller than \\(2^i\\) (expensive — do sparingly).\n\n\n\n\nExtendable Hashing: Pros and Cons\n\n\n\n\n\n\n\n✓ Advantages\n✗ Disadvantages\n\n\n\n\nPerformance doesn’t degrade as file grows\nExtra level of indirection on every lookup\n\n\nMinimal space overhead\nDirectory can exceed memory size\n\n\nNo periodic reorganization needed\nDoubling the directory is expensive\n\n\n\n\n💡 If the directory outgrows memory, a B+ tree can index into it — combining the benefits of both structures.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#ordered-indexing-vs.-hashing",
+    "href": "weeks/week_9/03_hashing.html#ordered-indexing-vs.-hashing",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Ordered Indexing vs. Hashing",
+    "text": "Ordered Indexing vs. Hashing\n\n\n\nFactor\nB+ Tree (Ordered)\nHash Index\n\n\n\n\nPoint lookup\n\\(O(\\log n)\\)\n\\(O(1)\\) average\n\n\nRange queries\n✓ Efficient\n✗ Not supported\n\n\nWorst-case access\nGuaranteed \\(O(\\log n)\\)\nDegrades with overflow\n\n\nReorganization\nNever needed\nNeeded for static hashing\n\n\n\nRule of thumb: use hashing for exact-match lookups; use ordered indices when range queries are common.\nIn practice:\n\n\n\nSystem\nHash support\n\n\n\n\nPostgreSQL\nSupports hash indices but discourages them\n\n\nOracle\nSupports static hash file organization; no hash indices\n\n\nSQL Server\nB+ trees only",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#bitmap-indices",
+    "href": "weeks/week_9/03_hashing.html#bitmap-indices",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Bitmap Indices",
+    "text": "Bitmap Indices\nBitmap indices are designed for multi-attribute analytical queries on low-cardinality columns — not for point lookups.\n\nWhat They Are\nFor an attribute with \\(m\\) distinct values, a bitmap index stores \\(m\\) bit vectors — one per distinct value. Each bit vector has one bit per record:\n\n1 if the record has that value.\n0 otherwise.\n\nExample: gender attribute, 5 records:\nRecord:     0  1  2  3  4\nGender:     M  F  M  F  M\n\nBitmap(M):  1  0  1  0  1\nBitmap(F):  0  1  0  1  0\n\n📌 Best suited for columns with few distinct values — gender, country, income bracket, status flags. Not useful for high-cardinality columns like names or IDs.\n\n\n\n\nAnswering Queries with Bitmaps\nMulti-attribute queries use bitwise operations — extremely fast at the CPU level.\n\n\n\nOperation\nMeaning\n\n\n\n\nAND\nRecords matching both conditions\n\n\nOR\nRecords matching either condition\n\n\nNOT\nRecords not matching a condition\n\n\n\nExample: find male instructors at income level L1:\nBitmap(gender=M):    1 0 0 1 0\nBitmap(income=L1):   1 0 1 1 0\n                     ---------\nAND result:          1 0 0 1 0   → records 0 and 3 match",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/03_hashing.html#quick-reference",
+    "href": "weeks/week_9/03_hashing.html#quick-reference",
+    "title": "Hashing and Bitmap Indices",
+    "section": "Quick Reference",
+    "text": "Quick Reference\n\n\n\n\n\n\n\n\nStructure\nBest for\nAvoid when\n\n\n\n\nStatic Hashing\nStable-size tables, exact lookups\nFile grows or shrinks; range queries needed\n\n\nExtendable Hashing\nGrowing tables, exact lookups\nRange queries; directory too large for memory\n\n\nB+ Tree\nRange queries, general purpose\nPure exact-match at very high scale\n\n\nBitmap Index\nLow-cardinality multi-attribute queries, analytics\nHigh-cardinality columns; frequent updates",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/01_indexing.html#formulas-for-solving-the-problem",
+    "href": "weeks/week_9/01_indexing.html#formulas-for-solving-the-problem",
+    "title": "Indexing",
+    "section": "Formulas for Solving the Problem",
+    "text": "Formulas for Solving the Problem\n\\[\\text{Space of Index} = \\text{Size of Key Field} + \\text{Size of Pointer Field}\\]\n\\[\\text{Total Index Space} = \\text{Space of Index} \\times \\text{No. of Records}\\]\n\\[\\text{One Block Size} = \\frac{\\text{Size of File}}{\\text{No. of Blocks Used to Store the File}}\\]\n\\[\\text{No. of Blocks for Index} = \\left\\lceil \\frac{\\text{Total Index Space}}{\\text{One Block Size}} \\right\\rceil\\]\n\n💡 Always round up — a partial block still occupies a full block on disk.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>29</span>  <span class='chapter-title'>Indexing</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#why-b-trees",
+    "href": "weeks/week_9/02_bst.html#why-b-trees",
+    "title": "Tree-Based Index Structures",
+    "section": "Why B+ Trees?",
+    "text": "Why B+ Trees?\nISAM (indexed-sequential files) degrades as the file grows — overflow blocks pile up and require periodic full reorganization. B+ trees fix this by self-balancing on every insert and delete.\n\n\n\n\nISAM\nB+ Tree\n\n\n\n\nPerformance over time\nDegrades\nStable\n\n\nReorganization needed\nYes (periodic)\nNo\n\n\nInsert/Delete overhead\nLow\nSlightly higher",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#structure-1",
+    "href": "weeks/week_9/02_bst.html#structure-1",
+    "title": "Tree-Based Index Structures",
+    "section": "Structure",
+    "text": "Structure\nA B+ tree with parameter \\(n\\):\n\n\n\nNode\nMin\nMax\n\n\n\n\nInternal (non-root)\n\\(\\lceil n/2 \\rceil\\) children\n\\(n\\) children\n\n\nRoot (non-leaf)\n2 children\n\\(n\\) children\n\n\nLeaf\n\\(\\lceil (n-1)/2 \\rceil\\) values\n\\(n-1\\) values\n\n\nRoot as leaf\n0 values\n\\(n-1\\) values\n\n\n\n\nAll paths root → leaf are the same length.\nKeys in each node are ordered: \\(K_1 \\leq K_2 \\leq \\cdots \\leq K_{n-1}\\).\nLeaf nodes are linked → supports sequential (range) access.\nLeaf: \\(P_i\\) → record with key \\(K_i\\); last pointer \\(P_n\\) → next leaf.\nInternal: \\(P_i\\) → subtree. Keys in \\(P_1 &lt; K_1\\); keys in \\(P_i \\geq K_{i-1}\\) and \\(&lt; K_i\\); keys in \\(P_n \\geq K_{n-1}\\).\n\n\n📌 Example (\\(n = 6\\)): Leaf nodes hold 3–5 values; internal nodes hold 3–6 children.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#why-b-trees-are-efficient",
+    "href": "weeks/week_9/02_bst.html#why-b-trees-are-efficient",
+    "title": "Tree-Based Index Structures",
+    "section": "Why B+ Trees are Efficient",
+    "text": "Why B+ Trees are Efficient\nWith \\(n = 100\\) and 1 million records:\n\\[\\text{Height} \\leq \\lceil \\log_{\\lceil n/2 \\rceil}(K) \\rceil = \\log_{50}(1{,}000{,}000) = 4 \\text{ disk reads}\\]\nA balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#search-1",
+    "href": "weeks/week_9/02_bst.html#search-1",
+    "title": "Tree-Based Index Structures",
+    "section": "Search",
+    "text": "Search\nTo find value \\(V\\):\n\nStart at root \\(C\\).\nWhile \\(C\\) is not a leaf: find least \\(i\\) such that \\(V \\leq K_i\\). Follow \\(P_{i+1}\\) if \\(V = K_i\\), else \\(P_i\\). If no such \\(i\\), follow last pointer.\nAt leaf: if \\(K_i = V\\), follow \\(P_i\\) to record. Else record doesn’t exist.\n\nDuplicates: ordering relaxes to \\(\\leq\\). Always descend \\(P_i\\) when \\(V = K_i\\) — duplicates may exist in the left subtree. To find all occurrences, traverse consecutive leaves via the linked list.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#insertion-1",
+    "href": "weeks/week_9/02_bst.html#insertion-1",
+    "title": "Tree-Based Index Structures",
+    "section": "Insertion",
+    "text": "Insertion\n\nFind the target leaf and insert in sorted order.\nIf space exists → insert. Done.\nIf leaf is full → split:\n\nPut first \\(\\lfloor n/2 \\rfloor\\) pairs in original node, rest in new node.\nPush smallest key of new node up to parent.\n\nIf parent is also full → split it and propagate upward.\nWorst case: root splits, tree grows one level taller.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#deletion-1",
+    "href": "weeks/week_9/02_bst.html#deletion-1",
+    "title": "Tree-Based Index Structures",
+    "section": "Deletion",
+    "text": "Deletion\n\nRemove the record and its (key, pointer) from the leaf.\nNode still has enough entries → done.\nUnderfull + can merge with sibling → combine into one node; pull separator key down from parent; recurse upward.\nUnderfull + cannot merge → redistribute from sibling; update separator key in parent.\nIf root ends up with one child → delete root, promote that child.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#additional-notes",
+    "href": "weeks/week_9/02_bst.html#additional-notes",
+    "title": "Tree-Based Index Structures",
+    "section": "Additional Notes",
+    "text": "Additional Notes\nFile organization: leaf nodes store actual records instead of pointers — solves data file degradation, not just index degradation. Fewer records fit per leaf (records &gt; pointers in size), but insert/delete logic is identical. Using 2 siblings in redistribution guarantees each node has \\(\\geq \\lfloor 2n/3 \\rfloor\\) entries.\nNon-unique keys: best handled by appending a record-id to make every key unique — simplest code, most widely used.\nRecord relocation: if a record moves, every secondary index storing a direct pointer must be updated. Fix: store the primary search key in the secondary index instead — one extra traversal on lookup, but node splits are cheap.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#b-tree-vs-b-tree-1",
+    "href": "weeks/week_9/02_bst.html#b-tree-vs-b-tree-1",
+    "title": "Tree-Based Index Structures",
+    "section": "B-Tree vs B+ Tree",
+    "text": "B-Tree vs B+ Tree\nB-tree eliminates key duplication — each key appears once across the whole tree, with record pointers directly in internal nodes.\n\n\n\n\n\n\n\n\n\nB+ Tree\nB-Tree\n\n\n\n\nKeys in internal nodes\nRouting copies only\nActual record pointers\n\n\nKey duplication\nYes\nNo\n\n\nLeaf nodes linked\nYes\nNo\n\n\nFan-out\nHigher\nLower\n\n\nSequential access\nEfficient\nInefficient\n\n\nEarly key find\nNo\nSometimes\n\n\nComplexity\nSimple\nMore complex\n\n\n\n\n⚠️ The occasional early find in a B-tree doesn’t justify its lower fan-out and added complexity. B+ trees are universally preferred in practice.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#b-trees",
+    "href": "weeks/week_9/02_bst.html#b-trees",
+    "title": "Tree-Based Index Structures",
+    "section": "B+ Trees",
+    "text": "B+ Trees\nISAM (indexed-sequential files) degrades as the file grows — overflow blocks pile up and require periodic full reorganization. B+ trees fix this by self-balancing on every insert and delete.\nWith \\(n = 100\\) and 1 million records, B+ Tree needs 4 reads. A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#a-balanced-bst-on-the-same-data-needs-20-disk-reads.-each-read-costs-20ms-the-difference-is-significant-at-scale.",
+    "href": "weeks/week_9/02_bst.html#a-balanced-bst-on-the-same-data-needs-20-disk-reads.-each-read-costs-20ms-the-difference-is-significant-at-scale.",
+    "title": "Tree-Based Index Structures",
+    "section": "A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "text": "A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#structure",
+    "href": "weeks/week_9/02_bst.html#structure",
+    "title": "Tree-Based Index Structures",
+    "section": "Structure",
+    "text": "Structure\nA B+ tree with parameter \\(n\\):\n\n\n\nNode\nMin\nMax\n\n\n\n\nInternal (non-root)\n\\(\\lceil n/2 \\rceil\\) children\n\\(n\\) children\n\n\nRoot (non-leaf)\n2 children\n\\(n\\) children\n\n\nLeaf\n\\(\\lceil (n-1)/2 \\rceil\\) values\n\\(n-1\\) values\n\n\nRoot as leaf\n0 values\n\\(n-1\\) values\n\n\n\n\nAll paths root → leaf are the same length.\nKeys in each node are ordered: \\(K_1 \\leq K_2 \\leq \\cdots \\leq K_{n-1}\\).\nLeaf nodes are linked → supports sequential (range) access.\nLeaf: \\(P_i\\) → record with key \\(K_i\\); last pointer \\(P_n\\) → next leaf.\nInternal: \\(P_i\\) → subtree. Keys in \\(P_1 &lt; K_1\\); keys in \\(P_i \\geq K_{i-1}\\) and \\(&lt; K_i\\); keys in \\(P_n \\geq K_{n-1}\\).\n\n\n\n\nB+Tree",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#with-n-100-and-1-million-records-b-tree-needs-4-reads.-a-balanced-bst-on-the-same-data-needs-20-disk-reads.-each-read-costs-20ms-the-difference-is-significant-at-scale.",
+    "href": "weeks/week_9/02_bst.html#with-n-100-and-1-million-records-b-tree-needs-4-reads.-a-balanced-bst-on-the-same-data-needs-20-disk-reads.-each-read-costs-20ms-the-difference-is-significant-at-scale.",
+    "title": "Tree-Based Index Structures",
+    "section": "With \\(n = 100\\) and 1 million records, B+ Tree needs 4 reads. A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "text": "With \\(n = 100\\) and 1 million records, B+ Tree needs 4 reads. A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#search",
+    "href": "weeks/week_9/02_bst.html#search",
+    "title": "Tree-Based Index Structures",
+    "section": "Search",
+    "text": "Search\nTo find value \\(V\\):\n\nStart at the root.\nAt each internal node, scan the keys left to right and find where 𝑉 fits. Follow the pointer to the matching child subtree. Repeat until you reach a leaf.\nAt the leaf, scan for 𝑉. If found, follow its pointer to the record. If not, the record doesn’t exist.\n\nDuplicates: ordering relaxes to \\(\\leq\\). Always descend \\(P_i\\) when \\(V = K_i\\) — duplicates may exist in the left subtree. To find all occurrences, traverse consecutive leaves via the linked list.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#insertion",
+    "href": "weeks/week_9/02_bst.html#insertion",
+    "title": "Tree-Based Index Structures",
+    "section": "Insertion",
+    "text": "Insertion\n\nFind the target leaf and insert in sorted order.\nIf space exists → insert. Done.\nIf leaf is full → split:\n\nPut first \\(\\lfloor n/2 \\rfloor\\) pairs in original node, rest in new node.\nPush smallest key of new node up to parent.\n\nIf parent is also full → split it and propagate upward.\nWorst case: root splits, tree grows one level taller.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_9/02_bst.html#deletion",
+    "href": "weeks/week_9/02_bst.html#deletion",
+    "title": "Tree-Based Index Structures",
+    "section": "Deletion",
+    "text": "Deletion\n\nRemove the record and its (key, pointer) from the leaf.\nNode still has enough entries → done.\nUnderfull + can merge with sibling → combine into one node; pull separator key down from parent; recurse upward.\nUnderfull + cannot merge → redistribute from sibling; update separator key in parent.\nIf root ends up with one child → delete root, promote that child.",
+    "crumbs": [
+      "**Week-09**",
+      "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
   }
 ]
