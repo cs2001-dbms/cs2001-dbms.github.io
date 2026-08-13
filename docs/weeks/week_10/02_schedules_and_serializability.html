@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hashing and Bitmap Indices – Database Management Systems</title>
+<title>Schedules and Serializability – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,8 +68,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_10/01_transactions_and_acid.html" rel="next">
-<link href="../../weeks/week_9/02_bst.html" rel="prev">
+<link href="../../weeks/week_10/03_concurrency_and_locking.html" rel="next">
+<link href="../../weeks/week_10/01_transactions_and_acid.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -286,7 +321,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/03_hashing.html"><span class="chapter-title">Hashing and Bitmap Indices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/02_schedules_and_serializability.html"><span class="chapter-title">Schedules and Serializability</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -555,13 +590,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
@@ -574,20 +609,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
+  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
@@ -595,7 +630,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Schedules and Serializability</span></a>
+  <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Schedules and Serializability</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -646,33 +681,32 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#what-is-hashing" id="toc-what-is-hashing" class="nav-link active" data-scroll-target="#what-is-hashing">What is Hashing?</a></li>
-  <li><a href="#static-hashing" id="toc-static-hashing" class="nav-link" data-scroll-target="#static-hashing">Static Hashing</a></li>
-  <li><a href="#handling-bucket-overflow" id="toc-handling-bucket-overflow" class="nav-link" data-scroll-target="#handling-bucket-overflow">Handling Bucket Overflow</a></li>
-  <li><a href="#deficiencies-of-static-hashing" id="toc-deficiencies-of-static-hashing" class="nav-link" data-scroll-target="#deficiencies-of-static-hashing">Deficiencies of Static Hashing</a></li>
-  <li><a href="#dynamic-hashing-extendable-hashing" id="toc-dynamic-hashing-extendable-hashing" class="nav-link" data-scroll-target="#dynamic-hashing-extendable-hashing">Dynamic Hashing (Extendable Hashing)</a>
+  <li><a href="#what-is-a-schedule" id="toc-what-is-a-schedule" class="nav-link active" data-scroll-target="#what-is-a-schedule">What is a Schedule?</a>
   <ul class="collapse">
-  <li><a href="#core-idea" id="toc-core-idea" class="nav-link" data-scroll-target="#core-idea">Core Idea</a></li>
-  <li><a href="#lookup" id="toc-lookup" class="nav-link" data-scroll-target="#lookup">Lookup</a></li>
-  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
-  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
-  <li><a href="#extendable-hashing-pros-and-cons" id="toc-extendable-hashing-pros-and-cons" class="nav-link" data-scroll-target="#extendable-hashing-pros-and-cons">Extendable Hashing: Pros and Cons</a></li>
+  <li><a href="#serial-vs.-concurrent-schedules" id="toc-serial-vs.-concurrent-schedules" class="nav-link" data-scroll-target="#serial-vs.-concurrent-schedules">Serial vs.&nbsp;Concurrent Schedules</a></li>
   </ul></li>
-  <li><a href="#bitmap-indices" id="toc-bitmap-indices" class="nav-link" data-scroll-target="#bitmap-indices">Bitmap Indices</a>
+  <li><a href="#serializability" id="toc-serializability" class="nav-link" data-scroll-target="#serializability">Serializability</a>
   <ul class="collapse">
-  <li><a href="#what-they-are" id="toc-what-they-are" class="nav-link" data-scroll-target="#what-they-are">What They Are</a></li>
-  <li><a href="#answering-queries-with-bitmaps" id="toc-answering-queries-with-bitmaps" class="nav-link" data-scroll-target="#answering-queries-with-bitmaps">Answering Queries with Bitmaps</a></li>
+  <li><a href="#conflict-serializability" id="toc-conflict-serializability" class="nav-link" data-scroll-target="#conflict-serializability">1. Conflict Serializability</a></li>
+  <li><a href="#view-serializability" id="toc-view-serializability" class="nav-link" data-scroll-target="#view-serializability">2. View Serializability</a></li>
   </ul></li>
+  <li><a href="#recovery-and-cascading" id="toc-recovery-and-cascading" class="nav-link" data-scroll-target="#recovery-and-cascading">Recovery and Cascading</a>
+  <ul class="collapse">
+  <li><a href="#recoverable-schedules" id="toc-recoverable-schedules" class="nav-link" data-scroll-target="#recoverable-schedules">Recoverable Schedules</a></li>
+  <li><a href="#cascading-rollbacks" id="toc-cascading-rollbacks" class="nav-link" data-scroll-target="#cascading-rollbacks">Cascading Rollbacks</a></li>
+  <li><a href="#cascadeless-schedules" id="toc-cascadeless-schedules" class="nav-link" data-scroll-target="#cascadeless-schedules">Cascadeless Schedules</a></li>
+  </ul></li>
+  <li><a href="#tcl-transaction-control-language" id="toc-tcl-transaction-control-language" class="nav-link" data-scroll-target="#tcl-transaction-control-language">TCL (Transaction Control Language)</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/03_hashing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/02_schedules_and_serializability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/03_hashing.html"><span class="chapter-title">Hashing and Bitmap Indices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/02_schedules_and_serializability.html"><span class="chapter-title">Schedules and Serializability</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Hashing and Bitmap Indices</span></h1>
+<h1 class="title"><span class="chapter-title">Schedules and Serializability</span></h1>
 </div>
 
 
@@ -689,216 +723,155 @@ window.Quarto = {
 </header>
 
 
-<section id="what-is-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-hashing">What is Hashing?</h2>
-<p>Instead of searching through a sorted structure, hashing computes <strong>exactly which bucket</strong> a record lives in — no traversal needed. Think of it as a direct address calculator.</p>
-<p>A <strong>hash function</strong> <span class="math inline">\(h\)</span> maps a search key to a bucket address:</p>
-<p><span class="math display">\[h : \text{search-key values} \rightarrow \text{bucket addresses}\]</span></p>
+<section id="what-is-a-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-schedule">What is a Schedule?</h2>
+<p>When multiple transactions are executed concurrently, their instructions are interleaved. A <strong>Schedule</strong> is simply a sequence of instructions that specifies the chronological order in which the instructions of concurrent transactions are executed.</p>
 <ul>
-<li>A <strong>bucket</strong> is a unit of storage — typically one disk block — holding one or more records.</li>
-<li>If <span class="math inline">\(h(k_1) = h(k_2)\)</span> for <span class="math inline">\(k_1 \neq k_2\)</span>, a <strong>collision</strong> has occurred.</li>
+<li>A schedule must consist of <em>all</em> instructions from the participating transactions.</li>
+<li>It must preserve the order in which the instructions appeared in their original transactions.</li>
 </ul>
-<p>A good hash function is <strong>uniform</strong> (distributes keys evenly across all buckets) and <strong>fast</strong> to compute.</p>
-<blockquote class="blockquote">
-<p>⚠️ The worst hash function maps every key to the same bucket — search degrades to <span class="math inline">\(O(n)\)</span>.</p>
-</blockquote>
-<hr>
-</section>
-<section id="static-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="static-hashing">Static Hashing</h2>
-<p>The number of buckets <span class="math inline">\(B\)</span> is <strong>fixed</strong> at creation time.</p>
-<p><strong>Lookup:</strong> compute <span class="math inline">\(h(k)\)</span> → go directly to that bucket → scan within it sequentially.</p>
-<p><strong>Example:</strong> 10 buckets, keys are department names. Hash = sum of character values mod 10.</p>
-<pre><code>h(Music)      = 1    h(History)   = 2
-h(Physics)    = 3    h(Elec. Eng.) = 3   ← collision</code></pre>
-<p>Physics and Elec. Eng. both map to bucket 3. Both records are stored there and the bucket is scanned sequentially to find the right one.</p>
-<hr>
-</section>
-<section id="handling-bucket-overflow" class="level2">
-<h2 class="anchored" data-anchor-id="handling-bucket-overflow">Handling Bucket Overflow</h2>
-<p>Overflow happens when a bucket fills up. Causes:</p>
+<section id="serial-vs.-concurrent-schedules" class="level3">
+<h3 class="anchored" data-anchor-id="serial-vs.-concurrent-schedules">Serial vs.&nbsp;Concurrent Schedules</h3>
 <ul>
-<li>Too few buckets allocated initially.</li>
-<li><strong>Skew</strong> — many records share the same key, or the hash function distributes unevenly.</li>
-</ul>
-<p><strong>Solution: overflow chaining</strong> — link overflow buckets to the original in a linked list.</p>
-<pre><code>Bucket 3: [Physics | Elec. Eng.] → [overflow block] → ...</code></pre>
-<p>This scheme is called <strong>closed hashing</strong>.</p>
-<hr>
-</section>
-<section id="deficiencies-of-static-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="deficiencies-of-static-hashing">Deficiencies of Static Hashing</h2>
-<p>The fixed bucket count <span class="math inline">\(B\)</span> is the core problem:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Scenario</th>
-<th>Problem</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>File grows beyond initial estimate</td>
-<td>Too many overflow chains → poor performance</td>
-</tr>
-<tr class="even">
-<td>File shrinks</td>
-<td>Mostly empty buckets → wasted space</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(B\)</span> set too large from the start</td>
-<td>Space wasted immediately</td>
-</tr>
-</tbody>
-</table>
-<p>Periodic full reorganization with a new hash function is possible but expensive and disruptive.</p>
-<p><strong>Better fix:</strong> let the number of buckets grow and shrink dynamically.</p>
-<hr>
-</section>
-<section id="dynamic-hashing-extendable-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="dynamic-hashing-extendable-hashing">Dynamic Hashing (Extendable Hashing)</h2>
-<p>Instead of a fixed bucket count, extendable hashing uses a <strong>directory</strong> (bucket address table) that doubles or halves as needed.</p>
-<section id="core-idea" class="level3">
-<h3 class="anchored" data-anchor-id="core-idea">Core Idea</h3>
-<ul>
-<li>The hash function produces a <strong><span class="math inline">\(b\)</span>-bit integer</strong> (typically <span class="math inline">\(b = 32\)</span>).</li>
-<li>Only the <strong>first <span class="math inline">\(i\)</span> bits</strong> (global depth) are used to index into the directory.</li>
-<li>Directory size = <span class="math inline">\(2^i\)</span>. Initially <span class="math inline">\(i = 0\)</span>.</li>
-<li>Each bucket <span class="math inline">\(j\)</span> stores its own <strong>local depth <span class="math inline">\(i_j\)</span></strong> — how many bits actually identify its entries.</li>
-<li>Multiple directory entries can point to the <strong>same bucket</strong> when <span class="math inline">\(i_j &lt; i\)</span>.</li>
+<li><strong>Serial Schedule:</strong> Transactions run one after the other. Transaction A finishes completely before Transaction B begins. This guarantees database consistency, but it is extremely slow.</li>
+<li><strong>Concurrent Schedule:</strong> Instructions from multiple transactions are interleaved. This improves performance and resource utilization, but risks creating an inconsistent database state.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="dynamic_hashing.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Dynamic Hashing"><img src="dynamic_hashing.png" class="img-fluid figure-img" alt="Dynamic Hashing"></a></p>
-<figcaption>Dynamic Hashing</figcaption>
+<p><a href="schedule_&amp;_serializable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="An example showing how an interleaved concurrent schedule can be equivalent to a serial schedule."><img src="schedule_&amp;_serializable.png" class="img-fluid figure-img" style="width:80.0%" alt="An example showing how an interleaved concurrent schedule can be equivalent to a serial schedule."></a></p>
+<figcaption>An example showing how an interleaved concurrent schedule can be equivalent to a serial schedule.</figcaption>
 </figure>
 </div>
 <hr>
 </section>
-<section id="lookup" class="level3">
-<h3 class="anchored" data-anchor-id="lookup">Lookup</h3>
-<ol type="1">
-<li>Compute <span class="math inline">\(h(k) = X\)</span>.</li>
-<li>Use the first <span class="math inline">\(i\)</span> bits of <span class="math inline">\(X\)</span> as a directory index.</li>
-<li>Follow the pointer to the bucket and scan within it.</li>
-</ol>
-<hr>
 </section>
-<section id="insertion" class="level3">
-<h3 class="anchored" data-anchor-id="insertion">Insertion</h3>
-<ol type="1">
-<li>Lookup the target bucket <span class="math inline">\(j\)</span>.</li>
-<li>If space exists → insert. Done.</li>
-<li>If bucket <span class="math inline">\(j\)</span> is full → <strong>split</strong>:</li>
-</ol>
-<p><strong>Case 1 — <span class="math inline">\(i &gt; i_j\)</span> (multiple entries point to <span class="math inline">\(j\)</span>):</strong> - Allocate new bucket <span class="math inline">\(z\)</span>, set <span class="math inline">\(i_j = i_z = i_j + 1\)</span>. - Redirect the second half of entries that pointed to <span class="math inline">\(j\)</span> → now point to <span class="math inline">\(z\)</span>. - Redistribute all records in <span class="math inline">\(j\)</span> between <span class="math inline">\(j\)</span> and <span class="math inline">\(z\)</span> by recomputing hash prefixes. - Retry insertion.</p>
-<p><strong>Case 2 — <span class="math inline">\(i = i_j\)</span> (only one entry points to <span class="math inline">\(j\)</span>):</strong> - Increment <span class="math inline">\(i\)</span>, double the directory (each old entry becomes two entries pointing to the same bucket). - Now <span class="math inline">\(i &gt; i_j\)</span> → apply Case 1. - If <span class="math inline">\(i\)</span> hits limit <span class="math inline">\(b\)</span> or too many splits occur, use an overflow bucket instead.</p>
-<hr>
-</section>
-<section id="deletion" class="level3">
-<h3 class="anchored" data-anchor-id="deletion">Deletion</h3>
-<ol type="1">
-<li>Remove the record from its bucket.</li>
-<li>If the bucket empties, it can be removed.</li>
-<li><strong>Coalesce</strong> with a “buddy” bucket — a bucket with the same <span class="math inline">\(i_j\)</span> and the same <span class="math inline">\((i_j - 1)\)</span>-bit prefix.</li>
-<li>Shrink the directory if the actual bucket count becomes much smaller than <span class="math inline">\(2^i\)</span> (expensive — do sparingly).</li>
-</ol>
-<hr>
-</section>
-<section id="extendable-hashing-pros-and-cons" class="level3">
-<h3 class="anchored" data-anchor-id="extendable-hashing-pros-and-cons">Extendable Hashing: Pros and Cons</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>✓ Advantages</th>
-<th>✗ Disadvantages</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Performance doesn’t degrade as file grows</td>
-<td>Extra level of indirection on every lookup</td>
-</tr>
-<tr class="even">
-<td>Minimal space overhead</td>
-<td>Directory can exceed memory size</td>
-</tr>
-<tr class="odd">
-<td>No periodic reorganization needed</td>
-<td>Doubling the directory is expensive</td>
-</tr>
-</tbody>
-</table>
-<blockquote class="blockquote">
-<p>💡 If the directory outgrows memory, a B+ tree can index into it — combining the benefits of both structures.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="bitmap-indices" class="level2">
-<h2 class="anchored" data-anchor-id="bitmap-indices">Bitmap Indices</h2>
-<p>Bitmap indices are designed for <strong>multi-attribute analytical queries</strong> on low-cardinality columns — not for point lookups.</p>
-<section id="what-they-are" class="level3">
-<h3 class="anchored" data-anchor-id="what-they-are">What They Are</h3>
-<p>For an attribute with <span class="math inline">\(m\)</span> distinct values, a bitmap index stores <strong><span class="math inline">\(m\)</span> bit vectors</strong> — one per distinct value. Each bit vector has one bit per record:</p>
+<section id="serializability" class="level2">
+<h2 class="anchored" data-anchor-id="serializability">Serializability</h2>
+<p>A concurrent schedule is considered <strong>Serializable</strong> if its final outcome is identical to that of some purely serial schedule. If we can prove a schedule is serializable, we guarantee it preserves database consistency!</p>
+<p>There are two primary ways to determine this: <strong>Conflict Serializability</strong> and <strong>View Serializability</strong>.</p>
+<section id="conflict-serializability" class="level3">
+<h3 class="anchored" data-anchor-id="conflict-serializability">1. Conflict Serializability</h3>
+<p>To understand conflict serializability, we first need to define what a “conflict” is.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Conflicting Instructions">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Conflicting Instructions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(I_i\)</span> and <span class="math inline">\(I_j\)</span> be two instructions from different transactions, operating on the <em>exact same</em> data item <span class="math inline">\(Q\)</span> (e.g.&nbsp;a column in a table, like <code>student_name</code>).</p>
 <ul>
-<li><strong>1</strong> if the record has that value.</li>
-<li><strong>0</strong> otherwise.</li>
+<li><span class="math inline">\(read(Q)\)</span> and <span class="math inline">\(read(Q)\)</span> <span class="math inline">\(\rightarrow\)</span> <strong>NO CONFLICT</strong></li>
+<li><span class="math inline">\(read(Q)\)</span> and <span class="math inline">\(write(Q)\)</span> <span class="math inline">\(\rightarrow\)</span> <strong>CONFLICT</strong></li>
+<li><span class="math inline">\(write(Q)\)</span> and <span class="math inline">\(read(Q)\)</span> <span class="math inline">\(\rightarrow\)</span> <strong>CONFLICT</strong></li>
+<li><span class="math inline">\(write(Q)\)</span> and <span class="math inline">\(write(Q)\)</span> <span class="math inline">\(\rightarrow\)</span> <strong>CONFLICT</strong></li>
 </ul>
-<p><strong>Example:</strong> <code>gender</code> attribute, 5 records:</p>
-<pre><code>Record:     0  1  2  3  4
-Gender:     M  F  M  F  M
-
-Bitmap(M):  1  0  1  0  1
-Bitmap(F):  0  1  0  1  0</code></pre>
-<blockquote class="blockquote">
-<p>📌 Best suited for columns with <strong>few distinct values</strong> — gender, country, income bracket, status flags. Not useful for high-cardinality columns like names or IDs.</p>
-</blockquote>
+<p>If an instruction is just a read, they don’t conflict. If at least one instruction is a write, they conflict because the order in which they are executed changes the final value or the value read!</p>
+</div>
+</div>
+<p>If a concurrent schedule can be transformed into a serial schedule by swapping <em>non-conflicting</em> adjacent instructions, we say the schedule is <strong>Conflict Serializable</strong>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="conflict_serializable.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Demonstrating how a schedule can be transformed into a serial schedule by swapping non-conflicting instructions."><img src="conflict_serializable.png" class="img-fluid figure-img" style="width:70.0%" alt="Demonstrating how a schedule can be transformed into a serial schedule by swapping non-conflicting instructions."></a></p>
+<figcaption>Demonstrating how a schedule can be transformed into a serial schedule by swapping non-conflicting instructions.</figcaption>
+</figure>
+</div>
+<section id="the-precedence-graph" class="level4">
+<h4 class="anchored" data-anchor-id="the-precedence-graph">The Precedence Graph</h4>
+<p>Checking every possible swap is tedious. Instead, we use a <strong>Precedence Graph</strong>:</p>
+<ol type="1">
+<li><p>Draw a node for each transaction.</p></li>
+<li><p>Draw a directed edge from <span class="math inline">\(T_i\)</span> to <span class="math inline">\(T_j\)</span> if they have conflicting instructions and <span class="math inline">\(T_i\)</span> executed first.</p></li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled" title="The Acyclic Rule">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Acyclic Rule
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A schedule is conflict serializable <strong>if and only if</strong> its precedence graph contains NO cycles (it is acyclic).</p>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="precedence_graph.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="A transaction table and its corresponding Precedence Graph. Since there is a cycle (T1 -> T2 -> T1 is possible, though the image shows a complex graph), it would not be conflict serializable."><img src="precedence_graph.png" class="img-fluid figure-img" style="width:90.0%" alt="A transaction table and its corresponding Precedence Graph. Since there is a cycle (T1 -> T2 -> T1 is possible, though the image shows a complex graph), it would not be conflict serializable."></a></p>
+<figcaption>A transaction table and its corresponding Precedence Graph. Since there is a cycle (T1 -&gt; T2 -&gt; T1 is possible, though the image shows a complex graph), it would not be conflict serializable.</figcaption>
+</figure>
+</div>
+<p><em>(Note: If the graph is acyclic, you can use topological sorting to find the exact serial execution order).</em></p>
+</section>
+</section>
+<section id="view-serializability" class="level3">
+<h3 class="anchored" data-anchor-id="view-serializability">2. View Serializability</h3>
+<p>View serializability is a slightly looser definition than conflict serializability. Two schedules are “view equivalent” if they meet three conditions for every data item:</p>
+<ol type="1">
+<li><p><strong>Initial Read:</strong> If <span class="math inline">\(T_i\)</span> reads the initial value of <span class="math inline">\(Q\)</span> in the first schedule, it must do so in the second.</p></li>
+<li><p><strong>Write-Read Pair:</strong> If <span class="math inline">\(T_j\)</span> reads a value of <span class="math inline">\(Q\)</span> written by <span class="math inline">\(T_i\)</span> in the first schedule, it must read the value written by that exact same <span class="math inline">\(T_i\)</span> in the second.</p></li>
+<li><p><strong>Final Write:</strong> The transaction that performs the <em>last</em> write to <span class="math inline">\(Q\)</span> must be the same in both schedules.</p></li>
+</ol>
+<p>Every conflict-serializable schedule is view-serializable. However, some view-serializable schedules are <em>not</em> conflict-serializable. This usually happens when there are <strong>Blind Writes</strong> (writing to a variable without ever reading it first).</p>
 <hr>
 </section>
-<section id="answering-queries-with-bitmaps" class="level3">
-<h3 class="anchored" data-anchor-id="answering-queries-with-bitmaps">Answering Queries with Bitmaps</h3>
-<p>Multi-attribute queries use <strong>bitwise operations</strong> — extremely fast at the CPU level.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Operation</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>AND</td>
-<td>Records matching both conditions</td>
-</tr>
-<tr class="even">
-<td>OR</td>
-<td>Records matching either condition</td>
-</tr>
-<tr class="odd">
-<td>NOT</td>
-<td>Records not matching a condition</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example:</strong> find male instructors at income level L1:</p>
-<pre><code>Bitmap(gender=M):    1 0 0 1 0
-Bitmap(income=L1):   1 0 1 1 0
-                     ---------
-AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
-<hr>
-
-
-
 </section>
+<section id="recovery-and-cascading" class="level2">
+<h2 class="anchored" data-anchor-id="recovery-and-cascading">Recovery and Cascading</h2>
+<p>If a transaction fails halfway through, we must roll it back to maintain the ACID property of Atomicity. This rollback process is known as <strong>Recovery</strong>. However, rolling back one transaction can cause a domino effect.</p>
+<section id="recoverable-schedules" class="level3">
+<h3 class="anchored" data-anchor-id="recoverable-schedules">Recoverable Schedules</h3>
+<p>If Transaction B reads data written by Transaction A, then A <strong>must commit before</strong> B commits.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="non_recoverable_schedule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="A non-recoverable schedule. If T8 aborts after T9 has already committed based on T8’s bad data, the database is ruined."><img src="non_recoverable_schedule.png" class="img-fluid figure-img" style="width:60.0%" alt="A non-recoverable schedule. If T8 aborts after T9 has already committed based on T8’s bad data, the database is ruined."></a></p>
+<figcaption>A non-recoverable schedule. If T8 aborts after T9 has already committed based on T8’s bad data, the database is ruined.</figcaption>
+</figure>
+</div>
+</section>
+<section id="cascading-rollbacks" class="level3">
+<h3 class="anchored" data-anchor-id="cascading-rollbacks">Cascading Rollbacks</h3>
+<p>Even if a schedule is recoverable, we can run into <strong>Cascading Rollbacks</strong>. If one transaction fails, every other transaction that read its dirty data must <em>also</em> be rolled back. This wastes a massive amount of computational work.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="non_cascadeless_schedule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="A cascading rollback. If T10 fails, T11 and T12 must also be rolled back."><img src="non_cascadeless_schedule.png" class="img-fluid figure-img" style="width:60.0%" alt="A cascading rollback. If T10 fails, T11 and T12 must also be rolled back."></a></p>
+<figcaption>A cascading rollback. If T10 fails, T11 and T12 must also be rolled back.</figcaption>
+</figure>
+</div>
+</section>
+<section id="cascadeless-schedules" class="level3">
+<h3 class="anchored" data-anchor-id="cascadeless-schedules">Cascadeless Schedules</h3>
+<p>To prevent cascading rollbacks, databases enforce <strong>Cascadeless Schedules</strong>. Rule: Transaction B cannot even <em>read</em> data written by Transaction A until Transaction A has fully committed. <em>(Note: Every cascadeless schedule is inherently recoverable).</em></p>
+<hr>
+</section>
+</section>
+<section id="tcl-transaction-control-language" class="level2">
+<h2 class="anchored" data-anchor-id="tcl-transaction-control-language">TCL (Transaction Control Language)</h2>
+<p>How do we actually manage these transactions in SQL? We use TCL commands!</p>
+<ul>
+<li><code>COMMIT</code> - Saves all changes permanently. The transaction is successfully concluded.</li>
+<li><code>ROLLBACK</code> - Undoes all changes made during the current transaction.</li>
+<li><code>SAVEPOINT</code> - Creates a bookmark within a transaction. You can choose to rollback to a specific savepoint instead of rolling back the entire transaction.</li>
+<li><code>SET TRANSACTION</code> - Can be used to set properties, like making the transaction Read-Only.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">-- An example of using Savepoints</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">UPDATE</span> Employee <span class="kw">SET</span> EName <span class="op">=</span> <span class="ot">"Janie"</span> <span class="kw">WHERE</span> EID <span class="op">=</span> <span class="ot">"E06"</span>;</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">SAVEPOINT</span> SP1;</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> Employee <span class="kw">WHERE</span> EID <span class="op">=</span> <span class="ot">"E02"</span>;</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">SAVEPOINT</span> SP2;</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">UPDATE</span> Employee <span class="kw">SET</span> EName <span class="op">=</span> <span class="ot">"Raina"</span> <span class="kw">WHERE</span> EID <span class="op">=</span> <span class="ot">"E04"</span>;</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">-- Oops, we didn't mean to delete E02! Let's rewind to SP1.</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">ROLLBACK</span> <span class="kw">TO</span> SP1;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+
 </section>
 
 </main> <!-- /main -->
@@ -1395,13 +1368,13 @@ AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_9/02_bst.html" class="pagination-link" aria-label="Tree-Based Index Structures">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Tree-Based Index Structures</span></span>
+      <a href="../../weeks/week_10/01_transactions_and_acid.html" class="pagination-link" aria-label="Transactions and ACID Properties">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Transactions and ACID Properties</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_10/01_transactions_and_acid.html" class="pagination-link" aria-label="Transactions and ACID Properties">
-        <span class="nav-page-text"><span class="chapter-title">Transactions and ACID Properties</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="pagination-link" aria-label="Concurrency and Locking">
+        <span class="nav-page-text"><span class="chapter-title">Concurrency and Locking</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1413,7 +1386,7 @@ AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/03_hashing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/02_schedules_and_serializability.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

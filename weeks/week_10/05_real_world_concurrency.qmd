@@ -1,0 +1,45 @@
+---
+title: "(Optional) Real-World Concurrency"
+---
+
+## Theory vs. Practice
+
+Throughout this week, we've explored strict theoretical protocols like Two-Phase Locking (2PL) and Timestamp-based protocols. However, if you spin up a real, modern database like **PostgreSQL** or **MySQL (InnoDB)**, you'll find that they don't *strictly* use standard 2PL for everything.
+
+Why? Because standard 2PL forces reads to block writes, and writes to block reads. In a massive web application with thousands of concurrent users, this level of locking would cause unacceptable performance bottlenecks.
+
+Modern databases solve this using a hybrid approach called **MVCC**.
+
+---
+
+## Multi-Version Concurrency Control (MVCC)
+
+**MVCC** is the secret sauce behind almost all modern enterprise relational databases. 
+
+The core philosophy of MVCC is simple: **"Readers do not block Writers, and Writers do not block Readers."**
+
+### How does it work?
+Instead of locking a row when it's being updated, the database simply creates a *new version* of that row. 
+
+1. **Transaction A** wants to update a row (e.g., change Alice's balance from $100 to $50). It writes a brand new version of the row to the disk but doesn't delete the old one yet.
+2. **Transaction B** comes along and wants to read Alice's balance. 
+3. Because Transaction A hasn't committed yet, Transaction B ignores the new version and reads the *old version* ($100). **No locks required!**
+4. Once Transaction A commits, any *future* transactions will see the new version ($50).
+
+Under the hood, this uses the **Timestamp Protocols** we learned about! Every transaction gets an ID (a timestamp), and every row version is tagged with the transaction IDs that created and deleted it. The database uses these tags to mathematically determine which version of a row a specific transaction is allowed to "see".
+
+---
+
+## Isolation Levels in Practice
+
+Because perfect serializability is expensive, SQL standards allow developers to choose their desired **Isolation Level** for a transaction. This allows you to trade safety for speed depending on your specific use case.
+
+From most dangerous (fastest) to safest (slowest):
+
+1. **Read Uncommitted:** A transaction can read uncommitted "dirty" data from other transactions. (Extremely fast, but very dangerous).
+2. **Read Committed:** (Default in PostgreSQL) A transaction can only read data that has been fully committed. However, if it reads the same row twice, the value might change if another transaction committed an update in between.
+3. **Repeatable Read:** (Default in MySQL) Guarantees that if you read a row twice in the same transaction, you will see the exact same data both times, even if another transaction updated it.
+4. **Serializable:** The absolute strictest level. The database guarantees the result is mathematically identical to serial execution. If it detects a conflict that breaks serializability, it simply aborts one of the transactions.
+
+### The Trade-off
+Most companies do not run their databases in `Serializable` mode because the performance penalty and frequency of deadlocks/aborts is too high. They run in `Read Committed` or `Repeatable Read`, accepting minor theoretical inconsistencies in exchange for massive concurrency gains.

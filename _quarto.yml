@@ -122,6 +122,13 @@ book:
         - weeks/week_9/01_indexing.qmd
         - weeks/week_9/02_bst.qmd
         - weeks/week_9/03_hashing.qmd
+    - part: '**Week-10**'
+      chapters:
+        - weeks/week_10/01_transactions_and_acid.qmd
+        - weeks/week_10/02_schedules_and_serializability.qmd
+        - weeks/week_10/03_concurrency_and_locking.qmd
+        - weeks/week_10/04_deadlocks_and_timestamps.qmd
+        - weeks/week_10/05_real_world_concurrency.qmd
     - part: '**Playground**'
       chapters: 
         - sql_playground.qmd
