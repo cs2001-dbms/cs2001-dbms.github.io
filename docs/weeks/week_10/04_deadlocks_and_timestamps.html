@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hashing and Bitmap Indices – Database Management Systems</title>
+<title>Deadlocks and Timestamps – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -33,8 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_10/01_transactions_and_acid.html" rel="next">
-<link href="../../weeks/week_9/02_bst.html" rel="prev">
+<link href="../../weeks/week_10/05_real_world_concurrency.html" rel="next">
+<link href="../../weeks/week_10/03_concurrency_and_locking.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -286,7 +286,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/03_hashing.html"><span class="chapter-title">Hashing and Bitmap Indices</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/04_deadlocks_and_timestamps.html"><span class="chapter-title">Deadlocks and Timestamps</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -555,13 +555,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
@@ -574,20 +574,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
+  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
@@ -605,7 +605,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Deadlocks and Timestamps</span></a>
+  <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Deadlocks and Timestamps</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -646,33 +646,31 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#what-is-hashing" id="toc-what-is-hashing" class="nav-link active" data-scroll-target="#what-is-hashing">What is Hashing?</a></li>
-  <li><a href="#static-hashing" id="toc-static-hashing" class="nav-link" data-scroll-target="#static-hashing">Static Hashing</a></li>
-  <li><a href="#handling-bucket-overflow" id="toc-handling-bucket-overflow" class="nav-link" data-scroll-target="#handling-bucket-overflow">Handling Bucket Overflow</a></li>
-  <li><a href="#deficiencies-of-static-hashing" id="toc-deficiencies-of-static-hashing" class="nav-link" data-scroll-target="#deficiencies-of-static-hashing">Deficiencies of Static Hashing</a></li>
-  <li><a href="#dynamic-hashing-extendable-hashing" id="toc-dynamic-hashing-extendable-hashing" class="nav-link" data-scroll-target="#dynamic-hashing-extendable-hashing">Dynamic Hashing (Extendable Hashing)</a>
+  <li><a href="#understanding-deadlocks" id="toc-understanding-deadlocks" class="nav-link active" data-scroll-target="#understanding-deadlocks">Understanding Deadlocks</a>
   <ul class="collapse">
-  <li><a href="#core-idea" id="toc-core-idea" class="nav-link" data-scroll-target="#core-idea">Core Idea</a></li>
-  <li><a href="#lookup" id="toc-lookup" class="nav-link" data-scroll-target="#lookup">Lookup</a></li>
-  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
-  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
-  <li><a href="#extendable-hashing-pros-and-cons" id="toc-extendable-hashing-pros-and-cons" class="nav-link" data-scroll-target="#extendable-hashing-pros-and-cons">Extendable Hashing: Pros and Cons</a></li>
+  <li><a href="#starvation" id="toc-starvation" class="nav-link" data-scroll-target="#starvation">Starvation</a></li>
   </ul></li>
-  <li><a href="#bitmap-indices" id="toc-bitmap-indices" class="nav-link" data-scroll-target="#bitmap-indices">Bitmap Indices</a>
+  <li><a href="#deadlock-prevention" id="toc-deadlock-prevention" class="nav-link" data-scroll-target="#deadlock-prevention">Deadlock Prevention</a>
   <ul class="collapse">
-  <li><a href="#what-they-are" id="toc-what-they-are" class="nav-link" data-scroll-target="#what-they-are">What They Are</a></li>
-  <li><a href="#answering-queries-with-bitmaps" id="toc-answering-queries-with-bitmaps" class="nav-link" data-scroll-target="#answering-queries-with-bitmaps">Answering Queries with Bitmaps</a></li>
+  <li><a href="#the-wait-die-scheme-non-preemptive" id="toc-the-wait-die-scheme-non-preemptive" class="nav-link" data-scroll-target="#the-wait-die-scheme-non-preemptive">1. The Wait-Die Scheme (Non-Preemptive)</a></li>
+  <li><a href="#the-wound-wait-scheme-preemptive" id="toc-the-wound-wait-scheme-preemptive" class="nav-link" data-scroll-target="#the-wound-wait-scheme-preemptive">2. The Wound-Wait Scheme (Preemptive)</a></li>
+  </ul></li>
+  <li><a href="#deadlock-detection" id="toc-deadlock-detection" class="nav-link" data-scroll-target="#deadlock-detection">Deadlock Detection</a></li>
+  <li><a href="#timestamp-based-protocols" id="toc-timestamp-based-protocols" class="nav-link" data-scroll-target="#timestamp-based-protocols">Timestamp-Based Protocols</a>
+  <ul class="collapse">
+  <li><a href="#read-and-write-rules" id="toc-read-and-write-rules" class="nav-link" data-scroll-target="#read-and-write-rules">Read and Write Rules</a></li>
+  <li><a href="#correctness-and-drawbacks" id="toc-correctness-and-drawbacks" class="nav-link" data-scroll-target="#correctness-and-drawbacks">Correctness and Drawbacks</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/03_hashing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/04_deadlocks_and_timestamps.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/03_hashing.html"><span class="chapter-title">Hashing and Bitmap Indices</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/04_deadlocks_and_timestamps.html"><span class="chapter-title">Deadlocks and Timestamps</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Hashing and Bitmap Indices</span></h1>
+<h1 class="title"><span class="chapter-title">Deadlocks and Timestamps</span></h1>
 </div>
 
 
@@ -689,212 +687,99 @@ window.Quarto = {
 </header>
 
 
-<section id="what-is-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-hashing">What is Hashing?</h2>
-<p>Instead of searching through a sorted structure, hashing computes <strong>exactly which bucket</strong> a record lives in — no traversal needed. Think of it as a direct address calculator.</p>
-<p>A <strong>hash function</strong> <span class="math inline">\(h\)</span> maps a search key to a bucket address:</p>
-<p><span class="math display">\[h : \text{search-key values} \rightarrow \text{bucket addresses}\]</span></p>
-<ul>
-<li>A <strong>bucket</strong> is a unit of storage — typically one disk block — holding one or more records.</li>
-<li>If <span class="math inline">\(h(k_1) = h(k_2)\)</span> for <span class="math inline">\(k_1 \neq k_2\)</span>, a <strong>collision</strong> has occurred.</li>
-</ul>
-<p>A good hash function is <strong>uniform</strong> (distributes keys evenly across all buckets) and <strong>fast</strong> to compute.</p>
-<blockquote class="blockquote">
-<p>⚠️ The worst hash function maps every key to the same bucket — search degrades to <span class="math inline">\(O(n)\)</span>.</p>
-</blockquote>
-<hr>
-</section>
-<section id="static-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="static-hashing">Static Hashing</h2>
-<p>The number of buckets <span class="math inline">\(B\)</span> is <strong>fixed</strong> at creation time.</p>
-<p><strong>Lookup:</strong> compute <span class="math inline">\(h(k)\)</span> → go directly to that bucket → scan within it sequentially.</p>
-<p><strong>Example:</strong> 10 buckets, keys are department names. Hash = sum of character values mod 10.</p>
-<pre><code>h(Music)      = 1    h(History)   = 2
-h(Physics)    = 3    h(Elec. Eng.) = 3   ← collision</code></pre>
-<p>Physics and Elec. Eng. both map to bucket 3. Both records are stored there and the bucket is scanned sequentially to find the right one.</p>
-<hr>
-</section>
-<section id="handling-bucket-overflow" class="level2">
-<h2 class="anchored" data-anchor-id="handling-bucket-overflow">Handling Bucket Overflow</h2>
-<p>Overflow happens when a bucket fills up. Causes:</p>
-<ul>
-<li>Too few buckets allocated initially.</li>
-<li><strong>Skew</strong> — many records share the same key, or the hash function distributes unevenly.</li>
-</ul>
-<p><strong>Solution: overflow chaining</strong> — link overflow buckets to the original in a linked list.</p>
-<pre><code>Bucket 3: [Physics | Elec. Eng.] → [overflow block] → ...</code></pre>
-<p>This scheme is called <strong>closed hashing</strong>.</p>
-<hr>
-</section>
-<section id="deficiencies-of-static-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="deficiencies-of-static-hashing">Deficiencies of Static Hashing</h2>
-<p>The fixed bucket count <span class="math inline">\(B\)</span> is the core problem:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Scenario</th>
-<th>Problem</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>File grows beyond initial estimate</td>
-<td>Too many overflow chains → poor performance</td>
-</tr>
-<tr class="even">
-<td>File shrinks</td>
-<td>Mostly empty buckets → wasted space</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(B\)</span> set too large from the start</td>
-<td>Space wasted immediately</td>
-</tr>
-</tbody>
-</table>
-<p>Periodic full reorganization with a new hash function is possible but expensive and disruptive.</p>
-<p><strong>Better fix:</strong> let the number of buckets grow and shrink dynamically.</p>
-<hr>
-</section>
-<section id="dynamic-hashing-extendable-hashing" class="level2">
-<h2 class="anchored" data-anchor-id="dynamic-hashing-extendable-hashing">Dynamic Hashing (Extendable Hashing)</h2>
-<p>Instead of a fixed bucket count, extendable hashing uses a <strong>directory</strong> (bucket address table) that doubles or halves as needed.</p>
-<section id="core-idea" class="level3">
-<h3 class="anchored" data-anchor-id="core-idea">Core Idea</h3>
-<ul>
-<li>The hash function produces a <strong><span class="math inline">\(b\)</span>-bit integer</strong> (typically <span class="math inline">\(b = 32\)</span>).</li>
-<li>Only the <strong>first <span class="math inline">\(i\)</span> bits</strong> (global depth) are used to index into the directory.</li>
-<li>Directory size = <span class="math inline">\(2^i\)</span>. Initially <span class="math inline">\(i = 0\)</span>.</li>
-<li>Each bucket <span class="math inline">\(j\)</span> stores its own <strong>local depth <span class="math inline">\(i_j\)</span></strong> — how many bits actually identify its entries.</li>
-<li>Multiple directory entries can point to the <strong>same bucket</strong> when <span class="math inline">\(i_j &lt; i\)</span>.</li>
-</ul>
+<section id="understanding-deadlocks" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-deadlocks">Understanding Deadlocks</h2>
+<p>Locking protocols solve the problem of inconsistency, but they introduce a new problem: <strong>Deadlock</strong>.</p>
+<p>Imagine Transaction A holds a lock on item X and is waiting for a lock on item Y. Meanwhile, Transaction B holds a lock on item Y and is waiting for a lock on item X.</p>
+<p>Neither transaction can ever proceed. They are stuck waiting for each other indefinitely.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="dynamic_hashing.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Dynamic Hashing"><img src="dynamic_hashing.png" class="img-fluid figure-img" alt="Dynamic Hashing"></a></p>
-<figcaption>Dynamic Hashing</figcaption>
+<p><a href="deadlock.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A classic deadlock scenario where two transactions are waiting for each other."><img src="deadlock.png" class="img-fluid figure-img" style="width:60.0%" alt="A classic deadlock scenario where two transactions are waiting for each other."></a></p>
+<figcaption>A classic deadlock scenario where two transactions are waiting for each other.</figcaption>
 </figure>
 </div>
-<hr>
-</section>
-<section id="lookup" class="level3">
-<h3 class="anchored" data-anchor-id="lookup">Lookup</h3>
-<ol type="1">
-<li>Compute <span class="math inline">\(h(k) = X\)</span>.</li>
-<li>Use the first <span class="math inline">\(i\)</span> bits of <span class="math inline">\(X\)</span> as a directory index.</li>
-<li>Follow the pointer to the bucket and scan within it.</li>
-</ol>
-<hr>
-</section>
-<section id="insertion" class="level3">
-<h3 class="anchored" data-anchor-id="insertion">Insertion</h3>
-<ol type="1">
-<li>Lookup the target bucket <span class="math inline">\(j\)</span>.</li>
-<li>If space exists → insert. Done.</li>
-<li>If bucket <span class="math inline">\(j\)</span> is full → <strong>split</strong>:</li>
-</ol>
-<p><strong>Case 1 — <span class="math inline">\(i &gt; i_j\)</span> (multiple entries point to <span class="math inline">\(j\)</span>):</strong> - Allocate new bucket <span class="math inline">\(z\)</span>, set <span class="math inline">\(i_j = i_z = i_j + 1\)</span>. - Redirect the second half of entries that pointed to <span class="math inline">\(j\)</span> → now point to <span class="math inline">\(z\)</span>. - Redistribute all records in <span class="math inline">\(j\)</span> between <span class="math inline">\(j\)</span> and <span class="math inline">\(z\)</span> by recomputing hash prefixes. - Retry insertion.</p>
-<p><strong>Case 2 — <span class="math inline">\(i = i_j\)</span> (only one entry points to <span class="math inline">\(j\)</span>):</strong> - Increment <span class="math inline">\(i\)</span>, double the directory (each old entry becomes two entries pointing to the same bucket). - Now <span class="math inline">\(i &gt; i_j\)</span> → apply Case 1. - If <span class="math inline">\(i\)</span> hits limit <span class="math inline">\(b\)</span> or too many splits occur, use an overflow bucket instead.</p>
-<hr>
-</section>
-<section id="deletion" class="level3">
-<h3 class="anchored" data-anchor-id="deletion">Deletion</h3>
-<ol type="1">
-<li>Remove the record from its bucket.</li>
-<li>If the bucket empties, it can be removed.</li>
-<li><strong>Coalesce</strong> with a “buddy” bucket — a bucket with the same <span class="math inline">\(i_j\)</span> and the same <span class="math inline">\((i_j - 1)\)</span>-bit prefix.</li>
-<li>Shrink the directory if the actual bucket count becomes much smaller than <span class="math inline">\(2^i\)</span> (expensive — do sparingly).</li>
-</ol>
-<hr>
-</section>
-<section id="extendable-hashing-pros-and-cons" class="level3">
-<h3 class="anchored" data-anchor-id="extendable-hashing-pros-and-cons">Extendable Hashing: Pros and Cons</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>✓ Advantages</th>
-<th>✗ Disadvantages</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Performance doesn’t degrade as file grows</td>
-<td>Extra level of indirection on every lookup</td>
-</tr>
-<tr class="even">
-<td>Minimal space overhead</td>
-<td>Directory can exceed memory size</td>
-</tr>
-<tr class="odd">
-<td>No periodic reorganization needed</td>
-<td>Doubling the directory is expensive</td>
-</tr>
-</tbody>
-</table>
-<blockquote class="blockquote">
-<p>💡 If the directory outgrows memory, a B+ tree can index into it — combining the benefits of both structures.</p>
-</blockquote>
+<p>When a deadlock occurs, the system has no choice but to intervene. It must <strong>roll back (abort)</strong> one of the transactions to break the cycle and release its locks so the other can proceed.</p>
+<section id="starvation" class="level3">
+<h3 class="anchored" data-anchor-id="starvation">Starvation</h3>
+<p>A related issue is <strong>Starvation</strong>. This occurs when a badly designed concurrency control manager repeatedly forces a transaction to wait forever, even without a deadlock. For example, if Transaction A wants an Exclusive lock, but a continuous stream of new transactions keep requesting and getting Shared locks on that item, Transaction A will starve. Alternatively, a transaction might be repeatedly chosen as the “victim” to be rolled back during deadlocks, never getting a chance to finish.</p>
 <hr>
 </section>
 </section>
-<section id="bitmap-indices" class="level2">
-<h2 class="anchored" data-anchor-id="bitmap-indices">Bitmap Indices</h2>
-<p>Bitmap indices are designed for <strong>multi-attribute analytical queries</strong> on low-cardinality columns — not for point lookups.</p>
-<section id="what-they-are" class="level3">
-<h3 class="anchored" data-anchor-id="what-they-are">What They Are</h3>
-<p>For an attribute with <span class="math inline">\(m\)</span> distinct values, a bitmap index stores <strong><span class="math inline">\(m\)</span> bit vectors</strong> — one per distinct value. Each bit vector has one bit per record:</p>
+<section id="deadlock-prevention" class="level2">
+<h2 class="anchored" data-anchor-id="deadlock-prevention">Deadlock Prevention</h2>
+<p>Rather than letting deadlocks happen and fixing them later, databases can use schemes to prevent them from ever occurring. These schemes often use <strong>Transaction Timestamps</strong>.</p>
+<p>A Timestamp is a unique identifier assigned by the database that represents the exact moment a transaction started. An older transaction has a smaller timestamp, while a younger transaction has a larger timestamp.</p>
+<section id="the-wait-die-scheme-non-preemptive" class="level3">
+<h3 class="anchored" data-anchor-id="the-wait-die-scheme-non-preemptive">1. The Wait-Die Scheme (Non-Preemptive)</h3>
+<p><em>Rule: Older transactions wait for younger ones. Younger transactions die.</em></p>
+<p>If Transaction A requests a lock held by Transaction B:</p>
 <ul>
-<li><strong>1</strong> if the record has that value.</li>
-<li><strong>0</strong> otherwise.</li>
+<li><p>If A is <strong>older</strong> than B <span class="math inline">\(\rightarrow\)</span> A is allowed to <strong>wait</strong>.</p></li>
+<li><p>If A is <strong>younger</strong> than B <span class="math inline">\(\rightarrow\)</span> A is killed (<strong>dies</strong>) and rolled back.</p></li>
 </ul>
-<p><strong>Example:</strong> <code>gender</code> attribute, 5 records:</p>
-<pre><code>Record:     0  1  2  3  4
-Gender:     M  F  M  F  M
-
-Bitmap(M):  1  0  1  0  1
-Bitmap(F):  0  1  0  1  0</code></pre>
-<blockquote class="blockquote">
-<p>📌 Best suited for columns with <strong>few distinct values</strong> — gender, country, income bracket, status flags. Not useful for high-cardinality columns like names or IDs.</p>
-</blockquote>
+</section>
+<section id="the-wound-wait-scheme-preemptive" class="level3">
+<h3 class="anchored" data-anchor-id="the-wound-wait-scheme-preemptive">2. The Wound-Wait Scheme (Preemptive)</h3>
+<p><em>Rule: Younger transactions wait for older ones. Older transactions wound (kill) younger ones.</em></p>
+<p>If Transaction A requests a lock held by Transaction B:</p>
+<ul>
+<li><p>If A is <strong>older</strong> than B <span class="math inline">\(\rightarrow\)</span> A forces B to be killed (<strong>wounds</strong> it). B is rolled back and restarted later.</p></li>
+<li><p>If A is <strong>younger</strong> than B <span class="math inline">\(\rightarrow\)</span> A is allowed to <strong>wait</strong>.</p></li>
+</ul>
 <hr>
 </section>
-<section id="answering-queries-with-bitmaps" class="level3">
-<h3 class="anchored" data-anchor-id="answering-queries-with-bitmaps">Answering Queries with Bitmaps</h3>
-<p>Multi-attribute queries use <strong>bitwise operations</strong> — extremely fast at the CPU level.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Operation</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>AND</td>
-<td>Records matching both conditions</td>
-</tr>
-<tr class="even">
-<td>OR</td>
-<td>Records matching either condition</td>
-</tr>
-<tr class="odd">
-<td>NOT</td>
-<td>Records not matching a condition</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example:</strong> find male instructors at income level L1:</p>
-<pre><code>Bitmap(gender=M):    1 0 0 1 0
-Bitmap(income=L1):   1 0 1 1 0
-                     ---------
-AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
+</section>
+<section id="deadlock-detection" class="level2">
+<h2 class="anchored" data-anchor-id="deadlock-detection">Deadlock Detection</h2>
+<p>If a database doesn’t use prevention schemes, it must periodically check for deadlocks using a <strong>Wait-For Graph</strong>.</p>
+<ul>
+<li><strong>Vertices (Nodes):</strong> Represent active transactions.</li>
+<li><strong>Edges:</strong> A directed edge from <span class="math inline">\(T_i\)</span> to <span class="math inline">\(T_j\)</span> means that <span class="math inline">\(T_i\)</span> is waiting for <span class="math inline">\(T_j\)</span> to release a lock.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled" title="The Cycle Rule">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Cycle Rule
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The system is in a deadlock state <strong>if and only if</strong> the wait-for graph has a cycle.</p>
+</div>
+</div>
+<p>If a cycle is detected, the database selects a “victim” transaction and rolls it back.</p>
 <hr>
+</section>
+<section id="timestamp-based-protocols" class="level2">
+<h2 class="anchored" data-anchor-id="timestamp-based-protocols">Timestamp-Based Protocols</h2>
+<p>What if we didn’t use locks at all? Another way to handle concurrency is by strictly enforcing execution based on timestamps.</p>
+<p>Every data item Q in the database maintains two timestamps:</p>
+<ul>
+<li><p><strong>W-timestamp(Q):</strong> The largest timestamp of any transaction that successfully <em>wrote</em> to Q.</p></li>
+<li><p><strong>R-timestamp(Q):</strong> The largest timestamp of any transaction that successfully <em>read</em> Q.</p></li>
+</ul>
+<section id="read-and-write-rules" class="level3">
+<h3 class="anchored" data-anchor-id="read-and-write-rules">Read and Write Rules</h3>
+<p>Suppose Transaction <span class="math inline">\(T_i\)</span> wants to <strong>read(Q)</strong>:</p>
+<ul>
+<li><p>If <span class="math inline">\(TS(T_i) &lt; W\text{-timestamp}(Q)\)</span>: This means a <em>younger</em> transaction has already overwritten the data! <span class="math inline">\(T_i\)</span> is trying to read the past. The read is rejected, and <span class="math inline">\(T_i\)</span> is rolled back.</p></li>
+<li><p>If <span class="math inline">\(TS(T_i) \ge W\text{-timestamp}(Q)\)</span>: The read is allowed! We update <span class="math inline">\(R\text{-timestamp}(Q)\)</span> if <span class="math inline">\(T_i\)</span>’s timestamp is larger.</p></li>
+</ul>
+<p>Suppose Transaction <span class="math inline">\(T_i\)</span> wants to <strong>write(Q)</strong>:</p>
+<ul>
+<li><p>If <span class="math inline">\(TS(T_i) &lt; R\text{-timestamp}(Q)\)</span>: A younger transaction has already read the data assuming <span class="math inline">\(T_i\)</span>’s write never happened. The write is rejected, and <span class="math inline">\(T_i\)</span> is rolled back.</p></li>
+<li><p>If <span class="math inline">\(TS(T_i) &lt; W\text{-timestamp}(Q)\)</span>: A younger transaction has already overwritten the data. The write is rejected, and <span class="math inline">\(T_i\)</span> is rolled back.</p></li>
+<li><p>Otherwise, the write is allowed, and <span class="math inline">\(W\text{-timestamp}(Q)\)</span> is updated.</p></li>
+</ul>
+</section>
+<section id="correctness-and-drawbacks" class="level3">
+<h3 class="anchored" data-anchor-id="correctness-and-drawbacks">Correctness and Drawbacks</h3>
+<ul>
+<li><strong>Pros:</strong> It guarantees serializability and inherently prevents deadlocks (because no transaction ever waits for a lock—they just execute or get rolled back).</li>
+<li><strong>Cons:</strong> It does NOT guarantee cascadeless or recoverable schedules, so transaction failures can cause significant cascading rollbacks.</li>
+</ul>
 
 
 
@@ -1395,13 +1280,13 @@ AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_9/02_bst.html" class="pagination-link" aria-label="Tree-Based Index Structures">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Tree-Based Index Structures</span></span>
+      <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="pagination-link" aria-label="Concurrency and Locking">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Concurrency and Locking</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_10/01_transactions_and_acid.html" class="pagination-link" aria-label="Transactions and ACID Properties">
-        <span class="nav-page-text"><span class="chapter-title">Transactions and ACID Properties</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_10/05_real_world_concurrency.html" class="pagination-link" aria-label="(Optional) Real-World Concurrency">
+        <span class="nav-page-text"><span class="chapter-title">(Optional) Real-World Concurrency</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1413,7 +1298,7 @@ AND result:          1 0 0 1 0   → records 0 and 3 match</code></pre>
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/03_hashing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/04_deadlocks_and_timestamps.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

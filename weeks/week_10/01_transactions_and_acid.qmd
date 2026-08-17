@@ -1,0 +1,71 @@
+---
+title: "Transactions and ACID Properties"
+---
+
+## Introduction to Transactions
+
+When you use a database, you don't typically run just a single isolated query. Often, you need to run a sequence of queries to accomplish a logical task.
+
+A **Transaction** is a unit of program execution that accesses and, possibly, updates various data items. It represents a single logical unit of work.
+
+### The Big Challenges
+When managing transactions, databases have to overcome two massive hurdles:
+
+1. **System Failures:** What happens if the hardware crashes right in the middle of a transaction?
+
+2. **Concurrent Execution:** What happens if two different transactions try to update the exact same row of data at the exact same millisecond?
+
+---
+
+## The ACID Properties
+
+To solve these challenges and guarantee database reliability, every transaction must adhere to four strict rules, famously known by the acronym **ACID**.
+
+### 1. Atomicity (All or Nothing)
+A transaction is treated as a single, indivisible unit. Either *all* of its instructions execute successfully, or *none* of them do. There is no such thing as a partially completed transaction.
+
+### 2. Consistency
+Execution of a transaction in isolation preserves the consistency of the database. If the database was in a valid state before the transaction, it must be in a valid state after the transaction completes.
+
+### 3. Isolation
+Even though transactions may be executing concurrently, the system guarantees that each transaction is unaware of the others. The end result must be equivalent to if the transactions had run sequentially, one after the other.
+
+### 4. Durability
+Once a transaction has committed successfully, its changes to the database are permanent, even if the system crashes immediately afterward.
+
+---
+
+## A Classic Example: Bank Transfer
+
+Let's look at the textbook example of transferring $50 from Account A to Account B. This is a single logical transaction, but it consists of several steps.
+
+| Step | Instruction | Meaning |
+|:---:|:---|:---|
+| 1 | `read(A)` | Get the current balance of Account A. |
+| 2 | `A := A - 50` | Deduct $50 from A's balance. |
+| 3 | `write(A)` | Save the new balance of A to the database. |
+| 4 | `read(B)` | Get the current balance of Account B. |
+| 5 | `B := B + 50` | Add $50 to B's balance. |
+| 6 | `write(B)` | Save the new balance of B to the database. |
+
+Let's evaluate this against our ACID properties:
+
+- **Atomicity:** Imagine the system crashes precisely after Step 3. Account A has lost $50, but Account B hasn't received it! The $50 just vanished. Atomicity ensures that if it fails here, the database will automatically roll back the changes to Account A, as if the transaction never started.
+
+- **Consistency:** The sum of A + B must remain exactly the same before and after the transaction.
+
+- **Isolation:** If another transaction tries to read Account A at Step 4, it might read the partially updated state. Isolation ensures this intermediate state is hidden.
+
+---
+
+## Transaction States
+
+As a transaction progresses from start to finish, it passes through several defined states.
+
+![The lifecycle states of a transaction.](transaction_states.png){width="80%"}
+
+1. **Active:** The initial state. The transaction stays in this state while it is executing.
+2. **Partially Committed:** After the final statement has been executed, but before the changes have been permanently recorded.
+3. **Committed:** After successful completion. The changes are now durable and permanent.
+4. **Failed:** Occurs when normal execution can no longer proceed (e.g., due to a software error, constraint violation, or hardware crash).
+5. **Aborted:** After the transaction has been rolled back and the database has been restored to its prior state. From here, the transaction can either be restarted or killed entirely.

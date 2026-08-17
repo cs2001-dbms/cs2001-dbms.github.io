@@ -2104,7 +2104,7 @@
     "href": "weeks/week_9/03_hashing.html#handling-bucket-overflow",
     "title": "Hashing and Bitmap Indices",
     "section": "Handling Bucket Overflow",
-    "text": "Handling Bucket Overflow\nOverflow happens when a bucket fills up. Causes:\n\nToo few buckets allocated initially.\nSkew — many records share the same key, or the hash function distributes unevenly.\n\nSolution: overflow chaining — link overflow buckets to the original in a linked list.\nBucket 3: [Physics | Elec. Eng.] → [overflow block] → ...\nThis scheme is called closed hashing. The alternative, open hashing (probing for the next free slot), is not suitable for databases — records move around, breaking pointers.\n\n⚠️ The more overflow chains grow, the slower lookups become. This is the fundamental weakness of static hashing.",
+    "text": "Handling Bucket Overflow\nOverflow happens when a bucket fills up. Causes:\n\nToo few buckets allocated initially.\nSkew — many records share the same key, or the hash function distributes unevenly.\n\nSolution: overflow chaining — link overflow buckets to the original in a linked list.\nBucket 3: [Physics | Elec. Eng.] → [overflow block] → ...\nThis scheme is called closed hashing.",
     "crumbs": [
       "**Week-09**",
       "<span class='chapter-number'>31</span>  <span class='chapter-title'>Hashing and Bitmap Indices</span>"
@@ -2350,6 +2350,259 @@
     "crumbs": [
       "**Week-09**",
       "<span class='chapter-number'>30</span>  <span class='chapter-title'>Tree-Based Index Structures</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/05_real_world_concurrency.html",
+    "href": "weeks/week_10/05_real_world_concurrency.html",
+    "title": "(Optional) Real-World Concurrency",
+    "section": "",
+    "text": "Theory vs. Practice\nThroughout this week, we’ve explored strict theoretical protocols like Two-Phase Locking (2PL) and Timestamp-based protocols. However, if you spin up a real, modern database like PostgreSQL or MySQL (InnoDB), you’ll find that they don’t strictly use standard 2PL for everything.\nWhy? Because standard 2PL forces reads to block writes, and writes to block reads. In a massive web application with thousands of concurrent users, this level of locking would cause unacceptable performance bottlenecks.\nModern databases solve this using a hybrid approach called MVCC.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>36</span>  <span class='chapter-title'>(Optional) Real-World Concurrency</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/05_real_world_concurrency.html#multi-version-concurrency-control-mvcc",
+    "href": "weeks/week_10/05_real_world_concurrency.html#multi-version-concurrency-control-mvcc",
+    "title": "(Optional) Real-World Concurrency",
+    "section": "Multi-Version Concurrency Control (MVCC)",
+    "text": "Multi-Version Concurrency Control (MVCC)\nMVCC is the secret sauce behind almost all modern enterprise relational databases.\nThe core philosophy of MVCC is simple: “Readers do not block Writers, and Writers do not block Readers.”\n\nHow does it work?\nInstead of locking a row when it’s being updated, the database simply creates a new version of that row.\n\nTransaction A wants to update a row (e.g., change Alice’s balance from $100 to $50). It writes a brand new version of the row to the disk but doesn’t delete the old one yet.\nTransaction B comes along and wants to read Alice’s balance.\nBecause Transaction A hasn’t committed yet, Transaction B ignores the new version and reads the old version ($100). No locks required!\nOnce Transaction A commits, any future transactions will see the new version ($50).\n\nUnder the hood, this uses the Timestamp Protocols we learned about! Every transaction gets an ID (a timestamp), and every row version is tagged with the transaction IDs that created and deleted it. The database uses these tags to mathematically determine which version of a row a specific transaction is allowed to “see”.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>36</span>  <span class='chapter-title'>(Optional) Real-World Concurrency</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/05_real_world_concurrency.html#isolation-levels-in-practice",
+    "href": "weeks/week_10/05_real_world_concurrency.html#isolation-levels-in-practice",
+    "title": "(Optional) Real-World Concurrency",
+    "section": "Isolation Levels in Practice",
+    "text": "Isolation Levels in Practice\nBecause perfect serializability is expensive, SQL standards allow developers to choose their desired Isolation Level for a transaction. This allows you to trade safety for speed depending on your specific use case.\nFrom most dangerous (fastest) to safest (slowest):\n\nRead Uncommitted: A transaction can read uncommitted “dirty” data from other transactions. (Extremely fast, but very dangerous).\nRead Committed: (Default in PostgreSQL) A transaction can only read data that has been fully committed. However, if it reads the same row twice, the value might change if another transaction committed an update in between.\nRepeatable Read: (Default in MySQL) Guarantees that if you read a row twice in the same transaction, you will see the exact same data both times, even if another transaction updated it.\nSerializable: The absolute strictest level. The database guarantees the result is mathematically identical to serial execution. If it detects a conflict that breaks serializability, it simply aborts one of the transactions.\n\n\nThe Trade-off\nMost companies do not run their databases in Serializable mode because the performance penalty and frequency of deadlocks/aborts is too high. They run in Read Committed or Repeatable Read, accepting minor theoretical inconsistencies in exchange for massive concurrency gains.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>36</span>  <span class='chapter-title'>(Optional) Real-World Concurrency</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/01_transactions_and_acid.html",
+    "href": "weeks/week_10/01_transactions_and_acid.html",
+    "title": "Transactions and ACID Properties",
+    "section": "",
+    "text": "Introduction to Transactions\nWhen you use a database, you don’t typically run just a single isolated query. Often, you need to run a sequence of queries to accomplish a logical task.\nA Transaction is a unit of program execution that accesses and, possibly, updates various data items. It represents a single logical unit of work.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>32</span>  <span class='chapter-title'>Transactions and ACID Properties</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/01_transactions_and_acid.html#introduction-to-transactions",
+    "href": "weeks/week_10/01_transactions_and_acid.html#introduction-to-transactions",
+    "title": "Transactions and ACID Properties",
+    "section": "",
+    "text": "The Big Challenges\nWhen managing transactions, databases have to overcome two massive hurdles:\n\nSystem Failures: What happens if the hardware crashes right in the middle of a transaction?\nConcurrent Execution: What happens if two different transactions try to update the exact same row of data at the exact same millisecond?",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>32</span>  <span class='chapter-title'>Transactions and ACID Properties</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/01_transactions_and_acid.html#the-acid-properties",
+    "href": "weeks/week_10/01_transactions_and_acid.html#the-acid-properties",
+    "title": "Transactions and ACID Properties",
+    "section": "The ACID Properties",
+    "text": "The ACID Properties\nTo solve these challenges and guarantee database reliability, every transaction must adhere to four strict rules, famously known by the acronym ACID.\n\n1. Atomicity (All or Nothing)\nA transaction is treated as a single, indivisible unit. Either all of its instructions execute successfully, or none of them do. There is no such thing as a partially completed transaction.\n\n\n2. Consistency\nExecution of a transaction in isolation preserves the consistency of the database. If the database was in a valid state before the transaction, it must be in a valid state after the transaction completes.\n\n\n3. Isolation\nEven though transactions may be executing concurrently, the system guarantees that each transaction is unaware of the others. The end result must be equivalent to if the transactions had run sequentially, one after the other.\n\n\n4. Durability\nOnce a transaction has committed successfully, its changes to the database are permanent, even if the system crashes immediately afterward.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>32</span>  <span class='chapter-title'>Transactions and ACID Properties</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/01_transactions_and_acid.html#a-classic-example-bank-transfer",
+    "href": "weeks/week_10/01_transactions_and_acid.html#a-classic-example-bank-transfer",
+    "title": "Transactions and ACID Properties",
+    "section": "A Classic Example: Bank Transfer",
+    "text": "A Classic Example: Bank Transfer\nLet’s look at the textbook example of transferring $50 from Account A to Account B. This is a single logical transaction, but it consists of several steps.\n\n\n\nStep\nInstruction\nMeaning\n\n\n\n\n1\nread(A)\nGet the current balance of Account A.\n\n\n2\nA := A - 50\nDeduct $50 from A’s balance.\n\n\n3\nwrite(A)\nSave the new balance of A to the database.\n\n\n4\nread(B)\nGet the current balance of Account B.\n\n\n5\nB := B + 50\nAdd $50 to B’s balance.\n\n\n6\nwrite(B)\nSave the new balance of B to the database.\n\n\n\nLet’s evaluate this against our ACID properties:\n\nAtomicity: Imagine the system crashes precisely after Step 3. Account A has lost $50, but Account B hasn’t received it! The $50 just vanished. Atomicity ensures that if it fails here, the database will automatically roll back the changes to Account A, as if the transaction never started.\nConsistency: The sum of A + B must remain exactly the same before and after the transaction.\nIsolation: If another transaction tries to read Account A at Step 4, it might read the partially updated state. Isolation ensures this intermediate state is hidden.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>32</span>  <span class='chapter-title'>Transactions and ACID Properties</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/01_transactions_and_acid.html#transaction-states",
+    "href": "weeks/week_10/01_transactions_and_acid.html#transaction-states",
+    "title": "Transactions and ACID Properties",
+    "section": "Transaction States",
+    "text": "Transaction States\nAs a transaction progresses from start to finish, it passes through several defined states.\n\n\n\nThe lifecycle states of a transaction.\n\n\n\nActive: The initial state. The transaction stays in this state while it is executing.\nPartially Committed: After the final statement has been executed, but before the changes have been permanently recorded.\nCommitted: After successful completion. The changes are now durable and permanent.\nFailed: Occurs when normal execution can no longer proceed (e.g., due to a software error, constraint violation, or hardware crash).\nAborted: After the transaction has been rolled back and the database has been restored to its prior state. From here, the transaction can either be restarted or killed entirely.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>32</span>  <span class='chapter-title'>Transactions and ACID Properties</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/02_schedules_and_serializability.html",
+    "href": "weeks/week_10/02_schedules_and_serializability.html",
+    "title": "Schedules and Serializability",
+    "section": "",
+    "text": "What is a Schedule?\nWhen multiple transactions are executed concurrently, their instructions are interleaved. A Schedule is simply a sequence of instructions that specifies the chronological order in which the instructions of concurrent transactions are executed.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>33</span>  <span class='chapter-title'>Schedules and Serializability</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/02_schedules_and_serializability.html#what-is-a-schedule",
+    "href": "weeks/week_10/02_schedules_and_serializability.html#what-is-a-schedule",
+    "title": "Schedules and Serializability",
+    "section": "",
+    "text": "A schedule must consist of all instructions from the participating transactions.\nIt must preserve the order in which the instructions appeared in their original transactions.\n\n\nSerial vs. Concurrent Schedules\n\nSerial Schedule: Transactions run one after the other. Transaction A finishes completely before Transaction B begins. This guarantees database consistency, but it is extremely slow.\nConcurrent Schedule: Instructions from multiple transactions are interleaved. This improves performance and resource utilization, but risks creating an inconsistent database state.\n\n\n\n\nAn example showing how an interleaved concurrent schedule can be equivalent to a serial schedule.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>33</span>  <span class='chapter-title'>Schedules and Serializability</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/02_schedules_and_serializability.html#serializability",
+    "href": "weeks/week_10/02_schedules_and_serializability.html#serializability",
+    "title": "Schedules and Serializability",
+    "section": "Serializability",
+    "text": "Serializability\nA concurrent schedule is considered Serializable if its final outcome is identical to that of some purely serial schedule. If we can prove a schedule is serializable, we guarantee it preserves database consistency!\nThere are two primary ways to determine this: Conflict Serializability and View Serializability.\n\n1. Conflict Serializability\nTo understand conflict serializability, we first need to define what a “conflict” is.\n\n\n\n\n\n\nNoteConflicting Instructions\n\n\n\nLet \\(I_i\\) and \\(I_j\\) be two instructions from different transactions, operating on the exact same data item \\(Q\\) (e.g. a column in a table, like student_name).\n\n\\(read(Q)\\) and \\(read(Q)\\) \\(\\rightarrow\\) NO CONFLICT\n\\(read(Q)\\) and \\(write(Q)\\) \\(\\rightarrow\\) CONFLICT\n\\(write(Q)\\) and \\(read(Q)\\) \\(\\rightarrow\\) CONFLICT\n\\(write(Q)\\) and \\(write(Q)\\) \\(\\rightarrow\\) CONFLICT\n\nIf an instruction is just a read, they don’t conflict. If at least one instruction is a write, they conflict because the order in which they are executed changes the final value or the value read!\n\n\nIf a concurrent schedule can be transformed into a serial schedule by swapping non-conflicting adjacent instructions, we say the schedule is Conflict Serializable.\n\n\n\nDemonstrating how a schedule can be transformed into a serial schedule by swapping non-conflicting instructions.\n\n\n\nThe Precedence Graph\nChecking every possible swap is tedious. Instead, we use a Precedence Graph:\n\nDraw a node for each transaction.\nDraw a directed edge from \\(T_i\\) to \\(T_j\\) if they have conflicting instructions and \\(T_i\\) executed first.\n\n\n\n\n\n\n\nImportantThe Acyclic Rule\n\n\n\nA schedule is conflict serializable if and only if its precedence graph contains NO cycles (it is acyclic).\n\n\n\n\n\nA transaction table and its corresponding Precedence Graph. Since there is a cycle (T1 -&gt; T2 -&gt; T1 is possible, though the image shows a complex graph), it would not be conflict serializable.\n\n\n(Note: If the graph is acyclic, you can use topological sorting to find the exact serial execution order).\n\n\n\n2. View Serializability\nView serializability is a slightly looser definition than conflict serializability. Two schedules are “view equivalent” if they meet three conditions for every data item:\n\nInitial Read: If \\(T_i\\) reads the initial value of \\(Q\\) in the first schedule, it must do so in the second.\nWrite-Read Pair: If \\(T_j\\) reads a value of \\(Q\\) written by \\(T_i\\) in the first schedule, it must read the value written by that exact same \\(T_i\\) in the second.\nFinal Write: The transaction that performs the last write to \\(Q\\) must be the same in both schedules.\n\nEvery conflict-serializable schedule is view-serializable. However, some view-serializable schedules are not conflict-serializable. This usually happens when there are Blind Writes (writing to a variable without ever reading it first).",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>33</span>  <span class='chapter-title'>Schedules and Serializability</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/02_schedules_and_serializability.html#recovery-and-cascading",
+    "href": "weeks/week_10/02_schedules_and_serializability.html#recovery-and-cascading",
+    "title": "Schedules and Serializability",
+    "section": "Recovery and Cascading",
+    "text": "Recovery and Cascading\nIf a transaction fails halfway through, we must roll it back to maintain the ACID property of Atomicity. This rollback process is known as Recovery. However, rolling back one transaction can cause a domino effect.\n\nRecoverable Schedules\nIf Transaction B reads data written by Transaction A, then A must commit before B commits.\n\n\n\nA non-recoverable schedule. If T8 aborts after T9 has already committed based on T8’s bad data, the database is ruined.\n\n\n\n\nCascading Rollbacks\nEven if a schedule is recoverable, we can run into Cascading Rollbacks. If one transaction fails, every other transaction that read its dirty data must also be rolled back. This wastes a massive amount of computational work.\n\n\n\nA cascading rollback. If T10 fails, T11 and T12 must also be rolled back.\n\n\n\n\nCascadeless Schedules\nTo prevent cascading rollbacks, databases enforce Cascadeless Schedules. Rule: Transaction B cannot even read data written by Transaction A until Transaction A has fully committed. (Note: Every cascadeless schedule is inherently recoverable).",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>33</span>  <span class='chapter-title'>Schedules and Serializability</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/02_schedules_and_serializability.html#tcl-transaction-control-language",
+    "href": "weeks/week_10/02_schedules_and_serializability.html#tcl-transaction-control-language",
+    "title": "Schedules and Serializability",
+    "section": "TCL (Transaction Control Language)",
+    "text": "TCL (Transaction Control Language)\nHow do we actually manage these transactions in SQL? We use TCL commands!\n\nCOMMIT - Saves all changes permanently. The transaction is successfully concluded.\nROLLBACK - Undoes all changes made during the current transaction.\nSAVEPOINT - Creates a bookmark within a transaction. You can choose to rollback to a specific savepoint instead of rolling back the entire transaction.\nSET TRANSACTION - Can be used to set properties, like making the transaction Read-Only.\n\n-- An example of using Savepoints\nUPDATE Employee SET EName = \"Janie\" WHERE EID = \"E06\";\nSAVEPOINT SP1;\n\nDELETE FROM Employee WHERE EID = \"E02\";\nSAVEPOINT SP2;\n\nUPDATE Employee SET EName = \"Raina\" WHERE EID = \"E04\";\n\n-- Oops, we didn't mean to delete E02! Let's rewind to SP1.\nROLLBACK TO SP1;",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>33</span>  <span class='chapter-title'>Schedules and Serializability</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/03_concurrency_and_locking.html",
+    "href": "weeks/week_10/03_concurrency_and_locking.html",
+    "title": "Concurrency and Locking",
+    "section": "",
+    "text": "The Need for Concurrency Control\nWe know that a schedule must be both conflict serializable and recoverable (preferably cascadeless). However, allowing transactions to just run wildly and hoping the schedule turns out serializable is a terrible strategy.\nThe database needs a Concurrency Control mechanism to enforce these rules dynamically as transactions arrive.\nThere is always a trade-off: The more strict the concurrency control scheme, the safer the data is, but the slower the database runs (because transactions have to wait in line).",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>34</span>  <span class='chapter-title'>Concurrency and Locking</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/03_concurrency_and_locking.html#the-need-for-concurrency-control",
+    "href": "weeks/week_10/03_concurrency_and_locking.html#the-need-for-concurrency-control",
+    "title": "Concurrency and Locking",
+    "section": "",
+    "text": "A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>34</span>  <span class='chapter-title'>Concurrency and Locking</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/03_concurrency_and_locking.html#lock-based-protocols",
+    "href": "weeks/week_10/03_concurrency_and_locking.html#lock-based-protocols",
+    "title": "Concurrency and Locking",
+    "section": "Lock-Based Protocols",
+    "text": "Lock-Based Protocols\nThe most common way to control concurrency is by using Locks. Think of a lock like a bathroom key. If someone has the key, nobody else can enter until they give it back.\nData items can be locked in two modes:\n\nExclusive (X) mode: The data item can be both read AND written.\nShared (S) mode: The data item can ONLY be read.\n\n\nThe Lock-Compatibility Matrix\nBefore a transaction can lock an item, it must request it from the lock manager. The lock manager checks the compatibility matrix:\n\n\n\nState of the lock\nRequest: Shared\nRequest: Exclusive\n\n\n\n\nShared\nYes\nNo\n\n\nExclusive\nNo\nNo\n\n\n\n\nSharing is caring: Any number of transactions can hold Shared locks on the same item at the same time (since reading doesn’t change the data).\nExclusivity: If any transaction holds an Exclusive lock, no other transaction can hold any lock on that item. They must wait.\n\nA transaction must hold a lock on a data item for as long as it is actively accessing it. Once it’s done, it releases it using the unlock(Q) instruction.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>34</span>  <span class='chapter-title'>Concurrency and Locking</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/03_concurrency_and_locking.html#the-two-phase-locking-protocol-2pl",
+    "href": "weeks/week_10/03_concurrency_and_locking.html#the-two-phase-locking-protocol-2pl",
+    "title": "Concurrency and Locking",
+    "section": "The Two-Phase Locking Protocol (2PL)",
+    "text": "The Two-Phase Locking Protocol (2PL)\nJust having locks isn’t enough to guarantee serializability. If a transaction locks an item, modifies it, unlocks it, and then locks another item, we can still run into consistency issues.\nTo solve this, databases use the Two-Phase Locking (2PL) protocol. Under 2PL, every transaction goes through two distinct phases:\n\nGrowing Phase:\n\nA transaction may obtain new locks.\nIt may not release any locks.\n\nShrinking Phase:\n\nA transaction may release locks.\nIt may not obtain any new locks.\n\n\nOnce a transaction releases its very first lock, it has entered the Shrinking Phase and can never request another lock again.\n\nLock Conversions\nDuring these phases, 2PL allows locks to be converted:\n\nGrowing Phase: You can upgrade a Shared lock to an Exclusive lock.\nShrinking Phase: You can downgrade an Exclusive lock to a Shared lock.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>34</span>  <span class='chapter-title'>Concurrency and Locking</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/03_concurrency_and_locking.html#stricter-variants-of-2pl",
+    "href": "weeks/week_10/03_concurrency_and_locking.html#stricter-variants-of-2pl",
+    "title": "Concurrency and Locking",
+    "section": "Stricter Variants of 2PL",
+    "text": "Stricter Variants of 2PL\nStandard 2PL guarantees serializability, but it does NOT guarantee cascadeless schedules. If a transaction fails during its Shrinking Phase after releasing some locks, other transactions might have already read its dirty data!\nTo prevent cascading rollbacks, databases use stricter versions of 2PL:\n\nStrict Two-Phase Locking\n\nStandard 2PL rules apply.\nAddition: A transaction must hold all of its Exclusive locks until it fully commits or aborts.\nWhy? This guarantees that no other transaction can read its uncommitted changes.\n\n\n\nRigorous Two-Phase Locking\n\nStandard 2PL rules apply.\nAddition: A transaction must hold ALL of its locks (both Shared and Exclusive) until it commits or aborts.\nWhy? It is even safer and easier to implement, and transactions can be serialized in the exact order they commit.\n\n\n\n\n\n\n\nWarningThe Trade-off\n\n\n\nAs we move from standard 2PL \\(\\rightarrow\\) Strict 2PL \\(\\rightarrow\\) Rigorous 2PL, the system becomes safer and simpler. However, Concurrency goes down. Because locks are held longer, other transactions are forced to wait longer, slowing down the overall system performance.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>34</span>  <span class='chapter-title'>Concurrency and Locking</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/04_deadlocks_and_timestamps.html",
+    "href": "weeks/week_10/04_deadlocks_and_timestamps.html",
+    "title": "Deadlocks and Timestamps",
+    "section": "",
+    "text": "Understanding Deadlocks\nLocking protocols solve the problem of inconsistency, but they introduce a new problem: Deadlock.\nImagine Transaction A holds a lock on item X and is waiting for a lock on item Y. Meanwhile, Transaction B holds a lock on item Y and is waiting for a lock on item X.\nNeither transaction can ever proceed. They are stuck waiting for each other indefinitely.\nWhen a deadlock occurs, the system has no choice but to intervene. It must roll back (abort) one of the transactions to break the cycle and release its locks so the other can proceed.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>35</span>  <span class='chapter-title'>Deadlocks and Timestamps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/04_deadlocks_and_timestamps.html#understanding-deadlocks",
+    "href": "weeks/week_10/04_deadlocks_and_timestamps.html#understanding-deadlocks",
+    "title": "Deadlocks and Timestamps",
+    "section": "",
+    "text": "A classic deadlock scenario where two transactions are waiting for each other.\n\n\n\n\nStarvation\nA related issue is Starvation. This occurs when a badly designed concurrency control manager repeatedly forces a transaction to wait forever, even without a deadlock. For example, if Transaction A wants an Exclusive lock, but a continuous stream of new transactions keep requesting and getting Shared locks on that item, Transaction A will starve. Alternatively, a transaction might be repeatedly chosen as the “victim” to be rolled back during deadlocks, never getting a chance to finish.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>35</span>  <span class='chapter-title'>Deadlocks and Timestamps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/04_deadlocks_and_timestamps.html#deadlock-prevention",
+    "href": "weeks/week_10/04_deadlocks_and_timestamps.html#deadlock-prevention",
+    "title": "Deadlocks and Timestamps",
+    "section": "Deadlock Prevention",
+    "text": "Deadlock Prevention\nRather than letting deadlocks happen and fixing them later, databases can use schemes to prevent them from ever occurring. These schemes often use Transaction Timestamps.\nA Timestamp is a unique identifier assigned by the database that represents the exact moment a transaction started. An older transaction has a smaller timestamp, while a younger transaction has a larger timestamp.\n\n1. The Wait-Die Scheme (Non-Preemptive)\nRule: Older transactions wait for younger ones. Younger transactions die.\nIf Transaction A requests a lock held by Transaction B:\n\nIf A is older than B \\(\\rightarrow\\) A is allowed to wait.\nIf A is younger than B \\(\\rightarrow\\) A is killed (dies) and rolled back.\n\n\n\n2. The Wound-Wait Scheme (Preemptive)\nRule: Younger transactions wait for older ones. Older transactions wound (kill) younger ones.\nIf Transaction A requests a lock held by Transaction B:\n\nIf A is older than B \\(\\rightarrow\\) A forces B to be killed (wounds it). B is rolled back and restarted later.\nIf A is younger than B \\(\\rightarrow\\) A is allowed to wait.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>35</span>  <span class='chapter-title'>Deadlocks and Timestamps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/04_deadlocks_and_timestamps.html#deadlock-detection",
+    "href": "weeks/week_10/04_deadlocks_and_timestamps.html#deadlock-detection",
+    "title": "Deadlocks and Timestamps",
+    "section": "Deadlock Detection",
+    "text": "Deadlock Detection\nIf a database doesn’t use prevention schemes, it must periodically check for deadlocks using a Wait-For Graph.\n\nVertices (Nodes): Represent active transactions.\nEdges: A directed edge from \\(T_i\\) to \\(T_j\\) means that \\(T_i\\) is waiting for \\(T_j\\) to release a lock.\n\n\n\n\n\n\n\nImportantThe Cycle Rule\n\n\n\nThe system is in a deadlock state if and only if the wait-for graph has a cycle.\n\n\nIf a cycle is detected, the database selects a “victim” transaction and rolls it back.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>35</span>  <span class='chapter-title'>Deadlocks and Timestamps</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_10/04_deadlocks_and_timestamps.html#timestamp-based-protocols",
+    "href": "weeks/week_10/04_deadlocks_and_timestamps.html#timestamp-based-protocols",
+    "title": "Deadlocks and Timestamps",
+    "section": "Timestamp-Based Protocols",
+    "text": "Timestamp-Based Protocols\nWhat if we didn’t use locks at all? Another way to handle concurrency is by strictly enforcing execution based on timestamps.\nEvery data item Q in the database maintains two timestamps:\n\nW-timestamp(Q): The largest timestamp of any transaction that successfully wrote to Q.\nR-timestamp(Q): The largest timestamp of any transaction that successfully read Q.\n\n\nRead and Write Rules\nSuppose Transaction \\(T_i\\) wants to read(Q):\n\nIf \\(TS(T_i) &lt; W\\text{-timestamp}(Q)\\): This means a younger transaction has already overwritten the data! \\(T_i\\) is trying to read the past. The read is rejected, and \\(T_i\\) is rolled back.\nIf \\(TS(T_i) \\ge W\\text{-timestamp}(Q)\\): The read is allowed! We update \\(R\\text{-timestamp}(Q)\\) if \\(T_i\\)’s timestamp is larger.\n\nSuppose Transaction \\(T_i\\) wants to write(Q):\n\nIf \\(TS(T_i) &lt; R\\text{-timestamp}(Q)\\): A younger transaction has already read the data assuming \\(T_i\\)’s write never happened. The write is rejected, and \\(T_i\\) is rolled back.\nIf \\(TS(T_i) &lt; W\\text{-timestamp}(Q)\\): A younger transaction has already overwritten the data. The write is rejected, and \\(T_i\\) is rolled back.\nOtherwise, the write is allowed, and \\(W\\text{-timestamp}(Q)\\) is updated.\n\n\n\nCorrectness and Drawbacks\n\nPros: It guarantees serializability and inherently prevents deadlocks (because no transaction ever waits for a lock—they just execute or get rolled back).\nCons: It does NOT guarantee cascadeless or recoverable schedules, so transaction failures can cause significant cascading rollbacks.",
+    "crumbs": [
+      "**Week-10**",
+      "<span class='chapter-number'>35</span>  <span class='chapter-title'>Deadlocks and Timestamps</span>"
     ]
   }
 ]
