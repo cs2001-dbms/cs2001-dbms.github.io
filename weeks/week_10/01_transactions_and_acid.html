@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Tree-Based Index Structures – Database Management Systems</title>
+<title>Transactions and ACID Properties – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_9/03_hashing.html" rel="next">
-<link href="../../weeks/week_9/01_indexing.html" rel="prev">
+<link href="../../weeks/week_10/02_schedules_and_serializability.html" rel="next">
+<link href="../../weeks/week_9/03_hashing.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -289,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/02_bst.html"><span class="chapter-title">Tree-Based Index Structures</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><span class="chapter-title">Transactions and ACID Properties</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -558,13 +558,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-09</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
@@ -572,7 +572,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/02_bst.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Tree-Based Index Structures</span></a>
+  <a href="../../weeks/week_9/02_bst.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Tree-Based Index Structures</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -584,16 +584,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
+  <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Transactions and ACID Properties</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -649,36 +649,29 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#why-trees-for-indexing" id="toc-why-trees-for-indexing" class="nav-link active" data-scroll-target="#why-trees-for-indexing">Why Trees for Indexing?</a></li>
-  <li><a href="#the-2-3-4-tree-motivation" id="toc-the-2-3-4-tree-motivation" class="nav-link" data-scroll-target="#the-2-3-4-tree-motivation">The 2-3-4 Tree: Motivation</a></li>
-  <li><a href="#what-is-a-2-3-4-tree" id="toc-what-is-a-2-3-4-tree" class="nav-link" data-scroll-target="#what-is-a-2-3-4-tree">What Is a 2-3-4 Tree?</a></li>
-  <li><a href="#search-in-a-2-3-4-tree" id="toc-search-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#search-in-a-2-3-4-tree">Search in a 2-3-4 Tree</a></li>
-  <li><a href="#insertion-in-a-2-3-4-tree" id="toc-insertion-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#insertion-in-a-2-3-4-tree">Insertion in a 2-3-4 Tree</a>
+  <li><a href="#introduction-to-transactions" id="toc-introduction-to-transactions" class="nav-link active" data-scroll-target="#introduction-to-transactions">Introduction to Transactions</a>
   <ul class="collapse">
-  <li><a href="#node-splitting" id="toc-node-splitting" class="nav-link" data-scroll-target="#node-splitting">Node Splitting</a></li>
-  <li><a href="#early-vs.-late-splitting" id="toc-early-vs.-late-splitting" class="nav-link" data-scroll-target="#early-vs.-late-splitting">Early vs.&nbsp;Late Splitting</a></li>
+  <li><a href="#the-big-challenges" id="toc-the-big-challenges" class="nav-link" data-scroll-target="#the-big-challenges">The Big Challenges</a></li>
   </ul></li>
-  <li><a href="#insertion-example-step-by-step" id="toc-insertion-example-step-by-step" class="nav-link" data-scroll-target="#insertion-example-step-by-step">Insertion Example: Step by Step</a></li>
-  <li><a href="#deletion-in-a-2-3-4-tree" id="toc-deletion-in-a-2-3-4-tree" class="nav-link" data-scroll-target="#deletion-in-a-2-3-4-tree">Deletion in a 2-3-4 Tree</a>
+  <li><a href="#the-acid-properties" id="toc-the-acid-properties" class="nav-link" data-scroll-target="#the-acid-properties">The ACID Properties</a>
   <ul class="collapse">
-  <li><a href="#deletion-example" id="toc-deletion-example" class="nav-link" data-scroll-target="#deletion-example">Deletion Example</a></li>
+  <li><a href="#atomicity-all-or-nothing" id="toc-atomicity-all-or-nothing" class="nav-link" data-scroll-target="#atomicity-all-or-nothing">1. Atomicity (All or Nothing)</a></li>
+  <li><a href="#consistency" id="toc-consistency" class="nav-link" data-scroll-target="#consistency">2. Consistency</a></li>
+  <li><a href="#isolation" id="toc-isolation" class="nav-link" data-scroll-target="#isolation">3. Isolation</a></li>
+  <li><a href="#durability" id="toc-durability" class="nav-link" data-scroll-target="#durability">4. Durability</a></li>
   </ul></li>
-  <li><a href="#b-trees" id="toc-b-trees" class="nav-link" data-scroll-target="#b-trees">B+ Trees</a></li>
-  <li><a href="#structure" id="toc-structure" class="nav-link" data-scroll-target="#structure">Structure</a></li>
-  <li><a href="#search" id="toc-search" class="nav-link" data-scroll-target="#search">Search</a></li>
-  <li><a href="#insertion" id="toc-insertion" class="nav-link" data-scroll-target="#insertion">Insertion</a></li>
-  <li><a href="#deletion" id="toc-deletion" class="nav-link" data-scroll-target="#deletion">Deletion</a></li>
-  <li><a href="#b-tree-vs-b-tree" id="toc-b-tree-vs-b-tree" class="nav-link" data-scroll-target="#b-tree-vs-b-tree">B-Tree vs B+ Tree</a></li>
+  <li><a href="#a-classic-example-bank-transfer" id="toc-a-classic-example-bank-transfer" class="nav-link" data-scroll-target="#a-classic-example-bank-transfer">A Classic Example: Bank Transfer</a></li>
+  <li><a href="#transaction-states" id="toc-transaction-states" class="nav-link" data-scroll-target="#transaction-states">Transaction States</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/02_bst.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/01_transactions_and_acid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_9/01_indexing.html"><strong>Week-09</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_9/02_bst.html"><span class="chapter-title">Tree-Based Index Structures</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><span class="chapter-title">Transactions and ACID Properties</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Tree-Based Index Structures</span></h1>
+<h1 class="title"><span class="chapter-title">Transactions and ACID Properties</span></h1>
 </div>
 
 
@@ -695,397 +688,109 @@ window.Quarto = {
 </header>
 
 
-<section id="why-trees-for-indexing" class="level2">
-<h2 class="anchored" data-anchor-id="why-trees-for-indexing">Why Trees for Indexing?</h2>
-<p>The multilevel index from Section 1 was a good idea, but it had one major problem: as the file grows, overflow blocks pile up and performance degrades. You eventually need to reorganize the whole file — expensive and disruptive.</p>
-<p>Tree-based structures solve this by <strong>self-balancing on every insert and delete</strong>, keeping search cost at <span class="math inline">\(O(\log n)\)</span> always, without any manual reorganization.</p>
+<section id="introduction-to-transactions" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-transactions">Introduction to Transactions</h2>
+<p>When you use a database, you don’t typically run just a single isolated query. Often, you need to run a sequence of queries to accomplish a logical task.</p>
+<p>A <strong>Transaction</strong> is a unit of program execution that accesses and, possibly, updates various data items. It represents a single logical unit of work.</p>
+<section id="the-big-challenges" class="level3">
+<h3 class="anchored" data-anchor-id="the-big-challenges">The Big Challenges</h3>
+<p>When managing transactions, databases have to overcome two massive hurdles:</p>
+<ol type="1">
+<li><p><strong>System Failures:</strong> What happens if the hardware crashes right in the middle of a transaction?</p></li>
+<li><p><strong>Concurrent Execution:</strong> What happens if two different transactions try to update the exact same row of data at the exact same millisecond?</p></li>
+</ol>
 <hr>
 </section>
-<section id="the-2-3-4-tree-motivation" class="level2">
-<h2 class="anchored" data-anchor-id="the-2-3-4-tree-motivation">The 2-3-4 Tree: Motivation</h2>
-<p>The problem with BSTs on disk is that each <strong>node holds only one key and has only two children</strong>. The tree must be very tall (<span class="math inline">\(O(\log n)\)</span> levels) to hold <span class="math inline">\(n\)</span> records.</p>
-<p>What if we could make each node <strong>fatter</strong> — storing multiple keys and having multiple children? Then the tree would be much <strong>shorter</strong>, and we’d need far fewer disk reads to reach any record. This idea leads to the <strong>2-3-4 Tree</strong>.</p>
+</section>
+<section id="the-acid-properties" class="level2">
+<h2 class="anchored" data-anchor-id="the-acid-properties">The ACID Properties</h2>
+<p>To solve these challenges and guarantee database reliability, every transaction must adhere to four strict rules, famously known by the acronym <strong>ACID</strong>.</p>
+<section id="atomicity-all-or-nothing" class="level3">
+<h3 class="anchored" data-anchor-id="atomicity-all-or-nothing">1. Atomicity (All or Nothing)</h3>
+<p>A transaction is treated as a single, indivisible unit. Either <em>all</em> of its instructions execute successfully, or <em>none</em> of them do. There is no such thing as a partially completed transaction.</p>
+</section>
+<section id="consistency" class="level3">
+<h3 class="anchored" data-anchor-id="consistency">2. Consistency</h3>
+<p>Execution of a transaction in isolation preserves the consistency of the database. If the database was in a valid state before the transaction, it must be in a valid state after the transaction completes.</p>
+</section>
+<section id="isolation" class="level3">
+<h3 class="anchored" data-anchor-id="isolation">3. Isolation</h3>
+<p>Even though transactions may be executing concurrently, the system guarantees that each transaction is unaware of the others. The end result must be equivalent to if the transactions had run sequentially, one after the other.</p>
+</section>
+<section id="durability" class="level3">
+<h3 class="anchored" data-anchor-id="durability">4. Durability</h3>
+<p>Once a transaction has committed successfully, its changes to the database are permanent, even if the system crashes immediately afterward.</p>
 <hr>
 </section>
-<section id="what-is-a-2-3-4-tree" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-a-2-3-4-tree">What Is a 2-3-4 Tree?</h2>
-<p>A 2-3-4 Tree is a balanced search tree where every node can hold <strong>1, 2, or 3 keys</strong> (and correspondingly have <strong>2, 3, or 4 children</strong>). That is where the name comes from.</p>
-<p><strong>The three node types:</strong></p>
+</section>
+<section id="a-classic-example-bank-transfer" class="level2">
+<h2 class="anchored" data-anchor-id="a-classic-example-bank-transfer">A Classic Example: Bank Transfer</h2>
+<p>Let’s look at the textbook example of transferring $50 from Account A to Account B. This is a single logical transaction, but it consists of several steps.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 16%">
-</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Node type</th>
-<th style="text-align: center;">Keys stored</th>
-<th style="text-align: center;">Children</th>
-<th>Search key rule</th>
+<th style="text-align: center;">Step</th>
+<th style="text-align: left;">Instruction</th>
+<th style="text-align: left;">Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><strong>2-node</strong></td>
-<td style="text-align: center;">1 (call it S)</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;"><code>read(A)</code></td>
+<td style="text-align: left;">Get the current balance of Account A.</td>
+</tr>
+<tr class="even">
 <td style="text-align: center;">2</td>
-<td>left child &lt; S; right child &gt; S</td>
+<td style="text-align: left;"><code>A := A - 50</code></td>
+<td style="text-align: left;">Deduct $50 from A’s balance.</td>
 </tr>
-<tr class="even">
-<td style="text-align: center;"><strong>3-node</strong></td>
-<td style="text-align: center;">2 (S and L)</td>
+<tr class="odd">
 <td style="text-align: center;">3</td>
-<td>left &lt; S; middle: S–L; right &gt; L</td>
+<td style="text-align: left;"><code>write(A)</code></td>
+<td style="text-align: left;">Save the new balance of A to the database.</td>
 </tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>4-node</strong></td>
-<td style="text-align: center;">3 (S, M, L)</td>
+<tr class="even">
 <td style="text-align: center;">4</td>
-<td>left &lt; S; second: S–M; third: M–L; right &gt; L</td>
+<td style="text-align: left;"><code>read(B)</code></td>
+<td style="text-align: left;">Get the current balance of Account B.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: left;"><code>B := B + 50</code></td>
+<td style="text-align: left;">Add $50 to B’s balance.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: left;"><code>write(B)</code></td>
+<td style="text-align: left;">Save the new balance of B to the database.</td>
 </tr>
 </tbody>
 </table>
-<p>A leaf node can hold 1, 2, or 3 data items.</p>
-<p><strong>Key properties:</strong></p>
+<p>Let’s evaluate this against our ACID properties:</p>
 <ul>
-<li>All leaves sit at the <strong>same depth</strong> — the tree is always perfectly height-balanced.</li>
-<li><span class="math inline">\(h \sim O(\log n)\)</span>, so search, insert, and delete all cost <span class="math inline">\(O(\log n)\)</span>.</li>
-<li>Data is always kept in <strong>sorted order</strong>.</li>
+<li><p><strong>Atomicity:</strong> Imagine the system crashes precisely after Step 3. Account A has lost $50, but Account B hasn’t received it! The $50 just vanished. Atomicity ensures that if it fails here, the database will automatically roll back the changes to Account A, as if the transaction never started.</p></li>
+<li><p><strong>Consistency:</strong> The sum of A + B must remain exactly the same before and after the transaction.</p></li>
+<li><p><strong>Isolation:</strong> If another transaction tries to read Account A at Step 4, it might read the partially updated state. Isolation ensures this intermediate state is hidden.</p></li>
 </ul>
 <hr>
 </section>
-<section id="search-in-a-2-3-4-tree" class="level2">
-<h2 class="anchored" data-anchor-id="search-in-a-2-3-4-tree">Search in a 2-3-4 Tree</h2>
-<p>Search is a straightforward extension of BST search. At each node, compare the target key against the node’s keys and follow the appropriate child pointer. Repeat until you reach a leaf or find the key.</p>
-<blockquote class="blockquote">
-<p>💡 Because all leaves are at the same depth, every search takes exactly <span class="math inline">\(O(h) = O(\log n)\)</span> steps — no worst-case skew possible.</p>
-</blockquote>
-<hr>
-</section>
-<section id="insertion-in-a-2-3-4-tree" class="level2">
-<h2 class="anchored" data-anchor-id="insertion-in-a-2-3-4-tree">Insertion in a 2-3-4 Tree</h2>
-<p>Insertion always happens at a <strong>leaf</strong>. The process:</p>
-<ol type="1">
-<li>Search for the expected location (the leaf where the key would go).</li>
-<li>If the leaf is a <strong>2-node</strong>, expand it to a <strong>3-node</strong> and insert. Done.</li>
-<li>If the leaf is a <strong>3-node</strong>, expand it to a <strong>4-node</strong> and insert. Done.</li>
-<li>If the leaf is a <strong>4-node</strong>, we can’t add another key — we must <strong>split</strong> it first.</li>
-</ol>
-<section id="node-splitting" class="level3">
-<h3 class="anchored" data-anchor-id="node-splitting">Node Splitting</h3>
-<p>Splitting a 4-node takes its <strong>middle key (M)</strong> and pushes it up to the parent. The original 4-node becomes two 2-nodes (one holding S, one holding L), both children of the parent which now absorbs M.</p>
-<p>There are three cases depending on the parent:</p>
-<p><strong>Case 1 — Parent is the root (a 4-node):</strong></p>
-<pre><code>    [S  M  L]          [M]
-   /  |  |  \    →    /   \
-  a   b  c   d      [S]   [L]
-                   / \   / \
-                  a   b c   d</code></pre>
-<p>The tree grows one level taller.</p>
-<p><strong>Case 2 — Parent is a 2-node:</strong></p>
-<p>The middle key M is absorbed into the parent, converting it from a 2-node to a 3-node. The split 4-node’s two halves (S and L) become two separate children.</p>
-<p><strong>Case 3 — Parent is a 3-node:</strong></p>
-<p>Same idea — M is absorbed, converting the parent from a 3-node to a 4-node.</p>
-</section>
-<section id="early-vs.-late-splitting" class="level3">
-<h3 class="anchored" data-anchor-id="early-vs.-late-splitting">Early vs.&nbsp;Late Splitting</h3>
-<p>There are two strategies for <em>when</em> to split:</p>
-<ul>
-<li><strong>Early splitting:</strong> Split any 4-node you <em>encounter</em> on the way down during a search, before you actually need to. This ensures you never have a full node at the insertion point. At most one split per level.</li>
-<li><strong>Late splitting:</strong> Only split when you actually need to insert into a 4-node. May cascade up <span class="math inline">\(O(h)\)</span> splits in the worst case.</li>
-</ul>
-<p>Both strategies produce valid trees with the same complexity <span class="math inline">\(O(h)\)</span>, but they produce different final shapes. The slides follow the <strong>early splitting</strong> strategy.</p>
-<hr>
-</section>
-</section>
-<section id="insertion-example-step-by-step" class="level2">
-<h2 class="anchored" data-anchor-id="insertion-example-step-by-step">Insertion Example: Step by Step</h2>
-<p>Inserting the sequence <strong>10, 30, 60, 20, 50, 40, 70, 80, 15, 90, 100</strong> using the <strong>early splitting</strong> strategy.</p>
-<hr>
-<p><strong>After inserting 10, 30, 60</strong> — all three fit into one leaf (a 4-node):</p>
-<pre><code>[10  30  60]</code></pre>
-<hr>
-<p><strong>Insert 20</strong> — the root is a 4-node, so we split it <em>before</em> descending. Middle key 30 becomes the new root; 10 and 60 become separate children. Then 20 is inserted into the left child:</p>
-<pre><code>        [30]
-       /    \
-  [10, 20]  [60]</code></pre>
-<hr>
-<p><strong>Insert 50</strong> — 50 &gt; 30, go right. [60] is a 2-node, so just expand it:</p>
-<pre><code>        [30]
-       /    \
-  [10, 20]  [50, 60]</code></pre>
-<hr>
-<p><strong>Insert 40</strong> — 40 &gt; 30, go right. [50, 60] is a 3-node, expand to 4-node and insert:</p>
-<pre><code>        [30]
-       /    \
-  [10, 20]  [40, 50, 60]</code></pre>
-<hr>
-<p><strong>Insert 70</strong> — root [30] is fine. 70 &gt; 30, descend right. [40, 50, 60] is a 4-node — split it immediately (early strategy). Middle key 50 rises to join the root:</p>
-<pre><code>           [30, 50]
-          /   |    \
-   [10,20]  [40]  [60]</code></pre>
-<p>Now insert 70 into the right child [60]:</p>
-<pre><code>           [30, 50]
-          /   |    \
-   [10,20]  [40]  [60, 70]</code></pre>
-<hr>
-<p><strong>Insert 80</strong> — 80 &gt; 50, go to right child [60, 70]. It’s a 3-node, expand it:</p>
-<pre><code>           [30, 50]
-          /   |    \
-   [10,20]  [40]  [60, 70, 80]</code></pre>
-<hr>
-<p><strong>Insert 15</strong> — 15 &lt; 30, go left. [10, 20] is a 3-node, expand it:</p>
-<pre><code>              [30, 50]
-             /   |    \
-  [10, 15, 20]  [40]  [60, 70, 80]</code></pre>
-<hr>
-<p><strong>Insert 90</strong> — root [30, 50] is fine. 90 &gt; 50, descend right. [60, 70, 80] is a 4-node — split it. Middle key 70 rises to join the root:</p>
-<pre><code>                [30, 50, 70]
-               /   |    |   \
-  [10,15,20]  [40] [60] [80]</code></pre>
-<p>Now insert 90 into the rightmost child [80]:</p>
-<pre><code>                [30, 50, 70]
-               /   |    |   \
-  [10,15,20]  [40] [60] [80, 90]</code></pre>
-<hr>
-<p><strong>Insert 100</strong> — root [30, 50, 70] is a 4-node — split it first. Middle key 50 becomes the new root; 30 and 70 become children:</p>
-<pre><code>                      [50]
-                     /    \
-                  [30]    [70]
-                 /    \   /   \
-          [10,15,20] [40] [60] [80,90]</code></pre>
-<p>Now insert 100. 100 &gt; 50 → go right to [70]. 100 &gt; 70 → go to right child [80, 90]. It’s a 3-node, expand it:</p>
-<pre><code>                      [50]
-                     /    \
-                  [30]    [70]
-                 /    \   /   \
-          [10,15,20] [40] [60] [80, 90, 100]</code></pre>
-<hr>
-<p><strong>Final tree</strong> after all 11 insertions:</p>
-<pre><code>                         [50]
-                        /    \
-                     [30]    [70]
-                    /    \   /   \
-             [10,15,20] [40][60] [80,90,100]</code></pre>
-<p>Height = 2. All 11 keys stored, all leaves at the same level.</p>
-<hr>
-</section>
-<section id="deletion-in-a-2-3-4-tree" class="level2">
-<h2 class="anchored" data-anchor-id="deletion-in-a-2-3-4-tree">Deletion in a 2-3-4 Tree</h2>
-<p>Deletion is the reverse of insertion. The core idea:</p>
-<ol type="1">
-<li>Locate the node containing the target key.</li>
-<li>Swap it with its <strong>inorder successor</strong> (the smallest key in the right subtree). This reduces deletion to always happening at a <strong>leaf</strong>.</li>
-<li>If the leaf is a 3-node or 4-node, simply remove the key.</li>
-<li>If the leaf is a 2-node, removing its only key would leave an empty node — which is illegal. To prevent this, <strong>transform every 2-node you encounter</strong> (on the way down) into a 3-node or 4-node first. This is the reverse of the splitting cases from insertion.</li>
-</ol>
-<section id="deletion-example" class="level3">
-<h3 class="anchored" data-anchor-id="deletion-example">Deletion Example</h3>
-<p>We will delete <strong>30</strong> and then <strong>50</strong> from the final tree above.</p>
-<p><strong>Starting tree:</strong></p>
-<pre><code>                         [50]
-                        /    \
-                     [30]    [70]
-                    /    \   /   \
-             [10,15,20] [40][60] [80,90,100]</code></pre>
-<hr>
-<p><strong>Delete 30</strong></p>
-<p>30 is an internal node. Its inorder successor is <strong>40</strong> (smallest key in its right subtree). Swap 30 and 40:</p>
-<pre><code>                         [50]
-                        /    \
-                     [40]    [70]
-                    /    \   /   \
-             [10,15,20] [30][60] [80,90,100]</code></pre>
-<p>Now delete 30 from the leaf [30]. That leaf is a 2-node — but since 30 is the only key, removing it would leave an empty node.</p>
-<p>However, looking at its sibling [10, 15, 20] (a 4-node), we can <strong>borrow</strong> from it. The sibling’s largest key (20) rotates up to the parent, and the parent’s key (40) rotates down to fill the now-empty spot:</p>
-<pre><code>                         [50]
-                        /    \
-                     [20]    [70]
-                    /    \   /   \
-             [10,15]  [40][60] [80,90,100]</code></pre>
-<p>30 is deleted. The tree remains balanced and all leaves are still at the same depth.</p>
-<hr>
-<p><strong>Delete 50</strong></p>
-<p>50 is the root. Its inorder successor is <strong>60</strong> (smallest key in its right subtree). Swap 50 and 60:</p>
-<pre><code>                         [60]
-                        /    \
-                     [20]    [70]
-                    /    \   /   \
-             [10,15]    [40][50] [80,90,100]</code></pre>
-<p>Now delete 50 from the leaf [50]. It is a 2-node with no siblings to borrow from (both [20] and [60] in the right subtree are also 2-nodes).</p>
-<p>In this case, we <strong>merge</strong>: combine the 2-node [50] with its sibling [60] (oops — actually [60] is now the root, not a sibling). Let’s be precise: the right child of the root is [70], whose left child is [50] and right child is [80,90,100]. Since [50] is a 2-node and we must delete from it, we can borrow from the rich sibling [80, 90, 100]. The sibling’s smallest key (80) rotates up to the parent [70], and 70 rotates down to fill the gap:</p>
-<pre><code>                         [60]
-                        /    \
-                     [20]    [80]
-                    /    \   /   \
-             [10,15]    [40][70] [90,100]</code></pre>
-<p>50 is deleted. Final tree:</p>
-<pre><code>                         [60]
-                        /    \
-                     [20]    [80]
-                    /    \   /   \
-               [10,15]  [40][70] [90,100]</code></pre>
-<p>Still height 2, all leaves at the same depth.</p>
-<blockquote class="blockquote">
-<p>📌 <strong>Key takeaway from deletion:</strong> The 2-3-4 tree never lets a node go empty. If you need to delete from a 2-node, you always first fatten it up — either by borrowing from a sibling or by merging with a sibling — before removing the key. This is the structural guarantee that keeps the tree balanced after every operation.</p>
-</blockquote>
-<hr>
-</section>
-</section>
-<section id="b-trees" class="level2">
-<h2 class="anchored" data-anchor-id="b-trees">B+ Trees</h2>
-<p>ISAM (indexed-sequential files) degrades as the file grows — overflow blocks pile up and require periodic full reorganization. B+ trees fix this by <strong>self-balancing on every insert and delete</strong>.</p>
-<p>With <span class="math inline">\(n = 100\)</span> and 1 million records, B+ Tree needs 4 reads. A balanced BST on the same data needs ~20 disk reads. Each read costs ~20ms — the difference is significant at scale.</p>
-<hr>
-</section>
-<section id="structure" class="level2">
-<h2 class="anchored" data-anchor-id="structure">Structure</h2>
-<p>A B+ tree with parameter <span class="math inline">\(n\)</span>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Node</th>
-<th>Min</th>
-<th>Max</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Internal (non-root)</td>
-<td><span class="math inline">\(\lceil n/2 \rceil\)</span> children</td>
-<td><span class="math inline">\(n\)</span> children</td>
-</tr>
-<tr class="even">
-<td>Root (non-leaf)</td>
-<td>2 children</td>
-<td><span class="math inline">\(n\)</span> children</td>
-</tr>
-<tr class="odd">
-<td>Leaf</td>
-<td><span class="math inline">\(\lceil (n-1)/2 \rceil\)</span> values</td>
-<td><span class="math inline">\(n-1\)</span> values</td>
-</tr>
-<tr class="even">
-<td>Root as leaf</td>
-<td>0 values</td>
-<td><span class="math inline">\(n-1\)</span> values</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>All paths root → leaf are the <strong>same length</strong>.</li>
-<li>Keys in each node are ordered: <span class="math inline">\(K_1 \leq K_2 \leq \cdots \leq K_{n-1}\)</span>.</li>
-<li>Leaf nodes are <strong>linked</strong> → supports sequential (range) access.</li>
-<li><strong>Leaf:</strong> <span class="math inline">\(P_i\)</span> → record with key <span class="math inline">\(K_i\)</span>; last pointer <span class="math inline">\(P_n\)</span> → next leaf.</li>
-<li><strong>Internal:</strong> <span class="math inline">\(P_i\)</span> → subtree. Keys in <span class="math inline">\(P_1 &lt; K_1\)</span>; keys in <span class="math inline">\(P_i \geq K_{i-1}\)</span> and <span class="math inline">\(&lt; K_i\)</span>; keys in <span class="math inline">\(P_n \geq K_{n-1}\)</span>.</li>
-</ul>
+<section id="transaction-states" class="level2">
+<h2 class="anchored" data-anchor-id="transaction-states">Transaction States</h2>
+<p>As a transaction progresses from start to finish, it passes through several defined states.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="b+tree.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="B+Tree"><img src="b+tree.png" class="img-fluid figure-img" alt="B+Tree"></a></p>
-<figcaption>B+Tree</figcaption>
+<p><a href="transaction_states.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The lifecycle states of a transaction."><img src="transaction_states.png" class="img-fluid figure-img" style="width:80.0%" alt="The lifecycle states of a transaction."></a></p>
+<figcaption>The lifecycle states of a transaction.</figcaption>
 </figure>
 </div>
-<hr>
-</section>
-<section id="search" class="level2">
-<h2 class="anchored" data-anchor-id="search">Search</h2>
-<p>To find value <span class="math inline">\(V\)</span>:</p>
 <ol type="1">
-<li>Start at the root.</li>
-<li>At each internal node, scan the keys left to right and find where 𝑉 fits. Follow the pointer to the matching child subtree. Repeat until you reach a leaf.</li>
-<li>At the leaf, scan for 𝑉. If found, follow its pointer to the record. If not, the record doesn’t exist.</li>
+<li><strong>Active:</strong> The initial state. The transaction stays in this state while it is executing.</li>
+<li><strong>Partially Committed:</strong> After the final statement has been executed, but before the changes have been permanently recorded.</li>
+<li><strong>Committed:</strong> After successful completion. The changes are now durable and permanent.</li>
+<li><strong>Failed:</strong> Occurs when normal execution can no longer proceed (e.g., due to a software error, constraint violation, or hardware crash).</li>
+<li><strong>Aborted:</strong> After the transaction has been rolled back and the database has been restored to its prior state. From here, the transaction can either be restarted or killed entirely.</li>
 </ol>
-<p><strong>Duplicates:</strong> ordering relaxes to <span class="math inline">\(\leq\)</span>. Always descend <span class="math inline">\(P_i\)</span> when <span class="math inline">\(V = K_i\)</span> — duplicates may exist in the left subtree. To find all occurrences, traverse consecutive leaves via the linked list.</p>
-<hr>
-</section>
-<section id="insertion" class="level2">
-<h2 class="anchored" data-anchor-id="insertion">Insertion</h2>
-<ol type="1">
-<li>Find the target leaf and insert in sorted order.</li>
-<li><strong>If space exists</strong> → insert. Done.</li>
-<li><strong>If leaf is full</strong> → split:
-<ul>
-<li>Put first <span class="math inline">\(\lfloor n/2 \rfloor\)</span> pairs in original node, rest in new node.</li>
-<li>Push smallest key of new node up to parent.</li>
-</ul></li>
-<li>If parent is also full → split it and propagate upward.</li>
-<li>Worst case: root splits, tree grows one level taller.</li>
-</ol>
-<hr>
-</section>
-<section id="deletion" class="level2">
-<h2 class="anchored" data-anchor-id="deletion">Deletion</h2>
-<ol type="1">
-<li>Remove the record and its (key, pointer) from the leaf.</li>
-<li><strong>Node still has enough entries</strong> → done.</li>
-<li><strong>Underfull + can merge with sibling</strong> → combine into one node; pull separator key down from parent; recurse upward.</li>
-<li><strong>Underfull + cannot merge</strong> → redistribute from sibling; update separator key in parent.</li>
-<li>If root ends up with one child → delete root, promote that child.</li>
-</ol>
-<hr>
-</section>
-<section id="b-tree-vs-b-tree" class="level2">
-<h2 class="anchored" data-anchor-id="b-tree-vs-b-tree">B-Tree vs B+ Tree</h2>
-<p>B-tree eliminates key duplication — each key appears <strong>once</strong> across the whole tree, with record pointers directly in internal nodes.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="btree.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="B Tree"><img src="btree.png" class="img-fluid figure-img" alt="B Tree"></a></p>
-<figcaption>B Tree</figcaption>
-</figure>
-</div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th>B+ Tree</th>
-<th>B-Tree</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Keys in internal nodes</td>
-<td>Routing copies only</td>
-<td>Actual record pointers</td>
-</tr>
-<tr class="even">
-<td>Key duplication</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-<tr class="odd">
-<td>Leaf nodes linked</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-<tr class="even">
-<td>Fan-out</td>
-<td>Higher</td>
-<td>Lower</td>
-</tr>
-<tr class="odd">
-<td>Sequential access</td>
-<td>Efficient</td>
-<td>Inefficient</td>
-</tr>
-<tr class="even">
-<td>Early key find</td>
-<td>No</td>
-<td>Sometimes</td>
-</tr>
-<tr class="odd">
-<td>Complexity</td>
-<td>Simple</td>
-<td>More complex</td>
-</tr>
-</tbody>
-</table>
 
 
 
@@ -1585,13 +1290,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_9/01_indexing.html" class="pagination-link" aria-label="Indexing">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Indexing</span></span>
+      <a href="../../weeks/week_9/03_hashing.html" class="pagination-link" aria-label="Hashing and Bitmap Indices">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Hashing and Bitmap Indices</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_9/03_hashing.html" class="pagination-link" aria-label="Hashing and Bitmap Indices">
-        <span class="nav-page-text"><span class="chapter-title">Hashing and Bitmap Indices</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="pagination-link" aria-label="Schedules and Serializability">
+        <span class="nav-page-text"><span class="chapter-title">Schedules and Serializability</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1603,7 +1308,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_9/02_bst.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/01_transactions_and_acid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
