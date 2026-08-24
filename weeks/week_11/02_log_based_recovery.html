@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Database Management Systems</title>
+<title>Log-Based Recovery – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_1/view_of_data.html" rel="next">
-<link href="../../index.html" rel="prev">
+<link href="../../weeks/week_11/03_raid.html" rel="next">
+<link href="../../weeks/week_11/01_backup_and_recovery.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,6 +53,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-e31b99508829a032df41942741e02fdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -286,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/02_log_based_recovery.html"><span class="chapter-title">Log-Based Recovery</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -332,16 +335,16 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -617,13 +620,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-11</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_11/01_backup_and_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Backup and Recovery</span></a>
@@ -631,7 +634,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_11/02_log_based_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Log-Based Recovery</span></a>
+  <a href="../../weeks/week_11/02_log_based_recovery.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Log-Based Recovery</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -672,18 +675,22 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
-  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
+  <li><a href="#how-data-moves-the-access-model" id="toc-how-data-moves-the-access-model" class="nav-link active" data-scroll-target="#how-data-moves-the-access-model">How Data Moves: The Access Model</a></li>
+  <li><a href="#log-based-recovery" id="toc-log-based-recovery" class="nav-link" data-scroll-target="#log-based-recovery">Log-Based Recovery</a></li>
+  <li><a href="#database-modification-schemes" id="toc-database-modification-schemes" class="nav-link" data-scroll-target="#database-modification-schemes">Database Modification Schemes</a></li>
+  <li><a href="#undo-and-redo" id="toc-undo-and-redo" class="nav-link" data-scroll-target="#undo-and-redo">Undo and Redo</a></li>
+  <li><a href="#deciding-what-to-do-after-a-crash" id="toc-deciding-what-to-do-after-a-crash" class="nav-link" data-scroll-target="#deciding-what-to-do-after-a-crash">Deciding What to Do After a Crash</a></li>
+  <li><a href="#checkpoints" id="toc-checkpoints" class="nav-link" data-scroll-target="#checkpoints">Checkpoints</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/02_log_based_recovery.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/02_log_based_recovery.html"><span class="chapter-title">Log-Based Recovery</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-title">Log-Based Recovery</span></h1>
 </div>
 
 
@@ -700,31 +707,206 @@ window.Quarto = {
 </header>
 
 
-<section id="key-terminologies" class="level2">
-<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
+<section id="how-data-moves-the-access-model" class="level2">
+<h2 class="anchored" data-anchor-id="how-data-moves-the-access-model">How Data Moves: The Access Model</h2>
+<p>Data lives on <strong>disk</strong> (physical blocks) and is loaded into <strong>memory</strong> (buffer blocks) when needed.</p>
 <ul>
-<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
-<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
-<li><p><strong>File:</strong> A collection of related records.</p></li>
-<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
+<li><code>input(B)</code> — load block B from disk into memory buffer.</li>
+<li><code>output(B)</code> — flush buffer block B back to disk.</li>
 </ul>
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
-<blockquote class="blockquote">
-<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
-</blockquote>
+<p>Inside a transaction:</p>
+<ul>
+<li><code>read(X)</code> — copy data item X from buffer into the transaction’s local variable.</li>
+<li><code>write(X)</code> — copy the local variable back into the buffer block.</li>
+</ul>
+<hr>
 </section>
-<section id="why-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
-<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
-<ul>
-<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
-<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
-<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
-<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
-<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
-<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
-<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
-</ul>
+<section id="log-based-recovery" class="level2">
+<h2 class="anchored" data-anchor-id="log-based-recovery">Log-Based Recovery</h2>
+<p>The key idea: before touching the database, every change is first recorded in a <strong>log</strong> on stable storage. If a crash happens, the log tells us exactly what to undo or redo. A log is kept on stable storage. The log is a sequence of log records, which maintains information about update activities on the database.</p>
+<p><strong>Log record types:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Record</th>
+<th>Written when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt; Ti start &gt;</code></td>
+<td>Transaction begins</td>
+</tr>
+<tr class="even">
+<td><code>&lt; Ti, X, V1, V2 &gt;</code></td>
+<td>Before writing X — V1 is the old value, V2 is the new value</td>
+</tr>
+<tr class="odd">
+<td><code>&lt; Ti commit &gt;</code></td>
+<td>Transaction completes successfully</td>
+</tr>
+<tr class="even">
+<td><code>&lt; Ti abort &gt;</code></td>
+<td>Transaction is rolled back</td>
+</tr>
+</tbody>
+</table>
+<p>A transaction is considered <strong>committed</strong> the moment its commit log record reaches stable storage — even if the actual data changes are still sitting in the buffer.</p>
+<hr>
+</section>
+<section id="database-modification-schemes" class="level2">
+<h2 class="anchored" data-anchor-id="database-modification-schemes">Database Modification Schemes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Scheme</th>
+<th>When updates hit disk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Immediate modification</strong></td>
+<td>Anytime — before or after commit</td>
+</tr>
+<tr class="even">
+<td><strong>Deferred modification</strong></td>
+<td>Only at commit time</td>
+</tr>
+</tbody>
+</table>
+<p>We focus on <strong>immediate modification</strong> — it requires both undo and redo during recovery, but it is the more commonly used approach.</p>
+<section id="example" class="level4">
+<h4 class="anchored" data-anchor-id="example">Example</h4>
+<p><a href="immediate_modification_scheme_example.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="immediate_modification_scheme_example.png" class="img-fluid"></a></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Log state at crash</th>
+<th>Recovery action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>(a)</strong></td>
+<td>T0 started but neither committed nor aborted</td>
+<td><strong>Undo T0</strong> — restore B to 2000, then A to 1000</td>
+</tr>
+<tr class="even">
+<td><strong>(b)</strong></td>
+<td>T0 committed; T1 started but not committed</td>
+<td><strong>Redo T0</strong> (set A=950, B=2050); <strong>Undo T1</strong> (restore C to 700)</td>
+</tr>
+<tr class="odd">
+<td><strong>(c)</strong></td>
+<td>Both T0 and T1 committed</td>
+<td><strong>Redo T0</strong> then <strong>Redo T1</strong> (set A=950, B=2050, C=600)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="undo-and-redo" class="level2">
+<h2 class="anchored" data-anchor-id="undo-and-redo">Undo and Redo</h2>
+<p>When a crash happens, the recovery system needs to either reverse incomplete work or replay committed work that didn’t make it to disk.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>What it does</th>
+<th>Direction</th>
+<th>When used</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>undo(Ti)</code></td>
+<td>Restores all writes to old values (V1)</td>
+<td>Scans log <strong>backwards</strong></td>
+<td>Ti started but never committed</td>
+</tr>
+<tr class="even">
+<td><code>redo(Ti)</code></td>
+<td>Reapplies all writes to new values (V2)</td>
+<td>Scans log <strong>forwards</strong></td>
+<td>Ti committed but data may not be on disk</td>
+</tr>
+</tbody>
+</table>
+<p>During undo, each restored value is recorded as a <strong>Compensation Log Record (CLR)</strong>: <code>&lt; Ti, X, V1 &gt;</code>. When the undo is complete, <code>&lt; Ti abort &gt;</code> is written.</p>
+<hr>
+</section>
+<section id="deciding-what-to-do-after-a-crash" class="level2">
+<h2 class="anchored" data-anchor-id="deciding-what-to-do-after-a-crash">Deciding What to Do After a Crash</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Log contains</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt; Ti start &gt;</code> but no commit or abort</td>
+<td><strong>Undo</strong> Ti</td>
+</tr>
+<tr class="even">
+<td><code>&lt; Ti start &gt;</code> and <code>&lt; Ti commit &gt;</code> or <code>&lt; Ti abort &gt;</code></td>
+<td><strong>Redo</strong> Ti</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="checkpoints" class="level2">
+<h2 class="anchored" data-anchor-id="checkpoints">Checkpoints</h2>
+<p>Without checkpoints, recovery would replay the entire log from the very beginning — extremely slow for a database that has been running for a long time. A <strong>checkpoint</strong> flushes all buffered writes to disk and records which transactions are currently active. Recovery only needs to look at the log from the checkpoint onwards.</p>
+<p><strong>Steps during checkpointing:</strong></p>
+<ol type="1">
+<li>Output all in-memory log records to stable storage.</li>
+<li>Flush all modified buffer blocks to disk.</li>
+<li>Write a <code>&lt; checkpoint L &gt;</code> record, where L is the list of active transactions.</li>
+</ol>
+<p><strong>After a crash, for each transaction relative to the last checkpoint:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Transaction state</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Committed <strong>before</strong> checkpoint</td>
+<td>Ignore — already safely on disk</td>
+</tr>
+<tr class="even">
+<td>Committed <strong>after</strong> checkpoint</td>
+<td>Redo</td>
+</tr>
+<tr class="odd">
+<td>Still active at time of crash</td>
+<td>Undo</td>
+</tr>
+</tbody>
+</table>
+<hr>
 
 
 
@@ -1224,13 +1406,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
+      <a href="../../weeks/week_11/01_backup_and_recovery.html" class="pagination-link" aria-label="Backup and Recovery">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Backup and Recovery</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
-        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_11/03_raid.html" class="pagination-link" aria-label="RAID: Redundant Array of Independent Disks">
+        <span class="nav-page-text"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1242,12 +1424,44 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/02_log_based_recovery.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

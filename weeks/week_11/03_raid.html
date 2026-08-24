@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Database Management Systems</title>
+<title>RAID: Redundant Array of Independent Disks – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_1/view_of_data.html" rel="next">
-<link href="../../index.html" rel="prev">
+<link href="../../sql_playground.html" rel="next">
+<link href="../../weeks/week_11/02_log_based_recovery.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,6 +53,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-e31b99508829a032df41942741e02fdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -286,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/03_raid.html"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -332,16 +335,16 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -617,13 +620,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-11</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_11/01_backup_and_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Backup and Recovery</span></a>
@@ -636,7 +639,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_11/03_raid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></a>
+  <a href="../../weeks/week_11/03_raid.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></a>
   </div>
 </li>
       </ul>
@@ -672,18 +675,35 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
-  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
+  <li><a href="#what-is-raid" id="toc-what-is-raid" class="nav-link active" data-scroll-target="#what-is-raid">What is RAID?</a></li>
+  <li><a href="#three-core-techniques" id="toc-three-core-techniques" class="nav-link" data-scroll-target="#three-core-techniques">Three Core Techniques</a>
+  <ul class="collapse">
+  <li><a href="#mirroring" id="toc-mirroring" class="nav-link" data-scroll-target="#mirroring">Mirroring</a></li>
+  <li><a href="#striping" id="toc-striping" class="nav-link" data-scroll-target="#striping">Striping</a></li>
+  <li><a href="#parity" id="toc-parity" class="nav-link" data-scroll-target="#parity">Parity</a></li>
+  </ul></li>
+  <li><a href="#standard-raid-levels" id="toc-standard-raid-levels" class="nav-link" data-scroll-target="#standard-raid-levels">Standard RAID Levels</a>
+  <ul class="collapse">
+  <li><a href="#raid-0-block-striping" id="toc-raid-0-block-striping" class="nav-link" data-scroll-target="#raid-0-block-striping">RAID 0 — Block Striping</a></li>
+  <li><a href="#raid-1-mirroring" id="toc-raid-1-mirroring" class="nav-link" data-scroll-target="#raid-1-mirroring">RAID 1 — Mirroring</a></li>
+  <li><a href="#raid-2-parity" id="toc-raid-2-parity" class="nav-link" data-scroll-target="#raid-2-parity">RAID 2 — Parity</a></li>
+  <li><a href="#raid-3-byte-striping-parity" id="toc-raid-3-byte-striping-parity" class="nav-link" data-scroll-target="#raid-3-byte-striping-parity">RAID 3 — Byte Striping + Parity</a></li>
+  <li><a href="#raid-4-block-striping-parity" id="toc-raid-4-block-striping-parity" class="nav-link" data-scroll-target="#raid-4-block-striping-parity">RAID 4 — Block Striping + Parity</a></li>
+  <li><a href="#raid-5-distributed-parity" id="toc-raid-5-distributed-parity" class="nav-link" data-scroll-target="#raid-5-distributed-parity">RAID 5 — Distributed Parity</a></li>
+  <li><a href="#raid-6-dual-parity" id="toc-raid-6-dual-parity" class="nav-link" data-scroll-target="#raid-6-dual-parity">RAID 6 — Dual Parity</a></li>
+  <li><a href="#raid-01-mirror-of-stripes" id="toc-raid-01-mirror-of-stripes" class="nav-link" data-scroll-target="#raid-01-mirror-of-stripes">RAID 01 — Mirror of Stripes</a></li>
+  <li><a href="#raid-10-stripe-of-mirrors" id="toc-raid-10-stripe-of-mirrors" class="nav-link" data-scroll-target="#raid-10-stripe-of-mirrors">RAID 10 — Stripe of Mirrors</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/03_raid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/03_raid.html"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></h1>
 </div>
 
 
@@ -700,34 +720,221 @@ window.Quarto = {
 </header>
 
 
-<section id="key-terminologies" class="level2">
-<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
+<section id="what-is-raid" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-raid">What is RAID?</h2>
+<p>A single disk has two problems: it’s slow, and it can fail. RAID solves both by combining multiple disks into what looks like one — spreading data across them for speed and duplicating it for safety. <strong>RAID (Redundant Array of Independent Disks)</strong> is a disk organization technique that manages multiple disks and presents them as a single logical disk. It achieves two things simultaneously:</p>
 <ul>
-<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
-<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
-<li><p><strong>File:</strong> A collection of related records.</p></li>
-<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
+<li><strong>Speed</strong> — by using multiple disks in parallel, it delivers high capacity and high throughput.</li>
+<li><strong>Reliability</strong> — by storing data redundantly across disks, it ensures data can be recovered even if one disk fails.</li>
 </ul>
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
-<blockquote class="blockquote">
-<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
-</blockquote>
+<hr>
 </section>
-<section id="why-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
-<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
+<section id="three-core-techniques" class="level2">
+<h2 class="anchored" data-anchor-id="three-core-techniques">Three Core Techniques</h2>
+<section id="mirroring" class="level3">
+<h3 class="anchored" data-anchor-id="mirroring">Mirroring</h3>
+<p>Every disk has an exact duplicate — the logical disk consists of two physical disks.</p>
 <ul>
-<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
-<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
-<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
-<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
-<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
-<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
-<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
+<li>Every write is carried out on <strong>both</strong> disks simultaneously.</li>
+<li>Reads can be served from <strong>either</strong> disk.</li>
+<li>If one disk in a pair fails, data is still available on the other.</li>
+<li>Data loss only occurs if both disks in a pair fail before one is repaired — extremely unlikely.</li>
+</ul>
+<hr>
+</section>
+<section id="striping" class="level3">
+<h3 class="anchored" data-anchor-id="striping">Striping</h3>
+<p>Data is split across multiple disks so reads and writes happen in parallel.</p>
+<p><strong>Bit-level Striping</strong></p>
+<ul>
+<li>Bits of each byte are split across multiple disks (bit <span class="math inline">\(i\)</span> goes to disk <span class="math inline">\(i\)</span>).</li>
+<li>Each access reads data at up to 8× the rate of a single disk.</li>
+<li>Seek and access time is worse than a single disk — rarely used today.</li>
+</ul>
+<p><strong>Byte-level Striping</strong></p>
+<ul>
+<li>Each file is split into 1-byte chunks distributed across disks.</li>
+<li>The <span class="math inline">\(i\)</span>th byte goes to disk <span class="math inline">\(((i-1) \mod n) + 1\)</span>.</li>
+</ul>
+<p><strong>Block-level Striping</strong></p>
+<ul>
+<li>Block <span class="math inline">\(i\)</span> of a file goes to disk <span class="math inline">\((i \mod n) + 1\)</span>.</li>
+<li>Requests for different blocks can run in <strong>parallel</strong> if they reside on different disks.</li>
+<li>A long sequential read can utilise all disks at once.</li>
+</ul>
+<hr>
+</section>
+<section id="parity" class="level3">
+<h3 class="anchored" data-anchor-id="parity">Parity</h3>
+<p>Parity provides fault tolerance by storing extra computed information alongside the data. If a disk fails, the lost data can be <strong>reconstructed</strong> from the remaining disks and the parity — without needing a full duplicate copy.</p>
+<p>Parity is computed using <strong>XOR</strong>: for any set of bits, XOR of all bits including the parity bit equals zero. So if one disk’s bits are lost, XOR of the remaining disks recovers them.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="XOR-Gate.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="XOR Gate"><img src="XOR-Gate.png" class="img-fluid figure-img" alt="XOR Gate"></a></p>
+<figcaption>XOR Gate</figcaption>
+</figure>
+</div>
+<p><strong>Bit-interleaved Parity</strong></p>
+<ul>
+<li>One parity bit covers the corresponding bits across all data disks.</li>
+<li>Written to a dedicated parity disk on every write.</li>
+<li>On disk failure: XOR all remaining bits (including parity) to reconstruct the lost bit.</li>
+</ul>
+<p><strong>Block-interleaved Parity</strong></p>
+<ul>
+<li>Uses block-level striping with a dedicated parity <strong>block</strong> (not just a bit) for every set of corresponding blocks across <span class="math inline">\(n\)</span> disks.</li>
+<li>On disk failure: XOR the corresponding blocks from all remaining disks to reconstruct the lost block.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="standard-raid-levels" class="level2">
+<h2 class="anchored" data-anchor-id="standard-raid-levels">Standard RAID Levels</h2>
+<section id="raid-0-block-striping" class="level3">
+<h3 class="anchored" data-anchor-id="raid-0-block-striping">RAID 0 — Block Striping</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_0.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="RAID 0"><img src="RAID_0.svg" class="img-fluid figure-img" alt="RAID 0"></a></p>
+<figcaption>RAID 0</figcaption>
+</figure>
+</div>
+<ul>
+<li>Data is striped across disks with no redundancy whatsoever.</li>
+<li>Best write performance of all RAID levels — no parity to update.</li>
+<li>100% storage efficiency.</li>
+<li>No fault tolerance — one disk failure loses everything.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-1-mirroring" class="level3">
+<h3 class="anchored" data-anchor-id="raid-1-mirroring">RAID 1 — Mirroring</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="RAID 1"><img src="RAID_1.svg" class="img-fluid figure-img" alt="RAID 1"></a></p>
+<figcaption>RAID 1</figcaption>
+</figure>
+</div>
+<ul>
+<li>Every disk has an exact copy on a second disk. Every write of a disk block involves a write on both disks.</li>
+<li>Excellent fault tolerance — survives one disk failure.</li>
+<li>Reads can be served from either disk in parallel.</li>
+<li>50% storage efficiency — half your disks are copies.</li>
+<li>Most expensive solution.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-2-parity" class="level3">
+<h3 class="anchored" data-anchor-id="raid-2-parity">RAID 2 — Parity</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_2.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="RAID 2"><img src="RAID_2.svg" class="img-fluid figure-img" alt="RAID 2"></a></p>
+<figcaption>RAID 2</figcaption>
+</figure>
+</div>
+<ul>
+<li>Uses dedicated bit for parity and the striping is a single bit, uses Hamming codes for error correction.</li>
+<li>Can correct one-bit errors and detect two-bit errors.</li>
+<li>Requires multiple dedicated check disks.</li>
+<li>Not used in practice — subsumed by RAID 3.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-3-byte-striping-parity" class="level3">
+<h3 class="anchored" data-anchor-id="raid-3-byte-striping-parity">RAID 3 — Byte Striping + Parity</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_3.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="RAID 3"><img src="RAID_3.svg" class="img-fluid figure-img" alt="RAID 3"></a></p>
+<figcaption>RAID 3</figcaption>
+</figure>
+</div>
+<ul>
+<li>Strips at the byte level with a single dedicated parity disk.</li>
+<li>High data transfer rate — data accessed in parallel across all disks.</li>
+<li>Cannot service multiple requests simultaneously — every request touches every disk.</li>
+<li>Reliability overhead for RAID 3 is a single disk, the lowest over-head possible.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-4-block-striping-parity" class="level3">
+<h3 class="anchored" data-anchor-id="raid-4-block-striping-parity">RAID 4 — Block Striping + Parity</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_4.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="RAID 4"><img src="RAID_4.svg" class="img-fluid figure-img" alt="RAID 4"></a></p>
+<figcaption>RAID 4</figcaption>
+</figure>
+</div>
+<ul>
+<li>Strips at the block level with a single dedicated parity disk.</li>
+<li>Read requests can be served by a single disk — better than RAID 3 for reads.</li>
+<li>Can recover from one disk failure using XOR.</li>
+<li>Write performance is poor — every write hits the single parity disk, creating a bottleneck.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-5-distributed-parity" class="level3">
+<h3 class="anchored" data-anchor-id="raid-5-distributed-parity">RAID 5 — Distributed Parity</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_5.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="RAID 5"><img src="RAID_5.svg" class="img-fluid figure-img" alt="RAID 5"></a></p>
+<figcaption>RAID 5</figcaption>
+</figure>
+</div>
+<ul>
+<li>Like RAID 4 but parity blocks are spread across all disks instead of sitting on one dedicated disk.</li>
+<li>Eliminates the parity bottleneck — multiple writes can happen in parallel.</li>
+<li>All disks participate in reads — higher read parallelism.</li>
+<li>Allows recovery of only 1 disk failure.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-6-dual-parity" class="level3">
+<h3 class="anchored" data-anchor-id="raid-6-dual-parity">RAID 6 — Dual Parity</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_6.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="RAID 6"><img src="RAID_6.svg" class="img-fluid figure-img" alt="RAID 6"></a></p>
+<figcaption>RAID 6</figcaption>
+</figure>
+</div>
+<ul>
+<li>Extends RAID 5 with a second parity block, using Reed-Solomon codes.</li>
+<li>Survives <strong>two simultaneous disk failures</strong> — safe even during a rebuild after one failure.</li>
+<li>Write performance worse than RAID 5 — two parity blocks to update.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-01-mirror-of-stripes" class="level3">
+<h3 class="anchored" data-anchor-id="raid-01-mirror-of-stripes">RAID 01 — Mirror of Stripes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_01.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="RAID 01"><img src="RAID_01.svg" class="img-fluid figure-img" alt="RAID 01"></a></p>
+<figcaption>RAID 01</figcaption>
+</figure>
+</div>
+<ul>
+<li>Stripe sets are built first (RAID 0), then each set is mirrored (RAID 1).</li>
+<li>If one disk in a stripe fails, the entire stripe set is lost — falls back to the mirror.</li>
+<li>Less resilient than RAID 10.</li>
+<li>Requires at least 4 disks. Storage efficiency: 50%.</li>
+</ul>
+<hr>
+</section>
+<section id="raid-10-stripe-of-mirrors" class="level3">
+<h3 class="anchored" data-anchor-id="raid-10-stripe-of-mirrors">RAID 10 — Stripe of Mirrors</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="RAID_10.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="RAID 10"><img src="RAID_10.svg" class="img-fluid figure-img" alt="RAID 10"></a></p>
+<figcaption>RAID 10</figcaption>
+</figure>
+</div>
+<ul>
+<li>Disks are mirrored first (RAID 1), then striped across the mirror pairs (RAID 0).</li>
+<li>One disk in each mirror pair can fail independently — far more resilient than RAID 01.</li>
+<li>Best throughput and latency of all fault-tolerant RAID levels.</li>
 </ul>
 
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1224,13 +1431,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
+      <a href="../../weeks/week_11/02_log_based_recovery.html" class="pagination-link" aria-label="Log-Based Recovery">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Log-Based Recovery</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
-        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../sql_playground.html" class="pagination-link" aria-label="SQL Playground">
+        <span class="nav-page-text"><span class="chapter-title">SQL Playground</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1242,12 +1449,44 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/03_raid.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

@@ -1924,6 +1924,171 @@
     ]
   },
   {
+    "objectID": "weeks/week_11/01_backup_and_recovery.html",
+    "href": "weeks/week_11/01_backup_and_recovery.html",
+    "title": "Backup and Recovery",
+    "section": "",
+    "text": "What is Backup and Recovery?\nImagine your database crashes due to a power failure. Without a backup, everything is gone. A backup is a copy of your database — data files, control files, logs — that lets you restore the system when something goes wrong.\nRecovery is the process of using that backup to bring the database back to its last consistent state.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>37</span>  <span class='chapter-title'>Backup and Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/01_backup_and_recovery.html#types-of-data-to-back-up",
+    "href": "weeks/week_11/01_backup_and_recovery.html#types-of-data-to-back-up",
+    "title": "Backup and Recovery",
+    "section": "Types of Data to Back Up",
+    "text": "Types of Data to Back Up\n\nBusiness Data — includes personal information of clients, employees, contractors etc. along with details about places, things, events and rules related to the business.\nSystem Data — includes specific environment/configuration of the system used for specialised development purposes log files, software dependency data, disk images.\nMedia Files — files like photographs, videos, sounds, graphics etc. need backing up. Media files are typically much larger in size.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>37</span>  <span class='chapter-title'>Backup and Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/01_backup_and_recovery.html#backup-strategies",
+    "href": "weeks/week_11/01_backup_and_recovery.html#backup-strategies",
+    "title": "Backup and Recovery",
+    "section": "Backup Strategies",
+    "text": "Backup Strategies\n\nFull Backup\nA full backup copies everything — tables, indexes, views, procedures. Think of it as a complete snapshot of the database at a point in time. It must be done at least once before any other strategy can be used.\n\n\n\n✓ Advantages\n✗ Disadvantages\n\n\n\n\nSimple — recovery needs just one backup set\nSlowest to perform\n\n\nNo dependency between backups\nLongest system downtime\n\n\nLoss of one backup doesn’t affect others\nUses the most storage\n\n\n\n\n\n\nIncremental Backup\nInstead of copying everything, an incremental backup only copies what has changed since the last backup (full or incremental).\n\n\n\n\n\n\n\n✓ Advantages\n✗ Disadvantages\n\n\n\n\nSmallest backup size\nRecovery needs full + every incremental in sequence\n\n\nMinimal downtime\nMissing even one incremental breaks recovery\n\n\nMost cost-efficient\nMost complex to manage\n\n\n\n\n\n\nDifferential Backup\nA differential backup copies everything that has changed since the last full backup — regardless of any incrementals in between. Recovery only ever needs two things: the last full backup and the most recent differential.\nThe longer you wait between differentials, the larger they grow — eventually approaching full backup size.\n\n\n\n\n\n\n\n✓ Advantages\n✗ Disadvantages\n\n\n\n\nFewer backup sets needed for recovery\nLarger than incremental backups\n\n\nGreat when full backups are infrequent\nGrows over time if not managed\n\n\n\n\n\n\nComparing the Three\n\n\n\n\n\n\n\n\n\n\n\nFull\nIncremental\nDifferential\n\n\n\n\nWhat it copies\nEverything\nChanges since last backup\nChanges since last full\n\n\nBackup size\nLargest\nSmallest\nMedium (grows over time)\n\n\nRecovery sets needed\n1\nFull + all incrementals\nFull + latest differential\n\n\nRecovery complexity\nSimplest\nMost complex\nModerate\n\n\n\n\nA smart schedule: full backup monthly + differential weekly + incremental daily.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>37</span>  <span class='chapter-title'>Backup and Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/01_backup_and_recovery.html#hot-backup",
+    "href": "weeks/week_11/01_backup_and_recovery.html#hot-backup",
+    "title": "Backup and Recovery",
+    "section": "Hot Backup",
+    "text": "Hot Backup\nAll the strategies above are cold backups — the database pauses during the backup. But some systems can never go offline: financial trading platforms, real-time sensor systems, satellite feeds.\nHot backup keeps the database fully live while the backup runs concurrently.\n\n\n\n\n\n\n\n✓ Advantages\n✗ Disadvantages\n\n\n\n\nDatabase stays available to users\nNot feasible for very large, monolithic datasets\n\n\nPoint-in-time recovery is easier\nAny error mid-backup can terminate the entire process\n\n\nEfficient for dynamic, modular data\nHigh setup and maintenance cost\n\n\n\nIn practice: hot backup is used for transaction log backups. Data backups (incremental/differential) are done cold. A transaction log records every database modification in sequence. Even if a data backup is slightly inconsistent (taken while the database was live), replaying the transaction log on top of it restores full consistency.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>37</span>  <span class='chapter-title'>Backup and Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html",
+    "href": "weeks/week_11/02_log_based_recovery.html",
+    "title": "Log-Based Recovery",
+    "section": "",
+    "text": "How Data Moves: The Access Model\nData lives on disk (physical blocks) and is loaded into memory (buffer blocks) when needed.\nInside a transaction:",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#how-data-moves-the-access-model",
+    "href": "weeks/week_11/02_log_based_recovery.html#how-data-moves-the-access-model",
+    "title": "Log-Based Recovery",
+    "section": "",
+    "text": "input(B) — load block B from disk into memory buffer.\noutput(B) — flush buffer block B back to disk.\n\n\n\nread(X) — copy data item X from buffer into the transaction’s local variable.\nwrite(X) — copy the local variable back into the buffer block.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#log-based-recovery",
+    "href": "weeks/week_11/02_log_based_recovery.html#log-based-recovery",
+    "title": "Log-Based Recovery",
+    "section": "Log-Based Recovery",
+    "text": "Log-Based Recovery\nThe key idea: before touching the database, every change is first recorded in a log on stable storage. If a crash happens, the log tells us exactly what to undo or redo. A log is kept on stable storage. The log is a sequence of log records, which maintains information about update activities on the database.\nLog record types:\n\n\n\n\n\n\n\nRecord\nWritten when\n\n\n\n\n&lt; Ti start &gt;\nTransaction begins\n\n\n&lt; Ti, X, V1, V2 &gt;\nBefore writing X — V1 is the old value, V2 is the new value\n\n\n&lt; Ti commit &gt;\nTransaction completes successfully\n\n\n&lt; Ti abort &gt;\nTransaction is rolled back\n\n\n\nA transaction is considered committed the moment its commit log record reaches stable storage — even if the actual data changes are still sitting in the buffer.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#database-modification-schemes",
+    "href": "weeks/week_11/02_log_based_recovery.html#database-modification-schemes",
+    "title": "Log-Based Recovery",
+    "section": "Database Modification Schemes",
+    "text": "Database Modification Schemes\n\n\n\nScheme\nWhen updates hit disk\n\n\n\n\nImmediate modification\nAnytime — before or after commit\n\n\nDeferred modification\nOnly at commit time\n\n\n\nWe focus on immediate modification — it requires both undo and redo during recovery, but it is the more commonly used approach.\n\nExample\n\n\n\n\n\n\n\n\n\nScenario\nLog state at crash\nRecovery action\n\n\n\n\n(a)\nT0 started but neither committed nor aborted\nUndo T0 — restore B to 2000, then A to 1000\n\n\n(b)\nT0 committed; T1 started but not committed\nRedo T0 (set A=950, B=2050); Undo T1 (restore C to 700)\n\n\n(c)\nBoth T0 and T1 committed\nRedo T0 then Redo T1 (set A=950, B=2050, C=600)",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#undo-and-redo",
+    "href": "weeks/week_11/02_log_based_recovery.html#undo-and-redo",
+    "title": "Log-Based Recovery",
+    "section": "Undo and Redo",
+    "text": "Undo and Redo\nWhen a crash happens, the recovery system needs to either reverse incomplete work or replay committed work that didn’t make it to disk.\n\n\n\n\n\n\n\n\n\nOperation\nWhat it does\nDirection\nWhen used\n\n\n\n\nundo(Ti)\nRestores all writes to old values (V1)\nScans log backwards\nTi started but never committed\n\n\nredo(Ti)\nReapplies all writes to new values (V2)\nScans log forwards\nTi committed but data may not be on disk\n\n\n\nDuring undo, each restored value is recorded as a Compensation Log Record (CLR): &lt; Ti, X, V1 &gt;. When the undo is complete, &lt; Ti abort &gt; is written.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#deciding-what-to-do-after-a-crash",
+    "href": "weeks/week_11/02_log_based_recovery.html#deciding-what-to-do-after-a-crash",
+    "title": "Log-Based Recovery",
+    "section": "Deciding What to Do After a Crash",
+    "text": "Deciding What to Do After a Crash\n\n\n\nLog contains\nAction\n\n\n\n\n&lt; Ti start &gt; but no commit or abort\nUndo Ti\n\n\n&lt; Ti start &gt; and &lt; Ti commit &gt; or &lt; Ti abort &gt;\nRedo Ti",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/02_log_based_recovery.html#checkpoints",
+    "href": "weeks/week_11/02_log_based_recovery.html#checkpoints",
+    "title": "Log-Based Recovery",
+    "section": "Checkpoints",
+    "text": "Checkpoints\nWithout checkpoints, recovery would replay the entire log from the very beginning — extremely slow for a database that has been running for a long time. A checkpoint flushes all buffered writes to disk and records which transactions are currently active. Recovery only needs to look at the log from the checkpoint onwards.\nSteps during checkpointing:\n\nOutput all in-memory log records to stable storage.\nFlush all modified buffer blocks to disk.\nWrite a &lt; checkpoint L &gt; record, where L is the list of active transactions.\n\nAfter a crash, for each transaction relative to the last checkpoint:\n\n\n\nTransaction state\nAction\n\n\n\n\nCommitted before checkpoint\nIgnore — already safely on disk\n\n\nCommitted after checkpoint\nRedo\n\n\nStill active at time of crash\nUndo",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Log-Based Recovery</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/03_raid.html",
+    "href": "weeks/week_11/03_raid.html",
+    "title": "RAID: Redundant Array of Independent Disks",
+    "section": "",
+    "text": "What is RAID?\nA single disk has two problems: it’s slow, and it can fail. RAID solves both by combining multiple disks into what looks like one — spreading data across them for speed and duplicating it for safety. RAID (Redundant Array of Independent Disks) is a disk organization technique that manages multiple disks and presents them as a single logical disk. It achieves two things simultaneously:",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>39</span>  <span class='chapter-title'>RAID: Redundant Array of Independent Disks</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/03_raid.html#what-is-raid",
+    "href": "weeks/week_11/03_raid.html#what-is-raid",
+    "title": "RAID: Redundant Array of Independent Disks",
+    "section": "",
+    "text": "Speed — by using multiple disks in parallel, it delivers high capacity and high throughput.\nReliability — by storing data redundantly across disks, it ensures data can be recovered even if one disk fails.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>39</span>  <span class='chapter-title'>RAID: Redundant Array of Independent Disks</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/03_raid.html#three-core-techniques",
+    "href": "weeks/week_11/03_raid.html#three-core-techniques",
+    "title": "RAID: Redundant Array of Independent Disks",
+    "section": "Three Core Techniques",
+    "text": "Three Core Techniques\n\nMirroring\nEvery disk has an exact duplicate — the logical disk consists of two physical disks.\n\nEvery write is carried out on both disks simultaneously.\nReads can be served from either disk.\nIf one disk in a pair fails, data is still available on the other.\nData loss only occurs if both disks in a pair fail before one is repaired — extremely unlikely.\n\n\n\n\nStriping\nData is split across multiple disks so reads and writes happen in parallel.\nBit-level Striping\n\nBits of each byte are split across multiple disks (bit \\(i\\) goes to disk \\(i\\)).\nEach access reads data at up to 8× the rate of a single disk.\nSeek and access time is worse than a single disk — rarely used today.\n\nByte-level Striping\n\nEach file is split into 1-byte chunks distributed across disks.\nThe \\(i\\)th byte goes to disk \\(((i-1) \\mod n) + 1\\).\n\nBlock-level Striping\n\nBlock \\(i\\) of a file goes to disk \\((i \\mod n) + 1\\).\nRequests for different blocks can run in parallel if they reside on different disks.\nA long sequential read can utilise all disks at once.\n\n\n\n\nParity\nParity provides fault tolerance by storing extra computed information alongside the data. If a disk fails, the lost data can be reconstructed from the remaining disks and the parity — without needing a full duplicate copy.\nParity is computed using XOR: for any set of bits, XOR of all bits including the parity bit equals zero. So if one disk’s bits are lost, XOR of the remaining disks recovers them.\n\n\n\nXOR Gate\n\n\nBit-interleaved Parity\n\nOne parity bit covers the corresponding bits across all data disks.\nWritten to a dedicated parity disk on every write.\nOn disk failure: XOR all remaining bits (including parity) to reconstruct the lost bit.\n\nBlock-interleaved Parity\n\nUses block-level striping with a dedicated parity block (not just a bit) for every set of corresponding blocks across \\(n\\) disks.\nOn disk failure: XOR the corresponding blocks from all remaining disks to reconstruct the lost block.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>39</span>  <span class='chapter-title'>RAID: Redundant Array of Independent Disks</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_11/03_raid.html#standard-raid-levels",
+    "href": "weeks/week_11/03_raid.html#standard-raid-levels",
+    "title": "RAID: Redundant Array of Independent Disks",
+    "section": "Standard RAID Levels",
+    "text": "Standard RAID Levels\n\nRAID 0 — Block Striping\n\n\n\nRAID 0\n\n\n\nData is striped across disks with no redundancy whatsoever.\nBest write performance of all RAID levels — no parity to update.\n100% storage efficiency.\nNo fault tolerance — one disk failure loses everything.\n\n\n\n\nRAID 1 — Mirroring\n\n\n\nRAID 1\n\n\n\nEvery disk has an exact copy on a second disk. Every write of a disk block involves a write on both disks.\nExcellent fault tolerance — survives one disk failure.\nReads can be served from either disk in parallel.\n50% storage efficiency — half your disks are copies.\nMost expensive solution.\n\n\n\n\nRAID 2 — Parity\n\n\n\nRAID 2\n\n\n\nUses dedicated bit for parity and the striping is a single bit, uses Hamming codes for error correction.\nCan correct one-bit errors and detect two-bit errors.\nRequires multiple dedicated check disks.\nNot used in practice — subsumed by RAID 3.\n\n\n\n\nRAID 3 — Byte Striping + Parity\n\n\n\nRAID 3\n\n\n\nStrips at the byte level with a single dedicated parity disk.\nHigh data transfer rate — data accessed in parallel across all disks.\nCannot service multiple requests simultaneously — every request touches every disk.\nReliability overhead for RAID 3 is a single disk, the lowest over-head possible.\n\n\n\n\nRAID 4 — Block Striping + Parity\n\n\n\nRAID 4\n\n\n\nStrips at the block level with a single dedicated parity disk.\nRead requests can be served by a single disk — better than RAID 3 for reads.\nCan recover from one disk failure using XOR.\nWrite performance is poor — every write hits the single parity disk, creating a bottleneck.\n\n\n\n\nRAID 5 — Distributed Parity\n\n\n\nRAID 5\n\n\n\nLike RAID 4 but parity blocks are spread across all disks instead of sitting on one dedicated disk.\nEliminates the parity bottleneck — multiple writes can happen in parallel.\nAll disks participate in reads — higher read parallelism.\nAllows recovery of only 1 disk failure.\n\n\n\n\nRAID 6 — Dual Parity\n\n\n\nRAID 6\n\n\n\nExtends RAID 5 with a second parity block, using Reed-Solomon codes.\nSurvives two simultaneous disk failures — safe even during a rebuild after one failure.\nWrite performance worse than RAID 5 — two parity blocks to update.\n\n\n\n\nRAID 01 — Mirror of Stripes\n\n\n\nRAID 01\n\n\n\nStripe sets are built first (RAID 0), then each set is mirrored (RAID 1).\nIf one disk in a stripe fails, the entire stripe set is lost — falls back to the mirror.\nLess resilient than RAID 10.\nRequires at least 4 disks. Storage efficiency: 50%.\n\n\n\n\nRAID 10 — Stripe of Mirrors\n\n\n\nRAID 10\n\n\n\nDisks are mirrored first (RAID 1), then striped across the mirror pairs (RAID 0).\nOne disk in each mirror pair can fail independently — far more resilient than RAID 01.\nBest throughput and latency of all fault-tolerant RAID levels.",
+    "crumbs": [
+      "**Week-11**",
+      "<span class='chapter-number'>39</span>  <span class='chapter-title'>RAID: Redundant Array of Independent Disks</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -1931,7 +2096,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>37</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>40</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -1942,7 +2107,7 @@
     "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>38</span>  <span class='chapter-title'>Python-DB Playground</span>"
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Python-DB Playground</span>"
     ]
   }
 ]

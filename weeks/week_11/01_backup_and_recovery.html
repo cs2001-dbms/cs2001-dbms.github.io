@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction – Database Management Systems</title>
+<title>Backup and Recovery – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_1/view_of_data.html" rel="next">
-<link href="../../index.html" rel="prev">
+<link href="../../weeks/week_11/02_log_based_recovery.html" rel="next">
+<link href="../../weeks/week_10/05_real_world_concurrency.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,6 +53,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-e31b99508829a032df41942741e02fdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -286,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><span class="chapter-title">Backup and Recovery</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -332,16 +335,16 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-01</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction</span></a>
+  <a href="../../weeks/week_1/intro_to_dbms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -617,16 +620,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-11</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_11/01_backup_and_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Backup and Recovery</span></a>
+  <a href="../../weeks/week_11/01_backup_and_recovery.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Backup and Recovery</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -672,18 +675,26 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#key-terminologies" id="toc-key-terminologies" class="nav-link active" data-scroll-target="#key-terminologies">Key Terminologies</a></li>
-  <li><a href="#why-dbms" id="toc-why-dbms" class="nav-link" data-scroll-target="#why-dbms">Why DBMS?</a></li>
+  <li><a href="#what-is-backup-and-recovery" id="toc-what-is-backup-and-recovery" class="nav-link active" data-scroll-target="#what-is-backup-and-recovery">What is Backup and Recovery?</a></li>
+  <li><a href="#types-of-data-to-back-up" id="toc-types-of-data-to-back-up" class="nav-link" data-scroll-target="#types-of-data-to-back-up">Types of Data to Back Up</a></li>
+  <li><a href="#backup-strategies" id="toc-backup-strategies" class="nav-link" data-scroll-target="#backup-strategies">Backup Strategies</a>
+  <ul class="collapse">
+  <li><a href="#full-backup" id="toc-full-backup" class="nav-link" data-scroll-target="#full-backup">Full Backup</a></li>
+  <li><a href="#incremental-backup" id="toc-incremental-backup" class="nav-link" data-scroll-target="#incremental-backup">Incremental Backup</a></li>
+  <li><a href="#differential-backup" id="toc-differential-backup" class="nav-link" data-scroll-target="#differential-backup">Differential Backup</a></li>
+  <li><a href="#comparing-the-three" id="toc-comparing-the-three" class="nav-link" data-scroll-target="#comparing-the-three">Comparing the Three</a></li>
+  </ul></li>
+  <li><a href="#hot-backup" id="toc-hot-backup" class="nav-link" data-scroll-target="#hot-backup">Hot Backup</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/01_backup_and_recovery.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><strong>Week-01</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_1/intro_to_dbms.html"><span class="chapter-title">Introduction</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><strong>Week-11</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_11/01_backup_and_recovery.html"><span class="chapter-title">Backup and Recovery</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Introduction</span></h1>
+<h1 class="title"><span class="chapter-title">Backup and Recovery</span></h1>
 </div>
 
 
@@ -700,31 +711,191 @@ window.Quarto = {
 </header>
 
 
-<section id="key-terminologies" class="level2">
-<h2 class="anchored" data-anchor-id="key-terminologies">Key Terminologies</h2>
-<ul>
-<li><p><strong>Data:</strong> This is just raw, unorganized information without any extra context.</p></li>
-<li><p><strong>Record:</strong> A collection of related data fields packaged together to describe one single real-world object. For example, grouping an instructor’s ID, their name, and their department into a single cohesive row.</p></li>
-<li><p><strong>File:</strong> A collection of related records.</p></li>
-<li><p><strong>Database:</strong> The collection of structured information relevant to an enterprise is referred to as the <strong>database</strong>.</p></li>
-</ul>
-<p>A <strong>Database Management System (DBMS)</strong> is a collection of interrelated data along with a set of programs designed to store, manage and access the data efficiently and conveniently.</p>
-<blockquote class="blockquote">
-<p>A DBMS is typically used to manage data that is highly valuable, relatively large and accessed by multiple users at the same time. <strong>Applications</strong> : Sales, Manufacturing, Banking, Airlines, University etc.</p>
-</blockquote>
+<section id="what-is-backup-and-recovery" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-backup-and-recovery">What is Backup and Recovery?</h2>
+<p>Imagine your database crashes due to a power failure. Without a backup, everything is gone. A <strong>backup</strong> is a copy of your database — data files, control files, logs — that lets you restore the system when something goes wrong.</p>
+<p><strong>Recovery</strong> is the process of using that backup to bring the database back to its last consistent state.</p>
+<hr>
 </section>
-<section id="why-dbms" class="level2">
-<h2 class="anchored" data-anchor-id="why-dbms">Why DBMS?</h2>
-<p>Historically, companies kept their permanent records in separate flat text files managed by conventional operating systems. Doing this without a centralized DBMS creates massive problems:</p>
+<section id="types-of-data-to-back-up" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-data-to-back-up">Types of Data to Back Up</h2>
 <ul>
-<li><p><strong>Data Redundancy &amp; Inconsistency:</strong> Separate departments build their own unique files over time. If a student changes their address, it gets updated in one file but remains outdated in another, leading to conflicting records.</p></li>
-<li><p><strong>Difficulty in Accessing Data:</strong> Standard files aren’t flexible. If a manager asks for a quick, unique list that the original developer didn’t explicitly anticipate, a programmer has to write a brand-new script from scratch. It’s slow and unresponsive.</p></li>
-<li><p><strong>Data Isolation:</strong> Data gets scattered across disconnected files with conflicting file layouts and disparate formats, making it incredibly complex to build new applications that aggregate data.</p></li>
-<li><p><strong>Integrity Problems:</strong> Real world rules, like a bank balance never dropping below zero, must be manually hardcoded into every single application script. If the rule changes, editing hundreds of decoupled programs is prone to human error.</p></li>
-<li><p><strong>Atomicity Issues:</strong> Computer hardware is vulnerable to power failures or crashes. Database operations must be “all-or-nothing” (atomic). If a system crashes halfway through a fund transfer, a file system makes it very difficult to cleanly roll back the changes.</p></li>
-<li><p><strong>Concurrent-Access Anomalies:</strong> To keep response times fast, systems must let multiple processes update data simultaneously. Without a centralized coordination engine, separate programs independently reading and writing raw text files will crash into each other and overwrite each other’s updates.</p></li>
-<li><p><strong>Security Flaws:</strong> Enforcing granular security (like letting a user see specific fields or rows but hiding others) is almost impossible because the underlying operating system doesn’t understand the internal semantics of the data files.</p></li>
+<li><strong>Business Data</strong> — includes personal information of clients, employees, contractors etc. along with details about places, things, events and rules related to the business.</li>
+<li><strong>System Data</strong> — includes specific environment/configuration of the system used for specialised development purposes log files, software dependency data, disk images.</li>
+<li><strong>Media Files</strong> — files like photographs, videos, sounds, graphics etc. need backing up. Media files are typically much larger in size.</li>
 </ul>
+<hr>
+</section>
+<section id="backup-strategies" class="level2">
+<h2 class="anchored" data-anchor-id="backup-strategies">Backup Strategies</h2>
+<section id="full-backup" class="level3">
+<h3 class="anchored" data-anchor-id="full-backup">Full Backup</h3>
+<p>A full backup copies <em>everything</em> — tables, indexes, views, procedures. Think of it as a complete snapshot of the database at a point in time. It must be done <strong>at least once</strong> before any other strategy can be used.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>✓ Advantages</th>
+<th>✗ Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Simple — recovery needs just one backup set</td>
+<td>Slowest to perform</td>
+</tr>
+<tr class="even">
+<td>No dependency between backups</td>
+<td>Longest system downtime</td>
+</tr>
+<tr class="odd">
+<td>Loss of one backup doesn’t affect others</td>
+<td>Uses the most storage</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="incremental-backup" class="level3">
+<h3 class="anchored" data-anchor-id="incremental-backup">Incremental Backup</h3>
+<p>Instead of copying everything, an incremental backup only copies what has <strong>changed since the last backup</strong> (full or incremental).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>✓ Advantages</th>
+<th>✗ Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Smallest backup size</td>
+<td>Recovery needs full + every incremental in sequence</td>
+</tr>
+<tr class="even">
+<td>Minimal downtime</td>
+<td>Missing even one incremental breaks recovery</td>
+</tr>
+<tr class="odd">
+<td>Most cost-efficient</td>
+<td>Most complex to manage</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="differential-backup" class="level3">
+<h3 class="anchored" data-anchor-id="differential-backup">Differential Backup</h3>
+<p>A differential backup copies everything that has <strong>changed since the last full backup</strong> — regardless of any incrementals in between. Recovery only ever needs two things: the last full backup and the most recent differential.</p>
+<p>The longer you wait between differentials, the larger they grow — eventually approaching full backup size.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>✓ Advantages</th>
+<th>✗ Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Fewer backup sets needed for recovery</td>
+<td>Larger than incremental backups</td>
+</tr>
+<tr class="even">
+<td>Great when full backups are infrequent</td>
+<td>Grows over time if not managed</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="comparing-the-three" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-the-three">Comparing the Three</h3>
+<p><a href="types_of_backup.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="types_of_backup.png" class="img-fluid"></a></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Full</th>
+<th>Incremental</th>
+<th>Differential</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>What it copies</strong></td>
+<td>Everything</td>
+<td>Changes since last backup</td>
+<td>Changes since last full</td>
+</tr>
+<tr class="even">
+<td><strong>Backup size</strong></td>
+<td>Largest</td>
+<td>Smallest</td>
+<td>Medium (grows over time)</td>
+</tr>
+<tr class="odd">
+<td><strong>Recovery sets needed</strong></td>
+<td>1</td>
+<td>Full + all incrementals</td>
+<td>Full + latest differential</td>
+</tr>
+<tr class="even">
+<td><strong>Recovery complexity</strong></td>
+<td>Simplest</td>
+<td>Most complex</td>
+<td>Moderate</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>A smart schedule: <strong>full backup monthly + differential weekly + incremental daily</strong>.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="hot-backup" class="level2">
+<h2 class="anchored" data-anchor-id="hot-backup">Hot Backup</h2>
+<p>All the strategies above are <strong>cold backups</strong> — the database pauses during the backup. But some systems can never go offline: financial trading platforms, real-time sensor systems, satellite feeds.</p>
+<p><strong>Hot backup</strong> keeps the database fully live while the backup runs concurrently.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>✓ Advantages</th>
+<th>✗ Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Database stays available to users</td>
+<td>Not feasible for very large, monolithic datasets</td>
+</tr>
+<tr class="even">
+<td>Point-in-time recovery is easier</td>
+<td>Any error mid-backup can terminate the entire process</td>
+</tr>
+<tr class="odd">
+<td>Efficient for dynamic, modular data</td>
+<td>High setup and maintenance cost</td>
+</tr>
+</tbody>
+</table>
+<p>In practice: hot backup is used for <strong>transaction log backups</strong>. Data backups (incremental/differential) are done cold. A <strong>transaction log</strong> records every database modification in sequence. Even if a data backup is slightly inconsistent (taken while the database was live), replaying the transaction log on top of it restores full consistency.</p>
 
 
 
@@ -1224,13 +1395,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../index.html" class="pagination-link" aria-label="About the Course">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">About the Course</span></span>
+      <a href="../../weeks/week_10/05_real_world_concurrency.html" class="pagination-link" aria-label="(Optional) Real-World Concurrency">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">(Optional) Real-World Concurrency</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_1/view_of_data.html" class="pagination-link" aria-label="View of Data">
-        <span class="nav-page-text"><span class="chapter-title">View of Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_11/02_log_based_recovery.html" class="pagination-link" aria-label="Log-Based Recovery">
+        <span class="nav-page-text"><span class="chapter-title">Log-Based Recovery</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1242,12 +1413,44 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_1/intro_to_dbms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_11/01_backup_and_recovery.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
