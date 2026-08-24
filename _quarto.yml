@@ -129,8 +129,13 @@ book:
         - weeks/week_10/03_concurrency_and_locking.qmd
         - weeks/week_10/04_deadlocks_and_timestamps.qmd
         - weeks/week_10/05_real_world_concurrency.qmd
+    - part: '**Week-11**'
+      chapters:
+        - weeks/week_11/01_backup_and_recovery.qmd
+        - weeks/week_11/02_log_based_recovery.qmd
+        - weeks/week_11/03_raid.qmd
     - part: '**Playground**'
-      chapters: 
+      chapters:
         - sql_playground.qmd
         - pythonDB_playground.qmd
   favicon: logo.ico
