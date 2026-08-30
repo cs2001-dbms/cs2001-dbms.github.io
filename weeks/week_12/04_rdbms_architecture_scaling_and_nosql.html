@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Concurrency and Locking – Database Management Systems</title>
+<title>Architecture, Scaling, and Big Data – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_10/04_deadlocks_and_timestamps.html" rel="next">
-<link href="../../weeks/week_10/02_schedules_and_serializability.html" rel="prev">
+<link href="../../sql_playground.html" rel="next">
+<link href="../../weeks/week_12/03_query_optimization_and_equivalence.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,9 +53,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-e31b99508829a032df41942741e02fdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -289,7 +286,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html"><span class="chapter-title">Architecture, Scaling, and Big Data</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -584,13 +581,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
@@ -603,7 +600,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Concurrency and Locking</span></a>
+  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Concurrency and Locking</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -646,13 +643,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-12</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_12/01_query_processing_and_cost.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Processing and Cost</span></a>
@@ -670,7 +667,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Architecture, Scaling, and Big Data</span></a>
+  <a href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Architecture, Scaling, and Big Data</span></a>
   </div>
 </li>
       </ul>
@@ -706,30 +703,35 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#the-need-for-concurrency-control" id="toc-the-need-for-concurrency-control" class="nav-link active" data-scroll-target="#the-need-for-concurrency-control">The Need for Concurrency Control</a></li>
-  <li><a href="#lock-based-protocols" id="toc-lock-based-protocols" class="nav-link" data-scroll-target="#lock-based-protocols">Lock-Based Protocols</a>
+  <li><a href="#what-do-database-applications-need" id="toc-what-do-database-applications-need" class="nav-link active" data-scroll-target="#what-do-database-applications-need">What do Database Applications Need?</a></li>
+  <li><a href="#rdbms-architecture" id="toc-rdbms-architecture" class="nav-link" data-scroll-target="#rdbms-architecture">RDBMS Architecture</a>
   <ul class="collapse">
-  <li><a href="#the-lock-compatibility-matrix" id="toc-the-lock-compatibility-matrix" class="nav-link" data-scroll-target="#the-lock-compatibility-matrix">The Lock-Compatibility Matrix</a></li>
+  <li><a href="#centralized-systems" id="toc-centralized-systems" class="nav-link" data-scroll-target="#centralized-systems">1. Centralized Systems</a></li>
+  <li><a href="#client-server-systems" id="toc-client-server-systems" class="nav-link" data-scroll-target="#client-server-systems">2. Client-Server Systems</a></li>
+  <li><a href="#parallel-systems" id="toc-parallel-systems" class="nav-link" data-scroll-target="#parallel-systems">3. Parallel Systems</a></li>
+  <li><a href="#distributed-systems" id="toc-distributed-systems" class="nav-link" data-scroll-target="#distributed-systems">4. Distributed Systems</a></li>
   </ul></li>
-  <li><a href="#the-two-phase-locking-protocol-2pl" id="toc-the-two-phase-locking-protocol-2pl" class="nav-link" data-scroll-target="#the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</a>
+  <li><a href="#scaling-databases-horizontal-vs.-vertical" id="toc-scaling-databases-horizontal-vs.-vertical" class="nav-link" data-scroll-target="#scaling-databases-horizontal-vs.-vertical">Scaling Databases: Horizontal vs.&nbsp;Vertical</a>
   <ul class="collapse">
-  <li><a href="#lock-conversions" id="toc-lock-conversions" class="nav-link" data-scroll-target="#lock-conversions">Lock Conversions</a></li>
+  <li><a href="#vertical-scaling-scaling-up" id="toc-vertical-scaling-scaling-up" class="nav-link" data-scroll-target="#vertical-scaling-scaling-up">Vertical Scaling (Scaling Up)</a></li>
+  <li><a href="#horizontal-scaling-scaling-out" id="toc-horizontal-scaling-scaling-out" class="nav-link" data-scroll-target="#horizontal-scaling-scaling-out">Horizontal Scaling (Scaling Out)</a></li>
   </ul></li>
-  <li><a href="#stricter-variants-of-2pl" id="toc-stricter-variants-of-2pl" class="nav-link" data-scroll-target="#stricter-variants-of-2pl">Stricter Variants of 2PL</a>
+  <li><a href="#the-rise-of-big-data" id="toc-the-rise-of-big-data" class="nav-link" data-scroll-target="#the-rise-of-big-data">The Rise of Big Data</a></li>
+  <li><a href="#the-cap-theorem" id="toc-the-cap-theorem" class="nav-link" data-scroll-target="#the-cap-theorem">The CAP Theorem</a></li>
+  <li><a href="#enter-nosql" id="toc-enter-nosql" class="nav-link" data-scroll-target="#enter-nosql">Enter NoSQL</a>
   <ul class="collapse">
-  <li><a href="#strict-two-phase-locking" id="toc-strict-two-phase-locking" class="nav-link" data-scroll-target="#strict-two-phase-locking">Strict Two-Phase Locking</a></li>
-  <li><a href="#rigorous-two-phase-locking" id="toc-rigorous-two-phase-locking" class="nav-link" data-scroll-target="#rigorous-two-phase-locking">Rigorous Two-Phase Locking</a></li>
+  <li><a href="#types-of-nosql-databases" id="toc-types-of-nosql-databases" class="nav-link" data-scroll-target="#types-of-nosql-databases">Types of NoSQL Databases</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/04_rdbms_architecture_scaling_and_nosql.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html"><span class="chapter-title">Architecture, Scaling, and Big Data</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Concurrency and Locking</span></h1>
+<h1 class="title"><span class="chapter-title">Architecture, Scaling, and Big Data</span></h1>
 </div>
 
 
@@ -746,118 +748,131 @@ window.Quarto = {
 </header>
 
 
-<section id="the-need-for-concurrency-control" class="level2">
-<h2 class="anchored" data-anchor-id="the-need-for-concurrency-control">The Need for Concurrency Control</h2>
-<p>We know that a schedule must be both <strong>conflict serializable</strong> and <strong>recoverable</strong> (preferably cascadeless). However, allowing transactions to just run wildly and hoping the schedule turns out serializable is a terrible strategy.</p>
-<p>The database needs a <strong>Concurrency Control</strong> mechanism to enforce these rules dynamically as transactions arrive.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="concurrent_schedule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"><img src="concurrent_schedule.png" class="img-fluid figure-img" style="width:80.0%" alt="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"></a></p>
-<figcaption>A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!</figcaption>
-</figure>
-</div>
-<p>There is always a trade-off: The more strict the concurrency control scheme, the safer the data is, but the slower the database runs (because transactions have to wait in line).</p>
-<hr>
-</section>
-<section id="lock-based-protocols" class="level2">
-<h2 class="anchored" data-anchor-id="lock-based-protocols">Lock-Based Protocols</h2>
-<p>The most common way to control concurrency is by using <strong>Locks</strong>. Think of a lock like a bathroom key. If someone has the key, nobody else can enter until they give it back.</p>
-<p>Data items can be locked in two modes:</p>
+<section id="what-do-database-applications-need" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-database-applications-need">What do Database Applications Need?</h2>
+<p>When building data-intensive applications, you need a database that performs well under pressure. Performance is judged by three main metrics:</p>
 <ol type="1">
-<li><p><strong>Exclusive (X) mode:</strong> The data item can be both read AND written.</p></li>
-<li><p><strong>Shared (S) mode:</strong> The data item can ONLY be read.</p></li>
+<li><strong>Throughput:</strong> Transactions per second (tps). Think of this as the number of cars passing through a toll booth every minute.</li>
+<li><strong>Response Time:</strong> The delay from submitting a query to getting the result. Think of this as how long one specific car waits in line.</li>
+<li><strong>Availability:</strong> Mean time to failure. How often is the toll booth open and working without breaking down?</li>
 </ol>
-<section id="the-lock-compatibility-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="the-lock-compatibility-matrix">The Lock-Compatibility Matrix</h3>
-<p>Before a transaction can lock an item, it must request it from the lock manager. The lock manager checks the compatibility matrix:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">State of the lock</th>
-<th style="text-align: center;">Request: Shared</th>
-<th style="text-align: center;">Request: Exclusive</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Shared</strong></td>
-<td style="text-align: center;">Yes</td>
-<td style="text-align: center;">No</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>Exclusive</strong></td>
-<td style="text-align: center;">No</td>
-<td style="text-align: center;">No</td>
-</tr>
-</tbody>
-</table>
+<hr>
+</section>
+<section id="rdbms-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="rdbms-architecture">RDBMS Architecture</h2>
+<p>Historically, relational databases (RDBMS) have been built using different architectures depending on the scale of the organization.</p>
+<section id="centralized-systems" class="level3">
+<h3 class="anchored" data-anchor-id="centralized-systems">1. Centralized Systems</h3>
+<p>Run on a single machine (like a desktop or a single server) and do not interact with other computers.</p>
 <ul>
-<li><strong>Sharing is caring:</strong> Any number of transactions can hold Shared locks on the same item at the same time (since reading doesn’t change the data).</li>
-<li><strong>Exclusivity:</strong> If <em>any</em> transaction holds an Exclusive lock, no other transaction can hold <em>any</em> lock on that item. They must wait.</li>
+<li><strong>Analogy:</strong> Keeping all your company’s files in a single filing cabinet in one office.</li>
 </ul>
-<p><em>A transaction must hold a lock on a data item for as long as it is actively accessing it. Once it’s done, it releases it using the <code>unlock(Q)</code> instruction.</em></p>
+</section>
+<section id="client-server-systems" class="level3">
+<h3 class="anchored" data-anchor-id="client-server-systems">2. Client-Server Systems</h3>
+<p>The work is divided. Client machines handle the front-end (user interface, forms), while a powerful Server machine handles the back-end (query evaluation, transaction management, data storage).</p>
+<ul>
+<li><strong>Analogy:</strong> A restaurant. The waiters (Clients) take the orders from the customers and pass them to the kitchen (Server), which does the heavy lifting of cooking the food.</li>
+</ul>
+</section>
+<section id="parallel-systems" class="level3">
+<h3 class="anchored" data-anchor-id="parallel-systems">3. Parallel Systems</h3>
+<p>Uses multiple processors and disks connected by a fast internal network. It aims for two things:</p>
+<ul>
+<li><strong>Speedup:</strong> Making a single big task run faster.</li>
+<li><strong>Scaleup:</strong> Handling a larger workload without slowing down.</li>
+</ul>
+</section>
+<section id="distributed-systems" class="level3">
+<h3 class="anchored" data-anchor-id="distributed-systems">4. Distributed Systems</h3>
+<p>Data is spread across multiple separate machines (nodes) connected via a network (like the internet).</p>
+<ul>
+<li><strong>Advantages:</strong> Data can be shared globally, and if one node fails, others can keep the system running (high availability).</li>
+</ul>
 <hr>
 </section>
 </section>
-<section id="the-two-phase-locking-protocol-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</h2>
-<p>Just having locks isn’t enough to guarantee serializability. If a transaction locks an item, modifies it, unlocks it, and <em>then</em> locks another item, we can still run into consistency issues.</p>
-<p>To solve this, databases use the <strong>Two-Phase Locking (2PL)</strong> protocol. Under 2PL, every transaction goes through two distinct phases:</p>
+<section id="scaling-databases-horizontal-vs.-vertical" class="level2">
+<h2 class="anchored" data-anchor-id="scaling-databases-horizontal-vs.-vertical">Scaling Databases: Horizontal vs.&nbsp;Vertical</h2>
+<p>When your application gets popular (like a viral social media app), your single database server will eventually hit its limit. You have two choices for scaling:</p>
+<section id="vertical-scaling-scaling-up" class="level3">
+<h3 class="anchored" data-anchor-id="vertical-scaling-scaling-up">Vertical Scaling (Scaling Up)</h3>
+<p>This means adding more resources (CPU, RAM, faster disks) to your <em>existing</em> single machine.</p>
+<ul>
+<li><strong>Analogy:</strong> You need to transport more boxes. Vertical scaling is taking your pickup truck to the mechanic and upgrading it into a massive 18-wheeler semi-truck.</li>
+<li><strong>Pros:</strong> Cost-effective at first, less complex, no need to change your software.</li>
+<li><strong>Cons:</strong> There is a physical limit to how big one machine can get. Eventually, you can’t buy a bigger truck.</li>
+</ul>
+</section>
+<section id="horizontal-scaling-scaling-out" class="level3">
+<h3 class="anchored" data-anchor-id="horizontal-scaling-scaling-out">Horizontal Scaling (Scaling Out)</h3>
+<p>This means adding <em>additional</em> machines (nodes) to your infrastructure to share the load.</p>
+<ul>
+<li><strong>Analogy:</strong> You need to transport more boxes. Horizontal scaling is buying a fleet of 10 normal pickup trucks instead of one massive semi-truck.</li>
+<li><strong>Pros:</strong> Virtually infinite scaling, increased resilience (if one truck breaks down, you have 9 others).</li>
+<li><strong>Cons:</strong> Much more complex. You now have to coordinate a whole fleet instead of driving just one vehicle.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="the-rise-of-big-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-rise-of-big-data">The Rise of Big Data</h2>
+<p>Relational databases are fantastic, but the explosion of web applications, social media, and IoT devices generated a “perfect storm” of data that traditional RDBMS systems struggled to handle.</p>
+<p>This is the era of <strong>Big Data</strong>, characterized by the <strong>5 V’s</strong>:</p>
 <ol type="1">
-<li><strong>Growing Phase:</strong>
-<ul>
-<li>A transaction may obtain new locks.</li>
-<li>It may <strong>not</strong> release any locks.</li>
-</ul></li>
-<li><strong>Shrinking Phase:</strong>
-<ul>
-<li>A transaction may release locks.</li>
-<li>It may <strong>not</strong> obtain any new locks.</li>
-</ul></li>
+<li><strong>Volume:</strong> Massive quantities of data (Terabytes to Exabytes).</li>
+<li><strong>Velocity:</strong> Data generated at lightning speed, often requiring real-time processing.</li>
+<li><strong>Variety:</strong> Data isn’t just neat tables anymore. It’s unstructured text, images, videos, and sensor logs.</li>
+<li><strong>Variability:</strong> Inconsistent data flows.</li>
+<li><strong>Veracity:</strong> Varying data quality and accuracy.</li>
 </ol>
-<p>Once a transaction releases its very first lock, it has entered the Shrinking Phase and can never request another lock again.</p>
-<section id="lock-conversions" class="level3">
-<h3 class="anchored" data-anchor-id="lock-conversions">Lock Conversions</h3>
-<p>During these phases, 2PL allows locks to be converted:</p>
-<ul>
-<li><p><strong>Growing Phase:</strong> You can upgrade a Shared lock to an Exclusive lock.</p></li>
-<li><p><strong>Shrinking Phase:</strong> You can downgrade an Exclusive lock to a Shared lock.</p></li>
-</ul>
 <hr>
 </section>
-</section>
-<section id="stricter-variants-of-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="stricter-variants-of-2pl">Stricter Variants of 2PL</h2>
-<p>Standard 2PL guarantees serializability, but it does NOT guarantee cascadeless schedules. If a transaction fails during its Shrinking Phase after releasing some locks, other transactions might have already read its dirty data!</p>
-<p>To prevent cascading rollbacks, databases use stricter versions of 2PL:</p>
-<section id="strict-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="strict-two-phase-locking">Strict Two-Phase Locking</h3>
+<section id="the-cap-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="the-cap-theorem">The CAP Theorem</h2>
+<p>When you use Horizontal Scaling to build a distributed database system across multiple nodes, you run into the <strong>CAP Theorem</strong>.</p>
+<p>The theorem states that a distributed system can only guarantee <strong>two out of the following three</strong> properties at any given time:</p>
+<ol type="1">
+<li><strong>Consistency (C):</strong> All clients see the exact same data at the same time, no matter which node they connect to.</li>
+<li><strong>Availability (A):</strong> The system always accepts reads and writes, even if some nodes fail.</li>
+<li><strong>Partition Tolerance (P):</strong> The system continues to operate even if a network failure cuts off communication between some nodes.</li>
+</ol>
+<p><strong>The ATM Analogy:</strong> Imagine two ATMs (nodes) connected to a central bank. Suddenly, the network cable is cut (a <strong>Partition</strong>).</p>
 <ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold all of its <strong>Exclusive</strong> locks until it fully commits or aborts.</li>
-<li><em>Why?</em> This guarantees that no other transaction can read its uncommitted changes.</li>
+<li>Do you let a user withdraw money anyway, risking that they might withdraw the same funds at the other ATM? (Choosing <strong>Availability</strong> over Consistency).</li>
+<li>Or do you freeze the ATMs and show an “Out of Service” error until the network is fixed, ensuring no accounts are overdrawn? (Choosing <strong>Consistency</strong> over Availability).</li>
 </ul>
+<p>In the world of Big Data, network partitions are inevitable. Therefore, modern systems usually have to choose between <strong>Consistency</strong> and <strong>Availability</strong>.</p>
+<hr>
 </section>
-<section id="rigorous-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="rigorous-two-phase-locking">Rigorous Two-Phase Locking</h3>
+<section id="enter-nosql" class="level2">
+<h2 class="anchored" data-anchor-id="enter-nosql">Enter NoSQL</h2>
+<p>Because RDBMS systems rigidly enforce Consistency (ACID properties), they struggle to scale horizontally for massive, high-velocity web apps.</p>
+<p>This led to <strong>NoSQL (Not Only SQL)</strong> databases. They drop strict relational rules in favor of massive scalability, often choosing Availability over strong Consistency (relying instead on <em>Eventual Consistency</em>).</p>
+<section id="types-of-nosql-databases" class="level3">
+<h3 class="anchored" data-anchor-id="types-of-nosql-databases">Types of NoSQL Databases</h3>
+<ol type="1">
+<li><strong>Key-Value Stores (e.g., DynamoDB, Redis)</strong>
 <ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold <strong>ALL</strong> of its locks (both Shared and Exclusive) until it commits or aborts.</li>
-<li><em>Why?</em> It is even safer and easier to implement, and transactions can be serialized in the exact order they commit.</li>
-</ul>
-<div class="callout callout-style-default callout-warning callout-titled" title="The Trade-off">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>The Trade-off
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As we move from standard 2PL <span class="math inline">\(\rightarrow\)</span> Strict 2PL <span class="math inline">\(\rightarrow\)</span> Rigorous 2PL, the system becomes safer and simpler. However, <strong>Concurrency goes down</strong>. Because locks are held longer, other transactions are forced to wait longer, slowing down the overall system performance.</p>
-</div>
-</div>
+<li>Acts like a massive dictionary. You look up a “Key” and get a “Value”. Extremely fast for simple data.</li>
+<li><em>Example:</em> Storing user session data or shopping cart contents.</li>
+</ul></li>
+<li><strong>Document Stores (e.g., MongoDB, CouchDB)</strong>
+<ul>
+<li>Stores data in flexible, JSON-like documents. Great for hierarchical or deeply nested data.</li>
+<li><em>Example:</em> Content management systems, personalization engines.</li>
+</ul></li>
+<li><strong>Column-Oriented Stores (e.g., Cassandra, HBase)</strong>
+<ul>
+<li>Stores data in columns rather than rows. Excellent for searching and aggregating massive datasets.</li>
+<li><em>Example:</em> Logging user clicks on a massive e-commerce website.</li>
+</ul></li>
+<li><strong>Graph Databases (e.g., Neo4j)</strong>
+<ul>
+<li>Designed to store and navigate relationships (nodes and edges) rather than tables.</li>
+<li><em>Example:</em> Social networks. Finding “Friends of friends who like Pizza” is instantly resolved by walking the graph, whereas an RDBMS would require painfully slow, complex table joins.</li>
+</ul></li>
+</ol>
 
 
 
@@ -1358,13 +1373,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="pagination-link" aria-label="Schedules and Serializability">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Schedules and Serializability</span></span>
+      <a href="../../weeks/week_12/03_query_optimization_and_equivalence.html" class="pagination-link" aria-label="Query Optimization and Equivalence">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Query Optimization and Equivalence</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="pagination-link" aria-label="Deadlocks and Timestamps">
-        <span class="nav-page-text"><span class="chapter-title">Deadlocks and Timestamps</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../sql_playground.html" class="pagination-link" aria-label="SQL Playground">
+        <span class="nav-page-text"><span class="chapter-title">SQL Playground</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1376,44 +1391,12 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/04_rdbms_architecture_scaling_and_nosql.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 

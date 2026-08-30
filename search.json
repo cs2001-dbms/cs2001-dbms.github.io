@@ -2089,6 +2089,215 @@
     ]
   },
   {
+    "objectID": "weeks/week_12/01_query_processing_and_cost.html",
+    "href": "weeks/week_12/01_query_processing_and_cost.html",
+    "title": "Query Processing and Cost",
+    "section": "",
+    "text": "Overview of Query Processing\nWhen you submit a query to a database, it doesn’t just execute it directly. It goes through a series of logical steps to ensure the query is valid and to find the most efficient way to execute it.\nThe process can be broken down into three main phases:",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>40</span>  <span class='chapter-title'>Query Processing and Cost</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/01_query_processing_and_cost.html#overview-of-query-processing",
+    "href": "weeks/week_12/01_query_processing_and_cost.html#overview-of-query-processing",
+    "title": "Query Processing and Cost",
+    "section": "",
+    "text": "The phases of query processing.\n\n\n\n\n1. Parser and Translator\n\nWhat it does: The database receives the raw SQL query. It checks the syntax to ensure it’s valid SQL, and verifies that the referenced tables and columns exist in the database schema.\nOutput: It translates the query into an internal format, typically a relational algebra expression.\n\n\n\n2. Optimization\n\nWhat it does: This is the most crucial step for performance. A single SQL query can often be executed in multiple ways (e.g., different join orders, using an index vs. scanning a table).\nThe Optimizer’s Job: It analyzes these different strategies (execution plans), estimates the cost of each using available database statistics, and selects the one with the lowest overall cost.\n\n\n\n3. Evaluation\n\nWhat it does: The query-execution engine takes the optimized query-evaluation plan and actually runs it against the data.\nOutput: It returns the final result set (the answers) to the user.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>40</span>  <span class='chapter-title'>Query Processing and Cost</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/01_query_processing_and_cost.html#measures-of-query-cost",
+    "href": "weeks/week_12/01_query_processing_and_cost.html#measures-of-query-cost",
+    "title": "Query Processing and Cost",
+    "section": "Measures of Query Cost",
+    "text": "Measures of Query Cost\nHow does the optimizer determine the “cost” of a query plan?\nThe true cost is generally measured as the total elapsed time required to answer the query. This involves several factors:\n\nDisk accesses (reading/writing data from/to storage)\nCPU time (processing the data)\nNetwork communication (if data is distributed)\n\nHowever, because fetching data from disk is typically the slowest operation by a huge margin, we simplify the cost measure to focus primarily on disk I/O.\nWe measure cost using two main metrics:\n\nNumber of block transfers (\\(b\\)): The number of data blocks that must be read from or written to the disk.\nNumber of seeks (\\(S\\)): The number of times the disk head must move to a new location to read a block.\n\n\nThe Cost Formula\nWe can estimate the time cost with this simple formula:\n\\[ \\text{Cost} = (b \\times t_T) + (S \\times t_S) \\]\nWhere:\n\n\\(b\\) = Total number of block transfers\n\\(t_T\\) = Time to transfer one block\n\\(S\\) = Total number of seeks\n\\(t_S\\) = Time for one seek",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>40</span>  <span class='chapter-title'>Query Processing and Cost</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html",
+    "href": "weeks/week_12/02_join_algorithms.html",
+    "title": "Join Algorithms",
+    "section": "",
+    "text": "Understanding Join Costs\nJoining tables is one of the most common and resource-intensive operations in a database. Therefore, optimizing how a join is executed is critical.\nLet’s look at three fundamental algorithms for performing joins and how their costs are calculated.\nTerminology: When joining two relations (tables), \\(r\\) and \\(s\\):",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html#understanding-join-costs",
+    "href": "weeks/week_12/02_join_algorithms.html#understanding-join-costs",
+    "title": "Join Algorithms",
+    "section": "",
+    "text": "\\(r\\) = The outer relation\n\\(s\\) = The inner relation\n\\(n_r\\) = Number of tuples (rows) in the outer relation \\(r\\)\n\\(b_r\\) = Number of blocks occupied by the outer relation \\(r\\)\n\\(n_s\\) = Number of tuples in the inner relation \\(s\\)\n\\(b_s\\) = Number of blocks occupied by the inner relation \\(s\\)",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html#nested-loop-join",
+    "href": "weeks/week_12/02_join_algorithms.html#nested-loop-join",
+    "title": "Join Algorithms",
+    "section": "1. Nested Loop Join",
+    "text": "1. Nested Loop Join\nThis is the simplest and most naive join algorithm. It uses two nested for loops.\nAnalogy: Imagine having two physical phone books. For every single person in Book A, you flip through the entire Book B page-by-page to find a matching name. Very tedious!\nHow it works: For every single tuple in the outer relation \\(r\\), it scans through every single tuple in the inner relation \\(s\\) to find a match.\nfor each tuple tr in r do\n    for each tuple ts in s do\n        if tr and ts match the join condition then\n            add (tr, ts) to the result\nCost:\n\nBlock Transfers: \\(n_r \\times b_s + b_r\\) (For each of the \\(n_r\\) tuples, it reads all \\(b_s\\) blocks of the inner relation, plus the initial \\(b_r\\) blocks of the outer relation).\nSeeks: \\(n_r + b_r\\)",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html#block-nested-loop-join",
+    "href": "weeks/week_12/02_join_algorithms.html#block-nested-loop-join",
+    "title": "Join Algorithms",
+    "section": "2. Block Nested Loop Join",
+    "text": "2. Block Nested Loop Join\nThis algorithm is a major improvement over the standard nested loop join. Instead of looping tuple-by-tuple, it processes the data block-by-block.\nAnalogy: Instead of looking up one person at a time, you tear out a whole page of names from Book A, memorize them, and then flip through Book B looking for matches for anyone on your memorized page.\nHow it works: For every block in the outer relation \\(r\\), it scans every block in the inner relation \\(s\\). It then joins the tuples within those loaded blocks in memory. This drastically reduces the number of times the inner table has to be read from disk.\nfor each block Br in r do\n    for each block Bs in s do\n        for each tuple tr in Br do\n            for each tuple ts in Bs do\n                if tr and ts match then\n                    add (tr, ts) to the result\nCost:\n\nBlock Transfers: \\(b_r \\times b_s + b_r\\) (For each of the \\(b_r\\) blocks, it reads all \\(b_s\\) blocks of the inner relation, plus the initial \\(b_r\\) blocks).\nSeeks: \\(2 \\times b_r\\)",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html#indexed-nested-loop-join",
+    "href": "weeks/week_12/02_join_algorithms.html#indexed-nested-loop-join",
+    "title": "Join Algorithms",
+    "section": "3. Indexed Nested-Loop Join",
+    "text": "3. Indexed Nested-Loop Join\nThis algorithm makes use of existing indexes to completely skip scanning the inner relation.\nAnalogy: Instead of flipping through Book B blindly, you use the alphabetized index at the back of Book B to jump exactly to the page containing the name you’re looking for from Book A.\nHow it works: If the inner relation \\(s\\) has an index on the join attribute, the database can use it. For each tuple \\(t_r\\) in the outer relation \\(r\\), it simply performs an index lookup on \\(s\\) to instantly find the matching tuples.\nCost:\n\nCost of the join: \\(b_r \\times (t_T + t_S) + n_r \\times c\\)\n\nWhere \\(c\\) is the cost of traversing the index and fetching all matching \\(s\\) tuples for one tuple in \\(r\\).\n\nBest Practice: If both relations have an index, the database optimizer will choose the relation with fewer tuples as the outer relation (\\(r\\)) to minimize the number of index lookups.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/02_join_algorithms.html#example-scenario",
+    "href": "weeks/week_12/02_join_algorithms.html#example-scenario",
+    "title": "Join Algorithms",
+    "section": "Example Scenario",
+    "text": "Example Scenario\nLet’s compare these algorithms with some numbers.\n\n\n\nRelation\nstudent (Outer)\ntakes (Inner)\n\n\n\n\nNumber of tuples (\\(n\\))\n5,000\n10,000\n\n\nNumber of blocks (\\(b\\))\n100\n400\n\n\n\n\nCost using Nested Loop Join\nUsing student as the outer relation (\\(r\\)):\n\nBlock Transfers: \\(5000 \\times 400 + 100 = 2,000,100\\)\nSeeks: \\(5000 + 100 = 5,100\\)\n\n\n\nCost using Block Nested Loop Join\nUsing student as the outer relation (\\(r\\)):\n\nBlock Transfers: \\(100 \\times 400 + 100 = 40,100\\)\nSeeks: \\(2 \\times 100 = 200\\)\n\n\n\nCost using Indexed Nested-Loop Join\nImagine takes has a B+-tree index on the attribute ID. The height of the tree is 4, plus one access to find the actual data, so \\(c \\approx 5\\) accesses per lookup. Using student as the outer relation (\\(r\\)):\n\nCost (in block transfers and seeks): \\(100 + (5000 \\times 5) = 25,100\\)\n\nConclusion:\n\nThe Block Nested Loop Join (40,100 transfers) is drastically more efficient than the basic nested loop (2 million transfers) because it reads data in chunks.\nThe Indexed Nested-Loop Join (25,100 accesses) is even faster because it completely avoids scanning the takes table, jumping directly to the correct records using the index!",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Join Algorithms</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/03_query_optimization_and_equivalence.html",
+    "href": "weeks/week_12/03_query_optimization_and_equivalence.html",
+    "title": "Query Optimization and Equivalence",
+    "section": "",
+    "text": "Query Optimization Example\nA single query can be executed in multiple ways depending on the order of operations. The database optimizer analyzes these options to choose the most efficient path.\nConsider a database with these schemas:\nGoal: Select the course instructor name and title who belongs to the department ‘Music’.\nHere are two possible evaluation plans for the exact same query:\nThe optimizer will calculate the cost of both plans and choose the one that executes faster (typically the one that reduces the dataset size earlier by performing the Selection operation before the Join).",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>42</span>  <span class='chapter-title'>Query Optimization and Equivalence</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/03_query_optimization_and_equivalence.html#query-optimization-example",
+    "href": "weeks/week_12/03_query_optimization_and_equivalence.html#query-optimization-example",
+    "title": "Query Optimization and Equivalence",
+    "section": "",
+    "text": "course (course_id, title, dept_name, credits)\ninstructor (ID, name, dept_name, salary)\nteaches (ID, course_id, sec_id, semester, year)\n\n\n\n\n\n\nDifferent query evaluation plans for the same query.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>42</span>  <span class='chapter-title'>Query Optimization and Equivalence</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/03_query_optimization_and_equivalence.html#equivalence-rules",
+    "href": "weeks/week_12/03_query_optimization_and_equivalence.html#equivalence-rules",
+    "title": "Query Optimization and Equivalence",
+    "section": "Equivalence Rules",
+    "text": "Equivalence Rules\nHow does the database optimizer know that two different execution plans will return the exact same result? It relies on Equivalence Rules.\nThese mathematical rules state that certain relational algebra expressions can be transformed into other expressions without changing the final output. The optimizer applies these rules to rewrite the query into a more efficient form.\n\n1. Selection Rules\n\nConjunctive selections can be split: A selection with multiple conditions connected by AND (\\(\\land\\)) can be broken down into a sequence of individual selections. \\[ \\sigma_{\\theta_1 \\land \\theta_2}(E) = \\sigma_{\\theta_1}(\\sigma_{\\theta_2}(E)) \\]\nSelections are commutative: The order in which you apply filters doesn’t matter. \\[ \\sigma_{\\theta_1}(\\sigma_{\\theta_2}(E)) = \\sigma_{\\theta_2}(\\sigma_{\\theta_1}(E)) \\]\n\n\n\n2. Projection Rules\n\nOnly the final projection matters: In a sequence of projection operations, only the last one is necessary; the others can be safely omitted. \\[ \\Pi_{L_1}(\\Pi_{L_2}(...\\Pi_{L_n}(E)))) = \\Pi_{L_1}(E) \\]\n\n\n\n3. Join Rules\n\nTheta-joins are commutative: Joining Table A to Table B gives the same result as joining Table B to Table A. \\[ E_1 \\bowtie_\\theta E_2 = E_2 \\bowtie_\\theta E_1 \\]\nNatural joins are associative: When joining three tables, it doesn’t matter which two you join first. \\[ (E_1 \\bowtie E_2) \\bowtie E_3 = E_1 \\bowtie (E_2 \\bowtie E_3) \\]\nSelections can be combined with Cartesian products to form a join: \\[ \\sigma_{\\theta}(E1 \\times E2) = E_1 \\bowtie_\\theta E_2 \\]\nSelections can be absorbed into a join condition: \\[ \\sigma_{\\theta_1}(E_1 \\bowtie_{\\theta_2} E_2) = E_1 \\bowtie_{\\theta_1 \\land \\theta_2 } E_2 \\]\n\n\n\n4. Set Operation Rules\n\nAssociative:\n\nUnion: \\((E_1 \\cup E_2) \\cup E_3 = E_1 \\cup (E_2 \\cup E_3)\\)\nIntersection: \\((E_1 \\cap E_2) \\cap E_3 = E_1 \\cap (E_2 \\cap E_3)\\)\n\nCommutative:\n\nUnion: \\(E_1 \\cup E_2 = E_2 \\cup E_1\\)\nIntersection: \\(E_1 \\cap E_2 = E_2 \\cap E_1\\)\n(Note: Set difference is NOT commutative)\n\nProjection distributes over union: \\[ \\Pi_L(E_1 \\cup E_2) = (\\Pi_L(E_1)) \\cup (\\Pi_L(E_2)) \\]",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>42</span>  <span class='chapter-title'>Query Optimization and Equivalence</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "",
+    "text": "What do Database Applications Need?\nWhen building data-intensive applications, you need a database that performs well under pressure. Performance is judged by three main metrics:",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#what-do-database-applications-need",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#what-do-database-applications-need",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "",
+    "text": "Throughput: Transactions per second (tps). Think of this as the number of cars passing through a toll booth every minute.\nResponse Time: The delay from submitting a query to getting the result. Think of this as how long one specific car waits in line.\nAvailability: Mean time to failure. How often is the toll booth open and working without breaking down?",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#rdbms-architecture",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#rdbms-architecture",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "RDBMS Architecture",
+    "text": "RDBMS Architecture\nHistorically, relational databases (RDBMS) have been built using different architectures depending on the scale of the organization.\n\n1. Centralized Systems\nRun on a single machine (like a desktop or a single server) and do not interact with other computers.\n\nAnalogy: Keeping all your company’s files in a single filing cabinet in one office.\n\n\n\n2. Client-Server Systems\nThe work is divided. Client machines handle the front-end (user interface, forms), while a powerful Server machine handles the back-end (query evaluation, transaction management, data storage).\n\nAnalogy: A restaurant. The waiters (Clients) take the orders from the customers and pass them to the kitchen (Server), which does the heavy lifting of cooking the food.\n\n\n\n3. Parallel Systems\nUses multiple processors and disks connected by a fast internal network. It aims for two things:\n\nSpeedup: Making a single big task run faster.\nScaleup: Handling a larger workload without slowing down.\n\n\n\n4. Distributed Systems\nData is spread across multiple separate machines (nodes) connected via a network (like the internet).\n\nAdvantages: Data can be shared globally, and if one node fails, others can keep the system running (high availability).",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#scaling-databases-horizontal-vs.-vertical",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#scaling-databases-horizontal-vs.-vertical",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "Scaling Databases: Horizontal vs. Vertical",
+    "text": "Scaling Databases: Horizontal vs. Vertical\nWhen your application gets popular (like a viral social media app), your single database server will eventually hit its limit. You have two choices for scaling:\n\nVertical Scaling (Scaling Up)\nThis means adding more resources (CPU, RAM, faster disks) to your existing single machine.\n\nAnalogy: You need to transport more boxes. Vertical scaling is taking your pickup truck to the mechanic and upgrading it into a massive 18-wheeler semi-truck.\nPros: Cost-effective at first, less complex, no need to change your software.\nCons: There is a physical limit to how big one machine can get. Eventually, you can’t buy a bigger truck.\n\n\n\nHorizontal Scaling (Scaling Out)\nThis means adding additional machines (nodes) to your infrastructure to share the load.\n\nAnalogy: You need to transport more boxes. Horizontal scaling is buying a fleet of 10 normal pickup trucks instead of one massive semi-truck.\nPros: Virtually infinite scaling, increased resilience (if one truck breaks down, you have 9 others).\nCons: Much more complex. You now have to coordinate a whole fleet instead of driving just one vehicle.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#the-rise-of-big-data",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#the-rise-of-big-data",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "The Rise of Big Data",
+    "text": "The Rise of Big Data\nRelational databases are fantastic, but the explosion of web applications, social media, and IoT devices generated a “perfect storm” of data that traditional RDBMS systems struggled to handle.\nThis is the era of Big Data, characterized by the 5 V’s:\n\nVolume: Massive quantities of data (Terabytes to Exabytes).\nVelocity: Data generated at lightning speed, often requiring real-time processing.\nVariety: Data isn’t just neat tables anymore. It’s unstructured text, images, videos, and sensor logs.\nVariability: Inconsistent data flows.\nVeracity: Varying data quality and accuracy.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#the-cap-theorem",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#the-cap-theorem",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "The CAP Theorem",
+    "text": "The CAP Theorem\nWhen you use Horizontal Scaling to build a distributed database system across multiple nodes, you run into the CAP Theorem.\nThe theorem states that a distributed system can only guarantee two out of the following three properties at any given time:\n\nConsistency (C): All clients see the exact same data at the same time, no matter which node they connect to.\nAvailability (A): The system always accepts reads and writes, even if some nodes fail.\nPartition Tolerance (P): The system continues to operate even if a network failure cuts off communication between some nodes.\n\nThe ATM Analogy: Imagine two ATMs (nodes) connected to a central bank. Suddenly, the network cable is cut (a Partition).\n\nDo you let a user withdraw money anyway, risking that they might withdraw the same funds at the other ATM? (Choosing Availability over Consistency).\nOr do you freeze the ATMs and show an “Out of Service” error until the network is fixed, ensuring no accounts are overdrawn? (Choosing Consistency over Availability).\n\nIn the world of Big Data, network partitions are inevitable. Therefore, modern systems usually have to choose between Consistency and Availability.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
+    "objectID": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#enter-nosql",
+    "href": "weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html#enter-nosql",
+    "title": "Architecture, Scaling, and Big Data",
+    "section": "Enter NoSQL",
+    "text": "Enter NoSQL\nBecause RDBMS systems rigidly enforce Consistency (ACID properties), they struggle to scale horizontally for massive, high-velocity web apps.\nThis led to NoSQL (Not Only SQL) databases. They drop strict relational rules in favor of massive scalability, often choosing Availability over strong Consistency (relying instead on Eventual Consistency).\n\nTypes of NoSQL Databases\n\nKey-Value Stores (e.g., DynamoDB, Redis)\n\nActs like a massive dictionary. You look up a “Key” and get a “Value”. Extremely fast for simple data.\nExample: Storing user session data or shopping cart contents.\n\nDocument Stores (e.g., MongoDB, CouchDB)\n\nStores data in flexible, JSON-like documents. Great for hierarchical or deeply nested data.\nExample: Content management systems, personalization engines.\n\nColumn-Oriented Stores (e.g., Cassandra, HBase)\n\nStores data in columns rather than rows. Excellent for searching and aggregating massive datasets.\nExample: Logging user clicks on a massive e-commerce website.\n\nGraph Databases (e.g., Neo4j)\n\nDesigned to store and navigate relationships (nodes and edges) rather than tables.\nExample: Social networks. Finding “Friends of friends who like Pizza” is instantly resolved by walking the graph, whereas an RDBMS would require painfully slow, complex table joins.",
+    "crumbs": [
+      "**Week-12**",
+      "<span class='chapter-number'>43</span>  <span class='chapter-title'>Architecture, Scaling, and Big Data</span>"
+    ]
+  },
+  {
     "objectID": "sql_playground.html",
     "href": "sql_playground.html",
     "title": "SQL Playground",
@@ -2096,7 +2305,7 @@
     "text": "FLIS Database (Read-Only)\n      LIS Database (Read-Only)\n      eShop Database (Read-Only)\n      University Database (Read-Only)\n      My Workspace (Persistent)\n    \n    \n      \n      Run Query\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          \n          Schema",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>40</span>  <span class='chapter-title'>SQL Playground</span>"
+      "<span class='chapter-number'>44</span>  <span class='chapter-title'>SQL Playground</span>"
     ]
   },
   {
@@ -2107,7 +2316,7 @@
     "text": "Run Python\n    \n    \n      \n      Reset\n    \n    \n      \n        \n          Chrome\n          Clouds\n          Crimson Editor\n          Dawn\n          Dreamweaver\n          Eclipse\n          GitHub\n          IPlastic\n          Solarized Light\n          TextMate\n          Tomorrow\n          XCode\n          Kuroir\n          KatzenMilch\n          SQL Server\n          CloudEditor\n        \n        \n          Ambiance\n          Chaos\n          CloudEditor Dark\n          Clouds Midnight\n          Cobalt\n          Dracula\n          GitHub Dark\n          Green on Black\n          Gruvbox\n          idle Fingers\n          krTheme\n          Merbivore\n          Merbivore Soft\n          Mono Industrial\n          Monokai\n          Nord Dark\n          One Dark\n          Pastel on dark\n          Solarized Dark\n          Terminal\n          Tomorrow Night\n          Tomorrow Night Blue\n          Tomorrow Night Bright\n          Tomorrow Night 80s\n          Twilight\n          Vibrant Ink\n        \n      \n      \n        A-\n        16px\n        A+\n      \n    \n    Ctrl+/ comment   Ctrl+Enter run\n  \n\n  \n    \n      \n        \n      \n      \n      \n        \n           Running...\n          \n          \n        \n      \n    \n\n    \n      \n        \n          FLIS (flis)\n          LIS (lis)\n          eShop (eshop)\n          University (university)\n          My Workspace (test_db)",
     "crumbs": [
       "**Playground**",
-      "<span class='chapter-number'>41</span>  <span class='chapter-title'>Python-DB Playground</span>"
+      "<span class='chapter-number'>45</span>  <span class='chapter-title'>Python-DB Playground</span>"
     ]
   }
 ]

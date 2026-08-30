@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Concurrency and Locking – Database Management Systems</title>
+<title>Join Algorithms – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,8 +71,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_10/04_deadlocks_and_timestamps.html" rel="next">
-<link href="../../weeks/week_10/02_schedules_and_serializability.html" rel="prev">
+<link href="../../weeks/week_12/03_query_optimization_and_equivalence.html" rel="next">
+<link href="../../weeks/week_12/01_query_processing_and_cost.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -53,9 +88,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/bootstrap/bootstrap-dark-e31b99508829a032df41942741e02fdd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="../../site_libs/bootstrap/bootstrap-afa7e9b41ee7df5a188873ac7b6fd94d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -289,7 +321,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/02_join_algorithms.html"><span class="chapter-title">Join Algorithms</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -584,13 +616,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
@@ -603,7 +635,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Concurrency and Locking</span></a>
+  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Concurrency and Locking</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -646,13 +678,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-12</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_12/01_query_processing_and_cost.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Processing and Cost</span></a>
@@ -660,7 +692,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_12/02_join_algorithms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Join Algorithms</span></a>
+  <a href="../../weeks/week_12/02_join_algorithms.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Join Algorithms</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -706,30 +738,26 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#the-need-for-concurrency-control" id="toc-the-need-for-concurrency-control" class="nav-link active" data-scroll-target="#the-need-for-concurrency-control">The Need for Concurrency Control</a></li>
-  <li><a href="#lock-based-protocols" id="toc-lock-based-protocols" class="nav-link" data-scroll-target="#lock-based-protocols">Lock-Based Protocols</a>
+  <li><a href="#understanding-join-costs" id="toc-understanding-join-costs" class="nav-link active" data-scroll-target="#understanding-join-costs">Understanding Join Costs</a></li>
+  <li><a href="#nested-loop-join" id="toc-nested-loop-join" class="nav-link" data-scroll-target="#nested-loop-join">1. Nested Loop Join</a></li>
+  <li><a href="#block-nested-loop-join" id="toc-block-nested-loop-join" class="nav-link" data-scroll-target="#block-nested-loop-join">2. Block Nested Loop Join</a></li>
+  <li><a href="#indexed-nested-loop-join" id="toc-indexed-nested-loop-join" class="nav-link" data-scroll-target="#indexed-nested-loop-join">3. Indexed Nested-Loop Join</a></li>
+  <li><a href="#example-scenario" id="toc-example-scenario" class="nav-link" data-scroll-target="#example-scenario">Example Scenario</a>
   <ul class="collapse">
-  <li><a href="#the-lock-compatibility-matrix" id="toc-the-lock-compatibility-matrix" class="nav-link" data-scroll-target="#the-lock-compatibility-matrix">The Lock-Compatibility Matrix</a></li>
-  </ul></li>
-  <li><a href="#the-two-phase-locking-protocol-2pl" id="toc-the-two-phase-locking-protocol-2pl" class="nav-link" data-scroll-target="#the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</a>
-  <ul class="collapse">
-  <li><a href="#lock-conversions" id="toc-lock-conversions" class="nav-link" data-scroll-target="#lock-conversions">Lock Conversions</a></li>
-  </ul></li>
-  <li><a href="#stricter-variants-of-2pl" id="toc-stricter-variants-of-2pl" class="nav-link" data-scroll-target="#stricter-variants-of-2pl">Stricter Variants of 2PL</a>
-  <ul class="collapse">
-  <li><a href="#strict-two-phase-locking" id="toc-strict-two-phase-locking" class="nav-link" data-scroll-target="#strict-two-phase-locking">Strict Two-Phase Locking</a></li>
-  <li><a href="#rigorous-two-phase-locking" id="toc-rigorous-two-phase-locking" class="nav-link" data-scroll-target="#rigorous-two-phase-locking">Rigorous Two-Phase Locking</a></li>
+  <li><a href="#cost-using-nested-loop-join" id="toc-cost-using-nested-loop-join" class="nav-link" data-scroll-target="#cost-using-nested-loop-join">Cost using Nested Loop Join</a></li>
+  <li><a href="#cost-using-block-nested-loop-join" id="toc-cost-using-block-nested-loop-join" class="nav-link" data-scroll-target="#cost-using-block-nested-loop-join">Cost using Block Nested Loop Join</a></li>
+  <li><a href="#cost-using-indexed-nested-loop-join" id="toc-cost-using-indexed-nested-loop-join" class="nav-link" data-scroll-target="#cost-using-indexed-nested-loop-join">Cost using Indexed Nested-Loop Join</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/02_join_algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/02_join_algorithms.html"><span class="chapter-title">Join Algorithms</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Concurrency and Locking</span></h1>
+<h1 class="title"><span class="chapter-title">Join Algorithms</span></h1>
 </div>
 
 
@@ -746,118 +774,121 @@ window.Quarto = {
 </header>
 
 
-<section id="the-need-for-concurrency-control" class="level2">
-<h2 class="anchored" data-anchor-id="the-need-for-concurrency-control">The Need for Concurrency Control</h2>
-<p>We know that a schedule must be both <strong>conflict serializable</strong> and <strong>recoverable</strong> (preferably cascadeless). However, allowing transactions to just run wildly and hoping the schedule turns out serializable is a terrible strategy.</p>
-<p>The database needs a <strong>Concurrency Control</strong> mechanism to enforce these rules dynamically as transactions arrive.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="concurrent_schedule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"><img src="concurrent_schedule.png" class="img-fluid figure-img" style="width:80.0%" alt="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"></a></p>
-<figcaption>A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!</figcaption>
-</figure>
-</div>
-<p>There is always a trade-off: The more strict the concurrency control scheme, the safer the data is, but the slower the database runs (because transactions have to wait in line).</p>
+<section id="understanding-join-costs" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-join-costs">Understanding Join Costs</h2>
+<p>Joining tables is one of the most common and resource-intensive operations in a database. Therefore, optimizing how a join is executed is critical.</p>
+<p>Let’s look at three fundamental algorithms for performing joins and how their costs are calculated.</p>
+<p><strong>Terminology:</strong> When joining two relations (tables), <span class="math inline">\(r\)</span> and <span class="math inline">\(s\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(r\)</span> = The outer relation</p></li>
+<li><p><span class="math inline">\(s\)</span> = The inner relation</p></li>
+<li><p><span class="math inline">\(n_r\)</span> = Number of tuples (rows) in the outer relation <span class="math inline">\(r\)</span></p></li>
+<li><p><span class="math inline">\(b_r\)</span> = Number of blocks occupied by the outer relation <span class="math inline">\(r\)</span></p></li>
+<li><p><span class="math inline">\(n_s\)</span> = Number of tuples in the inner relation <span class="math inline">\(s\)</span></p></li>
+<li><p><span class="math inline">\(b_s\)</span> = Number of blocks occupied by the inner relation <span class="math inline">\(s\)</span></p></li>
+</ul>
 <hr>
 </section>
-<section id="lock-based-protocols" class="level2">
-<h2 class="anchored" data-anchor-id="lock-based-protocols">Lock-Based Protocols</h2>
-<p>The most common way to control concurrency is by using <strong>Locks</strong>. Think of a lock like a bathroom key. If someone has the key, nobody else can enter until they give it back.</p>
-<p>Data items can be locked in two modes:</p>
-<ol type="1">
-<li><p><strong>Exclusive (X) mode:</strong> The data item can be both read AND written.</p></li>
-<li><p><strong>Shared (S) mode:</strong> The data item can ONLY be read.</p></li>
-</ol>
-<section id="the-lock-compatibility-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="the-lock-compatibility-matrix">The Lock-Compatibility Matrix</h3>
-<p>Before a transaction can lock an item, it must request it from the lock manager. The lock manager checks the compatibility matrix:</p>
+<section id="nested-loop-join" class="level2">
+<h2 class="anchored" data-anchor-id="nested-loop-join">1. Nested Loop Join</h2>
+<p>This is the simplest and most naive join algorithm. It uses two nested <code>for</code> loops.</p>
+<p><strong>Analogy:</strong> Imagine having two physical phone books. For every single person in Book A, you flip through the entire Book B page-by-page to find a matching name. Very tedious!</p>
+<p><strong>How it works:</strong> For every single tuple in the outer relation <span class="math inline">\(r\)</span>, it scans through every single tuple in the inner relation <span class="math inline">\(s\)</span> to find a match.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>for each tuple tr in r do</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    for each tuple ts in s do</span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>        if tr and ts match the join condition then</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>            add (tr, ts) to the result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cost:</strong></p>
+<ul>
+<li><p><strong>Block Transfers:</strong> <span class="math inline">\(n_r \times b_s + b_r\)</span> (For each of the <span class="math inline">\(n_r\)</span> tuples, it reads all <span class="math inline">\(b_s\)</span> blocks of the inner relation, plus the initial <span class="math inline">\(b_r\)</span> blocks of the outer relation).</p></li>
+<li><p><strong>Seeks:</strong> <span class="math inline">\(n_r + b_r\)</span></p></li>
+</ul>
+<hr>
+</section>
+<section id="block-nested-loop-join" class="level2">
+<h2 class="anchored" data-anchor-id="block-nested-loop-join">2. Block Nested Loop Join</h2>
+<p>This algorithm is a major improvement over the standard nested loop join. Instead of looping tuple-by-tuple, it processes the data block-by-block.</p>
+<p><strong>Analogy:</strong> Instead of looking up one person at a time, you tear out a whole page of names from Book A, memorize them, and then flip through Book B looking for matches for <em>anyone</em> on your memorized page.</p>
+<p><strong>How it works:</strong> For every <em>block</em> in the outer relation <span class="math inline">\(r\)</span>, it scans every <em>block</em> in the inner relation <span class="math inline">\(s\)</span>. It then joins the tuples within those loaded blocks in memory. This drastically reduces the number of times the inner table has to be read from disk.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>for each block Br in r do</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a>    for each block Bs in s do</span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>        for each tuple tr in Br do</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>            for each tuple ts in Bs do</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>                if tr and ts match then</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a>                    add (tr, ts) to the result</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Cost:</strong></p>
+<ul>
+<li><p><strong>Block Transfers:</strong> <span class="math inline">\(b_r \times b_s + b_r\)</span> (For each of the <span class="math inline">\(b_r\)</span> blocks, it reads all <span class="math inline">\(b_s\)</span> blocks of the inner relation, plus the initial <span class="math inline">\(b_r\)</span> blocks).</p></li>
+<li><p><strong>Seeks:</strong> <span class="math inline">\(2 \times b_r\)</span></p></li>
+</ul>
+<hr>
+</section>
+<section id="indexed-nested-loop-join" class="level2">
+<h2 class="anchored" data-anchor-id="indexed-nested-loop-join">3. Indexed Nested-Loop Join</h2>
+<p>This algorithm makes use of existing indexes to completely skip scanning the inner relation.</p>
+<p><strong>Analogy:</strong> Instead of flipping through Book B blindly, you use the alphabetized index at the back of Book B to jump exactly to the page containing the name you’re looking for from Book A.</p>
+<p><strong>How it works:</strong> If the inner relation <span class="math inline">\(s\)</span> has an index on the join attribute, the database can use it. For each tuple <span class="math inline">\(t_r\)</span> in the outer relation <span class="math inline">\(r\)</span>, it simply performs an index lookup on <span class="math inline">\(s\)</span> to instantly find the matching tuples.</p>
+<p><strong>Cost:</strong></p>
+<ul>
+<li><strong>Cost of the join:</strong> <span class="math inline">\(b_r \times (t_T + t_S) + n_r \times c\)</span>
+<ul>
+<li>Where <span class="math inline">\(c\)</span> is the cost of traversing the index and fetching all matching <span class="math inline">\(s\)</span> tuples for one tuple in <span class="math inline">\(r\)</span>.</li>
+</ul></li>
+<li><strong>Best Practice:</strong> If both relations have an index, the database optimizer will choose the relation with <em>fewer tuples</em> as the outer relation (<span class="math inline">\(r\)</span>) to minimize the number of index lookups.</li>
+</ul>
+<hr>
+</section>
+<section id="example-scenario" class="level2">
+<h2 class="anchored" data-anchor-id="example-scenario">Example Scenario</h2>
+<p>Let’s compare these algorithms with some numbers.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th style="text-align: center;">State of the lock</th>
-<th style="text-align: center;">Request: Shared</th>
-<th style="text-align: center;">Request: Exclusive</th>
+<th style="text-align: left;">Relation</th>
+<th style="text-align: center;">student (Outer)</th>
+<th style="text-align: center;">takes (Inner)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><strong>Shared</strong></td>
-<td style="text-align: center;">Yes</td>
-<td style="text-align: center;">No</td>
+<td style="text-align: left;"><strong>Number of tuples (<span class="math inline">\(n\)</span>)</strong></td>
+<td style="text-align: center;">5,000</td>
+<td style="text-align: center;">10,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><strong>Exclusive</strong></td>
-<td style="text-align: center;">No</td>
-<td style="text-align: center;">No</td>
+<td style="text-align: left;"><strong>Number of blocks (<span class="math inline">\(b\)</span>)</strong></td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">400</td>
 </tr>
 </tbody>
 </table>
+<section id="cost-using-nested-loop-join" class="level3">
+<h3 class="anchored" data-anchor-id="cost-using-nested-loop-join">Cost using Nested Loop Join</h3>
+<p>Using <code>student</code> as the outer relation (<span class="math inline">\(r\)</span>):</p>
 <ul>
-<li><strong>Sharing is caring:</strong> Any number of transactions can hold Shared locks on the same item at the same time (since reading doesn’t change the data).</li>
-<li><strong>Exclusivity:</strong> If <em>any</em> transaction holds an Exclusive lock, no other transaction can hold <em>any</em> lock on that item. They must wait.</li>
-</ul>
-<p><em>A transaction must hold a lock on a data item for as long as it is actively accessing it. Once it’s done, it releases it using the <code>unlock(Q)</code> instruction.</em></p>
-<hr>
-</section>
-</section>
-<section id="the-two-phase-locking-protocol-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</h2>
-<p>Just having locks isn’t enough to guarantee serializability. If a transaction locks an item, modifies it, unlocks it, and <em>then</em> locks another item, we can still run into consistency issues.</p>
-<p>To solve this, databases use the <strong>Two-Phase Locking (2PL)</strong> protocol. Under 2PL, every transaction goes through two distinct phases:</p>
-<ol type="1">
-<li><strong>Growing Phase:</strong>
-<ul>
-<li>A transaction may obtain new locks.</li>
-<li>It may <strong>not</strong> release any locks.</li>
-</ul></li>
-<li><strong>Shrinking Phase:</strong>
-<ul>
-<li>A transaction may release locks.</li>
-<li>It may <strong>not</strong> obtain any new locks.</li>
-</ul></li>
-</ol>
-<p>Once a transaction releases its very first lock, it has entered the Shrinking Phase and can never request another lock again.</p>
-<section id="lock-conversions" class="level3">
-<h3 class="anchored" data-anchor-id="lock-conversions">Lock Conversions</h3>
-<p>During these phases, 2PL allows locks to be converted:</p>
-<ul>
-<li><p><strong>Growing Phase:</strong> You can upgrade a Shared lock to an Exclusive lock.</p></li>
-<li><p><strong>Shrinking Phase:</strong> You can downgrade an Exclusive lock to a Shared lock.</p></li>
-</ul>
-<hr>
-</section>
-</section>
-<section id="stricter-variants-of-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="stricter-variants-of-2pl">Stricter Variants of 2PL</h2>
-<p>Standard 2PL guarantees serializability, but it does NOT guarantee cascadeless schedules. If a transaction fails during its Shrinking Phase after releasing some locks, other transactions might have already read its dirty data!</p>
-<p>To prevent cascading rollbacks, databases use stricter versions of 2PL:</p>
-<section id="strict-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="strict-two-phase-locking">Strict Two-Phase Locking</h3>
-<ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold all of its <strong>Exclusive</strong> locks until it fully commits or aborts.</li>
-<li><em>Why?</em> This guarantees that no other transaction can read its uncommitted changes.</li>
+<li><p><strong>Block Transfers:</strong> <span class="math inline">\(5000 \times 400 + 100 = 2,000,100\)</span></p></li>
+<li><p><strong>Seeks:</strong> <span class="math inline">\(5000 + 100 = 5,100\)</span></p></li>
 </ul>
 </section>
-<section id="rigorous-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="rigorous-two-phase-locking">Rigorous Two-Phase Locking</h3>
+<section id="cost-using-block-nested-loop-join" class="level3">
+<h3 class="anchored" data-anchor-id="cost-using-block-nested-loop-join">Cost using Block Nested Loop Join</h3>
+<p>Using <code>student</code> as the outer relation (<span class="math inline">\(r\)</span>):</p>
 <ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold <strong>ALL</strong> of its locks (both Shared and Exclusive) until it commits or aborts.</li>
-<li><em>Why?</em> It is even safer and easier to implement, and transactions can be serialized in the exact order they commit.</li>
+<li><p><strong>Block Transfers:</strong> <span class="math inline">\(100 \times 400 + 100 = 40,100\)</span></p></li>
+<li><p><strong>Seeks:</strong> <span class="math inline">\(2 \times 100 = 200\)</span></p></li>
 </ul>
-<div class="callout callout-style-default callout-warning callout-titled" title="The Trade-off">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>The Trade-off
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As we move from standard 2PL <span class="math inline">\(\rightarrow\)</span> Strict 2PL <span class="math inline">\(\rightarrow\)</span> Rigorous 2PL, the system becomes safer and simpler. However, <strong>Concurrency goes down</strong>. Because locks are held longer, other transactions are forced to wait longer, slowing down the overall system performance.</p>
-</div>
-</div>
+</section>
+<section id="cost-using-indexed-nested-loop-join" class="level3">
+<h3 class="anchored" data-anchor-id="cost-using-indexed-nested-loop-join">Cost using Indexed Nested-Loop Join</h3>
+<p>Imagine <code>takes</code> has a B+-tree index on the attribute ID. The height of the tree is 4, plus one access to find the actual data, so <span class="math inline">\(c \approx 5\)</span> accesses per lookup. Using <code>student</code> as the outer relation (<span class="math inline">\(r\)</span>):</p>
+<ul>
+<li><strong>Cost (in block transfers and seeks):</strong> <span class="math inline">\(100 + (5000 \times 5) = 25,100\)</span></li>
+</ul>
+<p><strong>Conclusion:</strong></p>
+<ul>
+<li><p>The <strong>Block Nested Loop Join</strong> (40,100 transfers) is drastically more efficient than the basic nested loop (2 million transfers) because it reads data in chunks.</p></li>
+<li><p>The <strong>Indexed Nested-Loop Join</strong> (25,100 accesses) is even faster because it completely avoids scanning the <code>takes</code> table, jumping directly to the correct records using the index!</p></li>
+</ul>
 
 
 
@@ -1358,13 +1389,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="pagination-link" aria-label="Schedules and Serializability">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Schedules and Serializability</span></span>
+      <a href="../../weeks/week_12/01_query_processing_and_cost.html" class="pagination-link" aria-label="Query Processing and Cost">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Query Processing and Cost</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="pagination-link" aria-label="Deadlocks and Timestamps">
-        <span class="nav-page-text"><span class="chapter-title">Deadlocks and Timestamps</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_12/03_query_optimization_and_equivalence.html" class="pagination-link" aria-label="Query Optimization and Equivalence">
+        <span class="nav-page-text"><span class="chapter-title">Query Optimization and Equivalence</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1376,44 +1407,12 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/02_join_algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 

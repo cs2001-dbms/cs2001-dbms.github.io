@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Concurrency and Locking – Database Management Systems</title>
+<title>Query Optimization and Equivalence – Database Management Systems</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,8 +36,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../weeks/week_10/04_deadlocks_and_timestamps.html" rel="next">
-<link href="../../weeks/week_10/02_schedules_and_serializability.html" rel="prev">
+<link href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html" rel="next">
+<link href="../../weeks/week_12/02_join_algorithms.html" rel="prev">
 <link href="../../logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -289,7 +289,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/03_query_optimization_and_equivalence.html"><span class="chapter-title">Query Optimization and Equivalence</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -584,13 +584,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
  <span class="menu-text"><strong>Week-10</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
@@ -603,7 +603,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Concurrency and Locking</span></a>
+  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Concurrency and Locking</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -646,13 +646,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
  <span class="menu-text"><strong>Week-12</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_12/01_query_processing_and_cost.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Processing and Cost</span></a>
@@ -665,7 +665,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_12/03_query_optimization_and_equivalence.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Optimization and Equivalence</span></a>
+  <a href="../../weeks/week_12/03_query_optimization_and_equivalence.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Query Optimization and Equivalence</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -706,30 +706,24 @@ window.Quarto = {
     <h2 id="toc-title"><strong>On this page</strong></h2>
    
   <ul>
-  <li><a href="#the-need-for-concurrency-control" id="toc-the-need-for-concurrency-control" class="nav-link active" data-scroll-target="#the-need-for-concurrency-control">The Need for Concurrency Control</a></li>
-  <li><a href="#lock-based-protocols" id="toc-lock-based-protocols" class="nav-link" data-scroll-target="#lock-based-protocols">Lock-Based Protocols</a>
+  <li><a href="#query-optimization-example" id="toc-query-optimization-example" class="nav-link active" data-scroll-target="#query-optimization-example">Query Optimization Example</a></li>
+  <li><a href="#equivalence-rules" id="toc-equivalence-rules" class="nav-link" data-scroll-target="#equivalence-rules">Equivalence Rules</a>
   <ul class="collapse">
-  <li><a href="#the-lock-compatibility-matrix" id="toc-the-lock-compatibility-matrix" class="nav-link" data-scroll-target="#the-lock-compatibility-matrix">The Lock-Compatibility Matrix</a></li>
-  </ul></li>
-  <li><a href="#the-two-phase-locking-protocol-2pl" id="toc-the-two-phase-locking-protocol-2pl" class="nav-link" data-scroll-target="#the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</a>
-  <ul class="collapse">
-  <li><a href="#lock-conversions" id="toc-lock-conversions" class="nav-link" data-scroll-target="#lock-conversions">Lock Conversions</a></li>
-  </ul></li>
-  <li><a href="#stricter-variants-of-2pl" id="toc-stricter-variants-of-2pl" class="nav-link" data-scroll-target="#stricter-variants-of-2pl">Stricter Variants of 2PL</a>
-  <ul class="collapse">
-  <li><a href="#strict-two-phase-locking" id="toc-strict-two-phase-locking" class="nav-link" data-scroll-target="#strict-two-phase-locking">Strict Two-Phase Locking</a></li>
-  <li><a href="#rigorous-two-phase-locking" id="toc-rigorous-two-phase-locking" class="nav-link" data-scroll-target="#rigorous-two-phase-locking">Rigorous Two-Phase Locking</a></li>
+  <li><a href="#selection-rules" id="toc-selection-rules" class="nav-link" data-scroll-target="#selection-rules">1. Selection Rules</a></li>
+  <li><a href="#projection-rules" id="toc-projection-rules" class="nav-link" data-scroll-target="#projection-rules">2. Projection Rules</a></li>
+  <li><a href="#join-rules" id="toc-join-rules" class="nav-link" data-scroll-target="#join-rules">3. Join Rules</a></li>
+  <li><a href="#set-operation-rules" id="toc-set-operation-rules" class="nav-link" data-scroll-target="#set-operation-rules">4. Set Operation Rules</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/03_query_optimization_and_equivalence.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_10/01_transactions_and_acid.html"><strong>Week-10</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_10/03_concurrency_and_locking.html"><span class="chapter-title">Concurrency and Locking</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../weeks/week_12/01_query_processing_and_cost.html"><strong>Week-12</strong></a></li><li class="breadcrumb-item"><a href="../../weeks/week_12/03_query_optimization_and_equivalence.html"><span class="chapter-title">Query Optimization and Equivalence</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Concurrency and Locking</span></h1>
+<h1 class="title"><span class="chapter-title">Query Optimization and Equivalence</span></h1>
 </div>
 
 
@@ -746,118 +740,68 @@ window.Quarto = {
 </header>
 
 
-<section id="the-need-for-concurrency-control" class="level2">
-<h2 class="anchored" data-anchor-id="the-need-for-concurrency-control">The Need for Concurrency Control</h2>
-<p>We know that a schedule must be both <strong>conflict serializable</strong> and <strong>recoverable</strong> (preferably cascadeless). However, allowing transactions to just run wildly and hoping the schedule turns out serializable is a terrible strategy.</p>
-<p>The database needs a <strong>Concurrency Control</strong> mechanism to enforce these rules dynamically as transactions arrive.</p>
+<section id="query-optimization-example" class="level2">
+<h2 class="anchored" data-anchor-id="query-optimization-example">Query Optimization Example</h2>
+<p>A single query can be executed in multiple ways depending on the order of operations. The database optimizer analyzes these options to choose the most efficient path.</p>
+<p>Consider a database with these schemas:</p>
+<ul>
+<li><p><strong>course</strong> (<u>course_id</u>, title, dept_name, credits)</p></li>
+<li><p><strong>instructor</strong> (<u>ID</u>, name, dept_name, salary)</p></li>
+<li><p><strong>teaches</strong> (<u>ID, course_id, sec_id, semester</u>, year)</p></li>
+</ul>
+<p><strong>Goal:</strong> Select the course instructor name and title who belongs to the department ‘Music’.</p>
+<p>Here are two possible evaluation plans for the exact same query:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="concurrent_schedule.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"><img src="concurrent_schedule.png" class="img-fluid figure-img" style="width:80.0%" alt="A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!"></a></p>
-<figcaption>A bad concurrent schedule. Because T1 unlocked B too early without proper concurrency control, T2 read an inconsistent state!</figcaption>
+<p><a href="query_optimization.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Different query evaluation plans for the same query."><img src="query_optimization.png" class="img-fluid figure-img" style="width:100.0%" alt="Different query evaluation plans for the same query."></a></p>
+<figcaption>Different query evaluation plans for the same query.</figcaption>
 </figure>
 </div>
-<p>There is always a trade-off: The more strict the concurrency control scheme, the safer the data is, but the slower the database runs (because transactions have to wait in line).</p>
+<p>The optimizer will calculate the cost of both plans and choose the one that executes faster (typically the one that reduces the dataset size earlier by performing the <code>Selection</code> operation before the <code>Join</code>).</p>
 <hr>
 </section>
-<section id="lock-based-protocols" class="level2">
-<h2 class="anchored" data-anchor-id="lock-based-protocols">Lock-Based Protocols</h2>
-<p>The most common way to control concurrency is by using <strong>Locks</strong>. Think of a lock like a bathroom key. If someone has the key, nobody else can enter until they give it back.</p>
-<p>Data items can be locked in two modes:</p>
-<ol type="1">
-<li><p><strong>Exclusive (X) mode:</strong> The data item can be both read AND written.</p></li>
-<li><p><strong>Shared (S) mode:</strong> The data item can ONLY be read.</p></li>
-</ol>
-<section id="the-lock-compatibility-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="the-lock-compatibility-matrix">The Lock-Compatibility Matrix</h3>
-<p>Before a transaction can lock an item, it must request it from the lock manager. The lock manager checks the compatibility matrix:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">State of the lock</th>
-<th style="text-align: center;">Request: Shared</th>
-<th style="text-align: center;">Request: Exclusive</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Shared</strong></td>
-<td style="text-align: center;">Yes</td>
-<td style="text-align: center;">No</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>Exclusive</strong></td>
-<td style="text-align: center;">No</td>
-<td style="text-align: center;">No</td>
-</tr>
-</tbody>
-</table>
+<section id="equivalence-rules" class="level2">
+<h2 class="anchored" data-anchor-id="equivalence-rules">Equivalence Rules</h2>
+<p>How does the database optimizer know that two different execution plans will return the exact same result? It relies on <strong>Equivalence Rules</strong>.</p>
+<p>These mathematical rules state that certain relational algebra expressions can be transformed into other expressions without changing the final output. The optimizer applies these rules to rewrite the query into a more efficient form.</p>
+<section id="selection-rules" class="level3">
+<h3 class="anchored" data-anchor-id="selection-rules">1. Selection Rules</h3>
 <ul>
-<li><strong>Sharing is caring:</strong> Any number of transactions can hold Shared locks on the same item at the same time (since reading doesn’t change the data).</li>
-<li><strong>Exclusivity:</strong> If <em>any</em> transaction holds an Exclusive lock, no other transaction can hold <em>any</em> lock on that item. They must wait.</li>
+<li><p><strong>Conjunctive selections can be split:</strong> A selection with multiple conditions connected by AND (<span class="math inline">\(\land\)</span>) can be broken down into a sequence of individual selections. <span class="math display">\[ \sigma_{\theta_1 \land \theta_2}(E) = \sigma_{\theta_1}(\sigma_{\theta_2}(E)) \]</span></p></li>
+<li><p><strong>Selections are commutative:</strong> The order in which you apply filters doesn’t matter. <span class="math display">\[ \sigma_{\theta_1}(\sigma_{\theta_2}(E)) = \sigma_{\theta_2}(\sigma_{\theta_1}(E)) \]</span></p></li>
 </ul>
-<p><em>A transaction must hold a lock on a data item for as long as it is actively accessing it. Once it’s done, it releases it using the <code>unlock(Q)</code> instruction.</em></p>
-<hr>
 </section>
-</section>
-<section id="the-two-phase-locking-protocol-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="the-two-phase-locking-protocol-2pl">The Two-Phase Locking Protocol (2PL)</h2>
-<p>Just having locks isn’t enough to guarantee serializability. If a transaction locks an item, modifies it, unlocks it, and <em>then</em> locks another item, we can still run into consistency issues.</p>
-<p>To solve this, databases use the <strong>Two-Phase Locking (2PL)</strong> protocol. Under 2PL, every transaction goes through two distinct phases:</p>
-<ol type="1">
-<li><strong>Growing Phase:</strong>
+<section id="projection-rules" class="level3">
+<h3 class="anchored" data-anchor-id="projection-rules">2. Projection Rules</h3>
 <ul>
-<li>A transaction may obtain new locks.</li>
-<li>It may <strong>not</strong> release any locks.</li>
+<li><strong>Only the final projection matters:</strong> In a sequence of projection operations, only the last one is necessary; the others can be safely omitted. <span class="math display">\[ \Pi_{L_1}(\Pi_{L_2}(...\Pi_{L_n}(E)))) = \Pi_{L_1}(E) \]</span></li>
+</ul>
+</section>
+<section id="join-rules" class="level3">
+<h3 class="anchored" data-anchor-id="join-rules">3. Join Rules</h3>
+<ul>
+<li><p><strong>Theta-joins are commutative:</strong> Joining Table A to Table B gives the same result as joining Table B to Table A. <span class="math display">\[ E_1 \bowtie_\theta E_2 = E_2 \bowtie_\theta E_1 \]</span></p></li>
+<li><p><strong>Natural joins are associative:</strong> When joining three tables, it doesn’t matter which two you join first. <span class="math display">\[ (E_1 \bowtie E_2) \bowtie E_3 = E_1 \bowtie (E_2 \bowtie E_3) \]</span></p></li>
+<li><p><strong>Selections can be combined with Cartesian products to form a join:</strong> <span class="math display">\[ \sigma_{\theta}(E1 \times E2) = E_1 \bowtie_\theta E_2 \]</span></p></li>
+<li><p><strong>Selections can be absorbed into a join condition:</strong> <span class="math display">\[ \sigma_{\theta_1}(E_1 \bowtie_{\theta_2} E_2) = E_1 \bowtie_{\theta_1 \land \theta_2 } E_2 \]</span></p></li>
+</ul>
+</section>
+<section id="set-operation-rules" class="level3">
+<h3 class="anchored" data-anchor-id="set-operation-rules">4. Set Operation Rules</h3>
+<ul>
+<li><strong>Associative:</strong>
+<ul>
+<li>Union: <span class="math inline">\((E_1 \cup E_2) \cup E_3 = E_1 \cup (E_2 \cup E_3)\)</span></li>
+<li>Intersection: <span class="math inline">\((E_1 \cap E_2) \cap E_3 = E_1 \cap (E_2 \cap E_3)\)</span></li>
 </ul></li>
-<li><strong>Shrinking Phase:</strong>
+<li><strong>Commutative:</strong>
 <ul>
-<li>A transaction may release locks.</li>
-<li>It may <strong>not</strong> obtain any new locks.</li>
+<li>Union: <span class="math inline">\(E_1 \cup E_2 = E_2 \cup E_1\)</span></li>
+<li>Intersection: <span class="math inline">\(E_1 \cap E_2 = E_2 \cap E_1\)</span></li>
+<li><em>(Note: Set difference is NOT commutative)</em></li>
 </ul></li>
-</ol>
-<p>Once a transaction releases its very first lock, it has entered the Shrinking Phase and can never request another lock again.</p>
-<section id="lock-conversions" class="level3">
-<h3 class="anchored" data-anchor-id="lock-conversions">Lock Conversions</h3>
-<p>During these phases, 2PL allows locks to be converted:</p>
-<ul>
-<li><p><strong>Growing Phase:</strong> You can upgrade a Shared lock to an Exclusive lock.</p></li>
-<li><p><strong>Shrinking Phase:</strong> You can downgrade an Exclusive lock to a Shared lock.</p></li>
+<li><strong>Projection distributes over union:</strong> <span class="math display">\[ \Pi_L(E_1 \cup E_2) = (\Pi_L(E_1)) \cup (\Pi_L(E_2)) \]</span></li>
 </ul>
-<hr>
-</section>
-</section>
-<section id="stricter-variants-of-2pl" class="level2">
-<h2 class="anchored" data-anchor-id="stricter-variants-of-2pl">Stricter Variants of 2PL</h2>
-<p>Standard 2PL guarantees serializability, but it does NOT guarantee cascadeless schedules. If a transaction fails during its Shrinking Phase after releasing some locks, other transactions might have already read its dirty data!</p>
-<p>To prevent cascading rollbacks, databases use stricter versions of 2PL:</p>
-<section id="strict-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="strict-two-phase-locking">Strict Two-Phase Locking</h3>
-<ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold all of its <strong>Exclusive</strong> locks until it fully commits or aborts.</li>
-<li><em>Why?</em> This guarantees that no other transaction can read its uncommitted changes.</li>
-</ul>
-</section>
-<section id="rigorous-two-phase-locking" class="level3">
-<h3 class="anchored" data-anchor-id="rigorous-two-phase-locking">Rigorous Two-Phase Locking</h3>
-<ul>
-<li>Standard 2PL rules apply.</li>
-<li><strong>Addition:</strong> A transaction must hold <strong>ALL</strong> of its locks (both Shared and Exclusive) until it commits or aborts.</li>
-<li><em>Why?</em> It is even safer and easier to implement, and transactions can be serialized in the exact order they commit.</li>
-</ul>
-<div class="callout callout-style-default callout-warning callout-titled" title="The Trade-off">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>The Trade-off
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>As we move from standard 2PL <span class="math inline">\(\rightarrow\)</span> Strict 2PL <span class="math inline">\(\rightarrow\)</span> Rigorous 2PL, the system becomes safer and simpler. However, <strong>Concurrency goes down</strong>. Because locks are held longer, other transactions are forced to wait longer, slowing down the overall system performance.</p>
-</div>
-</div>
 
 
 
@@ -1358,13 +1302,13 @@ window.Quarto = {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="pagination-link" aria-label="Schedules and Serializability">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Schedules and Serializability</span></span>
+      <a href="../../weeks/week_12/02_join_algorithms.html" class="pagination-link" aria-label="Join Algorithms">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Join Algorithms</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="pagination-link" aria-label="Deadlocks and Timestamps">
-        <span class="nav-page-text"><span class="chapter-title">Deadlocks and Timestamps</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../weeks/week_12/04_rdbms_architecture_scaling_and_nosql.html" class="pagination-link" aria-label="Architecture, Scaling, and Big Data">
+        <span class="nav-page-text"><span class="chapter-title">Architecture, Scaling, and Big Data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1376,7 +1320,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_10/03_concurrency_and_locking.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_12/03_query_optimization_and_equivalence.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
