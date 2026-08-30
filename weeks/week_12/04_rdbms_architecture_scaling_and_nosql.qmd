@@ -1,0 +1,118 @@
+---
+title: "Architecture, Scaling, and Big Data"
+---
+
+## What do Database Applications Need?
+
+When building data-intensive applications, you need a database that performs well under pressure. Performance is judged by three main metrics:
+
+1. **Throughput:** Transactions per second (tps). Think of this as the number of cars passing through a toll booth every minute.
+2. **Response Time:** The delay from submitting a query to getting the result. Think of this as how long one specific car waits in line.
+3. **Availability:** Mean time to failure. How often is the toll booth open and working without breaking down?
+
+---
+
+## RDBMS Architecture
+
+Historically, relational databases (RDBMS) have been built using different architectures depending on the scale of the organization.
+
+### 1. Centralized Systems
+Run on a single machine (like a desktop or a single server) and do not interact with other computers. 
+
+- **Analogy:** Keeping all your company's files in a single filing cabinet in one office.
+
+### 2. Client-Server Systems
+The work is divided. Client machines handle the front-end (user interface, forms), while a powerful Server machine handles the back-end (query evaluation, transaction management, data storage).
+
+- **Analogy:** A restaurant. The waiters (Clients) take the orders from the customers and pass them to the kitchen (Server), which does the heavy lifting of cooking the food.
+
+### 3. Parallel Systems
+Uses multiple processors and disks connected by a fast internal network. It aims for two things:
+
+- **Speedup:** Making a single big task run faster.
+- **Scaleup:** Handling a larger workload without slowing down.
+
+### 4. Distributed Systems
+Data is spread across multiple separate machines (nodes) connected via a network (like the internet). 
+
+- **Advantages:** Data can be shared globally, and if one node fails, others can keep the system running (high availability).
+
+---
+
+## Scaling Databases: Horizontal vs. Vertical
+
+When your application gets popular (like a viral social media app), your single database server will eventually hit its limit. You have two choices for scaling:
+
+### Vertical Scaling (Scaling Up)
+This means adding more resources (CPU, RAM, faster disks) to your *existing* single machine.
+
+- **Analogy:** You need to transport more boxes. Vertical scaling is taking your pickup truck to the mechanic and upgrading it into a massive 18-wheeler semi-truck.
+- **Pros:** Cost-effective at first, less complex, no need to change your software.
+- **Cons:** There is a physical limit to how big one machine can get. Eventually, you can't buy a bigger truck.
+
+### Horizontal Scaling (Scaling Out)
+This means adding *additional* machines (nodes) to your infrastructure to share the load.
+
+- **Analogy:** You need to transport more boxes. Horizontal scaling is buying a fleet of 10 normal pickup trucks instead of one massive semi-truck.
+- **Pros:** Virtually infinite scaling, increased resilience (if one truck breaks down, you have 9 others).
+- **Cons:** Much more complex. You now have to coordinate a whole fleet instead of driving just one vehicle.
+
+---
+
+## The Rise of Big Data
+
+Relational databases are fantastic, but the explosion of web applications, social media, and IoT devices generated a "perfect storm" of data that traditional RDBMS systems struggled to handle.
+
+This is the era of **Big Data**, characterized by the **5 V's**:
+
+1. **Volume:** Massive quantities of data (Terabytes to Exabytes).
+2. **Velocity:** Data generated at lightning speed, often requiring real-time processing.
+3. **Variety:** Data isn't just neat tables anymore. It's unstructured text, images, videos, and sensor logs.
+4. **Variability:** Inconsistent data flows.
+5. **Veracity:** Varying data quality and accuracy.
+
+---
+
+## The CAP Theorem
+
+When you use Horizontal Scaling to build a distributed database system across multiple nodes, you run into the **CAP Theorem**. 
+
+The theorem states that a distributed system can only guarantee **two out of the following three** properties at any given time:
+
+1. **Consistency (C):** All clients see the exact same data at the same time, no matter which node they connect to.
+2. **Availability (A):** The system always accepts reads and writes, even if some nodes fail.
+3. **Partition Tolerance (P):** The system continues to operate even if a network failure cuts off communication between some nodes.
+
+**The ATM Analogy:**
+Imagine two ATMs (nodes) connected to a central bank. Suddenly, the network cable is cut (a **Partition**). 
+
+- Do you let a user withdraw money anyway, risking that they might withdraw the same funds at the other ATM? (Choosing **Availability** over Consistency).
+- Or do you freeze the ATMs and show an "Out of Service" error until the network is fixed, ensuring no accounts are overdrawn? (Choosing **Consistency** over Availability).
+
+In the world of Big Data, network partitions are inevitable. Therefore, modern systems usually have to choose between **Consistency** and **Availability**.
+
+---
+
+## Enter NoSQL
+
+Because RDBMS systems rigidly enforce Consistency (ACID properties), they struggle to scale horizontally for massive, high-velocity web apps. 
+
+This led to **NoSQL (Not Only SQL)** databases. They drop strict relational rules in favor of massive scalability, often choosing Availability over strong Consistency (relying instead on *Eventual Consistency*).
+
+### Types of NoSQL Databases
+
+1. **Key-Value Stores (e.g., DynamoDB, Redis)**
+   - Acts like a massive dictionary. You look up a "Key" and get a "Value". Extremely fast for simple data.
+   - *Example:* Storing user session data or shopping cart contents.
+
+2. **Document Stores (e.g., MongoDB, CouchDB)**
+   - Stores data in flexible, JSON-like documents. Great for hierarchical or deeply nested data.
+   - *Example:* Content management systems, personalization engines.
+
+3. **Column-Oriented Stores (e.g., Cassandra, HBase)**
+   - Stores data in columns rather than rows. Excellent for searching and aggregating massive datasets.
+   - *Example:* Logging user clicks on a massive e-commerce website.
+
+4. **Graph Databases (e.g., Neo4j)**
+   - Designed to store and navigate relationships (nodes and edges) rather than tables.
+   - *Example:* Social networks. Finding "Friends of friends who like Pizza" is instantly resolved by walking the graph, whereas an RDBMS would require painfully slow, complex table joins.

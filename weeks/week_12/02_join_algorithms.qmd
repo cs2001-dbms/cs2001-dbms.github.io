@@ -1,0 +1,134 @@
+---
+title: "Join Algorithms"
+---
+
+## Understanding Join Costs
+
+Joining tables is one of the most common and resource-intensive operations in a database. Therefore, optimizing how a join is executed is critical. 
+
+Let's look at three fundamental algorithms for performing joins and how their costs are calculated.
+
+**Terminology:**
+When joining two relations (tables), $r$ and $s$:
+
+- $r$ = The outer relation
+
+- $s$ = The inner relation
+
+- $n_r$ = Number of tuples (rows) in the outer relation $r$
+
+- $b_r$ = Number of blocks occupied by the outer relation $r$
+
+- $n_s$ = Number of tuples in the inner relation $s$
+
+- $b_s$ = Number of blocks occupied by the inner relation $s$
+
+---
+
+## 1. Nested Loop Join
+
+This is the simplest and most naive join algorithm. It uses two nested `for` loops.
+
+**Analogy:** Imagine having two physical phone books. For every single person in Book A, you flip through the entire Book B page-by-page to find a matching name. Very tedious!
+
+**How it works:**
+For every single tuple in the outer relation $r$, it scans through every single tuple in the inner relation $s$ to find a match.
+
+```text
+for each tuple tr in r do
+    for each tuple ts in s do
+        if tr and ts match the join condition then
+            add (tr, ts) to the result
+```
+
+**Cost:**
+
+- **Block Transfers:** $n_r \times b_s + b_r$
+  (For each of the $n_r$ tuples, it reads all $b_s$ blocks of the inner relation, plus the initial $b_r$ blocks of the outer relation).
+
+- **Seeks:** $n_r + b_r$
+
+---
+
+## 2. Block Nested Loop Join
+
+This algorithm is a major improvement over the standard nested loop join. Instead of looping tuple-by-tuple, it processes the data block-by-block.
+
+**Analogy:** Instead of looking up one person at a time, you tear out a whole page of names from Book A, memorize them, and then flip through Book B looking for matches for *anyone* on your memorized page.
+
+**How it works:**
+For every *block* in the outer relation $r$, it scans every *block* in the inner relation $s$. It then joins the tuples within those loaded blocks in memory. This drastically reduces the number of times the inner table has to be read from disk.
+
+```text
+for each block Br in r do
+    for each block Bs in s do
+        for each tuple tr in Br do
+            for each tuple ts in Bs do
+                if tr and ts match then
+                    add (tr, ts) to the result
+```
+
+**Cost:**
+
+- **Block Transfers:** $b_r \times b_s + b_r$
+  (For each of the $b_r$ blocks, it reads all $b_s$ blocks of the inner relation, plus the initial $b_r$ blocks).
+
+- **Seeks:** $2 \times b_r$
+
+---
+
+## 3. Indexed Nested-Loop Join
+
+This algorithm makes use of existing indexes to completely skip scanning the inner relation. 
+
+**Analogy:** Instead of flipping through Book B blindly, you use the alphabetized index at the back of Book B to jump exactly to the page containing the name you're looking for from Book A.
+
+**How it works:**
+If the inner relation $s$ has an index on the join attribute, the database can use it. For each tuple $t_r$ in the outer relation $r$, it simply performs an index lookup on $s$ to instantly find the matching tuples. 
+
+**Cost:**
+
+- **Cost of the join:** $b_r \times (t_T + t_S) + n_r \times c$
+  - Where $c$ is the cost of traversing the index and fetching all matching $s$ tuples for one tuple in $r$.
+
+- **Best Practice:** If both relations have an index, the database optimizer will choose the relation with *fewer tuples* as the outer relation ($r$) to minimize the number of index lookups.
+
+---
+
+## Example Scenario
+
+Let's compare these algorithms with some numbers.
+
+| Relation | student (Outer) | takes (Inner) |
+| :--- | :---: | :---: |
+| **Number of tuples ($n$)** | 5,000 | 10,000 |
+| **Number of blocks ($b$)** | 100 | 400 |
+
+### Cost using Nested Loop Join
+
+Using `student` as the outer relation ($r$):
+
+- **Block Transfers:** $5000 \times 400 + 100 = 2,000,100$
+
+- **Seeks:** $5000 + 100 = 5,100$
+
+### Cost using Block Nested Loop Join
+
+Using `student` as the outer relation ($r$):
+
+- **Block Transfers:** $100 \times 400 + 100 = 40,100$
+
+- **Seeks:** $2 \times 100 = 200$
+
+### Cost using Indexed Nested-Loop Join
+
+Imagine `takes` has a B+-tree index on the attribute ID. The height of the tree is 4, plus one access to find the actual data, so $c \approx 5$ accesses per lookup.
+Using `student` as the outer relation ($r$):
+
+- **Cost (in block transfers and seeks):** $100 + (5000 \times 5) = 25,100$
+
+**Conclusion:** 
+
+- The **Block Nested Loop Join** (40,100 transfers) is drastically more efficient than the basic nested loop (2 million transfers) because it reads data in chunks.
+
+- The **Indexed Nested-Loop Join** (25,100 accesses) is even faster because it completely avoids scanning the `takes` table, jumping directly to the correct records using the index!

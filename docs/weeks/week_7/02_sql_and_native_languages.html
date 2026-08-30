@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -77,14 +80,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a534e71cf44c863abd021fd9c01f7ed3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-612b5af17a10fa267225721f42b7b479.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-535772463eb81d37f2945f09246d0d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-6ab0a842e175a1a86fec07e608b96526.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-535772463eb81d37f2945f09246d0d73.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -112,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -596,7 +599,17 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../weeks/week_9/01_indexing_and_234_trees.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing and Hashing</span></a>
+  <a href="../../weeks/week_9/01_indexing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Indexing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_9/02_bst.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Tree-Based Index Structures</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_9/03_hashing.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Hashing and Bitmap Indices</span></a>
   </div>
 </li>
       </ul>
@@ -604,12 +617,100 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Playground</strong></span></a>
+ <span class="menu-text"><strong>Week-10</strong></span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_10/01_transactions_and_acid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Transactions and ACID Properties</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_10/02_schedules_and_serializability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Schedules and Serializability</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_10/03_concurrency_and_locking.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Concurrency and Locking</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_10/04_deadlocks_and_timestamps.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Deadlocks and Timestamps</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_10/05_real_world_concurrency.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">(Optional) Real-World Concurrency</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Week-11</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_11/01_backup_and_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Backup and Recovery</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_11/02_log_based_recovery.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Log-Based Recovery</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_11/03_raid.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">RAID: Redundant Array of Independent Disks</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Week-12</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_12/01_query_processing_and_cost.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Processing and Cost</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_12/02_join_algorithms.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Join Algorithms</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_12/03_query_optimization_and_equivalence.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Query Optimization and Equivalence</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Playground</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../sql_playground.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Playground</span></a>
@@ -719,19 +820,19 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="jdbc-java-database-connectivity">JDBC (Java Database Connectivity)</h2>
 <p>JDBC is the Java equivalent of ODBC. It’s the standard way for Java programs to talk to a database.</p>
 <p>The workflow is very similar:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">// 1. Open a connection</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">Connection</span> con <span class="op">=</span> <span class="bu">DriverManager</span><span class="op">.</span><span class="fu">getConnection</span><span class="op">(</span>connectionUrl<span class="op">);</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co">// 2. Create a statement object</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="bu">Statement</span> stmt <span class="op">=</span> con<span class="op">.</span><span class="fu">createStatement</span><span class="op">();</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">// 3. Execute a query and get results</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="bu">ResultSet</span> rs <span class="op">=</span> stmt<span class="op">.</span><span class="fu">executeQuery</span><span class="op">(</span><span class="st">"SELECT * FROM Production.Product"</span><span class="op">);</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">// 4. Iterate through results</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="cf">while</span> <span class="op">(</span>rs<span class="op">.</span><span class="fu">next</span><span class="op">())</span> <span class="op">{</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"ProductID"</span><span class="op">)</span> <span class="op">+</span> <span class="st">" : "</span> <span class="op">+</span> rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"Name"</span><span class="op">));</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a>    <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource java number-lines code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">// 1. Open a connection</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="bu">Connection</span> con <span class="op">=</span> <span class="bu">DriverManager</span><span class="op">.</span><span class="fu">getConnection</span><span class="op">(</span>connectionUrl<span class="op">);</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">// 2. Create a statement object</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="bu">Statement</span> stmt <span class="op">=</span> con<span class="op">.</span><span class="fu">createStatement</span><span class="op">();</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a><span class="co">// 3. Execute a query and get results</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a><span class="bu">ResultSet</span> rs <span class="op">=</span> stmt<span class="op">.</span><span class="fu">executeQuery</span><span class="op">(</span><span class="st">"SELECT * FROM Production.Product"</span><span class="op">);</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a><span class="co">// 4. Iterate through results</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="cf">while</span> <span class="op">(</span>rs<span class="op">.</span><span class="fu">next</span><span class="op">())</span> <span class="op">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a>    <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span>rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"ProductID"</span><span class="op">)</span> <span class="op">+</span> <span class="st">" : "</span> <span class="op">+</span> rs<span class="op">.</span><span class="fu">getString</span><span class="op">(</span><span class="st">"Name"</span><span class="op">));</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-label="13"></a>    <span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>DriverManager.getConnection()</code> — opens the connection using a connection URL</li>
 <li><code>Statement</code> — used to send SQL to the database</li>
@@ -780,31 +881,31 @@ window.Quarto = {
 <p>With ODBC and JDBC, SQL queries are just strings passed to a function at runtime — the compiler has no idea they’re even there. <strong>Embedded SQL</strong> takes a different approach: you write SQL <em>directly inside</em> the host language code, and a <strong>pre-processor</strong> converts it into regular function calls before compilation.</p>
 <p>Supported in: <strong>C, C++, Java (SQLJ), COBOL, FORTRAN</strong>.</p>
 <p>SQL statements are marked with <code>EXEC SQL</code> so the pre-processor knows what to handle:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>EXEC SQL <span class="op">&lt;</span>embedded SQL statement<span class="op">&gt;;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>EXEC SQL <span class="op">&lt;</span>embedded SQL statement<span class="op">&gt;;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="key-concepts" class="level3">
 <h3 class="anchored" data-anchor-id="key-concepts">Key Concepts</h3>
 <p><strong>Connecting to the database:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>EXEC SQL CONNECT TO server USER username USING password<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>EXEC SQL CONNECT TO server USER username USING password<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Host variables</strong> — variables from your program that you use inside SQL queries. They’re prefixed with <code>:</code> to distinguish them from SQL column names. Variables used within the Embedded SQL query must be declared within DECLARE section:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1"></a>EXEC SQL BEGIN DECLARE SECTION<span class="op">;</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>    <span class="dt">int</span> credit_amount<span class="op">;</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>EXEC SQL END DECLARE SECTION<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>EXEC SQL BEGIN DECLARE SECTION<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a>    <span class="dt">int</span> credit_amount<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>EXEC SQL END DECLARE SECTION<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Cursors</strong> — since a query can return many rows, you use a <em>cursor</em> to step through them one at a time. Think of it as a pointer that moves through the result set.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">/* 1. Declare the cursor */</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>EXEC SQL </span>
-<span id="cb5-3"><a href="#cb5-3"></a>    DECLARE c CURSOR FOR</span>
-<span id="cb5-4"><a href="#cb5-4"></a>    SELECT ID<span class="op">,</span> name FROM student</span>
-<span id="cb5-5"><a href="#cb5-5"></a>    WHERE tot_cred <span class="op">&gt;</span> <span class="op">:</span>credit_amount<span class="op">;</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a>END_EXEC</span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">/* 2. Open it — this actually runs the query */</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>EXEC SQL OPEN c<span class="op">;</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">/* 3. Fetch rows one by one */</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a>EXEC SQL FETCH c INTO <span class="op">:</span>si<span class="op">,</span> <span class="op">:</span>sn<span class="op">;</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">/* 4. Close when done */</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a>EXEC SQL CLOSE c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="co">/* 1. Declare the cursor */</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a>EXEC SQL </span>
+<span id="cb5-3"><a href="#cb5-3" aria-label="3"></a>    DECLARE c CURSOR FOR</span>
+<span id="cb5-4"><a href="#cb5-4" aria-label="4"></a>    SELECT ID<span class="op">,</span> name FROM student</span>
+<span id="cb5-5"><a href="#cb5-5" aria-label="5"></a>    WHERE tot_cred <span class="op">&gt;</span> <span class="op">:</span>credit_amount<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-label="6"></a>END_EXEC</span>
+<span id="cb5-7"><a href="#cb5-7" aria-label="7"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-label="8"></a><span class="co">/* 2. Open it — this actually runs the query */</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-label="9"></a>EXEC SQL OPEN c<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-label="10"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-label="11"></a><span class="co">/* 3. Fetch rows one by one */</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-label="12"></a>EXEC SQL FETCH c INTO <span class="op">:</span>si<span class="op">,</span> <span class="op">:</span>sn<span class="op">;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-label="13"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-label="14"></a><span class="co">/* 4. Close when done */</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-label="15"></a>EXEC SQL CLOSE c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>OPEN</code> — executes the query and stores results in a temporary relation</li>
 <li><code>FETCH</code> — retrieves the next row into your host variables</li>
@@ -813,13 +914,13 @@ window.Quarto = {
 </ul>
 <p><strong>Updating through a cursor:</strong></p>
 <p>You can also modify rows as you fetch them by declaring the cursor <code>FOR UPDATE</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1"></a>EXEC SQL DECLARE c CURSOR FOR</span>
-<span id="cb6-2"><a href="#cb6-2"></a>    SELECT <span class="op">*</span> FROM instructor</span>
-<span id="cb6-3"><a href="#cb6-3"></a>    WHERE dept_name <span class="op">=</span> <span class="ch">'M</span><span class="er">usic</span><span class="ch">'</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    FOR UPDATE<span class="op">;</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">/* After fetching each row: */</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a>UPDATE instructor SET salary <span class="op">=</span> salary <span class="op">+</span> <span class="dv">1000</span> WHERE CURRENT OF c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a>EXEC SQL DECLARE c CURSOR FOR</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a>    SELECT <span class="op">*</span> FROM instructor</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a>    WHERE dept_name <span class="op">=</span> <span class="ch">'M</span><span class="er">usic</span><span class="ch">'</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a>    FOR UPDATE<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a><span class="co">/* After fetching each row: */</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-label="7"></a>UPDATE instructor SET salary <span class="op">=</span> salary <span class="op">+</span> <span class="dv">1000</span> WHERE CURRENT OF c<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -827,7 +928,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="connecting-python-to-postgresql">Connecting Python to PostgreSQL</h2>
 <p>The most popular Python library for working with PostgreSQL is <strong>psycopg2</strong> — it’s stable, actively maintained, thread-safe, and works with both Python 2 and 3.</p>
 <p>Install it with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">pip</span> install psycopg2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="ex">pip</span> install psycopg2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Every interaction with the database follows the same six steps:</p>
 <table class="caption-top table">
 <colgroup>
@@ -872,19 +973,19 @@ window.Quarto = {
 <section id="key-api-methods" class="level2">
 <h2 class="anchored" data-anchor-id="key-api-methods">Key API Methods</h2>
 <p><strong>Connection:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>conn <span class="op">=</span> psycopg2.<span class="ex">connect</span>(database<span class="op">=</span><span class="st">"mydb"</span>, user<span class="op">=</span><span class="st">"myuser"</span>,</span>
-<span id="cb8-2"><a href="#cb8-2"></a>                         password<span class="op">=</span><span class="st">"mypass"</span>, host<span class="op">=</span><span class="st">"127.0.0.1"</span>, port<span class="op">=</span><span class="st">"5432"</span>)</span>
-<span id="cb8-3"><a href="#cb8-3"></a>conn.commit()    <span class="co"># saves changes</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a>conn.rollback()  <span class="co"># undoes changes since last commit</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>conn.close()     <span class="co"># closes the connection</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a>conn <span class="op">=</span> psycopg2.<span class="ex">connect</span>(database<span class="op">=</span><span class="st">"mydb"</span>, user<span class="op">=</span><span class="st">"myuser"</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>                         password<span class="op">=</span><span class="st">"mypass"</span>, host<span class="op">=</span><span class="st">"127.0.0.1"</span>, port<span class="op">=</span><span class="st">"5432"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a>conn.commit()    <span class="co"># saves changes</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-label="4"></a>conn.rollback()  <span class="co"># undoes changes since last commit</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-label="5"></a>conn.close()     <span class="co"># closes the connection</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Cursor:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>cur <span class="op">=</span> conn.cursor()</span>
-<span id="cb9-2"><a href="#cb9-2"></a>cur.execute(<span class="st">"INSERT INTO employee VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="bu">id</span>, name))  <span class="co"># parameterized query</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>cur.rowcount     <span class="co"># number of rows affected by last operation</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a>cur.fetchone()   <span class="co"># returns next row, or None</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a>cur.fetchmany(n) <span class="co"># returns next n rows as a list</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>cur.fetchall()   <span class="co"># returns all remaining rows as a list</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>cur.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a>cur <span class="op">=</span> conn.cursor()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>cur.execute(<span class="st">"INSERT INTO employee VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="bu">id</span>, name))  <span class="co"># parameterized query</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>cur.rowcount     <span class="co"># number of rows affected by last operation</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>cur.fetchone()   <span class="co"># returns next row, or None</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a>cur.fetchmany(n) <span class="co"># returns next n rows as a list</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-label="6"></a>cur.fetchall()   <span class="co"># returns all remaining rows as a list</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-label="7"></a>cur.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p>Use <code>%s</code> as a placeholder in queries instead of string formatting — this protects against SQL injection.</p>
 </blockquote>
@@ -893,25 +994,25 @@ window.Quarto = {
 <section id="crud-operations-in-python" class="level2">
 <h2 class="anchored" data-anchor-id="crud-operations-in-python">CRUD Operations in Python</h2>
 <p><strong>CREATE table:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>cur.execute(<span class="st">'''CREATE TABLE EMPLOYEE (</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="st">    emp_num  INT PRIMARY KEY NOT NULL,</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="st">    emp_name VARCHAR(40) NOT NULL,</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="st">    department VARCHAR(40) NOT NULL)'''</span>)</span>
-<span id="cb10-5"><a href="#cb10-5"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a>cur.execute(<span class="st">'''CREATE TABLE EMPLOYEE (</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a><span class="st">    emp_num  INT PRIMARY KEY NOT NULL,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a><span class="st">    emp_name VARCHAR(40) NOT NULL,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a><span class="st">    department VARCHAR(40) NOT NULL)'''</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>INSERT:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>cur.execute(<span class="st">"INSERT INTO EMPLOYEE VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="dv">110</span>, <span class="st">'Bhaskar'</span>, <span class="st">'HR'</span>))</span>
-<span id="cb11-2"><a href="#cb11-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a>cur.execute(<span class="st">"INSERT INTO EMPLOYEE VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">)"</span>, (<span class="dv">110</span>, <span class="st">'Bhaskar'</span>, <span class="st">'HR'</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>UPDATE:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>cur.execute(<span class="st">"UPDATE EMPLOYEE SET department = </span><span class="sc">%s</span><span class="st"> WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="st">'Finance'</span>, <span class="dv">110</span>))</span>
-<span id="cb12-2"><a href="#cb12-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a>cur.execute(<span class="st">"UPDATE EMPLOYEE SET department = </span><span class="sc">%s</span><span class="st"> WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="st">'Finance'</span>, <span class="dv">110</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-label="2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>DELETE:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>cur.execute(<span class="st">"DELETE FROM EMPLOYEE WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="dv">110</span>,))</span>
-<span id="cb13-2"><a href="#cb13-2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a>cur.execute(<span class="st">"DELETE FROM EMPLOYEE WHERE emp_num = </span><span class="sc">%s</span><span class="st">"</span>, (<span class="dv">110</span>,))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a>conn.commit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>SELECT:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>cur.execute(<span class="st">"SELECT emp_num, emp_name, department FROM EMPLOYEE"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>rows <span class="op">=</span> cur.fetchall()</span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="cf">for</span> row <span class="kw">in</span> rows:</span>
-<span id="cb14-4"><a href="#cb14-4"></a>    <span class="bu">print</span>(row[<span class="dv">0</span>], row[<span class="dv">1</span>], row[<span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a>cur.execute(<span class="st">"SELECT emp_num, emp_name, department FROM EMPLOYEE"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-label="2"></a>rows <span class="op">=</span> cur.fetchall()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-label="3"></a><span class="cf">for</span> row <span class="kw">in</span> rows:</span>
+<span id="cb14-4"><a href="#cb14-4" aria-label="4"></a>    <span class="bu">print</span>(row[<span class="dv">0</span>], row[<span class="dv">1</span>], row[<span class="dv">2</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 
 

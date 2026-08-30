@@ -134,6 +134,12 @@ book:
         - weeks/week_11/01_backup_and_recovery.qmd
         - weeks/week_11/02_log_based_recovery.qmd
         - weeks/week_11/03_raid.qmd
+    - part: '**Week-12**'
+      chapters:
+        - weeks/week_12/01_query_processing_and_cost.qmd
+        - weeks/week_12/02_join_algorithms.qmd
+        - weeks/week_12/03_query_optimization_and_equivalence.qmd
+        - weeks/week_12/04_rdbms_architecture_scaling_and_nosql.qmd
     - part: '**Playground**'
       chapters:
         - sql_playground.qmd
