@@ -23,10 +23,10 @@ page-layout: full
 
 body.quarto-dark {
   --pg-border-color: rgba(255, 255, 255, 0.15);
-  --pg-bg-surface: #1f2937;
-  --pg-bg-subtle: #111827;
-  --pg-text-main: #f9fafb;
-  --pg-text-muted: #9ca3af;
+  --pg-bg-surface: #2b2b2b;
+  --pg-bg-subtle: #222222;
+  --pg-text-main: #f8f9fa;
+  --pg-text-muted: #adb5bd;
   --pg-primary: #3b82f6;
   --pg-primary-hover: #60a5fa;
 }
@@ -339,8 +339,8 @@ body.quarto-dark .key-fk { background-color: rgba(191, 219, 254, 0.2); color: #9
   border-bottom: 1px solid var(--pg-border-color);
 }
 body.quarto-dark .result-table th {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: var(--pg-bg-subtle);
+  color: var(--pg-text-main);
 }
 .th-datatype {
   color: #059669;

@@ -1,2 +1,6 @@
 /.quarto/
 **/*.quarto_ipynb
+.gitignore
+eval_script.py
+/docs/
+/site_libs/

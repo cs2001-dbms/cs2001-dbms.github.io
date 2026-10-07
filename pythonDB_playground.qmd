@@ -24,10 +24,10 @@ page-layout: full
 
 body.quarto-dark {
   --pg-border-color: rgba(255, 255, 255, 0.15);
-  --pg-bg-surface: #1f2937;
-  --pg-bg-subtle: #111827;
-  --pg-text-main: #f9fafb;
-  --pg-text-muted: #9ca3af;
+  --pg-bg-surface: #2b2b2b;
+  --pg-bg-subtle: #222222;
+  --pg-text-main: #f8f9fa;
+  --pg-text-muted: #adb5bd;
   --pg-primary: #3b82f6;
   --pg-primary-hover: #60a5fa;
 }
@@ -341,8 +341,8 @@ body.quarto-dark .key-fk { background-color: rgba(191, 219, 254, 0.2); color: #9
   border-bottom: 1px solid var(--pg-border-color);
 }
 body.quarto-dark .result-table th {
-  background-color: #1e293b;
-  color: #e2e8f0;
+  background-color: var(--pg-bg-subtle);
+  color: var(--pg-text-main);
 }
 .th-datatype {
   color: #059669;
@@ -376,8 +376,6 @@ body.quarto-dark .th-datatype {
   white-space: pre-wrap;
   word-break: break-all;
   margin-bottom: 0.75rem;
-  max-height: 300px;
-  overflow: auto;
 }
 body.quarto-dark .console-output-area {
   color: var(--pg-text-main);
@@ -875,6 +873,8 @@ async function initPyodide() {
     pyodide = await loadPyodide();
     // Inject the mock psycopg2 module
     await pyodide.runPythonAsync(playgroundData.mockPsycopg2);
+    // Allow 'dbname' as a parameter in mock psycopg2 connect
+    await pyodide.runPythonAsync("import psycopg2\npsycopg2._REQUIRED_KEYS.add('dbname')\npsycopg2._orig_connect = psycopg2.connect\nasync def _new_connect(**kwargs):\n    import psycopg2\n    if 'dbname' in kwargs:\n        kwargs['database'] = kwargs.pop('dbname')\n    return await psycopg2._orig_connect(**kwargs)\npsycopg2.connect = _new_connect");
     pyodideReady = true;
     loading.style.display = "none";
   } catch(err) {
@@ -907,7 +907,7 @@ async function runPython() {
   try {
     // Transform synchronous psycopg2 calls to async awaits
     var transformedCode = code
-      .replace(/\bpsycopg2\.connect\s*\(/g, "await psycopg2.connect(")
+      .replace(/\b(def\s+)?((\w+)\.connect|connect|db_connect|get_connection)\s*\(/g, function(m, isDef) { return isDef ? m : "await " + m; })
       .replace(/\b(\w+)\.cursor\s*\(\s*\)/g, "await $1.cursor()")
       .replace(/\b(\w+)\.execute\s*\(/g, "await $1.execute(")
       .replace(/\b(\w+)\.fetchall\s*\(\s*\)/g, "await $1.fetchall()")
@@ -920,8 +920,9 @@ async function runPython() {
     // Avoid double-awaiting
     transformedCode = transformedCode.replace(/await\s+await\s+/g, "await ");
 
-    // Clear globals and capture stdout
-    var captureSetup = "for k in list(globals().keys()): globals().pop(k) if k not in ['__builtins__', '__name__', '__doc__', '__package__', '__loader__', '__spec__'] else None\nimport io as _io, sys as _sys\n_capture_buf = _io.StringIO()\n_old_stdout = _sys.stdout\n_sys.stdout = _capture_buf\n";
+    // Clear globals, inject sys.argv for compatibility, and capture stdout
+    var activeDb = currentDataset || "flis";
+    var captureSetup = "for k in list(globals().keys()): globals().pop(k) if k not in ['__builtins__', '__name__', '__doc__', '__package__', '__loader__', '__spec__'] else None\nimport io as _io, sys as _sys\n_sys.argv = ['app.py', '" + activeDb + "']\n_capture_buf = _io.StringIO()\n_old_stdout = _sys.stdout\n_sys.stdout = _capture_buf\n";
     var captureEnd = "\n_sys.stdout = _old_stdout\n_captured_output = _capture_buf.getvalue()\n_capture_buf.close()\n_captured_output";
 
     var result = await pyodide.runPythonAsync(captureSetup + transformedCode + captureEnd);
