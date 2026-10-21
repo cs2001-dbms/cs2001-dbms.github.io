@@ -289,3 +289,7 @@ where i.salary > 100000;
 <div class="table-wrap"><table class="jt"><tr><th>Join condition</th><th>Matches on</th><th>Common column(s) in output</th></tr>
 <tr><td><code>natural</code></td><td>All same-named columns</td><td>Once</td></tr><tr><td><code>using (A, ...)</code></td><td>Listed columns</td><td>Once</td></tr><tr><td><code>on &lt;predicate&gt;</code></td><td>Any condition</td><td>Once per relation</td></tr></table></div>
 ```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

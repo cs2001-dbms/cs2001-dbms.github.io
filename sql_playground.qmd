@@ -818,9 +818,20 @@ async function initDB(dsId) {
     }
     db = new PGlite();
     try {
-      var r = await fetch("datasets/" + dsId + ".sql");
-      if (r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await db.exec(sql); } }
-      else throw new Error("Failed to load dataset: " + r.statusText);
+      var candidateUrls = [
+        "datasets/" + dsId + ".sql",
+        "/datasets/" + dsId + ".sql",
+        window.location.origin + "/datasets/" + dsId + ".sql"
+      ];
+      var r = null;
+      for (var ci = 0; ci < candidateUrls.length; ci++) {
+        try {
+          var resp = await fetch(candidateUrls[ci]);
+          if (resp.ok) { r = resp; break; }
+        } catch(ce) {}
+      }
+      if (r && r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await db.exec(sql); } }
+      else throw new Error("Failed to load dataset: " + (r ? r.statusText : "Network error"));
     } catch(fe) { console.warn("Could not fetch dataset", fe); }
     await db.exec("DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'readonly_user') THEN CREATE ROLE readonly_user; END IF; END $$;");
     await db.exec("GRANT USAGE ON SCHEMA public TO readonly_user;");

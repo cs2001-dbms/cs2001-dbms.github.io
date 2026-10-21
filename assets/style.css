@@ -15,6 +15,19 @@ code,
     font-family: 'Fira Code', monospace !important;
     font-variant-ligatures: contextual;
 }
+
+@import 'sql_runner.css';
+@import 'fd_runner.css';
+
+
+/* Fix inline code in headings for dark mode */
+body.quarto-dark :is(h1, h2, h3, h4, h5, h6) code {
+    background-color: rgba(67, 67, 67, 0.65);
+    color: inherit;
+    padding: 0.125rem 0.35rem;
+    border-radius: 0.25rem;
+}
+
 /* ============================================================
    Course-site visual style: flow boxes + result tables (blue & grey)
    ============================================================ */

@@ -7,6 +7,7 @@ project:
   resources:
     - "datasets/*.sql"
     - "datasets/schema/*.png"
+    - "assets/*"
 
 website:
   site-url: "https://seek.onlinedegree.iitm.ac.in/courses/ns_26t2_cs1902"
@@ -42,7 +43,7 @@ book:
     copy-button: true
   sidebar:
     title: "DBMS [CS2001]"
-    logo: cover.png
+    logo: assets/cover.png
     search: true
     collapse-level: 1
     style: floating
@@ -145,7 +146,7 @@ book:
       chapters:
         - sql_playground.qmd
         - pythonDB_playground.qmd
-  favicon: logo.ico
+  favicon: assets/logo.ico
 
 format:
   html:
@@ -157,7 +158,9 @@ format:
     theme:
       light: flatly
       dark: darkly  
-    css: style.css
+    css: assets/style.css
+    include-after-body:
+      - assets/sql_runner.html
     lightbox: true
     animations:
       hover: true  # Enable smooth hover transitions

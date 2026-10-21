@@ -414,3 +414,7 @@ rollback;
 ```{=html}
 <pre>UPDATE 2000</pre><p>A student with no passed course would get <code>null</code> (sum of no rows). Use <code>coalesce(sum(c.credits), 0)</code> to store 0 instead.</p>
 ```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

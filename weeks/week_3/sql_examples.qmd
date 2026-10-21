@@ -736,3 +736,7 @@ rollback;
 <div class="out-label">Output</div><pre>DELETE 2</pre><div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>member_no</th><th>accession_no</th><th>issued_on</th><th>returned_on</th></tr><tr><td>M0045</td><td>9789332543553C</td><td>2021-08-01</td><td>2021-08-20</td></tr><tr><td>M0045</td><td>9789386551337C</td><td>2021-07-02</td><td>2021-08-20</td></tr></table></div><div class="rows-note">(2 rows) · row order may vary; book_issue now has 19 rows</div>
 <div class="why"><b class="t">Why it works.</b> For a delete, only <code>old</code> exists. The row-level trigger fires once per deleted row, so one <code>delete</code> statement removing 2 rows writes 2 log rows. In a real system <code>returned_on</code> would default to <code>current_date</code>; a fixed date is used here so the output is the same every time.</div>
 ```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

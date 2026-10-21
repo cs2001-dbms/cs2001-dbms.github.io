@@ -21,7 +21,7 @@ Let's start with an empty table:
 ### 1. `INSERT`: Adding New Records
 A new student, Pravin, has just enrolled. We need to add him to our database.
 
-```sql
+```{.sql db="test_db"}
 INSERT INTO student (roll_no, name, level, course, term, grade) 
 VALUES ('26f10', 'Pravin', 'Degree', 'DBMS', '27t1', 'S');
 ```
@@ -29,7 +29,7 @@ VALUES ('26f10', 'Pravin', 'Degree', 'DBMS', '27t1', 'S');
 
 **Inserting Multiple Rows at Once:**
 You can also insert several students in a single command by separating the values with commas!
-```sql
+```{.sql db="test_db"}
 INSERT INTO student (roll_no, name, level, course, term, grade) 
 VALUES 
     ('26f11', 'Alice', 'Degree', 'Math', '27t1', 'B'),
@@ -45,7 +45,7 @@ VALUES
 ### 2. `UPDATE`: Modifying Existing Data
 Oops! We made a mistake. Pravin actually got an 'A' grade, not an 'S'. We don't delete his record; we just `UPDATE` it.
 
-```sql
+```{.sql db="test_db"}
 UPDATE student 
 SET grade = 'A'
 WHERE roll_no = '26f10';
@@ -72,7 +72,7 @@ If you simply ran `UPDATE student SET grade = 'A';`, it would ignore the individ
 ### 3. `DELETE`: Removing Records
 Pravin has decided to transfer to another school. We need to remove his record completely.
 
-```sql
+```{.sql db="test_db"}
 DELETE FROM student 
 WHERE roll_no = '26f10';
 ```
@@ -109,7 +109,7 @@ The `SELECT` clause dictates what the final output looks like.
 - `TOP <n>` (or `LIMIT`): "Only show me the first `n` results."
 
 **Example:**
-```sql
+```{.sql db="university"}
 SELECT DISTINCT(name) AS Instructor_Name
 FROM instructor
 WHERE dept_name = 'Biology';
@@ -122,7 +122,7 @@ By default, SQL returns rows in whatever internal order it feels like. If you wa
 - `DESC`: Descending order (Z-A, 10-1).
 
 **Example:**
-```sql
+```{.sql db="university"}
 -- Sort instructors by salary from highest to lowest
 SELECT name, salary
 FROM instructor
@@ -135,7 +135,7 @@ ORDER BY salary DESC;
 
 What happens if you tell the librarian to get data from *two* places at once?
 
-```sql
+```{.sql db="university"}
 SELECT *
 FROM instructor, course;
 ```
@@ -175,10 +175,14 @@ Imagine if you had 1,000 instructors and 1,000 courses—you'd instantly generat
 ### Fixing the Cross Join
 To fix this, we use the `WHERE` clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):
 
-```sql
+```.sql
 SELECT *
 FROM instructor AS i, course AS c
 WHERE i.course_id = c.course_id 
   AND i.dept_name = 'Biology';
 ```
 *(Notice how we used `AS i` and `AS c` to give our tables nicknames? This makes our `WHERE` clause much easier to read!)*
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

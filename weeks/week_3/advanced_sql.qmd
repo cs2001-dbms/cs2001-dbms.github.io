@@ -455,3 +455,7 @@ select rows_changed, round(total_increase, 2) as total_increase from salary_audi
 ```{=html}
 <div class="table-wrap"><table class="jt "><tr><th>Good uses</th><th>Risks</th></tr><tr><td>Logging changes to an audit table</td><td>Too many triggers make it hard to see why data changed</td></tr><tr><td>Simple validation or clean-up of new rows</td><td>Business logic hidden where developers do not look</td></tr><tr><td>Keeping derived values in sync (like tot_cred)</td><td>A trigger can fire another trigger, causing chains of updates</td></tr><tr><td>Recording who changed what and when</td><td>Row-by-row work on large updates is slow</td></tr></table></div><p>Do not use triggers for things the system already does better: maintaining materialized views (use <code>refresh</code>) or replicating databases (use built-in replication). Disable triggers when loading data from a backup, or they will fire again on rows that were already processed.</p>
 ```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

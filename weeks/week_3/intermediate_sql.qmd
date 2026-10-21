@@ -470,3 +470,7 @@ HINT:  Use CASCADE to revoke them too.
 REVOKE</pre>
 <p>After the cascade, <code>satoshi</code> gets <code>permission denied for table department</code>. In PostgreSQL the default for <code>revoke</code> is <code>restrict</code>.</p><p>The <code>references</code> privilege is needed to declare a foreign key to someone else's relation, because a foreign key restricts what the owner of the referenced relation can delete or update: <code>grant references (dept_name) on department to mariano;</code></p><p>Clean up afterwards with <code>drop view</code> and <code>drop role</code> for everything created in this section.</p>
 ```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```
