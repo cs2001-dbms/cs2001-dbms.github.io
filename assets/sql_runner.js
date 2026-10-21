@@ -160,7 +160,7 @@
 
   async function getPGlite() {
     if (!PGliteClass) {
-      const mod = await import("https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js");
+      const mod = await import("https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.2.16/dist/index.js");
       PGliteClass = mod.PGlite;
     }
     return PGliteClass;
@@ -183,6 +183,14 @@
       // Pure in-memory database: zero data stored in browser storage
       // Data exists ONLY in page memory; switching pages or refreshing completely resets it
       const db = new PGlite();
+
+      if (onProgress) onProgress("Initializing WebAssembly engine...");
+      await Promise.race([
+        db.waitReady,
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Database engine initialization timed out. Please reload the page.")), 20000)
+        )
+      ]);
 
       if (target !== "test_db") {
         const offset = getQuartoOffset();
@@ -383,7 +391,12 @@
       throw new Error("This snippet contains syntax placeholders like <attributes>. Click 'Edit' and replace them with real table/column names before running.");
     }
 
-    const results = await db.exec(cleaned, { rowMode: 'array' });
+    const results = await Promise.race([
+      db.exec(cleaned, { rowMode: 'array' }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Query execution timed out (30s).")), 30000)
+      )
+    ]);
     const elapsed = (performance.now() - startTime).toFixed(1);
     return { results, elapsed };
   }
