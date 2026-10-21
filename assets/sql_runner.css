@@ -1,0 +1,494 @@
+/* ============================================================
+   SQL Runner Styles (Week 2 & Week 3)
+   ============================================================ */
+.sql-runner-wrapper {
+  margin: 1.2rem 0 1.8rem 0;
+  border: 1px solid var(--dbms-frame, rgba(0, 0, 0, 0.15));
+  border-radius: 10px;
+  background: var(--pg-bg-surface, #ffffff);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+body.quarto-dark .sql-runner-wrapper {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sql-runner-wrapper:focus-within {
+  border-color: #3b82f6;
+}
+
+/* Toolbar */
+.sql-runner-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  background: var(--dbms-grey-bg, #f8f9fa);
+  border-bottom: 1px solid var(--dbms-line, rgba(0, 0, 0, 0.08));
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.82rem;
+}
+
+body.quarto-dark .sql-runner-toolbar {
+  background: #252526;
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.sql-runner-left,
+.sql-runner-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Dataset badge (No dropdown) */
+.sql-runner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--pg-bg-surface, #ffffff);
+  border: 1px solid var(--dbms-frame, #d1d5db);
+  border-radius: 6px;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--pg-text-main, #1f2937);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  user-select: none;
+}
+
+body.quarto-dark .sql-runner-badge {
+  background: #2d2d2d;
+  border-color: #404040;
+  color: #e5e7eb;
+}
+
+.sql-runner-badge .sql-runner-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #2563eb;
+}
+
+body.quarto-dark .sql-runner-badge .sql-runner-icon {
+  color: #60a5fa;
+}
+
+.sql-runner-badge .sql-runner-db-name {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-weight: 600;
+  color: #2563eb;
+  letter-spacing: 0.01em;
+}
+
+body.quarto-dark .sql-runner-badge .sql-runner-db-name {
+  color: #60a5fa;
+}
+
+/* Buttons */
+.sql-runner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  line-height: 1.2;
+}
+
+.sql-runner-btn svg {
+  display: inline-block;
+  vertical-align: -1px;
+}
+
+.sql-runner-run-btn {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.sql-runner-run-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.sql-runner-run-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sql-runner-edit-btn {
+  background: var(--pg-bg-surface, #ffffff);
+  color: var(--pg-text-main, #374151);
+  border-color: var(--dbms-frame, #d1d5db);
+}
+
+body.quarto-dark .sql-runner-edit-btn {
+  background: #2d2d2d;
+  color: #d1d5db;
+  border-color: #404040;
+}
+
+.sql-runner-edit-btn:hover {
+  background: var(--dbms-grey-head, #e5e7eb);
+  color: #111827;
+}
+
+body.quarto-dark .sql-runner-edit-btn:hover {
+  background: #383838;
+  color: #ffffff;
+}
+
+/* Constraint badges in schema inspector */
+.sql-runner-constraint-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.sql-runner-constraint-badge.pk {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+body.quarto-dark .sql-runner-constraint-badge.pk {
+  background: #7f1d1d;
+  color: #fecaca;
+  border-color: #991b1b;
+}
+
+.sql-runner-constraint-badge.fk {
+  background: #e0e7ff;
+  color: #4338ca;
+  border: 1px solid #a5b4fc;
+}
+
+body.quarto-dark .sql-runner-constraint-badge.fk {
+  background: #312e81;
+  color: #c7d2fe;
+  border-color: #3730a3;
+}
+
+.sql-runner-constraint-badge.notnull {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+body.quarto-dark .sql-runner-constraint-badge.notnull {
+  background: #78350f;
+  color: #fde68a;
+  border-color: #92400e;
+}
+
+.sql-runner-constraint-badge.unique {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+body.quarto-dark .sql-runner-constraint-badge.unique {
+  background: #14532d;
+  color: #bbf7d0;
+  border-color: #166534;
+}
+
+.sql-runner-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  margin: 6px 4px 6px 0;
+  transition: all 0.15s ease;
+}
+
+.sql-runner-quick-btn:hover {
+  background: #dbeafe;
+}
+
+body.quarto-dark .sql-runner-quick-btn {
+  background: #1e3a8a;
+  color: #dbeafe;
+  border-color: #2563eb;
+}
+
+body.quarto-dark .sql-runner-quick-btn:hover {
+  background: #1d4ed8;
+}
+
+.sql-runner-section-title {
+  font-weight: 600;
+  font-size: 0.78rem;
+  margin: 10px 0 6px;
+  color: var(--pg-text-main, #374151);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+body.quarto-dark .sql-runner-section-title {
+  color: #d1d5db;
+}
+
+/* Ace Editor Container for syntax-highlighted edit mode */
+.sql-runner-ace-container {
+  width: 100%;
+  min-height: 90px;
+  box-sizing: border-box;
+  font-family: 'Fira Code', 'Courier New', monospace !important;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.sql-runner-ace-container .ace_editor,
+.sql-runner-ace-container .ace_text-layer {
+  font-family: 'Fira Code', 'Courier New', monospace !important;
+  font-variant-ligatures: contextual;
+}
+
+/* Fallback Textarea for edit mode */
+.sql-runner-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem 1rem;
+  font-family: 'Fira Code', monospace !important;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border: none;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  background: #fdfdfd;
+  color: #111827;
+}
+
+body.quarto-dark .sql-runner-textarea {
+  background: #181818;
+  color: #e5e7eb;
+}
+
+/* Output Container */
+.sql-runner-output {
+  border-top: 1px solid var(--dbms-line, rgba(0, 0, 0, 0.1));
+  background: var(--pg-bg-subtle, #f9fafb);
+  animation: sqlRunnerFadeIn 0.2s ease;
+}
+
+body.quarto-dark .sql-runner-output {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  background: #181818;
+}
+
+@keyframes sqlRunnerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sql-runner-output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.8rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid var(--dbms-line, rgba(0, 0, 0, 0.06));
+  font-size: 0.78rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+body.quarto-dark .sql-runner-output-header {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.sql-runner-status {
+  font-weight: 600;
+  color: var(--pg-text-main, #374151);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sql-runner-status.success {
+  color: #16a34a;
+}
+
+.sql-runner-status.error {
+  color: #dc2626;
+}
+
+.sql-runner-output-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.sql-runner-btn-sm {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.72rem;
+  border-radius: 4px;
+  border: 1px solid var(--dbms-frame, #d1d5db);
+  background: transparent;
+  color: var(--dbms-muted, #6b7280);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sql-runner-btn-sm:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--pg-text-main, #111827);
+}
+
+body.quarto-dark .sql-runner-btn-sm {
+  border-color: #404040;
+  color: #9ca3af;
+}
+
+body.quarto-dark .sql-runner-btn-sm:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.sql-runner-output-body {
+  padding: 0.6rem 0.8rem;
+  overflow-x: auto;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+/* Spinner */
+.sql-runner-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: sqlRunnerSpin 0.7s linear infinite;
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+body.quarto-dark .sql-runner-spinner {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: #60a5fa;
+}
+
+@keyframes sqlRunnerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Output Table */
+.sql-runner-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  font-family: 'Fira Code', monospace;
+  margin: 0;
+}
+
+.sql-runner-table th,
+.sql-runner-table td {
+  padding: 6px 12px;
+  border: 1px solid var(--dbms-line, #e5e7eb);
+  text-align: left;
+  white-space: nowrap;
+}
+
+body.quarto-dark .sql-runner-table th,
+body.quarto-dark .sql-runner-table td {
+  border-color: #333333;
+}
+
+.sql-runner-table th {
+  background: var(--dbms-blue-head, #e0ecfb);
+  color: var(--dbms-blue-text, #1e3a5f);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+body.quarto-dark .sql-runner-table th {
+  background: #253347;
+  color: #dbe7f5;
+}
+
+.sql-runner-table tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+body.quarto-dark .sql-runner-table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sql-runner-table td.null-val {
+  color: var(--dbms-muted, #9ca3af);
+  font-style: italic;
+  font-size: 0.78rem;
+}
+
+.sql-runner-msg-box {
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.sql-runner-msg-box.success {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #15803d;
+}
+
+body.quarto-dark .sql-runner-msg-box.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.sql-runner-msg-box.error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #b91c1c;
+  font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+body.quarto-dark .sql-runner-msg-box.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}

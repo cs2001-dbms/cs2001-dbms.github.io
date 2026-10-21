@@ -38,7 +38,7 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="../../">
 <link href="../../weeks/week_6/03_bcnf_and_4nf.html" rel="next">
 <link href="../../weeks/week_6/01_intro_to_normalization.html" rel="prev">
-<link href="../../logo.ico" rel="icon">
+<link href="../../assets/logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -50,9 +50,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-409faa19af3b164da9d0feb520d01fde.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-6b2c023f055c24862a5f4ed8a943fe6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-409faa19af3b164da9d0feb520d01fde.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -112,7 +112,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/style.css">
 </head>
 
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -304,8 +304,8 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="../../index.html" class="sidebar-logo-link">
-      <img src="../../cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
-      <img src="../../cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      <img src="../../assets/cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../assets/cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">DBMS [CS2001]</a> 
@@ -868,6 +868,25 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<script type="module">
+(function() {
+  const path = window.location.pathname.toLowerCase();
+  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
+  
+  if (isWeek2Or3 || document.querySelector('.ds')) {
+    const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
+    
+    // Inject CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = offset + 'assets/sql_runner.css';
+    document.head.appendChild(link);
+
+    // Dynamically load runner module
+    import(offset + 'assets/sql_runner.js');
+  }
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

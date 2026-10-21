@@ -73,7 +73,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../../">
 <link href="../../weeks/week_3/nested_subqueries.html" rel="next">
 <link href="../../weeks/week_2/02_dml_and_queries.html" rel="prev">
-<link href="../../logo.ico" rel="icon">
+<link href="../../assets/logo.ico" rel="icon">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-409faa19af3b164da9d0feb520d01fde.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-6b2c023f055c24862a5f4ed8a943fe6b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-409faa19af3b164da9d0feb520d01fde.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -150,7 +150,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="../../assets/style.css">
 </head>
 
 <body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -342,8 +342,8 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="../../index.html" class="sidebar-logo-link">
-      <img src="../../cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
-      <img src="../../cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      <img src="../../assets/cover.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../assets/cover.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">DBMS [CS2001]</a> 
@@ -809,7 +809,7 @@ window.Quarto = {
 <li><p><code>LIKE '%Comp%'</code> : Matches any string containing “Comp” anywhere inside it (e.g., “Computer”, “MyComp”).</p></li>
 <li><p><code>LIKE '___'</code> (three underscores) : Matches any string of exactly three characters (e.g., “Cat”, “Dog”).</p></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">SELECT</span> name</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource .sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">SELECT</span> name</span>
 <span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="kw">FROM</span> instructor</span>
 <span id="cb1-3"><a href="#cb1-3" aria-label="3"></a><span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'%dar%'</span>; </span>
 <span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">-- Finds names like 'Mandar', 'Darren', 'Cedar'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -818,12 +818,12 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="advanced-predicates-between-and-in">2. Advanced Predicates (<code>BETWEEN</code> and <code>IN</code>)</h3>
 <p>These are essentially shortcuts (syntax sugar) that save you from writing long, messy <code>WHERE</code> clauses.</p>
 <p><strong><code>BETWEEN a AND b</code></strong>: A clean way to check for a range (inclusive of both <code>a</code> and <code>b</code>).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co">-- Instead of: WHERE salary &gt;= 90000 AND salary &lt;= 100000</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co">-- Instead of: WHERE salary &gt;= 90000 AND salary &lt;= 100000</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="kw">SELECT</span> name</span>
 <span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">FROM</span> instructor</span>
 <span id="cb2-4"><a href="#cb2-4" aria-label="4"></a><span class="kw">WHERE</span> salary <span class="kw">BETWEEN</span> <span class="dv">90000</span> <span class="kw">AND</span> <span class="dv">100000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong><code>IN</code></strong>: A shorthand for multiple <code>OR</code> conditions.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="co">-- Instead of: WHERE dept_name = 'Comp Sci' OR dept_name = 'Biology'</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="co">-- Instead of: WHERE dept_name = 'Comp Sci' OR dept_name = 'Biology'</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">SELECT</span> name</span>
 <span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="kw">FROM</span> instructor</span>
 <span id="cb3-4"><a href="#cb3-4" aria-label="4"></a><span class="kw">WHERE</span> dept_name <span class="kw">IN</span> (<span class="st">'Comp Sci'</span>, <span class="st">'Biology'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -838,7 +838,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="the-is-operator">The <code>IS</code> Operator</h3>
 <p>Because <code>NULL</code> means “unknown”, we cannot use standard mathematical operators like <code>=</code> or <code>!=</code> on it.</p>
 <p>If you ask SQL: <code>WHERE dorm = NULL</code>, the result is practically “Unknown = Unknown?”, which doesn’t make sense! Instead, we must use the special <code>IS</code> operator.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="co">-- Find students who haven't been assigned a dorm yet</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource .sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="co">-- Find students who haven't been assigned a dorm yet</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">SELECT</span> name </span>
 <span id="cb4-3"><a href="#cb4-3" aria-label="3"></a><span class="kw">FROM</span> student</span>
 <span id="cb4-4"><a href="#cb4-4" aria-label="4"></a><span class="kw">WHERE</span> dorm <span class="kw">IS</span> <span class="kw">NULL</span>;</span>
@@ -924,7 +924,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="group-by-sorting-into-buckets"><code>GROUP BY</code>: Sorting into Buckets</h3>
 <p>What if we want the average salary <em>for every single department</em>? We can’t just use <code>avg(salary)</code> alone, because that gives us the average of the entire university.</p>
 <p>Instead, we use <code>GROUP BY</code>. This tells SQL: “Sort the rows into buckets based on their department. Then, calculate the average for each bucket independently!”</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-label="2"></a><span class="kw">FROM</span> instructor</span>
 <span id="cb5-3"><a href="#cb5-3" aria-label="3"></a><span class="kw">GROUP</span> <span class="kw">BY</span> dept_name;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
@@ -933,7 +933,7 @@ window.Quarto = {
 <p>We already learned that <code>WHERE</code> filters individual rows. But what if we want to filter the <em>groups</em> we just created? For example, “Show me departments where the <em>average salary</em> is greater than 42,000.”</p>
 <p>You cannot use <code>WHERE avg(salary) &gt; 42000</code> because <code>WHERE</code> happens <em>before</em> the buckets are created!</p>
 <p>Instead, we use <code>HAVING</code>. If <code>WHERE</code> is the bouncer for rows, <code>HAVING</code> is the bouncer for groups!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">SELECT</span> dept_name, <span class="fu">avg</span>(salary)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">FROM</span> instructor</span>
 <span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="kw">GROUP</span> <span class="kw">BY</span> dept_name</span>
 <span id="cb6-4"><a href="#cb6-4" aria-label="4"></a><span class="kw">HAVING</span> <span class="fu">avg</span>(salary) <span class="op">&gt;</span> <span class="dv">42000</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -972,12 +972,32 @@ flowchart TD
 <li><strong><code>SELECT</code></strong>: It finally decides which columns to show you on the screen.</li>
 <li><strong><code>ORDER BY</code></strong>: It alphabetizes or sorts the final output for you.</li>
 </ol>
+<script type="module" src="../../assets/sql_runner.js"></script>
 
 
 
 </section>
 
 </main> <!-- /main -->
+<script type="module">
+(function() {
+  const path = window.location.pathname.toLowerCase();
+  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
+  
+  if (isWeek2Or3 || document.querySelector('.ds')) {
+    const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
+    
+    // Inject CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = offset + 'assets/sql_runner.css';
+    document.head.appendChild(link);
+
+    // Dynamically load runner module
+    import(offset + 'assets/sql_runner.js');
+  }
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
