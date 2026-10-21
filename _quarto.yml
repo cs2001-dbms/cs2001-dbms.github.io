@@ -86,6 +86,7 @@ book:
         - weeks/week_3/joins.qmd
         - weeks/week_3/intermediate_sql.qmd
         - weeks/week_3/advanced_sql.qmd
+        - weeks/week_3/sql_examples.qmd
     - part: '**Week-04**'
       chapters:
         - weeks/week_4/01_relational_algebra_and_calculus.qmd

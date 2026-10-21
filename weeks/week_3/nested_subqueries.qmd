@@ -6,256 +6,411 @@ format:
         code-fold: false
 ---
 
-## Nested Subqueries
-
-A **subquery** is simply a `select-from-where` block placed *inside* another query. SQL lets you nest subqueries in the `WHERE`, `FROM`, and `SELECT` clauses.
-
-- `select`  :  Must return a single scalar value.
-- `from`  :  Can return any valid relation (table).
-- `where`  :  Used in expressions like `Attribute <operation> (subquery)`.
-
----
-
-## Subqueries in the `WHERE` Clause
-
-Typically used to test **set membership**, **set comparison**, and **set cardinality**.
-
-### Set Membership: `IN` / `NOT IN`
-
-*Example:* Find employees who worked on Project A **and** Project B.
-
-```sql
-select distinct emp_id
-from assignment
-where project = 'Project A' and
-      emp_id in (select emp_id
-                 from assignment
-                 where project = 'Project B');
+```{=html}
+<p>A <b>subquery</b> is a <code>select-from-where</code> block placed <i>inside</i> another query. SQL allows subqueries in three places, and what the subquery must return depends on where it sits.</p>
+<div class="flow"><div class="box"><b>where</b><span>a set (or a single value) to test against</span></div><div class="box"><b>from</b><span>any relation, used like a table</span></div><div class="box"><b>select</b><span>exactly one value: a scalar</span></div></div>
+<p class="flow-caption">Examples on this page use the course datasets (university, flis, lis) from the Datasets section. Every output shown is exactly what PostgreSQL returns.</p>
 ```
 
-> Swap `in` for `not in` to find employees on Project A **but not** Project B.
+## Subqueries in the `where` Clause
 
-### Set Comparison: `SOME` and `ALL`
+```{=html}
+<p>Used to test <b>set membership</b> (<code>in</code>), <b>set comparison</b> (<code>some</code> / <code>all</code>) and <b>set cardinality</b> (<code>exists</code> / <code>unique</code>).</p>
+```
 
-| Clause | Meaning | Logic |
-|---|---|---|
-| **`some`** | True if comparison holds for **at least one** row in subquery | $\exists\, t \in r : F \langle\text{comp}\rangle\, t$ |
-| **`all`** | True if comparison holds for **every** row in subquery | $\forall\, t \in r : F \langle\text{comp}\rangle\, t$ |
+### Set Membership: `in` / `not in`
 
-> 📌 \<comp\> can be: <, ≤, >, ≥, =, ≠
-
-*Example:* Employees earning more than **some** employee in Sales:
+```{=html}
+<p><code>A in (subquery)</code> is true if the value of <code>A</code> appears in the subquery result. <code>not in</code> is true if it does not.</p>
+<p><i>Example:</i> Find courses offered in Fall 2009 that were <b>also</b> offered in Spring 2008.</p><div class="ds">Dataset: university</div>
+```
 
 ```sql
-select name
-from employee
+select distinct course_id
+from section
+where semester = 'Fall' and year = 2009 and
+      course_id in (select course_id
+                    from section
+                    where semester = 'Spring' and year = 2008);
+```
+
+```{=html}
+<div class="panel"><div class="panel-title">What happens behind the query</div><div class="two"><div><div class="flow-label">Outer: Fall 2009 courses</div><div class="chips"><span class="chip">105</span><span class="chip on">237</span><span class="chip">242</span><span class="chip">304</span><span class="chip">334</span><span class="chip">486</span><span class="chip">960</span></div></div><div><div class="flow-label">Subquery result: Spring 2008 courses</div><div class="chips"><span class="chip">158</span><span class="chip on">237</span><span class="chip">345</span><span class="chip">349</span><span class="chip">362</span><span class="chip">704</span><span class="chip">852</span><span class="chip">962</span><span class="chip">991</span></div></div></div><p style="margin:8px 0 0">Each Fall 2009 course is looked up in the subquery result. Only <b>237</b> is found → <code>in</code> keeps it. The other 6 are <i>not</i> found → <code>not in</code> keeps those.</p></div>
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>course_id</th></tr><tr><td>237</td></tr></table></div><div class="rows-note">(1 row)</div>
+<p>Swap <code>in</code> for <code>not in</code> to get courses offered in Fall 2009 but <b>not</b> in Spring 2008:</p>
+```
+
+```sql
+... and course_id not in (select course_id
+                        from section
+                        where semester = 'Spring' and year = 2008);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>course_id</th></tr><tr><td>105</td></tr><tr><td>242</td></tr><tr><td>304</td></tr><tr><td>334</td></tr><tr><td>486</td></tr><tr><td>960</td></tr></table></div><div class="rows-note">(6 rows)</div>
+```
+
+### ⚠️ Trap: `not in` when the subquery contains `null`
+
+```{=html}
+<p><i>Example:</i> Find faculty members who are <b>not</b> library members. In <code>members</code>, the <code>id</code> column holds faculty ids, and it is <code>null</code> for every student member.</p><div class="ds">Dataset: lis</div>
+```
+
+```sql
+select faculty_fname, faculty_lname, id
+from faculty
+where id not in (select id from members);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>faculty_fname</th><th>faculty_lname</th><th>id</th></tr></table></div><div class="rows-note">(0 rows) · expected 1 row, got none</div>
+<div class="panel"><div class="panel-title">Why: evaluating <code>not in</code> for Pinki Mandal (id = FMCA05)</div><p style="margin:0 0 6px"><code>x not in (v1, v2, …)</code> means <code>x &lt;&gt; v1 <b>and</b> x &lt;&gt; v2 <b>and</b> …</code></p><div class="table-wrap"><table class="jt "><tr><th>comparison</th><th>result</th></tr><tr><td>'FMCA05' &lt;&gt; 'FCS01'</td><td>true</td></tr><tr><td>'FMCA05' &lt;&gt; 'FCS02'</td><td>true</td></tr><tr><td>… (each of the other faculty member ids)</td><td>true</td></tr><tr class="hit"><td>'FMCA05' &lt;&gt; <span class="nl">null</span> (a student member)</td><td><b>unknown</b></td></tr></table></div><p style="margin:8px 0 0">true <b>and</b> true <b>and</b> … <b>and</b> unknown = <b>unknown</b>. <code>where</code> keeps only rows that are <b>true</b>, so Pinki is dropped. With even one <code>null</code> in the subquery, <code>not in</code> can never be true.</p></div>
+<p><b>Fix 1</b>: remove nulls from the subquery. <b>Fix 2</b>: use <code>not exists</code>, which never compares against <code>null</code>.</p>
+```
+
+```sql
+-- Fix 1
+select faculty_fname, faculty_lname, id
+from faculty
+where id not in (select id from members where id is not null);
+
+-- Fix 2
+select faculty_fname, faculty_lname, id
+from faculty f
+where not exists (select * from members m where m.id = f.id);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>faculty_fname</th><th>faculty_lname</th><th>id</th></tr><tr><td>Pinki</td><td>Mandal</td><td>FMCA05</td></tr></table></div><div class="rows-note">(1 row) · both fixes</div>
+```
+
+### Set Comparison: `some` and `all`
+
+```{=html}
+<div class="table-wrap"><table class="jt "><tr><th>Clause</th><th>True when</th><th>Logic</th></tr><tr><td><code>F &lt;comp&gt; some r</code></td><td>the comparison holds for <b>at least one</b> row of r</td><td>∃ t ∈ r : F &lt;comp&gt; t</td></tr><tr><td><code>F &lt;comp&gt; all r</code></td><td>the comparison holds for <b>every</b> row of r</td><td>∀ t ∈ r : F &lt;comp&gt; t</td></tr></table></div><p>&lt;comp&gt; can be <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>=</code>, <code>&lt;&gt;</code>. <code>any</code> is a synonym for <code>some</code>.</p>
+<p><i>Example:</i> Find instructors who earn more than <b>some</b> / more than <b>all</b> Physics instructors. Physics has two instructors: Shuming (108011.81) and Voronina (121141.99).</p><div class="ds">Dataset: university</div>
+```
+
+```sql
+select name, dept_name, salary
+from instructor
 where salary > some (select salary
-                      from employee
-                      where dept_name = 'Sales');
+                     from instructor
+                     where dept_name = 'Physics');
+
+-- replace some with all for the second query
 ```
 
-*Example:* Employees earning more than **all** employees in Sales:
-
-```sql
-select name
-from employee
-where salary > all (select salary
-                     from employee
-                     where dept_name = 'Sales');
+```{=html}
+<div class="panel"><div class="panel-title">Salaries in descending order</div><div class="table-wrap"><table class="jt "><tr><th>name</th><th>dept_name</th><th>salary</th><th>&gt; some Physics</th><th>&gt; all Physics</th></tr><tr class="hit"><td>Wieland</td><td>Pol. Sci.</td><td>124651.41</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span></td></tr><tr class="hit"><td>Voronina</td><td>Physics</td><td>121141.99</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr><tr class="hit"><td>Mird</td><td>Marketing</td><td>119921.41</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr><tr class="hit"><td>Sakurai</td><td>English</td><td>118143.98</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr><tr class="hit"><td>Bietzk</td><td>Cybernetics</td><td>117836.50</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr><tr class="hit"><td>Bondi</td><td>Comp. Sci.</td><td>115469.11</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Shuming</td><td>Physics</td><td>108011.81</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Lent</td><td>Mech. Eng.</td><td>107978.47</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Kenje</td><td>Marketing</td><td>106554.73</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>…</td><td></td><td></td><td></td><td></td></tr></table></div><p style="margin:8px 0 0"><code>&gt; some</code> = above the <b>smallest</b> Physics salary (108011.81) → 6 rows. <code>&gt; all</code> = above the <b>largest</b> Physics salary (121141.99) → only Wieland. Voronina is not greater than her own salary, so she fails <code>&gt; all</code>.</p></div>
+<div class="two"><div><div class="flow-label">&gt; some</div><div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>dept_name</th><th>salary</th></tr><tr><td>Wieland</td><td>Pol. Sci.</td><td>124651.41</td></tr><tr><td>Voronina</td><td>Physics</td><td>121141.99</td></tr><tr><td>Mird</td><td>Marketing</td><td>119921.41</td></tr><tr><td>Sakurai</td><td>English</td><td>118143.98</td></tr><tr><td>Bietzk</td><td>Cybernetics</td><td>117836.50</td></tr><tr><td>Bondi</td><td>Comp. Sci.</td><td>115469.11</td></tr></table></div><div class="rows-note">(6 rows)</div></div><div><div class="flow-label">&gt; all</div><div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>dept_name</th><th>salary</th></tr><tr><td>Wieland</td><td>Pol. Sci.</td><td>124651.41</td></tr></table></div><div class="rows-note">(1 row)</div></div></div>
 ```
 
-### Test for Empty Sets: `EXISTS`
+#### Equivalences to remember
 
-- `exists r` is true if `r` is non-empty.
-- `not exists r` is true if `r` is empty.
-
-*Example:* Find projects active in both Q1 2025 and Q2 2025, using a **correlated subquery** (inner query refers to the outer query's variable).
-
-```sql
-select project_id
-from timeline as S
-where quarter = 'Q1' and year = 2025 and
-      exists (select *
-              from timeline as T
-              where quarter = 'Q2' and year = 2025
-                    and S.project_id = T.project_id);
+```{=html}
+<div class="table-wrap"><table class="jt "><tr><th>Expression</th><th>Same as</th><th>Why</th></tr><tr><td><code>= some</code></td><td><code>in</code></td><td>equal to at least one value</td></tr><tr><td><code>&lt;&gt; all</code></td><td><code>not in</code></td><td>different from every value</td></tr><tr><td><code>&gt; some</code></td><td><code>&gt; min(…)</code></td><td>beating the smallest is enough</td></tr><tr><td><code>&gt; all</code></td><td><code>&gt; max(…)</code></td><td>must beat the largest</td></tr><tr><td><code>&lt;&gt; some</code></td><td><b>not</b> the same as <code>not in</code></td><td>true if the value differs from <i>any one</i> value; with two different values in r it is almost always true</td></tr></table></div>
+<p><b>Edge case:</b> if the subquery returns <b>no rows</b>, <code>&gt; all</code> is <b>true</b> for every row (nothing to fail against) and <code>&gt; some</code> is <b>false</b> (nothing to succeed against).</p>
 ```
 
-- `S` is the **correlation name** (outer query variable)
-- The inner query referencing `S` is the **correlated subquery**
+### Test for Empty Relations: `exists` / `not exists`
 
-*Example:* Find employees who have worked on **all** projects in the Marketing department (uses `not exists` + set difference logic):
+```{=html}
+<p><code>exists r</code> is true if r returns at least one row; <code>not exists r</code> is true if r is empty. The columns returned do not matter, so <code>select *</code> is normal here.</p><p>Usually the subquery is <b>correlated</b>: it refers to a column of the outer query (the <b>correlation name</b>), so it is re-evaluated <b>once for every outer row</b>.</p>
+<p><i>Example:</i> Find teams that have <b>never lost a home match</b>.</p><div class="ds">Dataset: flis</div>
+```
 
 ```sql
-select distinct S.emp_id, S.name
-from employee as S
+select t.name
+from teams as t
+where not exists (select *
+                  from matches as m
+                  where m.host_team_id = t.team_id
+                        and m.host_team_score < m.guest_team_score);
+```
+
+```{=html}
+<div class="panel"><div class="panel-title">Subquery run once per team (t = current outer row)</div><div class="flow steps"><div class="step"><div class="box"><b>take one team t</b></div><span>outer row</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>run subquery</b></div><span>home losses of t</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>empty?</b></div><span>not exists = true</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>keep t</b></div><span>else drop</span></div></div><div class="table-wrap"><table class="jt "><tr><th>t.name</th><th>subquery result: home losses</th><th>result is</th><th>not exists</th></tr><tr class="miss"><td>Amigos</td><td>M0016 (1-2)</td><td>non-empty</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Thunder</td><td>M0002 (0-1)</td><td>non-empty</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Rainbow</td><td>M0003 (2-3), M0012 (1-2)</td><td>non-empty</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Black Eagles</td><td>M0004 (1-2), M0014 (1-2)</td><td>non-empty</td><td><span class="cross">✗</span></td></tr><tr class="hit"><td>All Stars</td><td>(empty)</td><td>empty</td><td><span class="tick">✓</span> kept</td></tr><tr class="hit"><td>Arawali</td><td>(empty)</td><td>empty</td><td><span class="tick">✓</span> kept</td></tr></table></div></div>
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th></tr><tr><td>All Stars</td></tr><tr><td>Arawali</td></tr></table></div><div class="rows-note">(2 rows)</div>
+<p>Using <code>exists</code> instead gives the opposite question. <i>Example:</i> teams that <b>won at least one away match</b>:</p>
+```
+
+```sql
+select t.name
+from teams as t
+where exists (select *
+              from matches as m
+              where m.guest_team_id = t.team_id
+                    and m.guest_team_score > m.host_team_score);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th></tr><tr><td>Thunder</td></tr><tr><td>Rainbow</td></tr><tr><td>Black Eagles</td></tr><tr><td>All Stars</td></tr></table></div><div class="rows-note">(4 rows)</div>
+<p><i>Example:</i> departments that have <b>no instructor</b>.</p><div class="ds">Dataset: university</div>
+```
+
+```sql
+select d.dept_name
+from department as d
+where not exists (select *
+                  from instructor as i
+                  where i.dept_name = d.dept_name);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th></tr><tr><td>Civil Eng.</td></tr><tr><td>History</td></tr><tr><td>Math</td></tr></table></div><div class="rows-note">(3 rows)</div>
+```
+
+### "For All" Queries with `not exists … except`
+
+```{=html}
+<p>SQL has no "for all" keyword. To find rows related to <b>every</b> item of a set, use: <i>X ⊇ Y</i> ⇔ <i>Y − X = ∅</i>, written as <code>not exists (Y except X)</code>.</p>
+<p><i>Example:</i> Find teams that have played against <b>every other team</b> (home or away).</p><div class="ds">Dataset: flis</div>
+```
+
+```sql
+select t.name
+from teams as t
 where not exists (
-    (select project_id from project where dept_name = 'Marketing')
+    -- Y: all other teams
+    (select team_id from teams where team_id <> t.team_id)
     except
-    (select T.project_id from assignment as T where S.emp_id = T.emp_id)
+    -- X: teams t has played against
+    (select guest_team_id from matches where host_team_id = t.team_id
+     union
+     select host_team_id from matches where guest_team_id = t.team_id)
 );
 ```
 
-### Test for Duplicates: `UNIQUE`
+```{=html}
+<div class="panel"><div class="panel-title">Y − X for each team</div><div class="flow steps"><div class="step"><div class="box"><b>Y</b></div><span>every other team</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>X</b></div><span>teams t has played</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Y except X</b></div><span>teams never played</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>empty?</b></div><span>keep t</span></div></div><div class="table-wrap"><table class="jt "><tr><th>t</th><th>Y</th><th>X (opponents)</th><th>Y − X</th><th>not exists</th></tr><tr class="hit"><td>Amigos (T0001)</td><td>T0002 – T0006</td><td>T0002, T0003, T0004, T0005, T0006</td><td>∅</td><td><span class="tick">✓</span> kept</td></tr><tr class="miss"><td>Thunder (T0002)</td><td>5 teams</td><td>T0001, T0004, T0005, T0006</td><td>T0003</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Rainbow (T0003)</td><td>5 teams</td><td>T0001, T0004</td><td>T0002, T0005, T0006</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Black Eagles (T0004)</td><td>5 teams</td><td>T0001, T0002, T0003</td><td>T0005, T0006</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>All Stars (T0005)</td><td>5 teams</td><td>T0001, T0002</td><td>T0003, T0004, T0006</td><td><span class="cross">✗</span></td></tr><tr class="miss"><td>Arawali (T0006)</td><td>5 teams</td><td>T0001, T0002</td><td>T0003, T0004, T0005</td><td><span class="cross">✗</span></td></tr></table></div></div>
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th></tr><tr><td>Amigos</td></tr></table></div><div class="rows-note">(1 row)</div>
+```
 
-`unique (subquery)` is true if the subquery's result has **no duplicate rows**.
+### Test for Duplicates: `unique`
+
+```{=html}
+<p><code>unique (subquery)</code> is true if the subquery result has <b>no duplicate rows</b> (an empty result counts as unique). <i>Example:</i> teams that hosted <b>at most one</b> match.</p><div class="ds">Dataset: flis</div>
+```
 
 ```sql
-select T.project_id
-from project as T
-where unique (select R.project_id
-              from assignment as R
-              where T.project_id = R.project_id and R.year = 2025);
+-- SQL standard (lecture syntax)
+select t.name
+from teams as t
+where unique (select m.host_team_id
+              from matches as m
+              where m.host_team_id = t.team_id);
 ```
-*(Finds projects staffed by at most one employee in 2025.)*
 
----
+```{=html}
+<div class="out-label">Output in PostgreSQL</div><pre>ERROR:  UNIQUE predicate is not yet implemented</pre><p>PostgreSQL does not support <code>unique</code>. Here every row of the subquery is the same <code>host_team_id</code>, so "no duplicates" means "at most one row". Rewrite it with a count:</p>
+```
 
-## Subqueries in the FROM Clause
+```sql
+select t.name
+from teams as t
+where (select count(*)
+       from matches as m
+       where m.host_team_id = t.team_id) <= 1;
+```
 
-A subquery can stand in for a table, letting you filter on an **aggregate** without `HAVING`.
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th></tr><tr><td>All Stars</td></tr><tr><td>Arawali</td></tr></table></div><div class="rows-note">(2 rows)</div>
+```
 
-*Example:* Average salary of departments where average salary exceeds $60,000:
+## Subqueries in the `from` Clause
+
+```{=html}
+<p>A subquery in <code>from</code> produces a temporary relation that the outer query uses like a table. This lets you filter on an aggregate with <code>where</code> instead of <code>having</code>.</p><p><i>Example:</i> Departments whose average salary is greater than 90000.</p><div class="ds">Dataset: university</div>
+```
 
 ```sql
 select dept_name, avg_salary
-from (select dept_name, avg(salary) as avg_salary
-      from employee
+from (select dept_name, round(avg(salary), 2) as avg_salary
+      from instructor
       group by dept_name) as dept_avg
-where avg_salary > 60000;
+where avg_salary > 90000;
 ```
 
-### The `WITH` Clause
+```{=html}
+<div class="panel"><div class="panel-title">Two stages</div><div class="flow steps"><div class="step"><div class="box"><b>inner query</b></div><span>one row per department (17 rows)</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>as dept_avg</b></div><span>name the result</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>outer where</b></div><span>keep avg_salary &gt; 90000 (6 rows)</span></div></div></div>
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>avg_salary</th></tr><tr><td>Physics</td><td>114576.90</td></tr><tr><td>Finance</td><td>105311.38</td></tr><tr><td>Pol. Sci.</td><td>100053.07</td></tr><tr><td>Geology</td><td>99382.59</td></tr><tr><td>Comp. Sci.</td><td>98133.47</td></tr><tr><td>Cybernetics</td><td>96346.57</td></tr></table></div><div class="rows-note">(6 rows) · row order may vary; add order by avg_salary desc to fix it</div>
+<p>Equivalent with <code>having</code>: <code>select dept_name, avg(salary) from instructor group by dept_name having avg(salary) &gt; 90000;</code></p>
+```
 
-`with` defines a **temporary, named result** (like a scratchpad table) visible only to the query that follows.
+### The `with` Clause
 
-*Example:* Find the name of the department that has the maximum budget.
+```{=html}
+<p><code>with</code> defines a temporary, named relation that exists only for the query that follows. <i>Example:</i> the department with the maximum budget.</p><div class="ds">Dataset: university</div>
+```
 
 ```sql
 with max_budget(value) as
     (select max(budget) from department)
-select department.name
+select department.dept_name, department.budget
 from department, max_budget
 where department.budget = max_budget.value;
 ```
 
-Multiple `with` blocks can be chained for multi-step logic:
-
-*Example:* Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>budget</th></tr><tr><td>Physics</td><td>942162.76</td></tr></table></div><div class="rows-note">(1 row)</div>
+<p>Several <code>with</code> relations can be chained, each using the earlier ones. <i>Example:</i> departments whose total salary is greater than the average total salary of all departments (228235.85).</p>
+<div class="flow steps"><div class="step"><div class="box"><b>dept_total</b></div><span>sum of salaries per dept</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>dept_total_avg</b></div><span>average of those sums</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>final select</b></div><span>departments above it</span></div></div>
+```
 
 ```sql
 with dept_total(dept_name, value) as
     (select dept_name, sum(salary)
-     from employee
+     from instructor
      group by dept_name),
 dept_total_avg(value) as
     (select avg(value) from dept_total)
-select dept_name
+select dept_name, dept_total.value
 from dept_total, dept_total_avg
 where dept_total.value > dept_total_avg.value;
 ```
 
----
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>value</th></tr><tr><td>Statistics</td><td>406772.65</td></tr><tr><td>Athletics</td><td>385490.99</td></tr><tr><td>Cybernetics</td><td>385386.27</td></tr><tr><td>Marketing</td><td>336389.75</td></tr><tr><td>Pol. Sci.</td><td>300159.22</td></tr><tr><td>Elec. Eng.</td><td>296650.96</td></tr><tr><td>English</td><td>288356.20</td></tr><tr><td>Physics</td><td>229153.80</td></tr></table></div><div class="rows-note">(8 rows) · row order may vary</div>
+<p>⚠️ Write <code>dept_total.value</code> in the select list, not just <code>value</code>. Both relations have a column called <code>value</code>, so PostgreSQL reports <code>column reference "value" is ambiguous</code>.</p>
+```
 
-## Subqueries in the SELECT Clause
+## Subqueries in the `select` Clause
 
-A **scalar subquery** returns exactly one value, used wherever a single value is expected.
+```{=html}
+<p>A <b>scalar subquery</b> returns exactly one value and can be used wherever a single value is expected. <i>Example:</i> each department with its number of instructors.</p><div class="ds">Dataset: university</div>
+```
 
 ```sql
 select dept_name,
        (select count(*)
-        from employee
-        where department.dept_name = employee.dept_name) as num_employees
-from department;
+        from instructor
+        where department.dept_name = instructor.dept_name) as num_instructors
+from department
+order by dept_name;
 ```
 
-> ⚠️ If the subquery returns more than one row, this causes a **runtime error**.
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>num_instructors</th></tr><tr><td>Accounting</td><td>4</td></tr><tr><td>Astronomy</td><td>1</td></tr><tr><td>Athletics</td><td>5</td></tr><tr><td>Biology</td><td>2</td></tr><tr><td>Civil Eng.</td><td>0</td></tr></table></div><div class="rows-note">First 5 of 20 rows shown</div>
+<p>Note <b>Civil Eng. → 0</b>: a scalar subquery that counts still returns one row. Compare with a join + <code>group by</code>, which would drop departments with no instructors.</p>
+<p>⚠️ If the subquery returns <b>more than one row</b>, the query fails at runtime:</p>
+```
 
----
+```sql
+select d.dept_name,
+       (select i.name from instructor i where i.dept_name = d.dept_name)
+from department d;
+```
+
+```{=html}
+<pre>ERROR:  more than one row returned by a subquery used as an expression</pre>
+```
 
 ## Modifying the Database
 
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    M["Database Modification"] --> D["DELETE — remove tuples"]
-    M --> I["INSERT — add tuples"]
-    M --> U["UPDATE — change values"]
+```{=html}
+<div class="flow"><div class="box"><b>delete</b><span>remove rows</span></div><div class="box"><b>insert</b><span>add rows</span></div><div class="box"><b>update</b><span>change values</span></div></div>
+<p>These statements change the dataset. Wrap them in <code>begin; … rollback;</code> while practising so your copy of the data is restored afterwards.</p>
 ```
 
 ### Deletion
 
+```{=html}
+<div class="ds">Dataset: university</div>
+```
+
 ```sql
--- Delete all employees
-delete from employee;
-
--- Delete employees from one department
-delete from employee where dept_name = 'Finance';
-
--- Delete employees in departments located in a specific building
-delete from employee
+begin;
+-- delete instructors in departments located in the Taylor building
+delete from instructor
 where dept_name in (select dept_name
-                     from department
-                     where building = 'Tower B');
+                    from department
+                    where building = 'Taylor');
+rollback;
 ```
 
-**Tricky case:** Delete employees earning less than the average salary.
+```{=html}
+<pre>DELETE 7</pre>
+<p><b>Tricky case:</b> delete instructors earning less than the average salary.</p>
+```
 
 ```sql
-delete from employee
-where salary < (select avg(salary) from employee);
+begin;
+delete from instructor
+where salary < (select avg(salary) from instructor);
+select count(*) from instructor;
+rollback;
 ```
 
-> ⚠️ As rows are deleted, the average changes! Solution: **(1)** computing the average and identifying all rows to delete *first*, then **(2)** deleting them — without recomputing mid-way.
+```{=html}
+<div class="panel"><div class="panel-title">As rows are deleted, the average would change, so SQL works in two phases</div><div class="flow steps"><div class="step"><div class="box"><b>phase 1</b></div><span>compute avg once: 77600.19</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>phase 1</b></div><span>mark rows below it: 23</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>phase 2</b></div><span>delete marked rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>result</b></div><span>50 → 27 instructors</span></div></div></div><pre>DELETE 23
+ count
+-------
+    27</pre>
+```
 
 ### Insertion
 
 ```sql
+begin;
 insert into course
-values ('CS-437', 'Database Systems', 'Comp. Sci.', 4);
+values ('CS-999', 'Data Visualisation', 'Comp. Sci.', 3);
 
--- with tot_creds set to null
-insert into student
-values ('3003', 'Green', 'Finance', null);
-
--- insert from another query's results
-insert into student
-select id, name, dept_name, 0
-from employee;
+-- column list given: unlisted columns become null
+insert into course (course_id, title)
+values ('CS-998', 'Seminar');
+rollback;
 ```
 
-> 📌 The entire `select-from-where` is evaluated **before** any row is inserted — otherwise `insert into table1 select * from table1` would loop infinitely.
+```{=html}
+<p>The whole <code>select-from-where</code> of an <code>insert … select</code> is evaluated <b>before</b> any row is inserted; otherwise <code>insert into r select * from r</code> would never end.</p>
+<p>⚠️ <b>Watch the primary key.</b> The lecture query below fails on the course dataset, because an instructor id already exists as a student id:</p>
+```
+
+```sql
+insert into student
+select id, name, dept_name, 0
+from instructor;
+```
+
+```{=html}
+<pre>ERROR:  duplicate key value violates unique constraint "student_pkey"
+DETAIL:  Key (id)=(96895) already exists.</pre><p>The statement is atomic: none of the 50 rows are inserted.</p>
+```
 
 ### Updates
 
-**Conditional updates** — give a 3% raise above $100K, 5% below (order matters!):
-
-```sql
-update employee set salary = salary * 1.03 where salary > 100000;
-update employee set salary = salary * 1.05 where salary <= 100000;
+```{=html}
+<p>Give a 3% raise to salaries over 100000 and 5% to the rest. With two separate updates, <b>order matters</b>: running the 5% update first could push a salary over 100000 and it would then get the 3% raise as well. A <code>case</code> expression does it in one pass:</p>
 ```
 
-Cleaner with a **`case`** statement (single pass, no ordering issues):
-
 ```sql
-update employee
+begin;
+update instructor
 set salary = case
-    when salary <= 100000 then salary * 1.05
-    else salary * 1.03
-end;
+                 when salary <= 100000 then salary * 1.05
+                 else salary * 1.03
+             end;
+rollback;
 ```
 
-**Updates with scalar subqueries** — recompute total credits per student:
+```{=html}
+<pre>UPDATE 50</pre>
+<p><b>Update with a scalar subquery:</b> recompute each student's total credits from passed courses.</p>
+```
 
 ```sql
-update student S
-set tot_creds = (select sum(credits)
-                  from takes, course
-                  where takes.course_id = course.course_id and
-                        S.id = takes.id and
-                        takes.grade <> 'F' and
-                        takes.grade is not null);
+begin;
+update student as s
+set tot_cred = (select sum(c.credits)
+                from takes as t, course as c
+                where t.course_id = c.course_id
+                      and t.id = s.id
+                      and t.grade <> 'F'
+                      and t.grade is not null);
+rollback;
 ```
-*(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)*
 
+```{=html}
+<pre>UPDATE 2000</pre><p>A student with no passed course would get <code>null</code> (sum of no rows). Use <code>coalesce(sum(c.credits), 0)</code> to store 0 instead.</p>
+```

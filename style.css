@@ -15,3 +15,122 @@ code,
     font-family: 'Fira Code', monospace !important;
     font-variant-ligatures: contextual;
 }
+/* ============================================================
+   Course-site visual style: flow boxes + result tables (blue & grey)
+   ============================================================ */
+:root {
+  --dbms-blue-bg: #e4edf8;   --dbms-blue-border: #a9c2e3;
+  --dbms-blue-text: #1e3a5f; --dbms-blue-sub: #4a5d75;
+  --dbms-blue-head: #d6e4f5; --dbms-blue-cell: #f5f9fd;
+  --dbms-blue-row: #e9f0f8;  --dbms-blue-bar: #3b6ea8;
+  --dbms-grey-bg: #f1f3f5;   --dbms-grey-border: #c5cbd3;
+  --dbms-grey-text: #343a40; --dbms-grey-sub: #5f6670;
+  --dbms-grey-head: #e6e9ed; --dbms-grey-cell: #f8f9fa;
+  --dbms-line: #e3e6ee;      --dbms-frame: #c9cedb;
+  --dbms-muted: #6c757d;
+}
+body.quarto-dark {
+  --dbms-blue-bg: #1f3350;   --dbms-blue-border: #3f5f88;
+  --dbms-blue-text: #dbe7f5; --dbms-blue-sub: #a9bdd6;
+  --dbms-blue-head: #26405f; --dbms-blue-cell: #1b2a3d;
+  --dbms-blue-row: #22364f;  --dbms-blue-bar: #7fa6d6;
+  --dbms-grey-bg: #2b2f34;   --dbms-grey-border: #4a5058;
+  --dbms-grey-text: #e3e6ea; --dbms-grey-sub: #aab1ba;
+  --dbms-grey-head: #343940; --dbms-grey-cell: #262a2f;
+  --dbms-line: #3a3f46;      --dbms-frame: #4a5058;
+  --dbms-muted: #9aa3ad;
+}
+
+/* ---------- Flow boxes ---------- */
+.flow { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+.flow .box {
+  flex: 1; min-width: 120px; text-align: center; padding: 12px 8px;
+  background: var(--dbms-blue-bg); border: 1.5px solid var(--dbms-blue-border); border-radius: 12px;
+}
+.flow .box b    { display: block; font-size: 1.05rem; color: var(--dbms-blue-text); }
+.flow .box span { display: block; font-size: 0.82rem; color: var(--dbms-blue-sub); margin-top: 3px; }
+.flow .box.grey { background: var(--dbms-grey-bg); border-color: var(--dbms-grey-border); }
+.flow .box.grey b    { color: var(--dbms-grey-text); }
+.flow .box.grey span { color: var(--dbms-grey-sub); }
+.flow .arrow { display: flex; align-items: center; font-size: 1.5rem; font-weight: bold; color: var(--dbms-muted); }
+.flow.tight .box { min-width: 0; }
+.flow-label { font-size: 0.8rem; font-weight: bold; letter-spacing: .04em; text-transform: uppercase; color: var(--dbms-muted); margin: 14px 0 4px; }
+.flow-caption { font-size: 0.88rem; font-style: italic; color: var(--dbms-muted); margin: 6px 0 18px; }
+.flow.steps { flex-wrap: nowrap; align-items: flex-start; gap: 6px; }
+.flow.steps .step { flex: 1; text-align: center; }
+.flow.steps .step .box { min-width: 0; padding: 12px 4px; }
+.flow.steps .step > span { display: block; font-size: 0.82rem; color: var(--dbms-blue-sub); margin-top: 6px; }
+.flow.steps .arrow { padding-top: 12px; }
+@media (max-width: 640px) { .flow.steps { flex-wrap: wrap; } .flow.steps .arrow { display: none; } }
+
+/* ---------- Panels, labels, two-column layout ---------- */
+.panel { border: 1.5px solid var(--dbms-frame); border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+.panel-title { font-size: 0.82rem; font-weight: bold; color: var(--dbms-blue-text); margin-bottom: 6px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+.ds { display: inline-block; font-size: 0.75rem; font-weight: bold; letter-spacing: .03em; color: var(--dbms-grey-text);
+      background: var(--dbms-grey-bg); border: 1px solid var(--dbms-grey-border); border-radius: 999px; padding: 1px 10px; margin: 4px 0 2px; }
+.out-label { font-size: 0.78rem; font-weight: bold; text-transform: uppercase; letter-spacing: .04em; color: var(--dbms-muted); margin: 6px 0 2px; }
+.rows-note { font-size: 0.8rem; color: var(--dbms-muted); margin: 2px 0 14px; }
+.tick  { color: var(--dbms-blue-bar); font-weight: bold; }
+.cross { color: var(--dbms-muted); font-weight: bold; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+.chip  { font-family: 'Fira Code', monospace; font-size: 0.85rem; padding: 3px 10px; border-radius: 8px;
+         background: var(--dbms-grey-bg); border: 1px solid var(--dbms-grey-border); color: var(--dbms-grey-text); }
+.chip.on { background: var(--dbms-blue-head); border-color: var(--dbms-blue-bar); color: var(--dbms-blue-text); font-weight: bold; }
+
+/* ---------- Result tables ---------- */
+.table-wrap { overflow-x: auto; margin: 8px 0; }
+table.jt {
+  border-collapse: separate; border-spacing: 0; font-size: 0.95rem; min-width: 360px;
+  border: 1.5px solid var(--dbms-frame); border-radius: 10px; overflow: hidden; margin: 0;
+}
+table.jt th, table.jt td { padding: 8px 16px; text-align: left; border-bottom: 1px solid var(--dbms-line); }
+table.jt tr:last-child td { border-bottom: none; }
+table.jt th   { font-size: 0.88rem; font-weight: bold; background: var(--dbms-grey-head); color: var(--dbms-grey-text); }
+table.jt.res th, table.jt th.L { background: var(--dbms-blue-head); color: var(--dbms-blue-text); }
+table.jt th.R { background: var(--dbms-grey-head); color: var(--dbms-grey-text); }
+table.jt td.L { background: var(--dbms-blue-cell); }
+table.jt td.R { background: var(--dbms-grey-cell); }
+table.jt tr.un td, table.jt tr.hit td { background: var(--dbms-blue-row); font-weight: bold; color: var(--dbms-blue-text); }
+table.jt tr.un td:first-child, table.jt tr.hit td:first-child { box-shadow: inset 4px 0 0 var(--dbms-blue-bar); }
+table.jt tr.miss td { color: var(--dbms-muted); }
+.nl {
+  font-family: 'Fira Code', monospace; font-size: 0.8rem; font-style: italic; font-weight: normal;
+  color: var(--dbms-muted); border: 1px dashed var(--dbms-muted); padding: 1px 8px; border-radius: 6px;
+}
+.jt-legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.8rem; color: var(--dbms-muted); margin: 6px 0 20px; }
+.jt-legend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--dbms-frame); }
+
+/* ---------- SQL Examples page ---------- */
+.q { border-left: 4px solid var(--dbms-blue-bar); background: var(--dbms-blue-cell); padding: 8px 14px; margin: 8px 0; }
+.q b { color: var(--dbms-blue-text); }
+.concept { font-size: 0.85rem; color: var(--dbms-grey-sub); margin: 2px 0 6px; }
+.why { border: 1px dashed var(--dbms-grey-border); border-radius: 10px; padding: 8px 14px; margin: 8px 0 22px; font-size: 0.95rem; }
+.why b.t { color: var(--dbms-blue-text); }
+
+/* ---------- Spacing (more breathing room) ---------- */
+#quarto-document-content h2 { margin-top: 3rem; margin-bottom: 1rem; }
+#quarto-document-content h3 { margin-top: 2.25rem; margin-bottom: 0.75rem; }
+#quarto-document-content h4 { margin-top: 1.75rem; }
+#quarto-document-content div.sourceCode { margin: 14px 0 18px; }
+.flow { gap: 16px; margin: 18px 0; }
+.flow .box { padding: 16px 12px; }
+.flow .box span { margin-top: 6px; line-height: 1.45; }
+.flow.steps { gap: 10px; }
+.flow.steps .step > span { margin-top: 8px; line-height: 1.45; }
+.flow-label { margin: 24px 0 8px; }
+.flow-caption { margin: 10px 0 26px; }
+.panel { padding: 20px 24px; margin: 24px 0; }
+.panel-title { margin-bottom: 14px; }
+.panel p { margin-top: 12px; }
+.two { gap: 24px; }
+.table-wrap { margin: 14px 0; }
+table.jt th, table.jt td { padding: 12px 18px; line-height: 1.5; vertical-align: top; }
+.out-label { margin: 18px 0 6px; }
+.rows-note { margin: 8px 0 26px; }
+.ds { margin: 14px 0 6px; }
+.jt-legend { margin: 10px 0 26px; gap: 22px; }
+.q { padding: 12px 18px; margin: 14px 0; }
+.concept { margin: 6px 0 12px; }
+.why { padding: 14px 20px; margin: 18px 0 34px; line-height: 1.6; }
