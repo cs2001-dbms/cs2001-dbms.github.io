@@ -259,3 +259,7 @@ set tot_creds = (select sum(credits)
 ```
 *(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)*
 
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```
+

@@ -172,3 +172,7 @@ using (movie_id);
 
 ---
 
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```
+

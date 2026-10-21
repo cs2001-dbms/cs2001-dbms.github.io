@@ -372,3 +372,7 @@ revoke select on department from amit, satoshi restrict;  -- blocks the revoke i
 ```
 
 > 💡 The `references` privilege exists because a foreign key constraint can restrict what the *referenced* table's owner is allowed to do (e.g., blocking a delete due to `on delete no action`) — so creating that link requires explicit permission.
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```
