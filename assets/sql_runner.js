@@ -186,12 +186,29 @@
 
       if (target !== "test_db") {
         const offset = getQuartoOffset();
-        const url = `${offset}datasets/${target}.sql`;
+        const candidateUrls = [
+          `${offset}datasets/${target}.sql`,
+          `/datasets/${target}.sql`,
+          `${window.location.origin}/datasets/${target}.sql`
+        ];
 
         if (onProgress) onProgress(`Loading ${target} dataset...`);
-        const r = await fetch(url);
-        if (!r.ok) {
-          throw new Error(`Failed to load dataset '${target}' from ${url} (${r.status} ${r.statusText})`);
+        let r = null;
+        let lastErr = null;
+        for (const candidate of candidateUrls) {
+          try {
+            const resp = await fetch(candidate);
+            if (resp.ok) {
+              r = resp;
+              break;
+            }
+          } catch (e) {
+            lastErr = e;
+          }
+        }
+
+        if (!r || !r.ok) {
+          throw new Error(`Failed to load dataset '${target}' (${r ? r.status + ' ' + r.statusText : lastErr?.message || 'Network error'})`);
         }
         const rawSql = await r.text();
         const cleanedSql = sanitizeSQL(rawSql);
