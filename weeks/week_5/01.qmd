@@ -16,39 +16,67 @@ A relational schema should reflect real-world structure, avoid storing the same 
 instructor_with_department(ID, name, salary, dept_name, building, budget)
 ```
 
-- `ID`, `name`, `salary` — belong purely to the instructor, no repetition
-- `dept_name`, `building`, `budget` — belong to the *department*
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Columns</th><th>Belong to</th><th>Repeated?</th></tr><tr><td><code>ID</code>, <code>name</code>, <code>salary</code></td><td>the instructor</td><td>no: one row per instructor</td></tr><tr><td><code>dept_name</code>, <code>building</code>, <code>budget</code></td><td>the <i>department</i></td><td>yes: once per instructor in that department</td></tr></table></div>
+```
 
-Since a department has many instructors, `building` and `budget` get copied once per instructor in that department. That repetition is **redundancy** — the same data item stored in multiple places.
+Since a department has many instructors, `building` and `budget` get copied once per instructor in that department. That repetition is **redundancy**: the same data item stored in multiple places.
 
-Here's what that looks like with actual rows:
+Here's what that looks like on the **university dataset**. Joining `instructor` and `department` gives exactly this wide table:
 
-| ID | name | salary | dept_name | building | budget |
-|---|---|---|---|---|---|
-| 101 | Srinivasan | 65000 | Comp. Sci. | Taylor Hall | 100000 |
-| 102 | Wu | 90000 | Finance | Painter Hall | 120000 |
-| 103 | Gold | 87000 | Comp. Sci. | Taylor Hall | 100000 |
-| 104 | Katz | 75000 | Comp. Sci. | Taylor Hall | 100000 |
+```{=html}
+<div class="ds">Dataset: university</div>
+```
 
-Notice `Taylor Hall` and `100000` repeat for every Comp. Sci. instructor — that's the redundancy in action.
+```sql
+select id, name, salary, dept_name, building, budget
+from instructor natural join department
+where dept_name in ('Biology', 'Finance', 'Physics')
+order by dept_name, id;
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>id</th><th>name</th><th>salary</th><th>dept_name</th><th>building</th><th>budget</th></tr><tr><td>80759</td><td>Queiroz</td><td>45538.32</td><td>Biology</td><td><b style="color:var(--dbms-blue-bar)">Candlestick</b></td><td><b style="color:var(--dbms-blue-bar)">647610.55</b></td></tr><tr><td>81991</td><td>Valtchev</td><td>77036.18</td><td>Biology</td><td><b style="color:var(--dbms-blue-bar)">Candlestick</b></td><td><b style="color:var(--dbms-blue-bar)">647610.55</b></td></tr><tr><td>6569</td><td>Mingoz</td><td>105311.38</td><td>Finance</td><td>Candlestick</td><td>866831.75</td></tr><tr><td>50330</td><td>Shuming</td><td>108011.81</td><td>Physics</td><td><b style="color:var(--dbms-blue-bar)">Wrigley</b></td><td><b style="color:var(--dbms-blue-bar)">942162.76</b></td></tr><tr><td>74420</td><td>Voronina</td><td>121141.99</td><td>Physics</td><td><b style="color:var(--dbms-blue-bar)">Wrigley</b></td><td><b style="color:var(--dbms-blue-bar)">942162.76</b></td></tr></table></div><div class="rows-note">(5 rows) · repeated department facts in <b style="color:var(--dbms-blue-bar)">blue</b></div>
+```
+
+`Candlestick` and `647610.55` repeat for both Biology instructors, and `Wrigley` and `942162.76` for both Physics instructors: that's the redundancy in action.
+
+```{=html}
+<div class="panel"><div class="panel-title">Across the whole dataset</div><div class="table-wrap"><table class="jt res"><tr><th></th><th>count</th></tr><tr><td>rows in the wide table</td><td>50</td></tr><tr><td>different departments in it</td><td>17</td></tr><tr><td>times Statistics’ building and budget are stored</td><td>6 (one per Statistics instructor)</td></tr></table></div></div>
+```
 
 ### Anomalies
 
-Redundancy causes **anomalies** — inconsistencies triggered by insert, delete, or update operations. Using the same table:
+Redundancy causes **anomalies**: inconsistencies triggered by insert, delete, or update operations. On the university data:
 
-| Anomaly | What Goes Wrong | On This Table |
-|---|---|---|
-| **Insertion** | Can't add a record without unrelated data | To add a brand-new "Physics" department with no instructors yet, we can't — there's no row to put it in until a physics instructor is hired |
-| **Deletion** | Deleting one record erases unrelated info | If Wu (row 102) resigns and we delete that row, we lose the fact that Finance's building is Painter Hall and its budget is 120000 — nowhere else stores that |
-| **Update** | One fact change needs many row updates | If Comp. Sci.'s budget rises to 110000, we must update rows 101, 103, *and* 104 — miss one, and the table now claims two different budgets for the same department |
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Anomaly</th><th>What Goes Wrong</th><th>On the University Data</th></tr><tr><td><b>Insertion</b></td><td>Can’t add a record without unrelated data</td><td>The dataset has 20 departments, but the wide table shows only <b>17</b>: Civil Eng., History and Math have no instructors, so there is no row to hold their building and budget</td></tr><tr><td><b>Deletion</b></td><td>Deleting one record erases unrelated info</td><td>Finance has a single instructor, Mingoz. If that row is deleted, the fact that Finance is in Candlestick with budget 866831.75 disappears</td></tr><tr><td><b>Update</b></td><td>One fact change needs many row updates</td><td>If Statistics’ budget changes, all <b>6</b> Statistics rows must be updated; miss one, and the table shows two budgets for one department</td></tr></table></div>
+```
 
-### Why This Happens — and the Fix
+You can see the insertion anomaly yourself:
+
+```sql
+select dept_name from department
+where dept_name not in (select dept_name from instructor);
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th></tr><tr><td>Civil Eng.</td></tr><tr><td>History</td></tr><tr><td>Math</td></tr></table></div><div class="rows-note">(3 rows)</div>
+```
+
+### Why This Happens, and the Fix
 
 `dept_name` uniquely decides `building` and `budget` (a department can't have two budgets). This dependency is exactly what forces `building`/`budget` to repeat across instructor rows:
 
-**Dependency → Redundancy → Anomaly**
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>Dependency</b></div><span>dept_name → building, budget</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Redundancy</b></div><span>building and budget copied per instructor</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Anomaly</b></div><span>insert, delete, update problems</span></div></div>
+```
 
-The fix is to **decompose** the table so each fact is stored exactly once — e.g., split `instructor_with_department` into `instructor(ID, name, salary, dept_name)` and `department(dept_name, building, budget)`. (Covered in detail under Lossless Join Decomposition.)
+The fix is to **decompose** the table so each fact is stored exactly once: split `instructor_with_department` into `instructor(ID, name, salary, dept_name)` and `department(dept_name, building, budget)`, which are exactly the two tables the university dataset already has. (Covered in detail under Lossless Join Decomposition.)
+
+```{=html}
+<div class="flow"><div class="box"><b>instructor</b><span>ID, name, salary, dept_name</span></div><div class="box grey"><b>department</b><span>dept_name, building, budget</span></div></div>
+```
 
 Removing redundancy this way is what makes a schema easier to maintain: updates touch a single row, deletions don't silently destroy unrelated facts, and inserts don't need unrelated data just to go through. This is the core motivation behind everything else in normalization theory.
 
@@ -75,18 +103,52 @@ dept_name → building
 dept_name → budget
 ```
 
-since a department has exactly one building and one budget. We would *not* expect `dept_name → salary` — a department tells you nothing about one specific instructor's salary.
+since a department has exactly one building and one budget. We would *not* expect `dept_name → salary`: a department tells you nothing about one specific instructor's salary.
 
-> **Note:** An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. If the current rows happen to satisfy `name → ID` by coincidence (no two instructors currently share a name), that doesn't mean the FD genuinely holds.
+::: {.callout-note title="Note"}
+An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. If the current rows happen to satisfy `name → ID` by coincidence (no two instructors currently share a name), that doesn't mean the FD genuinely holds.
+:::
+
+### Checking FDs on the University Data
+
+An FD $\alpha \rightarrow \beta$ is violated by a table if some value of $\alpha$ appears with two different values of $\beta$. That can be counted in SQL:
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>group rows</b></div><span>by the left side α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>count</b></div><span>distinct values of β in each group</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>more than 1?</b></div><span>that group violates α → β</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>no group violates</b></div><span>the table satisfies α → β</span></div></div>
+```
+
+```sql
+-- departments that appear with more than one (building, budget)
+select dept_name
+from instructor natural join department
+group by dept_name
+having count(distinct (building, budget)) > 1;
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th></tr></table></div><div class="rows-note">(0 rows) · no department has two buildings or budgets, so dept_name → building, budget is satisfied</div>
+```
+
+The same check for other FDs on the wide table:
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>FD</th><th>Violating groups</th><th>Satisfied?</th></tr><tr><td><code>dept_name → building, budget</code></td><td>0</td><td><span class="tick">✓</span></td></tr><tr><td><code>ID → name, salary, dept_name</code></td><td>0 (ID is the key)</td><td><span class="tick">✓</span></td></tr><tr><td><code>dept_name → salary</code></td><td>14 departments have more than one salary</td><td><span class="cross">✗</span></td></tr><tr><td><code>building → dept_name</code></td><td>Candlestick houses both Biology and Finance</td><td><span class="cross">✗</span></td></tr><tr><td><code>name → ID</code></td><td>0: no two instructors share a name today</td><td><span class="tick">✓</span> only by coincidence</td></tr></table></div>
+```
+
+The last row is the note above in action: the current 50 rows satisfy `name → ID`, but nothing stops the university from hiring a second instructor with the same name, so it is **not** an FD of the schema.
 
 ### Keys, Redefined Using FDs
 
 - $K$ is a **superkey** for $R$ if and only if $K \rightarrow R$ (K determines every attribute in R)
 - $K$ is a **candidate key** for $R$ if and only if $K \rightarrow R$, **and** no proper subset $\alpha \subset K$ also satisfies $\alpha \rightarrow R$ (K is minimal)
 
+```{=html}
+<div class="panel"><div class="panel-title">On the university wide table (ID, name, salary, dept_name, building, budget)</div><div class="table-wrap"><table class="jt res"><tr><th>Attribute set</th><th>Determines every column?</th><th>Superkey?</th><th>Candidate key?</th></tr><tr><td><code>ID</code></td><td>yes</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span> (a single attribute is minimal)</td></tr><tr><td><code>ID, name</code></td><td>yes</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span> ID alone is enough</td></tr><tr><td><code>dept_name</code></td><td>no: only building and budget</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr></table></div></div>
+```
+
 ### Trivial FDs
 
-An FD $\alpha \rightarrow \beta$ is **trivial** if $\beta \subseteq \alpha$ — it's automatically true for any relation and tells us nothing new.
+An FD $\alpha \rightarrow \beta$ is **trivial** if $\beta \subseteq \alpha$: it's automatically true for any relation and tells us nothing new.
 
 ```
 ID, name → ID     -- trivial (ID is already on the left)

@@ -8,11 +8,19 @@ format:
 
 We already have **attribute closure** ($\alpha^+$) as our go-to tool for testing superkeys and FDs. Now we use it to ask a sharper question: does every attribute in every FD actually earn its place? This leads to **extraneous attributes** and, from there, the **canonical cover** — the leanest version of an FD set.
 
+All examples on this page use the university wide table from the previous pages:
+
+```
+inst_dept(ID, name, salary, dept_name, building, budget)   -- instructor natural join department
+```
+
 ---
 
 ## Extraneous Attributes
 
-> 💡 **In plain English:** an extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
+::: {.callout-note title="Key idea"}
+An extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
+:::
 
 An attribute can be dead weight on either side of an FD:
 
@@ -25,17 +33,46 @@ An attribute can be dead weight on either side of an FD:
 
 **Right side:** Drop $A$ from $\beta$ (just for this one FD). Recompute $\alpha^+$ using this adjusted set. If $A$ still shows up in the result, it means the other FDs already covered it — so $A$ was extraneous.
 
+```{=html}
+<div class="two"><div><div class="flow-label">Left side test</div><div class="flow steps"><div class="step"><div class="box"><b>drop A</b></div><span>from α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>compute</b></div><span>(α − A)⁺</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>β inside?</b></div><span>A is extraneous</span></div></div></div><div><div class="flow-label">Right side test</div><div class="flow steps"><div class="step"><div class="box"><b>drop A</b></div><span>from β in this FD</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>compute</b></div><span>α⁺ with the new set</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>A inside?</b></div><span>A is extraneous</span></div></div></div></div>
+```
+
 ### Example — Extraneous on the Left
 
-$F = \{A \rightarrow C,\ AB \rightarrow C\}$
+$F = \{ID \rightarrow salary,\ \ ID\ dept\_name \rightarrow salary\}$
 
-Is $B$ extraneous in $AB \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $B$ was dead weight.
+Is `dept_name` extraneous in `ID, dept_name → salary`? Drop it and check $ID^+$:
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>Result</th><th>Why</th></tr><tr><td>start</td><td><code>ID</code></td><td>α − dept_name</td></tr><tr><td>1</td><td><code>ID, salary</code></td><td><code>ID → salary</code> applies</td></tr><tr><td>check</td><td>salary ∈ ID⁺ <span class="tick">✓</span></td><td>so <code>dept_name</code> was extraneous</td></tr></table></div>
+```
+
+Since $ID^+$ already contains `salary`, yes — `ID` alone was always enough. `dept_name` was dead weight: an instructor’s salary depends on the instructor, not on the instructor *and* their department.
 
 ### Example — Extraneous on the Right
 
-$F = \{A \rightarrow C,\ AB \rightarrow CD\}$
+$F = \{dept\_name \rightarrow building,\ \ ID\ dept\_name \rightarrow building\ budget\}$
 
-Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ AB \rightarrow D\}$. Compute $AB^+$ under this reduced set: it comes out to $ABCD$ — which still contains $C$. So $C$ was always derivable anyway, and was extraneous in the original FD.
+Is `building` extraneous in `ID, dept_name → building, budget`? Drop it, leaving $\{dept\_name \rightarrow building,\ \ ID\ dept\_name \rightarrow budget\}$, and compute $(ID\ dept\_name)^+$ under this reduced set:
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>Result</th><th>Why</th></tr><tr><td>start</td><td><code>ID, dept_name</code></td><td>α</td></tr><tr><td>1</td><td><code>ID, dept_name, building</code></td><td><code>dept_name → building</code> applies</td></tr><tr><td>2</td><td><code>ID, dept_name, building, budget</code></td><td><code>ID, dept_name → budget</code> applies</td></tr><tr><td>check</td><td>building ∈ result <span class="tick">✓</span></td><td>so <code>building</code> was extraneous</td></tr></table></div>
+```
+
+It still contains `building`. So `building` was always derivable anyway (through the department), and was extraneous in the original FD.
+
+**Checking on the data:** the FD we removed is still true of the university rows. No instructor ever appears with two buildings:
+
+```sql
+select id
+from instructor natural join department
+group by id
+having count(distinct building) > 1;
+```
+
+```{=html}
+<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>id</th></tr></table></div><div class="rows-note">(0 rows) · ID → building holds without being written down: it follows from ID → dept_name and dept_name → building</div>
+```
 
 ---
 
@@ -43,7 +80,9 @@ Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ 
 
 ### Equivalence of FD Sets
 
-> 💡 **In plain English:** two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
+::: {.callout-note title="Key idea"}
+Two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
+:::
 
 $F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hold:
 
@@ -52,9 +91,17 @@ $F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hol
 
 Only if both hold are $F$ and $G$ truly equivalent.
 
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Direction</th><th>University example: F = {ID → dept_name, dept_name → building}, G = {ID → dept_name, dept_name → building, ID → building}</th><th>Holds?</th></tr><tr><td>F covers G</td><td><code>ID → building</code>: compute ID⁺ under F = ID, dept_name, building, which contains building</td><td><span class="tick">✓</span></td></tr><tr><td>G covers F</td><td>every FD of F is already in G</td><td><span class="tick">✓</span></td></tr></table></div>
+```
+
+So $F \equiv G$: writing `ID → building` explicitly adds no new rule.
+
 ### Canonical Cover
 
-> 💡 **In plain English:** the canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
+::: {.callout-note title="Key idea"}
+The canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
+:::
 
 $F_c$ is a canonical cover of $F$ if:
 
@@ -68,18 +115,40 @@ $F_c$ is a canonical cover of $F$ if:
 2. Look at each remaining FD and test both sides for extraneous attributes; remove any that are found.
 3. Repeat steps 1–2 until nothing changes.
 
-> ⚠️ Removing an extraneous attribute can create a *new* opportunity to merge left-hand sides that didn't match before — so keep looping until the set is stable.
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · merge</b></div><span>same left side → one FD (union)</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · test</b></div><span>each attribute, left and right</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · remove</b></div><span>extraneous attributes</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>4 · repeat</b></div><span>until nothing changes</span></div></div>
+```
+
+::: {.callout-note title="Note"}
+Removing an extraneous attribute can create a *new* opportunity to merge left-hand sides that didn't match before — so keep looping until the set is stable.
+:::
 
 ### Worked Example
 
-$R = (A, B, C)$, $F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}$
+$R = (ID,\ dept\_name,\ building)$, $F = \{ID \rightarrow dept\_name\ building,\ \ dept\_name \rightarrow building,\ \ ID \rightarrow dept\_name,\ \ ID\ dept\_name \rightarrow building\}$
 
-1. **Merge:** $A \rightarrow BC$ and $A \rightarrow B$ share a left side → combine into $A \rightarrow BC$. Set is now $\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}$.
-2. **Left-side check:** is $A$ extraneous in $AB \rightarrow C$? Drop it — $B \rightarrow C$ is already in the set, so yes. Set is now $\{A \rightarrow BC,\ B \rightarrow C\}$.
-3. **Right-side check:** is $C$ extraneous in $A \rightarrow BC$? Drop it and check — $A \rightarrow B$ and $B \rightarrow C$ together still give $A \rightarrow C$ by transitivity. So yes, $C$ was extraneous.
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>Action</th><th>Set after the step</th></tr><tr><td>1 · merge</td><td><code>ID → dept_name building</code> and <code>ID → dept_name</code> share a left side → combine into <code>ID → dept_name building</code></td><td>{ ID → dept_name building, dept_name → building, ID dept_name → building }</td></tr><tr><td>2 · left side</td><td>is <code>ID</code> extraneous in <code>ID, dept_name → building</code>? dept_name⁺ = dept_name, building contains building <span class="tick">✓</span> → becomes <code>dept_name → building</code>, already in the set</td><td>{ ID → dept_name building, dept_name → building }</td></tr><tr><td>3 · right side</td><td>is <code>building</code> extraneous in <code>ID → dept_name building</code>? drop it: ID⁺ = ID, dept_name, building still contains building <span class="tick">✓</span></td><td>{ ID → dept_name, dept_name → building }</td></tr><tr><td>4 · check again</td><td>no attribute in either FD is extraneous</td><td>stable</td></tr></table></div>
+```
 
-**Canonical cover:** $\{A \rightarrow B,\ B \rightarrow C\}$ — the smallest set that says exactly what the original four FDs said.
+**Canonical cover:** $\{ID \rightarrow dept\_name,\ \ dept\_name \rightarrow building\}$ — the smallest set that says exactly what the original four FDs said. In words: an instructor belongs to a department, and the building comes **through** the department.
 
+### Worked Example: the Whole `inst_dept`
 
+Suppose someone lists the FDs of `inst_dept(ID, name, salary, dept_name, building, budget)` like this:
 
+$$F = \{\ ID \rightarrow name\ dept\_name,\ \ ID \rightarrow building,\ \ dept\_name \rightarrow building\ budget,\ \ ID\ dept\_name \rightarrow salary\ \}$$
 
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>FD</th><th>Attribute tested</th><th>Test</th><th>Extraneous?</th></tr><tr><td><code>ID, dept_name → salary</code></td><td><code>dept_name</code> (left)</td><td>ID⁺ under F: name, dept_name; then salary (through ID, dept_name → salary); then building, budget. Contains salary</td><td><span class="tick">✓</span> → <code>ID → salary</code></td></tr><tr><td><code>ID → building</code></td><td><code>building</code> (right)</td><td>without it, ID⁺ still gets building through dept_name</td><td><span class="tick">✓</span> → the whole FD is dropped</td></tr><tr><td><code>dept_name → building, budget</code></td><td><code>building</code> or <code>budget</code></td><td>without them, dept_name⁺ = dept_name</td><td><span class="cross">✗</span></td></tr></table></div>
+```
+
+After removing them and merging the two `ID` FDs:
+
+$$F_c = \{\ ID \rightarrow name\ salary\ dept\_name,\ \ \ dept\_name \rightarrow building\ budget\ \}$$
+
+$F_c$ has exactly **two** left-hand sides, `ID` and `dept_name`: one per real-world thing (instructor, department). That is the hint for the decomposition on the next page.
+
+```{=html}
+<div class="flow"><div class="box"><b>ID →</b><span>name, salary, dept_name</span></div><div class="box grey"><b>dept_name →</b><span>building, budget</span></div></div>
+```
