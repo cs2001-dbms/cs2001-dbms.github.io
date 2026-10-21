@@ -17,6 +17,8 @@ code,
 }
 
 @import 'sql_runner.css';
+@import 'fd_runner.css';
+
 
 /* Fix inline code in headings for dark mode */
 body.quarto-dark :is(h1, h2, h3, h4, h5, h6) code {

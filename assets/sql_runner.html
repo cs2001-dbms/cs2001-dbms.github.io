@@ -2,18 +2,25 @@
 (function() {
   const path = window.location.pathname.toLowerCase();
   const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
+  const isWeek5Or6 = path.includes('week_5') || path.includes('week_6') || path.includes('functional_dependencies') || path.includes('normalization') || document.querySelector('.fd') || document.querySelector('.normalization');
   
+  const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
+  const baseUri = document.baseURI || window.location.href;
+
   if (isWeek2Or3 || document.querySelector('.ds')) {
-    const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
-    
-    // Inject CSS
+    const cssUrl = new URL(offset + 'assets/sql_runner.css', baseUri).href;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = offset + 'assets/sql_runner.css';
+    link.href = cssUrl;
     document.head.appendChild(link);
 
-    // Dynamically load runner module
-    import(offset + 'assets/sql_runner.js');
+    const scriptUrl = new URL(offset + 'assets/sql_runner.js', baseUri).href;
+    import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
+  }
+
+  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
+    const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
+    import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
   }
 })();
 </script>
