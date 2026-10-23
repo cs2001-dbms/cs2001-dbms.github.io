@@ -1,0 +1,314 @@
+---
+title: "SQL Examples"
+number-depth: 2
+format: 
+    html:
+        code-fold: false
+---
+
+Worked examples on **intermediate and advanced SQL** (views, functions, procedures and triggers) using the course datasets. Every query can be run: read the question, try writing it yourself, then press **Run**.
+
+| # | Example | Dataset | Uses |
+|---|---|---|---|
+| 1 | Book availability | lis | view with left join and group by |
+| 2 | Match results | flis | view with `case`, same table joined twice |
+| 3 | League table | flis | view defined on another view |
+| 4 | CS students only | lis | updatable view, `with check option` |
+| 5 | Issues per member type | lis | materialized view, `refresh` |
+| 6 | Books held by a member | lis | SQL function used in `where` |
+| 7 | Student GPA | university | PL/pgSQL function with `case` |
+| 8 | Issuing a book safely | lis | procedure with checks and `raise exception` |
+| 9 | No salary cuts | university | `before update` trigger |
+| 10 | One match per team per day | flis | `before insert` trigger that reads other rows |
+
+---
+
+## Views
+
+### Example 1: Book availability
+
+**Question.** For every book title, show how many copies the library owns, how many are issued and how many are available.
+
+```{.sql db="lis"}
+create or replace view book_availability as
+select c.title,
+       count(bc.accession_no) as copies,
+       count(bi.accession_no) as issued,
+       count(bc.accession_no) - count(bi.accession_no) as available
+from book_catalogue as c
+     join book_copies as bc on bc.isbn_no = c.isbn_no
+     left join book_issue as bi on bi.accession_no = bc.accession_no
+group by c.isbn_no, c.title;
+
+select * from book_availability order by available, title;
+```
+
+The `left join` keeps copies that were never issued; `count(bi.accession_no)` counts only the non-null values, i.e. the issued copies.
+
+### Example 2: Match results
+
+**Question.** Create a view that shows each match with the host and guest team names, the score and the winner (or "Draw").
+
+```{.sql db="flis"}
+create or replace view match_results as
+select m.match_num,
+       h.name as host, g.name as guest,
+       m.host_team_score || '-' || m.guest_team_score as score,
+       case
+           when m.host_team_score > m.guest_team_score then h.name
+           when m.host_team_score < m.guest_team_score then g.name
+           else 'Draw'
+       end as winner
+from matches as m
+     join teams as h on m.host_team_id = h.team_id
+     join teams as g on m.guest_team_id = g.team_id;
+
+select * from match_results order by match_num;
+```
+
+`teams` appears twice under two aliases: `h` gives the host's name and `g` the guest's.
+
+### Example 3: League table
+
+**Question.** Using the `match_results` view (run Example 2 first), build a league table: matches played and points, with 3 for a win and 1 for a draw.
+
+```{.sql db="flis"}
+create or replace view team_points as
+select team,
+       count(*) as played,
+       sum(case result when 'W' then 3 when 'D' then 1 else 0 end) as points
+from (select host as team,
+             case when winner = host then 'W' when winner = 'Draw' then 'D' else 'L' end as result
+      from match_results
+      union all
+      select guest,
+             case when winner = guest then 'W' when winner = 'Draw' then 'D' else 'L' end
+      from match_results) as r
+group by team;
+
+select * from team_points order by points desc, team;
+```
+
+Each match becomes two rows, one per team. `union all` keeps duplicate rows such as two separate wins; `union` would merge them and undercount.
+
+### Example 4: CS students only
+
+**Question.** Create a view of CS students only, through which new CS students can be added, but never a student of another department.
+
+```{.sql db="lis"}
+create or replace view cs_students as
+select * from students
+where department_code = 'CS'
+with check option;
+
+begin;
+insert into cs_students
+values ('Asha', 'Rao', 'CS99', 'CS', 'F', '9002000099', '2003-01-15', 'B.Tech');
+select count(*) from cs_students;   -- one more than before
+rollback;
+```
+
+Inserting a student of another department through the view is rejected by `with check option`:
+
+```{.sql db="lis"}
+insert into cs_students
+values ('Ravi', 'Kumar', 'ME99', 'ME', 'M', '9002000098', '2003-02-20', 'B.Tech');
+```
+
+### Example 5: Issues per member type
+
+**Question.** Keep a stored summary of how many books are issued to each member type, and see what happens when a new book is issued.
+
+```{.sql db="lis"}
+begin;
+create materialized view issues_per_type as
+select m.member_type, count(*) as books_issued
+from book_issue as bi join members as m on m.member_no = bi.member_no
+group by m.member_type;
+
+insert into book_issue values ('M0053', '9789351199380C', '2021-08-12');
+select * from issues_per_type;      -- FC still shows the old count
+
+refresh materialized view issues_per_type;
+select * from issues_per_type;      -- FC now includes the new issue
+rollback;
+```
+
+---
+
+## Functions and Procedures
+
+### Example 6: Books held by a member
+
+**Question.** Write a function that returns how many books a member currently holds, and use it to list members holding 2 or more books.
+
+```{.sql db="lis"}
+create or replace function books_issued(m_no varchar)
+returns integer as $$
+    select count(*) from book_issue where member_no = m_no;
+$$ language sql;
+
+select member_no, member_type, books_issued(member_no) as issued
+from members
+where books_issued(member_no) >= 2;
+```
+
+### Example 7: Student GPA
+
+**Question.** Write a function that converts a letter grade to grade points (A+ = 10, A = 9, A- = 8.5, B+ = 8, B = 7, B- = 6.5, C+ = 6, C = 5, C- = 4.5, otherwise 0), and use it to compute the credit-weighted GPA of students 1000, 10033 and 10076.
+
+```{.sql db="university"}
+create or replace function grade_points(g varchar)
+returns numeric as $$
+begin
+    return case trim(g)
+               when 'A+' then 10  when 'A' then 9  when 'A-' then 8.5
+               when 'B+' then 8   when 'B' then 7  when 'B-' then 6.5
+               when 'C+' then 6   when 'C' then 5  when 'C-' then 4.5
+               else 0
+           end;
+end;
+$$ language plpgsql;
+
+select s.id, s.name,
+       round(sum(c.credits * grade_points(t.grade)) / sum(c.credits), 2) as gpa
+from student as s
+     join takes as t on s.id = t.id
+     join course as c on c.course_id = t.course_id
+where s.id in ('1000', '10033', '10076')
+group by s.id, s.name;
+```
+
+`trim` is needed because one-letter grades are stored with a trailing space (`'A '`). Without it, every A, B and C would score 0.
+
+### Example 8: Issuing a book safely
+
+**Question.** Write a procedure `issue_book(member, copy, date)` that refuses a copy that is already issued and an unknown member, enforces the member's quota from the `quota` table, and otherwise records the issue.
+
+```{.sql db="lis"}
+create or replace procedure issue_book(m_no varchar, acc_no varchar, issue_date date) as $$
+declare
+    already integer;
+    holding integer;
+    quota_max integer;
+begin
+    select count(*) into already from book_issue where accession_no = acc_no;
+    if already > 0 then
+        raise exception 'copy % is already issued', acc_no;
+    end if;
+
+    select q.max_books into quota_max
+    from members as m join quota as q on q.member_type = m.member_type
+    where m.member_no = m_no;
+    if quota_max is null then
+        raise exception 'member % does not exist', m_no;
+    end if;
+
+    select count(*) into holding from book_issue where member_no = m_no;
+    if holding >= quota_max then
+        raise exception 'member % already has % books (limit %)', m_no, holding, quota_max;
+    end if;
+
+    insert into book_issue values (m_no, acc_no, issue_date);
+end;
+$$ language plpgsql;
+```
+
+A valid issue (undone afterwards), then two calls that the procedure refuses:
+
+```{.sql db="lis"}
+begin;
+call issue_book('M0053', '9789351199380C', '2021-08-12');
+select * from book_issue where member_no = 'M0053';
+rollback;
+```
+
+```{.sql db="lis"}
+call issue_book('M0054', '9789386551337B', '2021-08-12');   -- copy already issued
+```
+
+```{.sql db="lis"}
+call issue_book('M9999', '9780984782864A', '2021-08-12');   -- unknown member
+```
+
+---
+
+## Triggers
+
+### Example 9: No salary cuts
+
+**Question.** Make sure no instructor's salary can ever be reduced, whichever program updates it.
+
+```{.sql db="university"}
+create or replace function no_salary_cut() returns trigger as $$
+begin
+    if new.salary < old.salary then
+        raise exception 'salary of % cannot decrease', old.name;
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists no_salary_cut on instructor;
+create trigger no_salary_cut
+before update of salary on instructor
+for each row
+execute function no_salary_cut();
+```
+
+A raise goes through (undone afterwards); a cut is rejected:
+
+```{.sql db="university"}
+begin;
+update instructor set salary = salary * 1.10 where dept_name = 'Biology';
+rollback;
+```
+
+```{.sql db="university"}
+update instructor set salary = salary * 0.90 where dept_name = 'Physics';
+```
+
+A `check` constraint only sees the new row, so it cannot compare with the old salary; a trigger can.
+
+### Example 10: One match per team per day
+
+**Question.** Reject a new match if either team already has a match on that date, or if a team is set to play itself.
+
+```{.sql db="flis"}
+create or replace function one_match_per_day() returns trigger as $$
+begin
+    if new.host_team_id = new.guest_team_id then
+        raise exception 'a team cannot play itself';
+    end if;
+    if exists (select * from matches as m
+               where m.match_date = new.match_date
+                 and (m.host_team_id  in (new.host_team_id, new.guest_team_id)
+                   or m.guest_team_id in (new.host_team_id, new.guest_team_id))) then
+        raise exception 'a team already plays on %', new.match_date;
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists one_match_per_day on matches;
+create trigger one_match_per_day
+before insert on matches
+for each row
+execute function one_match_per_day();
+```
+
+```{.sql db="flis"}
+insert into matches values ('M0017', '2020-05-06', 'T0002', 'T0006', 0, 0);   -- T0006 already plays that day
+```
+
+```{.sql db="flis"}
+begin;
+insert into matches values ('M0017', '2020-06-30', 'T0005', 'T0006', 2, 2);   -- accepted
+rollback;
+```
+
+A `check` constraint can test values inside the new row, but it cannot look at other rows of the table; the trigger runs an `exists` query over the existing matches.
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

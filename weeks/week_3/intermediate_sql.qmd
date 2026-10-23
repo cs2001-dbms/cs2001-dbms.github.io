@@ -10,13 +10,17 @@ format:
 
 ### Why Views?
 
-Not everyone should see the full picture. Suppose someone needs an employee's name and department, but **not** their salary. Instead of trusting every query to remember to hide the salary column, define it once:
+Not everyone should see the full picture. Suppose someone needs an instructor's name and department, but **not** their salary. Instead of trusting every query to remember to hide the salary column, define it once:
 
-```sql
-select id, name, dept_name from employee;
+```{.sql db="university"}
+select id, name, dept_name from instructor;
 ```
 
 A **view** is exactly this — a saved query that behaves like a "virtual table." It's not real stored data; it's a name attached to a query expression that gets substituted in wherever the view is used.
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>instructor</b></div><span>id, name, dept_name, salary</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>view</b></div><span>select id, name, dept_name</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>user query</b></div><span>sees only 3 columns</span></div></div>
+```
 
 ### Creating a View
 
@@ -24,37 +28,42 @@ A **view** is exactly this — a saved query that behaves like a "virtual table.
 create view v as <query expression>;
 ```
 
-```sql
--- A view of employees without salary
-create view staff_directory as
-select id, name, dept_name from employee;
+```{.sql db="university"}
+-- A view of instructors without salary
+create or replace view faculty as
+select id, name, dept_name from instructor;
 
 -- Use it like a table
-select name from staff_directory where dept_name = 'Marketing';
+select name from faculty where dept_name = 'Biology';
 
 -- A view with computed columns
-create view dept_salary_totals(dept_name, total_salary) as
+create or replace view dept_salary_totals(dept_name, total_salary) as
 select dept_name, sum(salary)
-from employee
+from instructor
 group by dept_name;
+
+select * from dept_salary_totals;
 ```
 
 ### Views Built on Views
 
 Views can refer other views, not just base tables:
 
-```sql
-create view marketing_2025_projects as
-select project.project_id, lead_emp_id, building, room_number
-from project, assignment
-where project.project_id = assignment.project_id
-  and project.dept_name = 'Marketing'
-  and assignment.year = 2025;
+```{.sql db="university"}
+create or replace view physics_fall_2006 as
+select course.course_id, sec_id, building, room_number
+from course, section
+where course.course_id = section.course_id
+  and course.dept_name = 'Physics'
+  and section.semester = 'Fall'
+  and section.year = 2006;
 
-create view marketing_2025_tower_b as
-select project_id, room_number
-from marketing_2025_projects
-where building = 'Tower B';
+create or replace view physics_fall_2006_taylor as
+select course_id, room_number
+from physics_fall_2006
+where building = 'Taylor';
+
+select * from physics_fall_2006_taylor;
 ```
 
 - `v1` **depends directly on** `v2` if `v2` appears in `v1`'s definition.
@@ -72,16 +81,23 @@ repeat:
 until no view references remain
 ```
 
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>physics_fall_2006_taylor</b></div><span>the query you write</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>physics_fall_2006</b></div><span>replaced by its definition</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>course, section</b></div><span>only base tables remain</span></div></div>
+```
+
 This terminates as long as no view is recursive.
 
 ### Updating Views
 
 Inserting into a view secretly inserts into the underlying table:
 
-```sql
-insert into staff_directory values ('E501', 'Lee', 'Design');
+```{.sql db="university"}
+begin;
+insert into faculty values ('30765', 'Green', 'Biology');
 -- Translates to:
--- insert into employee values ('E501', 'Lee', 'Design', null);
+-- insert into instructor values ('30765', 'Green', 'Biology', null);
+select * from instructor where id = '30765';
+rollback;
 ```
 
 **But this only works cleanly for *simple* views** — most databases require:
@@ -93,6 +109,12 @@ insert into staff_directory values ('E501', 'Lee', 'Design');
 
 If a view joins multiple tables, an insert can be **ambiguous** (e.g., which department's row gets the new value if several departments share a building?) — and some inserts that satisfy the view's *output* can violate its `where` clause entirely, making the update meaningless to translate.
 
+Try inserting into the `dept_salary_totals` view (it has `group by`), and the database refuses:
+
+```{.sql db="university"}
+insert into dept_salary_totals values ('Music', 100000);
+```
+
 ### Materialized Views
 
 A **materialized view** physically stores the view's result as a real table, instead of recomputing it on every query — faster to read, but it goes **stale** the moment the underlying tables change. Keeping it correct requires actively **maintaining** it (refreshing it) whenever the source data updates.
@@ -102,6 +124,23 @@ A **materialized view** physically stores the view's result as a real table, ins
 | **Regular View** | None (just a saved query) | Recomputed every time | Always current |
 | **Materialized View** | Physical table | Fast to read | Needs manual/scheduled refresh |
 
+```{.sql db="university"}
+begin;
+create materialized view dept_count as
+select dept_name, count(*) as num_instructors
+from instructor group by dept_name;
+
+insert into instructor values ('30765', 'Green', 'Biology', 72000);
+select * from dept_count where dept_name = 'Biology';   -- still the old count
+
+refresh materialized view dept_count;
+select * from dept_count where dept_name = 'Biology';   -- now updated
+rollback;
+```
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>create</b></div><span>Biology: 2 stored</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>insert into instructor</b></div><span>table has 3, view still says 2</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>refresh</b></div><span>view shows 3</span></div></div>
+```
 
 ## Transactions
 
@@ -113,11 +152,23 @@ A **transaction** is a unit of work — a group of one or more SQL statements th
   - `commit work` — make all changes permanent
   - `rollback work` — undo everything since the transaction began
 
+```{=html}
+<div class="flow"><div class="box"><b>begin</b><span>start the unit of work</span></div><div class="box"><b>statements</b><span>queries and updates</span></div><div class="box"><b>commit work</b><span>make changes permanent</span></div><div class="box grey"><b>rollback work</b><span>undo everything</span></div></div>
+```
+
+```{.sql db="university"}
+begin;
+update instructor set salary = salary * 1.10 where dept_name = 'Physics';
+select name, salary from instructor where dept_name = 'Physics';   -- raised
+rollback work;
+select name, salary from instructor where dept_name = 'Physics';   -- back to the original
+```
+
 ---
 
 ## Integrity Constraints
 
-Constraints stop *valid-looking but wrong* changes from silently corrupting the database — e.g., "an employee's salary must be at least $15/hour" or "every customer must have a phone number."
+Constraints stop *valid-looking but wrong* changes from silently corrupting the database — e.g., "an instructor's salary must be greater than 29000" or "every instructor must have a name."
 
 ### On a Single Relation
 
@@ -128,33 +179,70 @@ Constraints stop *valid-looking but wrong* changes from silently corrupting the 
 | `unique (A1, ..., Am)` | Columns form a **candidate key** — but unlike primary keys, candidate keys *can* be null |
 | `check(P)` | Row must satisfy predicate `P` |
 
-```sql
--- not null
-name varchar(20) not null,
-budget numeric(12,2) not null
+The university dataset already has these constraints. Each insert below breaks one of them, so the database rejects it:
 
--- check: restrict allowed values
-create table project (
-    project_id varchar(8),
+```{.sql db="university"}
+-- not null: name is required
+insert into instructor values ('30767', null, 'Biology', 50000);
+```
+
+```{.sql db="university"}
+-- check: salary > 29000
+insert into instructor values ('30768', 'Low', 'Biology', 20000);
+```
+
+```{.sql db="university"}
+-- check: semester in ('Fall', 'Winter', 'Spring', 'Summer')
+insert into section values ('105', '9', 'Autumn', 2009, null, null, null);
+```
+
+Creating a new table with a `check` constraint (in the practice workspace):
+
+```{.sql db="test_db"}
+drop table if exists fixture;
+create table fixture (
+    match_num varchar(5),
     status varchar(10),
-    primary key (project_id),
-    check (status in ('Active', 'On Hold', 'Completed', 'Cancelled'))
+    primary key (match_num),
+    check (status in ('Scheduled', 'Played', 'Postponed', 'Cancelled'))
 );
+insert into fixture values ('M0001', 'Played');      -- accepted
+select * from fixture;
+```
+
+A value outside the list is rejected by the `check`:
+
+```{.sql db="test_db"}
+insert into fixture values ('M0002', 'Abandoned');
 ```
 
 ---
 
 ## Referential Integrity
 
-Ensures a value referenced in one table **actually exists** in the table it points to. If `'Design'` appears as a department name in `employee`, there must be a matching row for `'Design'` in `department`.
+Ensures a value referenced in one table **actually exists** in the table it points to. If `'Biology'` appears as a department name in `instructor`, there must be a matching row for `'Biology'` in `department`.
 
 > **Formal definition:** If `A` is the primary key of relation `S`, then `A` is a **foreign key** of relation `R` if every value of `A` appearing in `R` also appears in `S`.
+
+```{.sql db="university"}
+-- 'Music' is not in department, so this is rejected
+insert into instructor values ('30769', 'Lee', 'Music', 50000);
+```
 
 ### Cascading Actions
 
 What should happen when a referenced row is deleted or updated?
 
-```sql
+```{.sql db="test_db"}
+drop table if exists project_cascade;
+drop table if exists project;
+drop table if exists department;
+
+create table department (
+    dept_name varchar(20) primary key,
+    building varchar(15)
+);
+
 create table project (
     project_id char(5) primary key,
     title varchar(20),
@@ -162,13 +250,13 @@ create table project (
 );
 
 -- with explicit cascading behavior
-create table project (
-    ...
+create table project_cascade (
+    project_id char(5) primary key,
+    title varchar(20),
     dept_name varchar(20),
     foreign key (dept_name) references department
         on delete cascade
-        on update cascade,
-    ...
+        on update cascade
 );
 ```
 
@@ -178,6 +266,15 @@ create table project (
 | `no action` | Block the delete/update if references exist (default) |
 | `set null` | Set the foreign key to `null` |
 | `set default` | Set the foreign key to its default value |
+
+The university dataset uses these actions. Deleting a department sets its instructors' `dept_name` to `null` (`set null`), and deleting a student removes their `takes` rows (`cascade`):
+
+```{.sql db="university"}
+begin;
+delete from department where dept_name = 'Biology';
+select id, name, dept_name from instructor where id in ('80759', '81991');
+rollback;
+```
 
 ### The Chicken-and-Egg Problem
 
@@ -212,26 +309,25 @@ How do you insert the very first employee if their manager must already exist? T
 | `timestamp` | Date + time together | `timestamp '2025-7-27 09:00:30.75'` |
 | `interval` | A span of time | `interval '1' day` |
 
-> 💡 Subtracting two dates/times gives you an `interval`; adding an `interval` to a date/time shifts it forward or backward.
+::: {.callout-note title="Key idea"}
+Subtracting two dates/times gives you an `interval`; adding an `interval` to a date/time shifts it forward or backward.
+:::
+
+```{.sql db="flis"}
+select match_num, match_date,
+       match_date + interval '7 days' as rematch_date,
+       date '2020-12-31' - match_date as days_to_year_end
+from matches;
+```
 
 ### Indexes
 
 An **index** is a shortcut structure that lets the database jump straight to matching rows instead of scanning the whole table.
 
-```sql
-create table student (
-    id varchar(5),
-    name varchar(20) not null,
-    dept_name varchar(20),
-    tot_cred numeric(3,0) default 0,
-    primary key (id)
-);
+```{.sql db="university"}
+create index if not exists student_name_index on student(name);
 
-create index student_id_index on student(id);
-```
-
-```sql
-select * from student where id = '12345';
+select * from student where name = 'Manber';
 -- with the index above, this skips a full table scan
 ```
 
@@ -249,16 +345,34 @@ create table department (
 );
 ```
 
+::: {.callout-note title="Note"}
+This `create type … final` form is standard SQL and does not run in PostgreSQL. A **domain** (next) does the same job and runs on the dataset.
+:::
+
 ### Domains
 
 Similar to UDTs, but domains can carry their own **constraints**.
 
-```sql
-create domain person_name char(20) not null;
+```{.sql db="test_db"}
+drop table if exists visitor;
+drop domain if exists person_name;
+drop domain if exists member_kind;
 
-create domain degree_level varchar(10)
-    constraint degree_level_test
-    check (value in ('Bachelors', 'Masters', 'Doctorate'));
+create domain person_name varchar(20) not null;
+
+create domain member_kind varchar(10)
+    constraint member_kind_test
+    check (value in ('Student', 'Faculty', 'Staff'));
+
+create table visitor (name person_name, kind member_kind);
+insert into visitor values ('Asha', 'Student');   -- accepted
+select * from visitor;
+```
+
+A value the domain does not allow is rejected:
+
+```{.sql db="test_db"}
+insert into visitor values ('Ravi', 'Guest');
 ```
 
 ### Large Object Types
@@ -270,7 +384,9 @@ For storing big, unstructured content like photos, videos, or files:
 | `blob` | **B**inary **L**arge **OB**ject — raw binary data |
 | `clob` | **C**haracter **L**arge **OB**ject — large character data |
 
-> 📌 A query returns a **pointer** to a large object, not the object itself — the actual data is fetched separately.
+::: {.callout-note title="Note"}
+A query returns a **pointer** to a large object, not the object itself — the actual data is fetched separately.
+:::
 
 ---
 
@@ -304,13 +420,18 @@ grant <privilege list> on <relation or view> to <user list>;
 
 `<user list>` can be a specific user, `public` (everyone), or a **role**.
 
-```sql
-grant select on employee to U1, U2, U3;
-grant insert, update on project to U1;
+```{.sql db="university"}
+begin;
+create role u1;  create role u2;  create role admin_user;
+grant select on instructor to u1, u2;
+grant insert, update on course to u1;
 grant all privileges on department to admin_user;
+rollback;
 ```
 
-> 📌 The grantor must already **hold** the privilege themselves (or be the DBA). Granting a privilege on a *view* does **not** automatically grant privileges on the tables underneath it.
+::: {.callout-note title="Note"}
+The grantor must already **hold** the privilege themselves (or be the DBA). Granting a privilege on a *view* does **not** automatically grant privileges on the tables underneath it.
+:::
 
 ### Revoking Privileges
 
@@ -318,8 +439,12 @@ grant all privileges on department to admin_user;
 revoke <privilege list> on <relation or view> from <user list>;
 ```
 
-```sql
-revoke select on department from U1, U2, U3;
+```{.sql db="university"}
+begin;
+create role u1;  create role u2;
+grant select on department to u1, u2;
+revoke select on department from u1, u2;
+rollback;
 ```
 
 - `revoke all from ...` removes every privilege the user holds.
@@ -331,35 +456,49 @@ revoke select on department from U1, U2, U3;
 
 Roles bundle privileges so you don't have to grant the same set repeatedly.
 
-```sql
-create role instructor;
-grant select on takes to instructor;
-grant instructor to amit;       -- amit inherits the privileges of 'instructor'
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>teaching_assistant</b></div><span>privileges of a TA</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>instructor</b></div><span>gets TA privileges too</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>dean</b></div><span>gets instructor and TA privileges</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>satoshi</b></div><span>inherits the whole chain</span></div></div>
+```
+
+```{.sql db="university"}
+begin;
+create role instructor_role;
+create role amit;
+grant select on takes to instructor_role;
+grant instructor_role to amit;       -- amit inherits the privileges of 'instructor_role'
 
 -- Roles can inherit from other roles
 create role teaching_assistant;
-grant teaching_assistant to instructor;   -- instructor now also gets TA's privileges
+grant teaching_assistant to instructor_role;   -- instructor_role now also gets TA's privileges
 
 -- Chains of roles
 create role dean;
-grant instructor to dean;
-grant dean to satoshi;          -- satoshi inherits dean → instructor → TA
+create role satoshi;
+grant instructor_role to dean;
+grant dean to satoshi;          -- satoshi inherits dean → instructor_role → TA
+rollback;
 ```
 
 ### Authorization on Views
 
-```sql
-create view geo_employees as
-    (select * from employee where dept_name = 'Geology');
+```{.sql db="university"}
+begin;
+create view geo_instructors as
+    (select * from instructor where dept_name = 'Geology');
 
-grant select on geo_employees to geo_staff;
+create role geo_staff;
+grant select on geo_instructors to geo_staff;
+rollback;
 ```
 
-If `geo_staff` queries `geo_employees`, it works even if `geo_staff` has **no** direct permission on the underlying `employee` table — the view's permissions are what matter, not the creator's original access (though if the view's *creator* lacked permission on `employee`, the view itself couldn't have been created correctly in the first place).
+If `geo_staff` queries `geo_instructors`, it works even if `geo_staff` has **no** direct permission on the underlying `instructor` table — the view's permissions are what matter, not the creator's original access (though if the view's *creator* lacked permission on `instructor`, the view itself couldn't have been created correctly in the first place).
 
 ### Other Authorization Features
 
-```sql
+```{.sql db="university"}
+begin;
+create role mariano;  create role amit;  create role satoshi;
+
 -- 'references' privilege needed to create a foreign key pointing at someone else's table
 grant references (dept_name) on department to mariano;
 
@@ -368,10 +507,14 @@ grant select on department to amit with grant option;
 
 -- Revoking with dependency handling
 revoke select on department from amit, satoshi cascade;   -- also revokes anything amit/satoshi granted onward
-revoke select on department from amit, satoshi restrict;  -- blocks the revoke if dependents exist
+rollback;
 ```
 
-> 💡 The `references` privilege exists because a foreign key constraint can restrict what the *referenced* table's owner is allowed to do (e.g., blocking a delete due to `on delete no action`) — so creating that link requires explicit permission.
+`revoke ... restrict` instead blocks the revoke if dependent privileges exist.
+
+::: {.callout-note title="Key idea"}
+The `references` privilege exists because a foreign key constraint can restrict what the *referenced* table's owner is allowed to do (e.g., blocking a delete due to `on delete no action`) — so creating that link requires explicit permission.
+:::
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
