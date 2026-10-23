@@ -6,318 +6,52 @@ format:
         code-fold: false
 ---
 
-```{=html}
-<p>Worked examples for Weeks 2 and 3 on the course datasets: Part A has harder queries using the basic and intermediate SQL from the lectures (joins, subqueries, aggregation, set operations), and Parts B to D cover views, functions and triggers. Each example gives the question, the concepts it uses, the query, the exact output PostgreSQL returns, and why it works. Everything is wrapped in <code>begin; … rollback;</code> so it can be run repeatedly without changing the dataset. Remove those two lines to keep the objects.</p><p>⚠️ After an <b>error</b> inside <code>begin</code>, PostgreSQL ignores every further statement until <code>rollback</code>. Where an example tries several statements that are expected to fail, create the function or trigger first without <code>begin</code>/<code>rollback</code>, try the statements, then drop the objects.</p>
-<div class="table-wrap"><table class="jt "><tr><th>#</th><th>Example</th><th>Dataset</th><th>Uses</th></tr><tr><td>1</td><td>Highest-paid instructor in each department</td><td>university</td><td>correlated subquery with max</td></tr><tr><td>2</td><td>Departments paying above average</td><td>university</td><td>having with a scalar subquery</td></tr><tr><td>3</td><td>Second-highest salary</td><td>university</td><td>nested scalar subqueries</td></tr><tr><td>4</td><td>Fall vs Spring sections per year</td><td>university</td><td>case inside sum (pivot)</td></tr><tr><td>5</td><td>Courses that are prerequisites of each other</td><td>university</td><td>self join, removing mirrored pairs</td></tr><tr><td>6</td><td>Goal difference table</td><td>flis</td><td>union all inside from, aggregation</td></tr><tr><td>7</td><td>Referees in Black Eagles matches</td><td>flis</td><td>multi-table join, distinct</td></tr><tr><td>8</td><td>Teams from cities starting with L</td><td>flis</td><td>like and case sensitivity</td></tr><tr><td>9</td><td>Books issued per department</td><td>lis</td><td>chained left joins, count(column) vs count(*)</td></tr><tr><td>10</td><td>Who in ME has a book?</td><td>lis</td><td>six-table join</td></tr><tr><td>11</td><td>Titles never issued</td><td>lis</td><td>except inside in</td></tr><tr><td>12</td><td>Authors with more than one book</td><td>lis</td><td>group by two columns, having</td></tr><tr><td>13</td><td>Book availability</td><td>lis</td><td>view with left join + group by</td></tr><tr><td>14</td><td>Match results</td><td>flis</td><td>view with case, same table joined twice</td></tr><tr><td>15</td><td>League table</td><td>flis</td><td>view on a view, union all</td></tr><tr><td>16</td><td>CS students only</td><td>lis</td><td>updatable view, with check option</td></tr><tr><td>17</td><td>Issues per member type</td><td>lis</td><td>materialized view, refresh</td></tr><tr><td>18</td><td>Books held by a member</td><td>lis</td><td>scalar SQL function in where</td></tr><tr><td>19</td><td>Books by publisher</td><td>lis</td><td>table function</td></tr><tr><td>20</td><td>Student GPA</td><td>university</td><td>function with case, trailing-space trap</td></tr><tr><td>21</td><td>Head-to-head record</td><td>flis</td><td>for loop, if / elsif</td></tr><tr><td>22</td><td>Issuing a book safely</td><td>lis</td><td>procedure, raise exception</td></tr><tr><td>23</td><td>No salary cuts</td><td>university</td><td>BEFORE update trigger</td></tr><tr><td>24</td><td>One match per team per day</td><td>flis</td><td>BEFORE insert trigger reading other rows</td></tr><tr><td>25</td><td>Logging returned books</td><td>lis</td><td>AFTER delete trigger, audit table</td></tr></table></div>
-```
+Worked examples on **intermediate and advanced SQL** (views, functions, procedures and triggers) using the course datasets. Every query can be run: read the question, try writing it yourself, then press **Run**.
 
-## Part A: Queries
+| # | Example | Dataset | Uses |
+|---|---|---|---|
+| 1 | Book availability | lis | view with left join and group by |
+| 2 | Match results | flis | view with `case`, same table joined twice |
+| 3 | League table | flis | view defined on another view |
+| 4 | CS students only | lis | updatable view, `with check option` |
+| 5 | Issues per member type | lis | materialized view, `refresh` |
+| 6 | Books held by a member | lis | SQL function used in `where` |
+| 7 | Student GPA | university | PL/pgSQL function with `case` |
+| 8 | Issuing a book safely | lis | procedure with checks and `raise exception` |
+| 9 | No salary cuts | university | `before update` trigger |
+| 10 | One match per team per day | flis | `before insert` trigger that reads other rows |
 
-```{=html}
-<p>These use only SQL from the Week 2 and Week 3 lectures. Try each question yourself before reading the query.</p>
-```
+---
 
-### Example 1: Highest-paid instructor in each department
+## Views
 
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> For every department, find the instructor(s) with the highest salary in that department.</div><div class="concept">Concepts: correlated subquery, aggregate in a subquery</div>
-```
+### Example 1: Book availability
 
-```sql
-select i.dept_name, i.name, i.salary
-from instructor as i
-where i.salary = (select max(j.salary)
-                  from instructor as j
-                  where j.dept_name = i.dept_name)
-order by i.salary desc;
-```
+**Question.** For every book title, show how many copies the library owns, how many are issued and how many are available.
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>name</th><th>salary</th></tr><tr><td>Pol. Sci.</td><td>Wieland</td><td>124651.41</td></tr><tr><td>Physics</td><td>Voronina</td><td>121141.99</td></tr><tr><td>Marketing</td><td>Mird</td><td>119921.41</td></tr><tr><td>English</td><td>Sakurai</td><td>118143.98</td></tr><tr><td>Cybernetics</td><td>Bietzk</td><td>117836.50</td></tr></table></div><div class="rows-note">First 5 of 17 rows shown</div>
-<div class="panel"><div class="panel-title">For each outer row i</div><div class="flow steps"><div class="step"><div class="box"><b>take instructor i</b></div><span>e.g. Shuming, Physics</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>inner query</b></div><span>max salary in Physics = 121141.99</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>compare</b></div><span>108011.81 = 121141.99? no → drop</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>next row</b></div><span>Voronina: equal → keep</span></div></div></div>
-<div class="why"><b class="t">Why it works.</b> The inner query uses <code>i.dept_name</code> from the outer row, so it is re-run for every instructor. 17 rows: one per department that has instructors. If two instructors shared the top salary, both would be listed.<br><b>Common mistake:</b> <code>select dept_name, name, max(salary) from instructor group by dept_name;</code> fails with <code>column "instructor.name" must appear in the GROUP BY clause</code>, because one group has many names.</div>
-```
-
-### Example 2: Departments paying above average
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> List departments whose average instructor salary is higher than the average salary of all instructors (77600.19).</div><div class="concept">Concepts: group by, having with a subquery</div>
-```
-
-```sql
-select dept_name, round(avg(salary), 2) as avg_salary
-from instructor
-group by dept_name
-having avg(salary) > (select avg(salary) from instructor)
-order by avg_salary desc;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>dept_name</th><th>avg_salary</th></tr><tr><td>Physics</td><td>114576.90</td></tr><tr><td>Finance</td><td>105311.38</td></tr><tr><td>Pol. Sci.</td><td>100053.07</td></tr><tr><td>Geology</td><td>99382.59</td></tr><tr><td>Comp. Sci.</td><td>98133.47</td></tr></table></div><div class="rows-note">First 5 of 9 rows shown</div>
-<div class="why"><b class="t">Why it works.</b> <code>where</code> cannot contain <code>avg(salary)</code> because it filters single rows before grouping; <code>having</code> filters whole groups after <code>group by</code>. The subquery is not correlated: it is computed once (77600.19) and every group is compared with it.</div>
-```
-
-### Example 3: Second-highest salary
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> Find the instructor with the second-highest salary, without using limit.</div><div class="concept">Concepts: nested subqueries, max of a filtered set</div>
-```
-
-```sql
-select name, dept_name, salary
-from instructor
-where salary = (select max(salary)
-                from instructor
-                where salary < (select max(salary) from instructor));
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>dept_name</th><th>salary</th></tr><tr><td>Voronina</td><td>Physics</td><td>121141.99</td></tr></table></div><div class="rows-note">(1 row)</div>
-<div class="panel"><div class="panel-title">Inside out</div><div class="flow steps"><div class="step"><div class="box"><b>innermost</b></div><span>max = 124651.41 (Wieland)</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>middle</b></div><span>max of salaries &lt; 124651.41 = 121141.99</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>outer</b></div><span>who earns 121141.99? Voronina</span></div></div></div>
-<div class="why"><b class="t">Why it works.</b> Removing the highest value and taking the max of what is left gives the second-highest <i>value</i>. If two instructors tied for first place, this still returns the next lower salary, which <code>order by salary desc limit 1 offset 1</code> would not.</div>
-```
-
-### Example 4: Fall vs Spring sections per year
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> For each year, show the number of sections offered in Fall, in Spring, and in total, as one row per year.</div><div class="concept">Concepts: conditional aggregation: case inside sum</div>
-```
-
-```sql
-select year,
-       sum(case when semester = 'Fall'   then 1 else 0 end) as fall,
-       sum(case when semester = 'Spring' then 1 else 0 end) as spring,
-       count(*) as total
-from section
-group by year
-order by year;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>year</th><th>fall</th><th>spring</th><th>total</th></tr><tr><td>2001</td><td>2</td><td>3</td><td>5</td></tr><tr><td>2002</td><td>9</td><td>4</td><td>13</td></tr><tr><td>2003</td><td>6</td><td>6</td><td>12</td></tr><tr><td>2004</td><td>3</td><td>4</td><td>7</td></tr><tr><td>2005</td><td>4</td><td>4</td><td>8</td></tr><tr><td>2006</td><td>8</td><td>5</td><td>13</td></tr><tr><td>2007</td><td>6</td><td>6</td><td>12</td></tr><tr><td>2008</td><td>1</td><td>9</td><td>10</td></tr><tr><td>2009</td><td>7</td><td>2</td><td>9</td></tr><tr><td>2010</td><td>5</td><td>6</td><td>11</td></tr></table></div><div class="rows-note">(10 rows)</div>
-<div class="why"><b class="t">Why it works.</b> Each section row adds 1 to exactly one of the two <code>case</code> sums. Turning row values (Fall, Spring) into columns this way is called a <b>pivot</b>.</div>
-```
-
-### Example 5: Courses that are prerequisites of each other
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> Find pairs of courses where each course is a prerequisite of the other (a cycle in <code>prereq</code>).</div><div class="concept">Concepts: self join with two conditions, removing mirrored pairs</div>
-```
-
-```sql
-select p1.course_id, p1.prereq_id
-from prereq as p1 join prereq as p2
-     on p1.prereq_id = p2.course_id
-    and p2.prereq_id = p1.course_id
-order by p1.course_id;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>prereq_id</th></tr><tr><td>133</td><td>852</td></tr><tr><td>634</td><td>864</td></tr><tr><td>852</td><td>133</td></tr><tr><td>864</td><td>634</td></tr></table></div><div class="rows-note">(4 rows)</div>
-<p>Each pair appears twice, once from each side. Keep one copy by adding <code>where p1.course_id &lt; p1.prereq_id</code>:</p><div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>prereq_id</th></tr><tr><td>133</td><td>852</td></tr><tr><td>634</td><td>864</td></tr></table></div><div class="rows-note">(2 rows)</div>
-<div class="why"><b class="t">Why it works.</b> Aliases <code>p1</code> and <code>p2</code> let one table play two roles. Row (133, 852) in p1 matches row (852, 133) in p2. The dataset really contains these cycles, so no student could ever satisfy the prerequisites of courses 133, 852, 634 or 864.</div>
-```
-
-### Example 6: Goal difference table
-
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> For each team, show goals scored, goals conceded and goal difference across all its home and away matches, best goal difference first.</div><div class="concept">Concepts: subquery in from, union all, join, group by, expression in order by</div>
-```
-
-```sql
-select t.name,
-       sum(r.gf)            as scored,
-       sum(r.ga)            as conceded,
-       sum(r.gf) - sum(r.ga) as goal_diff
-from teams as t
-     join (select host_team_id  as team_id, host_team_score  as gf, guest_team_score as ga
-           from matches
-           union all
-           select guest_team_id, guest_team_score, host_team_score
-           from matches) as r
-     on r.team_id = t.team_id
-group by t.name
-order by goal_diff desc, scored desc;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>scored</th><th>conceded</th><th>goal_diff</th></tr><tr><td>Arawali</td><td>9</td><td>5</td><td>4</td></tr><tr><td>Black Eagles</td><td>14</td><td>12</td><td>2</td></tr><tr><td>All Stars</td><td>8</td><td>6</td><td>2</td></tr><tr><td>Thunder</td><td>6</td><td>6</td><td>0</td></tr><tr><td>Rainbow</td><td>13</td><td>14</td><td>-1</td></tr><tr><td>Amigos</td><td>20</td><td>27</td><td>-7</td></tr></table></div><div class="rows-note">(6 rows)</div>
-<div class="why"><b class="t">Why it works.</b> The subquery rewrites every match from both teams' points of view, so each team's goals end up in one column (<code>gf</code>) no matter whether it was home or away. Column names come from the first <code>select</code> of a <code>union</code>. Black Eagles and All Stars tie on goal difference, so the second sort key (<code>scored</code>) decides.</div>
-```
-
-### Example 7: Referees in Black Eagles matches
-
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> List the main referees who have refereed at least one match involving Black Eagles.</div><div class="concept">Concepts: four-table join, in with a list of columns, distinct</div>
-```
-
-```sql
-select distinct r.name
-from referees as r
-     join match_referees as mr on mr.referee = r.referee_id
-     join matches as m        on m.match_num = mr.match_num
-     join teams as t          on t.team_id in (m.host_team_id, m.guest_team_id)
-where t.name = 'Black Eagles'
-order by r.name;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th></tr><tr><td>Antony Abraham</td></tr><tr><td>Samar Pal</td></tr><tr><td>Sumanta Dutta</td></tr><tr><td>Tony Joseph Louis</td></tr></table></div><div class="rows-note">(4 rows)</div>
-<div class="panel"><div class="panel-title">Join path</div><div class="flow steps"><div class="step"><div class="box"><b>referees</b></div><span>referee_id</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>match_referees</b></div><span>referee → match_num</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>matches</b></div><span>host / guest team</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>teams</b></div><span>name = Black Eagles</span></div></div></div>
-<div class="why"><b class="t">Why it works.</b> A join condition can be any predicate: <code>t.team_id in (m.host_team_id, m.guest_team_id)</code> matches the team whether it was host or guest. <code>distinct</code> is needed because the same referee can officiate several Black Eagles matches.</div>
-```
-
-### Example 8: Teams from cities starting with L
-
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> List the teams whose city starts with the letter L.</div><div class="concept">Concepts: like, case sensitivity, upper</div>
-```
-
-```sql
-select name, city from teams where city like 'L%';
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>city</th></tr><tr><td>Amigos</td><td>London</td></tr></table></div><div class="rows-note">(1 row) · Thunder's city is stored as 'leeds'</div>
-```
-
-```sql
-select name, city from teams where upper(city) like 'L%';
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>name</th><th>city</th></tr><tr><td>Amigos</td><td>London</td></tr><tr><td>Thunder</td><td>leeds</td></tr></table></div><div class="rows-note">(2 rows)</div>
-<div class="why"><b class="t">Why it works.</b> Pattern matching with <code>like</code> is case-sensitive, and the dataset stores one city in lower case. Converting with <code>upper</code> (or <code>lower</code>) before comparing makes the test case-insensitive. PostgreSQL also has <code>ilike</code> for this, but it is not standard SQL.</div>
-```
-
-### Example 9: Books issued per department
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> For each department, count the books currently issued to its students. Departments with no issues must still appear.</div><div class="concept">Concepts: chain of left outer joins, count(column) vs count(*)</div>
-```
-
-```sql
-select d.department_name, count(bi.accession_no) as books_issued
-from departments as d
-     left join students   as s  on s.department_code = d.department_code
-     left join members    as m  on m.roll_no = s.roll_no
-     left join book_issue as bi on bi.member_no = m.member_no
-group by d.department_name
-order by books_issued desc;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>department_name</th><th>books_issued</th></tr><tr><td>Computer Science</td><td>14</td></tr><tr><td>Master Of Computer Application</td><td>4</td></tr><tr><td>Electrical Engineering</td><td>1</td></tr><tr><td>Mechanical Engineering</td><td>1</td></tr></table></div><div class="rows-note">(4 rows)</div>
-<div class="panel"><div class="panel-title">⚠️ With count(*) instead</div><div class="table-wrap"><table class="jt "><tr><th>department_name</th><th>count(*)</th></tr><tr><td>Computer Science</td><td>16</td></tr><tr><td>Mechanical Engineering</td><td>14</td></tr><tr><td>Electrical Engineering</td><td>12</td></tr><tr><td>Master Of Computer Application</td><td>11</td></tr></table></div><p style="margin:6px 0 0"><code>count(*)</code> also counts the rows the left joins padded with <code>null</code> (students with no book), so it roughly counts students instead of books.</p></div>
-<div class="why"><b class="t">Why it works.</b> <code>count(bi.accession_no)</code> counts only real issues. The four departments add up to 20, but <code>book_issue</code> has 21 rows: the 21st book is held by a faculty member (M0060), who has no <code>roll_no</code> and so is not linked to any student.</div>
-```
-
-### Example 10: Who in ME has a book?
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Show the name, department and book title for every Mechanical Engineering student who currently has a book issued.</div><div class="concept">Concepts: six-table join, string concatenation</div>
-```
-
-```sql
-select s.student_fname || ' ' || s.student_lname as student,
-       d.department_name, c.title, bi.doi
-from book_issue as bi
-     join members        as m  on m.member_no     = bi.member_no
-     join students       as s  on s.roll_no       = m.roll_no
-     join departments    as d  on d.department_code = s.department_code
-     join book_copies    as bc on bc.accession_no = bi.accession_no
-     join book_catalogue as c  on c.isbn_no       = bc.isbn_no
-where d.department_code = 'ME'
-order by bi.doi;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>student</th><th>department_name</th><th>title</th><th>doi</th></tr><tr><td>Suresh Singh</td><td>Mechanical Engineering</td><td>Coding For Beginners In Easy Steps</td><td>2021-07-03</td></tr></table></div><div class="rows-note">(1 row)</div>
-<div class="panel"><div class="panel-title">Join path</div><div class="flow steps"><div class="step"><div class="box"><b>book_issue</b></div><span>member_no, accession_no</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>members → students</b></div><span>roll_no</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>departments</b></div><span>department name</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>book_copies → book_catalogue</b></div><span>title</span></div></div></div>
-<div class="why"><b class="t">Why it works.</b> An issue records a <i>copy</i> (accession number), not a title, so the title needs two hops: copy → ISBN → catalogue. The member number leads to the student through <code>members.roll_no</code>.</div>
-```
-
-### Example 11: Titles never issued
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> List the titles of which no copy is currently issued.</div><div class="concept">Concepts: except, in with a subquery</div>
-```
-
-```sql
-select title
-from book_catalogue
-where isbn_no in (select isbn_no from book_catalogue
-                  except
-                  select bc.isbn_no
-                  from book_copies as bc
-                       join book_issue as bi on bi.accession_no = bc.accession_no)
-order by title;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>title</th></tr><tr><td>Basic Computation and Programming with C</td></tr><tr><td>Computer Science Textbook For Class 11</td></tr><tr><td>Computing Fundamentals and C Programming</td></tr><tr><td>Database Management System Oracle SQL</td></tr><tr><td>Excel Vba In Easy Steps</td></tr><tr><td>Machine Learning (in Python and R) For Dummies</td></tr><tr><td>The C Programming Language</td></tr></table></div><div class="rows-note">(7 rows)</div>
-<div class="why"><b class="t">Why it works.</b> <code>all ISBNs except issued ISBNs</code> leaves the ISBNs with no issued copy; the outer query turns them into titles. These are exactly the 7 titles with all 3 copies available in Example 13 (Book availability). The same result can be written with <code>not exists</code> or <code>not in</code> (no nulls here).</div>
-```
-
-### Example 12: Authors with more than one book
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Find authors who wrote more than one book in the catalogue.</div><div class="concept">Concepts: group by on two columns, having</div>
-```
-
-```sql
-select author_fname, author_lname, count(*) as books
-from book_authors
-group by author_fname, author_lname
-having count(*) > 1;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>author_fname</th><th>author_lname</th><th>books</th></tr><tr><td>Mike</td><td>Mcgrath</td><td>2</td></tr><tr><td>Joh Paul</td><td>Mueller</td><td>2</td></tr><tr><td>E</td><td>Balagurusamy</td><td>2</td></tr></table></div><div class="rows-note">(3 rows) · row order may vary</div>
-<div class="why"><b class="t">Why it works.</b> An author is identified by first <b>and</b> last name, so both go into <code>group by</code>. Grouping by last name alone would merge different authors who share a surname.</div>
-```
-
-## Part B: Views
-
-### Example 13: Book availability
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> For every book title, show how many copies the library owns, how many are issued and how many are available. Save it as a view so the desk staff can query it directly.</div><div class="concept">Concepts: view, join, left outer join, group by, count of a nullable column</div>
-```
-
-```sql
-begin;
-create view book_availability as
-select c.isbn_no, c.title,
-       count(bc.accession_no)                         as copies,
-       count(bi.accession_no)                         as issued,
+```{.sql db="lis"}
+create or replace view book_availability as
+select c.title,
+       count(bc.accession_no) as copies,
+       count(bi.accession_no) as issued,
        count(bc.accession_no) - count(bi.accession_no) as available
 from book_catalogue as c
      join book_copies as bc on bc.isbn_no = c.isbn_no
      left join book_issue as bi on bi.accession_no = bc.accession_no
 group by c.isbn_no, c.title;
 
-select title, copies, issued, available
-from book_availability
-order by available, title;
+select * from book_availability order by available, title;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>title</th><th>copies</th><th>issued</th><th>available</th></tr><tr><td>Coding For Beginners In Easy Steps</td><td>3</td><td>3</td><td>0</td></tr><tr><td>Programming in C</td><td>3</td><td>3</td><td>0</td></tr><tr><td>Advanced Database Management System</td><td>3</td><td>2</td><td>1</td></tr><tr><td>Clean Code</td><td>3</td><td>2</td><td>1</td></tr><tr><td>Java 8 Programming Black Book</td><td>3</td><td>2</td><td>1</td></tr></table></div><div class="rows-note">First 5 of 20 rows shown</div>
-<div class="panel"><div class="panel-title">How one title is counted</div><div class="flow steps"><div class="step"><div class="box"><b>join copies</b></div><span>3 rows: copies A, B, C</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>left join issues</b></div><span>unissued copies get null</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>count(bi.accession_no)</b></div><span>counts only non-null = issued</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>copies − issued</b></div><span>available</span></div></div></div>
-<div class="why"><b class="t">Why it works.</b> <code>count(column)</code> ignores nulls, while <code>count(*)</code> would count every row. The left join keeps copies that were never issued; their <code>bi.accession_no</code> is null, so they are not counted as issued. With an inner join, titles with no issued copies would disappear from the view. Querying the view: <code>select title from book_availability where available = 0;</code> returns the 2 titles with no copy left.</div>
-```
+The `left join` keeps copies that were never issued; `count(bi.accession_no)` counts only the non-null values, i.e. the issued copies.
 
-### Example 14: Match results
+### Example 2: Match results
 
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> Create a view that shows each match with the host and guest team names, the score as text and the winner (or "Draw").</div><div class="concept">Concepts: view, joining the same table twice with aliases, case expression, string concatenation ||</div>
-```
+**Question.** Create a view that shows each match with the host and guest team names, the score and the winner (or "Draw").
 
-```sql
-begin;
-create view match_results as
-select m.match_num, m.match_date,
+```{.sql db="flis"}
+create or replace view match_results as
+select m.match_num,
        h.name as host, g.name as guest,
        m.host_team_score || '-' || m.guest_team_score as score,
        case
@@ -326,134 +60,90 @@ select m.match_num, m.match_date,
            else 'Draw'
        end as winner
 from matches as m
-     join teams as h on m.host_team_id  = h.team_id
+     join teams as h on m.host_team_id = h.team_id
      join teams as g on m.guest_team_id = g.team_id;
 
 select * from match_results order by match_num;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>match_num</th><th>match_date</th><th>host</th><th>guest</th><th>score</th><th>winner</th></tr><tr><td>M0001</td><td>2020-05-06</td><td>Amigos</td><td>Arawali</td><td>5-4</td><td>Amigos</td></tr><tr><td>M0002</td><td>2020-05-07</td><td>Thunder</td><td>All Stars</td><td>0-1</td><td>All Stars</td></tr><tr><td>M0003</td><td>2020-05-09</td><td>Rainbow</td><td>Black Eagles</td><td>2-3</td><td>Black Eagles</td></tr><tr><td>M0004</td><td>2020-05-10</td><td>Black Eagles</td><td>Rainbow</td><td>1-2</td><td>Rainbow</td></tr><tr><td>M0005</td><td>2020-05-11</td><td>All Stars</td><td>Thunder</td><td>2-1</td><td>All Stars</td></tr></table></div><div class="rows-note">First 5 of 16 rows shown</div>
-<p>The view can be queried like any table:</p>
-```
+`teams` appears twice under two aliases: `h` gives the host's name and `g` the guest's.
 
-```sql
-select winner, count(*) as matches
-from match_results
-group by winner
-order by matches desc, winner;
-```
+### Example 3: League table
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>winner</th><th>matches</th></tr><tr><td>Black Eagles</td><td>4</td></tr><tr><td>Draw</td><td>4</td></tr><tr><td>All Stars</td><td>2</td></tr><tr><td>Rainbow</td><td>2</td></tr><tr><td>Thunder</td><td>2</td></tr><tr><td>Amigos</td><td>1</td></tr><tr><td>Arawali</td><td>1</td></tr></table></div><div class="rows-note">(7 rows)</div>
-<div class="why"><b class="t">Why it works.</b> <code>teams</code> appears twice under different aliases: <code>h</code> supplies the host name and <code>g</code> the guest name. The <code>case</code> expression is evaluated for each row. The <code>||</code> operator converts the integer scores to text when it joins them.</div>
-```
+**Question.** Using the `match_results` view (run Example 2 first), build a league table: matches played and points, with 3 for a win and 1 for a draw.
 
-### Example 15: League table
-
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> Using the <code>match_results</code> view, build a <code>team_standings</code> view with matches played, won, drawn, lost and points (3 for a win, 1 for a draw). Run it in the same transaction as Example 2, so <code>match_results</code> still exists.</div><div class="concept">Concepts: view defined using another view, union all, case inside sum</div>
-```
-
-```sql
-create view team_standings as
+```{.sql db="flis"}
+create or replace view team_points as
 select team,
-       count(*)                                           as played,
-       sum(case when result = 'W' then 1 else 0 end)      as won,
-       sum(case when result = 'D' then 1 else 0 end)      as drawn,
-       sum(case when result = 'L' then 1 else 0 end)      as lost,
+       count(*) as played,
        sum(case result when 'W' then 3 when 'D' then 1 else 0 end) as points
 from (select host as team,
-             case when winner = host then 'W'
-                  when winner = 'Draw' then 'D' else 'L' end as result
+             case when winner = host then 'W' when winner = 'Draw' then 'D' else 'L' end as result
       from match_results
       union all
       select guest,
-             case when winner = guest then 'W'
-                  when winner = 'Draw' then 'D' else 'L' end
+             case when winner = guest then 'W' when winner = 'Draw' then 'D' else 'L' end
       from match_results) as r
 group by team;
 
-select * from team_standings order by points desc, team;
-rollback;
+select * from team_points order by points desc, team;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>team</th><th>played</th><th>won</th><th>drawn</th><th>lost</th><th>points</th></tr><tr><td>Black Eagles</td><td>7</td><td>4</td><td>1</td><td>2</td><td>13</td></tr><tr><td>Thunder</td><td>6</td><td>2</td><td>2</td><td>2</td><td>8</td></tr><tr><td>All Stars</td><td>3</td><td>2</td><td>1</td><td>0</td><td>7</td></tr><tr><td>Rainbow</td><td>6</td><td>2</td><td>1</td><td>3</td><td>7</td></tr><tr><td>Amigos</td><td>7</td><td>1</td><td>2</td><td>4</td><td>5</td></tr><tr><td>Arawali</td><td>3</td><td>1</td><td>1</td><td>1</td><td>4</td></tr></table></div><div class="rows-note">(6 rows)</div>
-<div class="panel"><div class="panel-title">Each match becomes two rows, one per team</div><div class="table-wrap"><table class="jt "><tr><th>match_results row</th><th>→ rows in r</th></tr><tr><td>M0001 Amigos 5-4 Arawali</td><td>(Amigos, W) and (Arawali, L)</td></tr><tr><td>a 1-1 draw between X and Y</td><td>(X, D) and (Y, D)</td></tr></table></div></div>
-<div class="why"><b class="t">Why it works.</b> <code>team_standings</code> depends directly on <code>match_results</code>, which depends on the base tables. <code>union all</code> (not <code>union</code>) is required: two different matches can produce identical rows such as (Black Eagles, W), and <code>union</code> would remove the duplicates: every team would be left with at most one W, one D and one L, and Black Eagles would show 4 points instead of 13. The points match the <code>team_points</code> function on the Advanced SQL page.</div>
-```
+Each match becomes two rows, one per team. `union all` keeps duplicate rows such as two separate wins; `union` would merge them and undercount.
 
-### Example 16: CS students only
+### Example 4: CS students only
 
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Give the CS department office a view of CS students only, through which they can also add new CS students, but never a student of another department.</div><div class="concept">Concepts: updatable view, with check option, not-null columns hidden by a view</div>
-```
+**Question.** Create a view of CS students only, through which new CS students can be added, but never a student of another department.
 
-```sql
-begin;
-create view cs_students as
+```{.sql db="lis"}
+create or replace view cs_students as
 select * from students
 where department_code = 'CS'
 with check option;
 
+begin;
 insert into cs_students
 values ('Asha', 'Rao', 'CS99', 'CS', 'F', '9002000099', '2003-01-15', 'B.Tech');
-select count(*) from cs_students;
-
-insert into cs_students
-values ('Ravi', 'Kumar', 'ME99', 'ME', 'M', '9002000098', '2003-02-20', 'B.Tech');
+select count(*) from cs_students;   -- one more than before
 rollback;
 ```
 
-```{=html}
-<div class="out-label">Output</div><pre> count
--------
-    17
+Inserting a student of another department through the view is rejected by `with check option`:
 
-ERROR:  new row violates check option for view "cs_students"
-DETAIL:  Failing row contains (Ravi, Kumar, ME99, ME, M, 9002000098, 2003-02-20, B.Tech).</pre>
-<div class="why"><b class="t">Why it works.</b> The view selects from one table with plain columns, so it is updatable. 16 CS students + Asha = 17. Ravi's row would not satisfy <code>department_code = 'CS'</code>, and <code>with check option</code> rejects it.<br><b>Trap:</b> if the view listed only <code>roll_no, student_fname, student_lname, department_code, degree</code>, every insert would fail with <code>null value in column "gender" … violates not-null constraint</code>: columns hidden by a view are filled with null, and every column of <code>students</code> is <code>not null</code>.</div>
+```{.sql db="lis"}
+insert into cs_students
+values ('Ravi', 'Kumar', 'ME99', 'ME', 'M', '9002000098', '2003-02-20', 'B.Tech');
 ```
 
-### Example 17: Issues per member type
+### Example 5: Issues per member type
 
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Keep a fast summary of how many books are issued to each member type, and see what happens when a new book is issued.</div><div class="concept">Concepts: materialized view, staleness, refresh</div>
-```
+**Question.** Keep a stored summary of how many books are issued to each member type, and see what happens when a new book is issued.
 
-```sql
+```{.sql db="lis"}
 begin;
 create materialized view issues_per_type as
 select m.member_type, count(*) as books_issued
-from book_issue as bi
-     join members as m on m.member_no = bi.member_no
+from book_issue as bi join members as m on m.member_no = bi.member_no
 group by m.member_type;
 
-select * from issues_per_type order by member_type;
 insert into book_issue values ('M0053', '9789351199380C', '2021-08-12');
-select * from issues_per_type order by member_type;
+select * from issues_per_type;      -- FC still shows the old count
+
 refresh materialized view issues_per_type;
-select * from issues_per_type order by member_type;
+select * from issues_per_type;      -- FC now includes the new issue
 rollback;
 ```
 
-```{=html}
-<div class="panel"><div class="panel-title">The three selects</div><div class="two"><div><div class="flow-label">before and after the insert</div><div class="table-wrap"><table class="jt res"><tr><th>member_type</th><th>books_issued</th></tr><tr><td>FC</td><td>1</td></tr><tr><td>PG</td><td>4</td></tr><tr><td>UG</td><td>16</td></tr></table></div></div><div><div class="flow-label">after refresh</div><div class="table-wrap"><table class="jt res"><tr><th>member_type</th><th>books_issued</th></tr><tr class="hit"><td>FC</td><td><b>2</b></td></tr><tr><td>PG</td><td>4</td></tr><tr><td>UG</td><td>16</td></tr></table></div></div></div></div>
-<div class="why"><b class="t">Why it works.</b> M0053 is a faculty member (FC). The insert changes <code>book_issue</code>, but the materialized view keeps the stored result (FC = 1) until <code>refresh materialized view</code> recomputes it. A normal view would show 2 immediately.</div>
-```
+---
 
-## Part C: Functions and Procedures
+## Functions and Procedures
 
-### Example 18: Books held by a member
+### Example 6: Books held by a member
 
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Write a function that returns how many books a member currently holds, and use it to list members holding 2 or more books.</div><div class="concept">Concepts: SQL-language scalar function, function call in where</div>
-```
+**Question.** Write a function that returns how many books a member currently holds, and use it to list members holding 2 or more books.
 
-```sql
-begin;
-create function books_issued(m_no varchar)
+```{.sql db="lis"}
+create or replace function books_issued(m_no varchar)
 returns integer as $$
     select count(*) from book_issue where member_no = m_no;
 $$ language sql;
@@ -463,54 +153,12 @@ from members
 where books_issued(member_no) >= 2;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>member_no</th><th>member_type</th><th>issued</th></tr><tr><td>M0045</td><td>PG</td><td>2</td></tr></table></div><div class="rows-note">(1 row)</div>
-```
+### Example 7: Student GPA
 
-```sql
-select count(*) from members where books_issued(member_no) = 0;
-rollback;
-```
+**Question.** Write a function that converts a letter grade to grade points (A+ = 10, A = 9, A- = 8.5, B+ = 8, B = 7, B- = 6.5, C+ = 6, C = 5, C- = 4.5, otherwise 0), and use it to compute the credit-weighted GPA of students 1000, 10033 and 10076.
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>count</th></tr><tr><td>48</td></tr></table></div><div class="rows-note">(1 row)</div>
-<div class="why"><b class="t">Why it works.</b> The function runs once for each row of <code>members</code>, and returns 0 (not null) for members with no issues because <code>count</code> of no rows is 0.</div>
-```
-
-### Example 19: Books by publisher
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Write a function that takes a publisher name and returns the ISBN, title and year of its books, oldest first.</div><div class="concept">Concepts: table function used in from</div>
-```
-
-```sql
-begin;
-create function books_by_publisher(p varchar)
-returns table (isbn_no varchar, title varchar, year integer) as $$
-    select c.isbn_no, c.title, c.year
-    from book_catalogue as c
-    where c.publisher = p
-    order by c.year;
-$$ language sql;
-
-select * from books_by_publisher('Wiley');
-rollback;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>isbn_no</th><th>title</th><th>year</th></tr><tr><td>9788126563050</td><td>Machine Learning (in Python and R) For Dummies</td><td>2016</td></tr><tr><td>9788126568932</td><td>Blockchain for Dummies</td><td>2017</td></tr><tr><td>9788126576104</td><td>Artificial Intelligence For Dummies</td><td>2018</td></tr></table></div><div class="rows-note">(3 rows)</div>
-<div class="why"><b class="t">Why it works.</b> A table function behaves like a parameterised view. Its output columns are named in <code>returns table (…)</code>. Qualifying the columns with <code>c.</code> is optional in a SQL-language function, but in a PL/pgSQL function the output column names become variables, and unqualified column names fail with <code>column reference "isbn_no" is ambiguous</code>. Qualifying them is a safe habit.</div>
-```
-
-### Example 20: Student GPA
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> Write a function that converts a letter grade to grade points (A+ = 10, A = 9, A- = 8.5, B+ = 8, B = 7, B- = 6.5, C+ = 6, C = 5, C- = 4.5, anything else 0). Use it to compute the credit-weighted GPA of students 1000, 10033 and 10076.</div><div class="concept">Concepts: PL/pgSQL function, case expression, trim, aggregate over a function</div>
-```
-
-```sql
-begin;
-create function grade_points(g varchar)
+```{.sql db="university"}
+create or replace function grade_points(g varchar)
 returns numeric as $$
 begin
     return case trim(g)
@@ -525,80 +173,23 @@ $$ language plpgsql;
 select s.id, s.name,
        round(sum(c.credits * grade_points(t.grade)) / sum(c.credits), 2) as gpa
 from student as s
-     join takes  as t on s.id = t.id
+     join takes as t on s.id = t.id
      join course as c on c.course_id = t.course_id
 where s.id in ('1000', '10033', '10076')
-group by s.id, s.name
-order by s.id;
-rollback;
+group by s.id, s.name;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>id</th><th>name</th><th>gpa</th></tr><tr><td>1000</td><td>Manber</td><td>7.03</td></tr><tr><td>10033</td><td>Zelty</td><td>6.68</td></tr><tr><td>10076</td><td>Duan</td><td>8.03</td></tr></table></div><div class="rows-note">(3 rows)</div>
-<div class="panel"><div class="panel-title">⚠️ Trap in the dataset: grades with a trailing space</div><p style="margin:0 0 6px">One-letter grades are stored as <code>'A '</code>, <code>'B '</code>, <code>'C '</code> (10011 rows). So:</p><div class="table-wrap"><table class="jt "><tr><th>query / function</th><th>result</th></tr><tr><td>select count(*) from takes where grade = 'A';</td><td>0</td></tr><tr class="hit"><td>select count(*) from takes where trim(grade) = 'A';</td><td>3318</td></tr><tr><td>grade_points without trim(…), GPA of Zelty</td><td>3.60 (every A, B, C scored 0)</td></tr><tr class="hit"><td>grade_points with trim(…), GPA of Zelty</td><td>6.68</td></tr></table></div></div>
-<div class="why"><b class="t">Why it works.</b> <code>sum(credits × points) / sum(credits)</code> weights each grade by the course credits. <code>trim</code> removes the trailing space so <code>'A '</code> matches <code>'A'</code>.</div>
-```
+`trim` is needed because one-letter grades are stored with a trailing space (`'A '`). Without it, every A, B and C would score 0.
 
-### Example 21: Head-to-head record
+### Example 8: Issuing a book safely
 
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> Write a function that, given two team ids, returns how many times each beat the other and how many draws they had, or "never played".</div><div class="concept">Concepts: PL/pgSQL variables, for loop over a query, if / elsif, string building</div>
-```
+**Question.** Write a procedure `issue_book(member, copy, date)` that refuses a copy that is already issued and an unknown member, enforces the member's quota from the `quota` table, and otherwise records the issue.
 
-```sql
-begin;
-create function head_to_head(t1 varchar, t2 varchar)
-returns text as $$
+```{.sql db="lis"}
+create or replace procedure issue_book(m_no varchar, acc_no varchar, issue_date date) as $$
 declare
-    m record;
-    w1 integer := 0;  w2 integer := 0;  d integer := 0;
-    s1 integer;  s2 integer;
-begin
-    for m in select * from matches
-             where (host_team_id = t1 and guest_team_id = t2)
-                or (host_team_id = t2 and guest_team_id = t1)
-    loop
-        if m.host_team_id = t1 then              -- scores from t1's side
-            s1 := m.host_team_score;  s2 := m.guest_team_score;
-        else
-            s1 := m.guest_team_score; s2 := m.host_team_score;
-        end if;
-        if s1 > s2 then w1 := w1 + 1;
-        elsif s1 < s2 then w2 := w2 + 1;
-        else d := d + 1;
-        end if;
-    end loop;
-    if w1 + w2 + d = 0 then
-        return 'never played';
-    end if;
-    return t1 || ' won ' || w1 || ', ' || t2 || ' won ' || w2 || ', drawn ' || d;
-end;
-$$ language plpgsql;
-
-select o.name as opponent, head_to_head(t.team_id, o.team_id)
-from teams as t, teams as o
-where t.team_id = 'T0004' and o.team_id <> t.team_id
-order by o.team_id;
-rollback;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>opponent</th><th>head_to_head</th></tr><tr><td>Amigos</td><td>T0004 won 1, T0001 won 0, drawn 0</td></tr><tr><td>Thunder</td><td>T0004 won 0, T0002 won 1, drawn 1</td></tr><tr><td>Rainbow</td><td>T0004 won 3, T0003 won 1, drawn 0</td></tr><tr><td>All Stars</td><td>never played</td></tr><tr><td>Arawali</td><td>never played</td></tr></table></div><div class="rows-note">(5 rows) · Black Eagles (T0004) against every other team</div>
-<div class="why"><b class="t">Why it works.</b> The loop visits only matches between the two teams, in either home/away order. The first <code>if</code> turns each match into "t1's goals vs t2's goals", so the second <code>if</code> does not need to care who hosted.</div>
-```
-
-### Example 22: Issuing a book safely
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> Write a procedure <code>issue_book(member, copy, date)</code> that refuses to issue a copy that is already out, refuses unknown members, enforces the member's quota from the <code>quota</code> table, and otherwise records the issue.</div><div class="concept">Concepts: procedure, select into, several checks, raise exception, raise notice</div>
-```
-
-```sql
-begin;
-create procedure issue_book(m_no varchar, acc_no varchar, issue_date date) as $$
-declare
-    already   integer;
-    holding   integer;
+    already integer;
+    holding integer;
     quota_max integer;
 begin
     select count(*) into already from book_issue where accession_no = acc_no;
@@ -619,61 +210,72 @@ begin
     end if;
 
     insert into book_issue values (m_no, acc_no, issue_date);
-    raise notice 'issued % to %', acc_no, m_no;
 end;
 $$ language plpgsql;
 ```
 
-```{=html}
-<div class="panel"><div class="panel-title">Calls, in this order (the 2nd fails because the 1st has just issued that copy)</div><div class="table-wrap"><table class="jt "><tr><th>call</th><th>result</th></tr><tr class="hit"><td>call issue_book('M0053', '9789351199380C', '2021-08-12');</td><td>NOTICE: issued 9789351199380C to M0053</td></tr><tr><td>call issue_book('M0054', '9789351199380C', '2021-08-12');</td><td>ERROR: copy 9789351199380C is already issued</td></tr><tr><td>call issue_book('M9999', '9780984782864A', '2021-08-12');</td><td>ERROR: member M9999 does not exist</td></tr></table></div></div>
-<div class="why"><b class="t">Why it works.</b> The checks run in order and <code>raise exception</code> stops the procedure, so nothing is inserted when a check fails. If no member matches, <code>select … into</code> leaves <code>quota_max</code> null, which is how the unknown member is detected. The quota check uses <code>max_books</code> (UG 10, PG 12, FC 15).</div>
-```
+A valid issue (undone afterwards), then two calls that the procedure refuses:
 
-## Part D: Triggers
-
-### Example 23: No salary cuts
-
-```{=html}
-<div class="ds">Dataset: university</div><div class="q"><b>Question.</b> Make sure no instructor's salary can ever be reduced, whichever program updates it.</div><div class="concept">Concepts: BEFORE update row trigger, comparing old and new</div>
-```
-
-```sql
+```{.sql db="lis"}
 begin;
-create function no_salary_cut() returns trigger as $$
+call issue_book('M0053', '9789351199380C', '2021-08-12');
+select * from book_issue where member_no = 'M0053';
+rollback;
+```
+
+```{.sql db="lis"}
+call issue_book('M0054', '9789386551337B', '2021-08-12');   -- copy already issued
+```
+
+```{.sql db="lis"}
+call issue_book('M9999', '9780984782864A', '2021-08-12');   -- unknown member
+```
+
+---
+
+## Triggers
+
+### Example 9: No salary cuts
+
+**Question.** Make sure no instructor's salary can ever be reduced, whichever program updates it.
+
+```{.sql db="university"}
+create or replace function no_salary_cut() returns trigger as $$
 begin
     if new.salary < old.salary then
-        raise exception 'salary of % cannot decrease (% -> %)',
-                        old.name, old.salary, new.salary;
+        raise exception 'salary of % cannot decrease', old.name;
     end if;
     return new;
 end;
 $$ language plpgsql;
 
+drop trigger if exists no_salary_cut on instructor;
 create trigger no_salary_cut
 before update of salary on instructor
 for each row
 execute function no_salary_cut();
+```
 
+A raise goes through (undone afterwards); a cut is rejected:
+
+```{.sql db="university"}
+begin;
 update instructor set salary = salary * 1.10 where dept_name = 'Biology';
-update instructor set salary = salary * 0.90 where dept_name = 'Physics';
 rollback;
 ```
 
-```{=html}
-<div class="out-label">Output</div><pre>UPDATE 2
-ERROR:  salary of Shuming cannot decrease (108011.81 -&gt; 97210.63)</pre>
-<div class="why"><b class="t">Why it works.</b> A <code>check</code> constraint only sees the new row, so it cannot compare with the old value; a trigger can. The trigger fires for each row; the first Physics row fails, and because the whole statement is atomic, neither Physics salary changes.</div>
+```{.sql db="university"}
+update instructor set salary = salary * 0.90 where dept_name = 'Physics';
 ```
 
-### Example 24: One match per team per day
+A `check` constraint only sees the new row, so it cannot compare with the old salary; a trigger can.
 
-```{=html}
-<div class="ds">Dataset: flis</div><div class="q"><b>Question.</b> Reject a new match if either team already has a match on that date, or if a team is set to play itself.</div><div class="concept">Concepts: BEFORE insert trigger, exists over other rows, why a check constraint cannot do this</div>
-```
+### Example 10: One match per team per day
 
-```sql
-begin;
-create function one_match_per_day() returns trigger as $$
+**Question.** Reject a new match if either team already has a match on that date, or if a team is set to play itself.
+
+```{.sql db="flis"}
+create or replace function one_match_per_day() returns trigger as $$
 begin
     if new.host_team_id = new.guest_team_id then
         raise exception 'a team cannot play itself';
@@ -682,60 +284,30 @@ begin
                where m.match_date = new.match_date
                  and (m.host_team_id  in (new.host_team_id, new.guest_team_id)
                    or m.guest_team_id in (new.host_team_id, new.guest_team_id))) then
-        raise exception 'a team in match % already plays on %',
-                        new.match_num, new.match_date;
+        raise exception 'a team already plays on %', new.match_date;
     end if;
     return new;
 end;
 $$ language plpgsql;
 
+drop trigger if exists one_match_per_day on matches;
 create trigger one_match_per_day
 before insert on matches
 for each row
 execute function one_match_per_day();
 ```
 
-```{=html}
-<div class="panel"><div class="panel-title">Three inserts, tried one at a time</div><div class="table-wrap"><table class="jt "><tr><th>insert into matches values …</th><th>result</th></tr><tr><td>('M0017', '2020-05-06', 'T0002', 'T0006', 0, 0)</td><td>ERROR: a team in match M0017 already plays on 2020-05-06 (Arawali played M0001 that day)</td></tr><tr><td>('M0017', '2020-06-30', 'T0005', 'T0005', 1, 1)</td><td>ERROR: a team cannot play itself</td></tr><tr class="hit"><td>('M0017', '2020-06-30', 'T0005', 'T0006', 2, 2)</td><td>INSERT 0 1</td></tr></table></div></div>
-<div class="why"><b class="t">Why it works.</b> A <code>check</code> constraint can test values within the new row (host ≠ guest), but it cannot query other rows of the table. The trigger runs an <code>exists</code> subquery over the existing matches before the row is stored. Note the parentheses around the two <code>or</code> conditions: without them <code>and</code> binds tighter and the date test would apply to only half of the condition.</div>
+```{.sql db="flis"}
+insert into matches values ('M0017', '2020-05-06', 'T0002', 'T0006', 0, 0);   -- T0006 already plays that day
 ```
 
-### Example 25: Logging returned books
-
-```{=html}
-<div class="ds">Dataset: lis</div><div class="q"><b>Question.</b> When a book is returned (its row is deleted from <code>book_issue</code>), keep a record of who had it, which copy and when it was issued.</div><div class="concept">Concepts: AFTER delete row trigger, old row, audit table</div>
-```
-
-```sql
+```{.sql db="flis"}
 begin;
-create table return_log (member_no    varchar(10),
-                         accession_no varchar(20),
-                         issued_on    date,
-                         returned_on  date default date '2021-08-20');
-
-create function log_return() returns trigger as $$
-begin
-    insert into return_log(member_no, accession_no, issued_on)
-    values (old.member_no, old.accession_no, old.doi);
-    return old;
-end;
-$$ language plpgsql;
-
-create trigger log_return
-after delete on book_issue
-for each row
-execute function log_return();
-
-delete from book_issue where member_no = 'M0045';   -- M0045 returns both books
-select * from return_log;
-select count(*) from book_issue;
+insert into matches values ('M0017', '2020-06-30', 'T0005', 'T0006', 2, 2);   -- accepted
 rollback;
 ```
 
-```{=html}
-<div class="out-label">Output</div><pre>DELETE 2</pre><div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>member_no</th><th>accession_no</th><th>issued_on</th><th>returned_on</th></tr><tr><td>M0045</td><td>9789332543553C</td><td>2021-08-01</td><td>2021-08-20</td></tr><tr><td>M0045</td><td>9789386551337C</td><td>2021-07-02</td><td>2021-08-20</td></tr></table></div><div class="rows-note">(2 rows) · row order may vary; book_issue now has 19 rows</div>
-<div class="why"><b class="t">Why it works.</b> For a delete, only <code>old</code> exists. The row-level trigger fires once per deleted row, so one <code>delete</code> statement removing 2 rows writes 2 log rows. In a real system <code>returned_on</code> would default to <code>current_date</code>; a fixed date is used here so the output is the same every time.</div>
-```
+A `check` constraint can test values inside the new row, but it cannot look at other rows of the table; the trigger runs an `exists` query over the existing matches.
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>

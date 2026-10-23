@@ -6,289 +6,202 @@ format:
         code-fold: false
 ---
 
-```{=html}
-<p>A <b>join</b> combines two relations into one. Conceptually it starts from the Cartesian product (every row paired with every row) and keeps only the pairs that satisfy a matching condition. Join expressions are usually written in the <code>from</code> clause.</p>
-<p>Every join (except cross join) is made of two <b>independent</b> parts: a <b>join type</b> and a <b>join condition</b>.</p>
-<div class="flow"><div class="box"><b>Join type</b><span>which rows are kept</span></div><div class="arrow">+</div><div class="box grey"><b>Join condition</b><span>which rows match</span></div></div>
-<div class="flow-label">Join types</div>
-<div class="flow"><div class="box"><b>inner</b><span>matching rows only</span></div><div class="box"><b>left outer</b><span>+ unmatched left rows</span></div><div class="box"><b>right outer</b><span>+ unmatched right rows</span></div><div class="box"><b>full outer</b><span>+ unmatched rows of both</span></div></div>
-<div class="flow-label">Join conditions</div>
-<div class="flow"><div class="box grey"><b>natural</b><span>all same-named columns</span></div><div class="box grey"><b>using (A1, A2, ...)</b><span>only the listed columns</span></div><div class="box grey"><b>on &lt;predicate&gt;</b><span>any condition</span></div></div>
-<p class="flow-caption">Any type can be combined with any condition: left outer + natural → natural left outer join; full outer + using → full outer join ... using (course_id)</p>
-```
+A **join** takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that's then *filtered* down to only the pairs that actually make sense together.
 
-## How a Join Is Computed
+Every join (except cross join) is a **join type** plus a **join condition**:
 
 ```{=html}
-<p>The lecture uses two small relations from the university schema:</p>
-<div class="two"><div><p><b><code>course</code></b></p><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td></tr><tr><td class="L">CS-315</td><td class="L">Robotics</td><td class="L">Comp. Sci.</td><td class="L">3</td></tr></table></div></div><div><p><b><code>prereq</code></b></p><div class="table-wrap"><table class="jt"><tr><th class="R">course_id</th><th class="R">prereq_id</th></tr><tr><td class="R">BIO-301</td><td class="R">BIO-101</td></tr><tr><td class="R">CS-190</td><td class="R">CS-101</td></tr><tr><td class="R">CS-347</td><td class="R">CS-101</td></tr></table></div></div></div>
-<p>Two rows have no partner: <b>CS-315</b> has no row in <code>prereq</code>, and <b>CS-347</b> has no row in <code>course</code>. Watch what each join does with them.</p>
-<div class="flow steps"><div class="step"><div class="box"><b>1. cross product</b></div><span>every pair: 3 × 3 = 9 rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2. apply condition</b></div><span>keep matching pairs → inner join</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3. outer only</b></div><span>add unmatched rows, pad with null</span></div></div>
-<div class="panel"><div class="panel-title">Step 1 and 2: course × prereq, checked against course.course_id = prereq.course_id</div><div class="table-wrap"><table class="jt"><tr><th class="L">course.course_id</th><th class="L">title</th><th class="R">prereq.course_id</th><th class="R">prereq_id</th><th>condition</th></tr><tr class="hit"><td>BIO-301</td><td>Genetics</td><td>BIO-301</td><td>BIO-101</td><td>✓ match</td></tr><tr class="miss"><td>BIO-301</td><td>Genetics</td><td>CS-190</td><td>CS-101</td><td>✗</td></tr><tr class="miss"><td>BIO-301</td><td>Genetics</td><td>CS-347</td><td>CS-101</td><td>✗</td></tr><tr class="miss"><td>CS-190</td><td>Game Design</td><td>BIO-301</td><td>BIO-101</td><td>✗</td></tr><tr class="hit"><td>CS-190</td><td>Game Design</td><td>CS-190</td><td>CS-101</td><td>✓ match</td></tr><tr class="miss"><td>CS-190</td><td>Game Design</td><td>CS-347</td><td>CS-101</td><td>✗</td></tr><tr class="miss"><td>CS-315</td><td>Robotics</td><td>BIO-301</td><td>BIO-101</td><td>✗</td></tr><tr class="miss"><td>CS-315</td><td>Robotics</td><td>CS-190</td><td>CS-101</td><td>✗</td></tr><tr class="miss"><td>CS-315</td><td>Robotics</td><td>CS-347</td><td>CS-101</td><td>✗</td></tr></table></div><p style="margin:8px 0 0">Only 2 of the 9 pairs satisfy the condition. That is the <b>inner join</b>. CS-315 and CS-347 never match, so an inner join loses them. Step 3, used only by outer joins, adds them back.</p></div>
+<div class="flow"><div class="box"><b>Join type</b><span>which rows are kept</span></div><div class="arrow">+</div><div class="box grey"><b>Join condition</b><span>which rows match</span></div></div><div class="flow-label">Join types</div><div class="flow"><div class="box"><b>inner</b><span>matching rows only</span></div><div class="box"><b>left outer</b><span>+ unmatched left rows</span></div><div class="box"><b>right outer</b><span>+ unmatched right rows</span></div><div class="box"><b>full outer</b><span>+ unmatched rows of both</span></div></div><div class="flow-label">Join conditions</div><div class="flow"><div class="box grey"><b>natural</b><span>all same-named columns</span></div><div class="box grey"><b>using (A, ...)</b><span>only the listed columns</span></div><div class="box grey"><b>on &lt;predicate&gt;</b><span>any condition</span></div></div>
 ```
+
+---
+
+## Sample Data
+
+The joins on this page use small relations from the three course datasets. Run each block to see the rows that will be joined.
+
+**University:** the courses offered in Fall 2009 and the courses offered in Spring 2008. Run this block once to create them as two views, then look at them:
+
+```{.sql db="university"}
+create or replace view fall_2009 as
+    select distinct s.course_id, c.title
+    from section as s join course as c on s.course_id = c.course_id
+    where s.semester = 'Fall' and s.year = 2009;
+
+create or replace view spring_2008 as
+    select distinct course_id, building
+    from section
+    where semester = 'Spring' and year = 2008;
+
+select * from fall_2009;     -- 7 courses
+select * from spring_2008;   -- 9 courses
+```
+
+Only course `237` is in both: 6 Fall courses have no Spring match, and 8 Spring courses have no Fall match. This mismatch is exactly what different join types handle differently.
+
+**LIS:** faculty, and the library members who are faculty:
+
+```{.sql db="lis"}
+select id, faculty_fname, faculty_lname from faculty;
+select member_no, id from members where member_class = 'Faculty';
+```
+
+**FLIS:** the teams and the referees:
+
+```{.sql db="flis"}
+select team_id, name from teams;
+select referee_id, name from referees;
+```
+
+---
 
 ## Cross Join
 
-```{=html}
-<p>Returns the full Cartesian product, with no condition.</p><div class="ds">Dataset: flis</div>
-```
+Returns the **full Cartesian product** — every row of one table paired with every row of the other, no filtering at all.
 
-```sql
+```{.sql db="university"}
 -- Explicit
-select * from teams cross join referees;
+select * from fall_2009 cross join spring_2008;
 
 -- Implicit (comma syntax)
-select * from teams, referees;
-
-select count(*) from teams cross join referees;
+select * from fall_2009, spring_2008;
 ```
+
+With 7 Fall courses and 9 Spring courses, this produces **63 rows** — almost all of them meaningless pairings.
+
+The same on another dataset: every team paired with every referee (6 × 7 = 42 rows):
+
+```{.sql db="flis"}
+select count(*)
+from teams cross join referees;
+```
+
+---
+
+## Inner Join
+
+Keeps only the rows where the join condition is satisfied on **both sides**.
+
+| Join Type | Condition | Result |
+|---|---|---|
+| **Equi-Join** | Explicit equality condition (`on a.x = b.x`) | Both `x` columns kept |
+| **Natural Join** | Equality assumed on same-named columns | Duplicate column auto-dropped |
+
+```{.sql db="university"}
+-- Equi-join (course_id appears twice)
+select * from fall_2009 inner join spring_2008
+on fall_2009.course_id = spring_2008.course_id;
+
+-- Natural join (same row, but course_id appears once)
+select * from fall_2009 natural join spring_2008;
+```
+
+Only course `237` survives. The other Fall and Spring courses all **disappear** — this is the information loss outer joins solve.
 
 ```{=html}
-<div class="out-label">Output</div><pre> count
--------
-    42</pre><p>6 teams × 7 referees = 42 rows: every team paired with every referee.</p>
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th><th>what happens</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td><td>in both: kept</td></tr><tr><td>105</td><td>Image Processing</td><td>–</td><td>no Spring match: dropped</td></tr><tr><td>158</td><td>–</td><td>Taylor</td><td>no Fall match: dropped</td></tr></table></div>
 ```
 
-## Join Conditions
+
+---
+
+## Outer Join
+
+Outer joins keep the inner join result **plus** the unmatched rows from one or both sides, filling missing columns with `null`.
 
 ```{=html}
-<p>The condition decides <b>which rows match</b> and <b>how the common column appears</b>. With the lecture tables, all three conditions below give the same 2 inner-join rows; only the columns differ.</p>
-<div class="table-wrap"><table class="jt "><tr><th>Condition</th><th>Matches on</th><th>course_id in output</th></tr><tr><td><code>on course.course_id = prereq.course_id</code></td><td>the predicate you write</td><td>twice (one per relation)</td></tr><tr><td><code>using (course_id)</code></td><td>the listed columns</td><td>once</td></tr><tr><td><code>natural</code></td><td>all same-named columns</td><td>once</td></tr></table></div>
-```
-
-### `on`: an equi-join
-
-```sql
-select * from course inner join prereq
-on course.course_id = prereq.course_id;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th><th class="R">course_id</th><th class="R">prereq_id</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td><td class="R">BIO-301</td><td class="R">BIO-101</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td><td class="R">CS-190</td><td class="R">CS-101</td></tr></table></div><div class="rows-note">(2 rows)</div>
-```
-
-### `using` and `natural`
-
-```sql
-select * from course inner join prereq using (course_id);
-
-select * from course natural join prereq;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th><th class="R">prereq_id</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td><td class="R">BIO-101</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td><td class="R">CS-101</td></tr></table></div><div class="rows-note">(2 rows) · same result for both</div><div class="jt-legend"><span><span class="sw" style="background:var(--dbms-blue-head)"></span>column from course</span><span><span class="sw" style="background:var(--dbms-grey-head)"></span>column from prereq</span><span><span class="nl">null</span> padded value</span></div>
-```
-
-### Dataset example: `on` vs `using` vs `natural`
-
-```{=html}
-<p><i>Example:</i> list each team with its manager. Both <code>teams</code> and <code>managers</code> have a <code>team_id</code> column <b>and</b> a <code>name</code> column.</p><div class="ds">Dataset: flis</div>
-```
-
-```sql
-select t.team_id, t.name, m.mgr_id, m.team_id, m.name
-from teams as t inner join managers as m
-on t.team_id = m.team_id;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">team_id</th><th class="L">name</th><th class="R">mgr_id</th><th class="R">team_id</th><th class="R">name</th></tr><tr><td class="L">T0001</td><td class="L">Amigos</td><td class="R">M0001</td><td class="R">T0001</td><td class="R">Jacob</td></tr><tr><td class="L">T0002</td><td class="L">Thunder</td><td class="R">M0002</td><td class="R">T0002</td><td class="R">Scott</td></tr><tr><td class="L">T0003</td><td class="L">Rainbow</td><td class="R">M0003</td><td class="R">T0003</td><td class="R">Brandon</td></tr></table></div><div class="rows-note">First 3 of 6 rows shown</div>
-```
-
-```sql
-select team_id, t.name as team, m.name as manager, since
-from teams as t join managers as m using (team_id);
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th>team_id</th><th class="L">team</th><th class="R">manager</th><th class="R">since</th></tr><tr><td>T0001</td><td class="L">Amigos</td><td class="R">Jacob</td><td class="R">2020-06-22</td></tr><tr><td>T0002</td><td class="L">Thunder</td><td class="R">Scott</td><td class="R">2021-03-22</td></tr><tr><td>T0003</td><td class="L">Rainbow</td><td class="R">Brandon</td><td class="R">2019-04-02</td></tr></table></div><div class="rows-note">First 3 of 6 rows shown · team_id appears once</div>
-```
-
-```sql
-select * from teams natural join managers;
-```
-
-```{=html}
-<div class="out-label">Output</div><pre>(0 rows)</pre>
-<div class="panel"><div class="panel-title">⚠️ Why natural join returns nothing</div><div class="flow"><div class="box"><b>teams</b><span>team_id, <u>name</u>, city, ...</span></div><div class="box grey"><b>managers</b><span>mgr_id, <u>name</u>, dob, team_id, since</span></div></div><p style="margin:6px 0 0"><code>natural</code> compares <b>every</b> same-named column, so it also requires <code>teams.name = managers.name</code> ("Amigos" = "Jacob"?). No team has the same name as its manager, so every pair fails. <code>using (team_id)</code> says exactly which column to match.</p></div>
-```
-
-### The dangerous natural join
-
-```{=html}
-<p><i>Example:</i> list students with the titles of the courses they took.</p><div class="ds">Dataset: university</div>
-```
-
-```sql
--- intended: one row per (student, course taken)
-select count(*) from student natural join takes;
-select count(*) from student natural join takes natural join course;
-```
-
-```{=html}
-<div class="out-label">Output</div><pre> count          count
--------        -------
- 30000           1429</pre>
-<div class="panel"><div class="panel-title">Where did 28571 rows go?</div><div class="flow steps"><div class="step"><div class="box"><b>student ⋈ takes</b></div><span>common: id → 30000 rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>… ⋈ course</b></div><span>common: course_id <b>and dept_name</b></span></div><div class="arrow">→</div><div class="step"><div class="box"><b>result</b></div><span>only courses of the student's own dept: 1429</span></div></div><p style="margin:6px 0 0"><code>student</code> and <code>course</code> both have <code>dept_name</code>, so the second natural join silently adds <code>student.dept_name = course.dept_name</code>. Fix: <code>student join takes using (id) join course using (course_id)</code> → 30000 rows.</p></div>
-```
-
-## Join Types
-
-```{=html}
-<p>The type decides <b>which rows are kept</b>. An outer join first computes the inner join, then adds the unmatched rows of the preserved side(s), padding the other side's columns with <code>null</code>. The keyword <code>outer</code> is optional: <code>left join</code> = <code>left outer join</code>.</p>
+<div class="flow steps"><div class="step"><div class="box"><b>1 · inner join</b></div><span>matching rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · add unmatched</b></div><span>from the left, right or both</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · fill</b></div><span>missing columns with null</span></div></div>
 ```
 
 ### Left Outer Join
 
+Keeps **all rows from the left table**, even unmatched ones.
+
+```{.sql db="university"}
+select * from fall_2009 natural left outer join spring_2008;
+```
+
+All 7 Fall courses are kept; the 6 with no Spring match get `null` for `building`.
+
 ```{=html}
-<p>Keeps every row of the <b>left</b> relation.</p>
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td></tr><tr><td>105</td><td>Image Processing</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td></tr><tr><td>242</td><td>Rock and Roll</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td></tr><tr><td>…</td><td></td><td></td></tr></table></div>
 ```
 
-```sql
-select * from course natural left outer join prereq;
-```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th><th class="R">prereq_id</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td><td class="R">BIO-101</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td><td class="R">CS-101</td></tr><tr class="un"><td>CS-315</td><td>Robotics</td><td>Comp. Sci.</td><td>3</td><td><span class="nl">null</span></td></tr></table></div><div class="rows-note">(3 rows)</div>
-<p><i>Dataset example:</i> list every faculty member with their library member number.</p><div class="ds">Dataset: lis</div>
-```
+The same on another dataset: every faculty member with their library member number. The faculty member who is not a library member is kept, with `null`:
 
-```sql
-select f.faculty_fname, f.faculty_lname, f.id, m.member_no
+```{.sql db="lis"}
+select f.faculty_fname, f.faculty_lname, m.member_no
 from faculty as f left outer join members as m
 on m.id = f.id;
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">faculty_fname</th><th class="L">faculty_lname</th><th class="L">id</th><th class="R">member_no</th></tr><tr><td class="L">Sanchit</td><td class="L">Jain</td><td class="L">FCS01</td><td class="R">M0053</td></tr><tr><td class="L">Sumanta</td><td class="L">Kuiley</td><td class="L">FCS02</td><td class="R">M0054</td></tr><tr><td class="L">…</td><td class="L"></td><td class="L"></td><td class="R"></td></tr><tr class="un"><td>Pinki</td><td>Mandal</td><td>FMCA05</td><td><span class="nl">null</span></td></tr></table></div><div class="rows-note">First 4 of 17 rows shown · Pinki is kept although she is not a member</div>
-```
-
 ### Right Outer Join
 
-```{=html}
-<p>Keeps every row of the <b>right</b> relation.</p>
+Keeps **all rows from the right table**, even unmatched ones.
+
+```{.sql db="university"}
+select * from fall_2009 natural right outer join spring_2008;
 ```
 
-```sql
-select * from course natural right outer join prereq;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th><th class="R">prereq_id</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td><td class="R">BIO-101</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td><td class="R">CS-101</td></tr><tr class="un"><td>CS-347</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td>CS-101</td></tr></table></div><div class="rows-note">(3 rows)</div>
-<p><i>Dataset example:</i> instructors with their department details, keeping departments that have no instructor.</p><div class="ds">Dataset: university</div>
-```
-
-```sql
-select dept_name, id, name, building
-from instructor natural right outer join department
-where id is null;   -- show only the rows added by the outer join
-```
+All 9 Spring courses are kept; the 8 with no Fall match get `null` for `title`.
 
 ```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th>dept_name</th><th class="L">id</th><th class="L">name</th><th class="R">building</th></tr><tr class="un"><td>History</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td>Taylor</td></tr><tr class="un"><td>Math</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td>Brodhead</td></tr><tr class="un"><td>Civil Eng.</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td>Chandler</td></tr></table></div><div class="rows-note">(3 rows) · row order may vary; without the where clause: 53 rows = 50 instructors + 3 empty departments</div>
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td></tr><tr><td>158</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td></tr><tr><td>345</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td></tr><tr><td>…</td><td></td><td></td></tr></table></div>
+```
+
+
+The same on another dataset: every department with its instructors, including the departments that have none:
+
+```{.sql db="university"}
+select dept_name, id, name
+from instructor natural right outer join department;
 ```
 
 ### Full Outer Join
 
-```{=html}
-<p>Keeps every row of <b>both</b> relations.</p>
+Keeps **everything from both sides** — the union of left and right outer joins.
+
+```{.sql db="university"}
+select * from fall_2009 natural full outer join spring_2008;
 ```
 
-```sql
-select * from course full outer join prereq using (course_id);
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">course_id</th><th class="L">title</th><th class="L">dept_name</th><th class="L">credits</th><th class="R">prereq_id</th></tr><tr><td class="L">BIO-301</td><td class="L">Genetics</td><td class="L">Biology</td><td class="L">4</td><td class="R">BIO-101</td></tr><tr><td class="L">CS-190</td><td class="L">Game Design</td><td class="L">Comp. Sci.</td><td class="L">4</td><td class="R">CS-101</td></tr><tr class="un"><td>CS-315</td><td>Robotics</td><td>Comp. Sci.</td><td>3</td><td><span class="nl">null</span></td></tr><tr class="un"><td>CS-347</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td><span class="nl">null</span></td><td>CS-101</td></tr></table></div><div class="rows-note">(4 rows)</div><div class="jt-legend"><span><span class="sw" style="background:var(--dbms-blue-head)"></span>column from course</span><span><span class="sw" style="background:var(--dbms-grey-head)"></span>column from prereq</span><span><span class="sw" style="background:var(--dbms-blue-row);box-shadow:inset 3px 0 0 var(--dbms-blue-bar)"></span>row kept only by the outer join</span><span><span class="nl">null</span> padded value</span></div>
-<p><i>Dataset example:</i> compare the courses offered in Fall 2009 and Spring 2008. A course offered in only one of them gets <code>null</code> for the other.</p><div class="ds">Dataset: university</div>
-```
-
-```sql
-select *
-from (select distinct course_id, 'yes' as fall_2009
-      from section where semester = 'Fall' and year = 2009) as f
-full outer join
-     (select distinct course_id, 'yes' as spring_2008
-      from section where semester = 'Spring' and year = 2008) as s
-using (course_id)
-order by course_id;
-```
+1 matched course + 6 Fall-only + 8 Spring-only = **15 rows**.
 
 ```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th>course_id</th><th class="L">fall_2009</th><th class="R">spring_2008</th></tr><tr class="un"><td>105</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>158</td><td><span class="nl">null</span></td><td>yes</td></tr><tr><td>237</td><td class="L">yes</td><td class="R">yes</td></tr><tr class="un"><td>242</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>304</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>334</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>345</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>349</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>362</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>486</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>704</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>852</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>960</td><td>yes</td><td><span class="nl">null</span></td></tr><tr class="un"><td>962</td><td><span class="nl">null</span></td><td>yes</td></tr><tr class="un"><td>991</td><td><span class="nl">null</span></td><td>yes</td></tr></table></div><div class="rows-note">(15 rows) · only 237 matched; 6 Fall-only + 8 Spring-only rows are added</div>
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th><th>came from</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td><td>both</td></tr><tr><td>105</td><td>Image Processing</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Fall only</td></tr><tr><td>158</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td><td>Spring only</td></tr><tr><td>…</td><td></td><td></td><td></td></tr></table></div>
 ```
 
-## Joining More Than Two Relations
 
-```{=html}
-<p>Joins can be chained, and the same relation can appear twice under different aliases. <i>Example:</i> show each match with the <b>names</b> of the host and guest teams.</p><div class="ds">Dataset: flis</div>
-<div class="flow steps"><div class="step"><div class="box"><b>matches</b></div><span>host_team_id, guest_team_id</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>teams as h</b></div><span>name of the host</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>teams as g</b></div><span>name of the guest</span></div></div>
+### Using Explicit Conditions
+
+Joins can also use `on` (any condition) or `using` (shared column names), instead of `natural`:
+
+```{.sql db="university"}
+-- Explicit condition
+select * from fall_2009 left outer join spring_2008
+on fall_2009.course_id = spring_2008.course_id;
+
+-- Shared column shorthand
+select * from fall_2009 full outer join spring_2008
+using (course_id);
 ```
 
-```sql
-select m.match_num, h.name as host, g.name as guest,
-       m.host_team_score, m.guest_team_score
-from matches as m
-     join teams as h on m.host_team_id = h.team_id
-     join teams as g on m.guest_team_id = g.team_id
-order by m.match_num;
-```
+::: {.callout-note title="Key idea"}
+`on` works with *any* condition (even inequality!). `natural` and `using` both rely on matching column names — `using` lets you name exactly which shared column(s) to join on, while `natural` matches on **all** identically-named columns.
+:::
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>match_num</th><th>host</th><th>guest</th><th>host_team_score</th><th>guest_team_score</th></tr><tr><td>M0001</td><td>Amigos</td><td>Arawali</td><td>5</td><td>4</td></tr><tr><td>M0002</td><td>Thunder</td><td>All Stars</td><td>0</td><td>1</td></tr><tr><td>M0003</td><td>Rainbow</td><td>Black Eagles</td><td>2</td><td>3</td></tr><tr><td>M0004</td><td>Black Eagles</td><td>Rainbow</td><td>1</td><td>2</td></tr></table></div><div class="rows-note">First 4 of 16 rows shown</div>
-```
+---
 
-## Common Mistakes
+## Quick Reference: Join Types
 
-### Filtering in `on` vs `where`
-
-```{=html}
-<p><i>Example:</i> every department with its instructors earning more than 100000.</p><div class="ds">Dataset: university</div>
-```
-
-```sql
--- Filter inside ON: every department is kept
-select d.dept_name, i.name, i.salary
-from department as d left outer join instructor as i
-on d.dept_name = i.dept_name and i.salary > 100000
-order by d.dept_name;
-```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt"><tr><th class="L">dept_name</th><th class="R">name</th><th class="R">salary</th></tr><tr class="un"><td>Accounting</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td></tr><tr class="un"><td>Astronomy</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td></tr><tr><td class="L">Athletics</td><td class="R">Jaekel</td><td class="R">103146.87</td></tr><tr class="un"><td>Biology</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td></tr><tr class="un"><td>Civil Eng.</td><td><span class="nl">null</span></td><td><span class="nl">null</span></td></tr><tr><td class="L">Comp. Sci.</td><td class="R">Bondi</td><td class="R">115469.11</td></tr></table></div><div class="rows-note">First 6 of 22 rows shown</div>
-```
-
-```sql
--- Same filter in WHERE: applied after the join
-select d.dept_name, i.name, i.salary
-from department as d left outer join instructor as i
-on d.dept_name = i.dept_name
-where i.salary > 100000;
-```
-
-```{=html}
-<div class="out-label">Output</div><pre>(12 rows): only departments that have such an instructor</pre>
-<div class="panel"><div class="panel-title">Why 22 vs 12</div><div class="flow steps"><div class="step"><div class="box"><b>on</b></div><span>decides which rows match</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>outer join</b></div><span>unmatched departments kept with null</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>where</b></div><span>runs after: null &gt; 100000 is unknown → dropped</span></div></div><p style="margin:6px 0 0">A <code>where</code> condition on the right relation's columns removes the null-padded rows, so the left outer join behaves like an inner join.</p></div>
-```
-
-### Syntax that looks right but fails
-
-```{=html}
-<div class="table-wrap"><table class="jt"><tr><th>Query</th><th>Result</th></tr>
-<tr><td><code>course natural outer join prereq</code></td><td>✗ Error: must say left, right or full</td></tr>
-<tr><td><code>course left outer join prereq</code> (no condition)</td><td>✗ Error: outer joins need natural, using or on</td></tr>
-<tr><td><code>course natural left join prereq on ...</code></td><td>✗ Error: natural cannot be combined with on / using</td></tr>
-<tr><td><code>course left join prereq using (course_id)</code></td><td>✓ Valid: the keyword outer is optional</td></tr></table></div>
-```
-
-## Quick Reference
-
-```{=html}
-<div class="table-wrap"><table class="jt"><tr><th>Join type</th><th>Unmatched left rows kept?</th><th>Unmatched right rows kept?</th></tr>
-<tr><td>Inner</td><td>✗</td><td>✗</td></tr><tr><td>Left outer</td><td>✓</td><td>✗</td></tr><tr><td>Right outer</td><td>✗</td><td>✓</td></tr><tr><td>Full outer</td><td>✓</td><td>✓</td></tr></table></div>
-<div class="table-wrap"><table class="jt"><tr><th>Join condition</th><th>Matches on</th><th>Common column(s) in output</th></tr>
-<tr><td><code>natural</code></td><td>All same-named columns</td><td>Once</td></tr><tr><td><code>using (A, ...)</code></td><td>Listed columns</td><td>Once</td></tr><tr><td><code>on &lt;predicate&gt;</code></td><td>Any condition</td><td>Once per relation</td></tr></table></div>
-```
+| Join | Unmatched left rows kept? | Unmatched right rows kept? |
+|---|:---:|:---:|
+| Cross Join | n/a (no matching) | n/a |
+| Inner Join | ✗ | ✗ |
+| Left Outer | ✓ | ✗ |
+| Right Outer | ✗ | ✓ |
+| Full Outer | ✓ | ✓ |
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
