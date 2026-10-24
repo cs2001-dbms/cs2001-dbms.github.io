@@ -39,7 +39,7 @@ $$Minimum \ Bits = \lceil \log_2(Total \ No. \ of \ Sectors) \rceil$$
 
 Let's put our intuition to work with some structured numerical problems.
 
-::: {.callout-important title="Solved Example 1: Reading a File"}
+::: {.callout-note title="Solved Example 1: Reading a File"}
 **Problem Statement:**
 Consider you have a file named "IITM BSc" in your hard disk. The file size is 1000 KB. Seek time of your hard disk read head is 3ms, rotational speed is 30,000 RPM. The disk has 200 sectors/track and sector size is 512 bytes.
 
@@ -85,7 +85,7 @@ b) Considering the fact that the file data is stored in all non-consecutive sect
 
 <br>
 
-::: {.callout-important title="Solved Example 2: Disk Geometry and Addressing"}
+::: {.callout-note title="Solved Example 2: Disk Geometry and Addressing"}
 **Problem Statement:**
 Consider a disk with 10 platters, 64 tracks/surface, 256 sectors/track, 512 bytes/sector. 4 bytes/sector is reserved for storing file system information (formatting data).
 
@@ -120,4 +120,75 @@ b) How many bits are required for addressing all the sectors?
      $Minimum \ Bits = \lceil \log_2(327,680) \rceil$
      Since $2^{18} = 262,144$ and $2^{19} = 524,288$, we know we need more than 18 bits.
      $Minimum \ Bits = \mathbf{19 \ bits}$
+:::
+
+<br>
+
+::: {.callout-note title="Solved Example 3: Capacity of a Track"}
+**Problem Statement:**
+A magnetic disk has 16 platters with data recorded on both surfaces. Each surface has 128 tracks, each track has 256 sectors, and each sector holds 512 bytes. Find the storage capacity of **one track**.
+
+**Solution:**
+
+- A track's capacity depends only on its sectors:
+  $Track \ Capacity = Sectors/Track \times Sector \ Size = 256 \times 512 = 131,072 \ Bytes$
+- Convert to KB: $\frac{131,072}{1024} = \mathbf{128 \ KB}$
+
+*(The number of platters and tracks is not needed for this question.)*
+:::
+
+<br>
+
+::: {.callout-note title="Solved Example 4: Capacity of a Disk"}
+**Problem Statement:**
+A magnetic disk has 16 platters, 2 surfaces/platter, 1024 tracks/surface, 512 sectors/track and 1024 bytes/sector. What is the total storage capacity in GB?
+
+**Solution:**
+
+- $Capacity = Platters \times Surfaces \times Tracks \times Sectors \times Sector \ Size$
+- Write every value as a power of 2:
+  $Capacity = 2^4 \times 2^1 \times 2^{10} \times 2^9 \times 2^{10} = 2^{34} \ Bytes$
+- Since $1 \ GB = 2^{30} \ Bytes$: $\frac{2^{34}}{2^{30}} = 2^4 = \mathbf{16 \ GB}$
+:::
+
+<br>
+
+::: {.callout-note title="Solved Example 5: Average Rotational Latency"}
+**Problem Statement:**
+A disk rotates at 8000 revolutions per minute and its seek time is 3 ms. What is the average rotational latency?
+
+**Solution:**
+
+- $Time \ Period = \frac{60,000 \ ms}{8000} = 7.5 \ ms$ for one rotation
+- On average the sector is half a rotation away:
+  $Average \ Rotational \ Latency = \frac{1}{2} \times 7.5 \ ms = \mathbf{3.75 \ ms}$
+
+*(The seek time is not needed for the latency.)*
+:::
+
+<br>
+
+::: {.callout-note title="Solved Example 6: Disk Access Time"}
+**Problem Statement:**
+A disk rotates at 5000 revolutions per minute and its seek time is 5 ms. Taking *disk access time = seek time + rotational latency*, find the disk access time in ms.
+
+**Solution:**
+
+- $Time \ Period = \frac{60,000 \ ms}{5000} = 12 \ ms$
+- $Average \ Rotational \ Latency = \frac{12}{2} = 6 \ ms$
+- $Access \ Time = 5 \ ms + 6 \ ms = \mathbf{11 \ ms}$
+:::
+
+<br>
+
+::: {.callout-note title="Solved Example 7: Addressing Sectors"}
+**Problem Statement:**
+A disk has 8 platters, 2 surfaces/platter, 1024 tracks/surface and 2048 sectors/track. What is the minimum number of bits needed to address every sector?
+
+**Solution:**
+
+- $Total \ Sectors = 2^3 \times 2^1 \times 2^{10} \times 2^{11} = 2^{25} = 33,554,432$
+- $Minimum \ Bits = \lceil \log_2(2^{25}) \rceil = \mathbf{25 \ bits}$
+
+*(Compare with Solved Example 2: when the sector count is not a power of 2, round $\log_2$ up.)*
 :::
