@@ -10,6 +10,14 @@ format:
 
 SQL is **declarative** — great for describing *what* you want, clumsy for *how* to compute it step by step. Sometimes you need loops, conditionals, and reusable logic. SQL:1999 added **functions, procedures, and control-flow constructs** to bridge that gap, turning SQL into something closer to a general-purpose language.
 
+```{=html}
+<div class="flow"><div class="box"><b>Functions</b><span>return a value or a table</span></div><div class="box"><b>Procedures</b><span>return results through out parameters</span></div><div class="box"><b>Constructs</b><span>loops, if, case, exceptions</span></div><div class="box"><b>Triggers</b><span>run automatically on a change</span></div></div>
+```
+
+::: {.callout-note title="Note"}
+The lecture syntax below is the **SQL standard**. PostgreSQL (used by the course datasets) writes the same ideas in its procedural language **PL/pgSQL**, so each standard example is followed by a version you can run.
+:::
+
 ---
 
 ## SQL Functions
@@ -17,23 +25,39 @@ SQL is **declarative** — great for describing *what* you want, clumsy for *how
 A **function** returns a single value, and can be written in SQL itself — or in an external language (useful for specialized types like images or geometry, e.g. "do these two polygons overlap?").
 
 ```sql
-create function emp_count(dname varchar(20))
+create function dept_count(dept_name varchar(20))
 returns integer
 begin
-    declare e_count integer;
-    select count(*) into e_count
-    from employee
-    where employee.dept_name = dname;
-    return e_count;
+    declare d_count integer;
+    select count(*) into d_count
+    from instructor
+    where instructor.dept_name = dept_name;
+    return d_count;
 end
+```
+
+The same function in PostgreSQL, on the university dataset:
+
+```{.sql db="university"}
+create or replace function dept_count(d_name varchar(20))
+returns integer as $$
+declare
+    d_count integer;
+begin
+    select count(*) into d_count
+    from instructor
+    where instructor.dept_name = d_name;
+    return d_count;
+end;
+$$ language plpgsql;
 ```
 
 Use it just like any expression:
 
-```sql
+```{.sql db="university"}
 select dept_name, budget
 from department
-where emp_count(dept_name) > 12;
+where dept_count(dept_name) > 4;
 ```
 
 | Keyword | Meaning |
@@ -42,14 +66,16 @@ where emp_count(dept_name) > 12;
 | `returns` | Declares the *type* of the result (e.g., `integer`) |
 | `return` | Specifies the *actual value* sent back when the function finishes |
 
-> 💡 Think of SQL functions as **parameterized views** — a view that generalizes by accepting arguments.
+::: {.callout-note title="Key idea"}
+Think of SQL functions as **parameterized views** — a view that generalizes by accepting arguments.
+:::
 
 ### Table Functions
 
 Added in SQL:2003 — instead of returning one value, a table function returns an **entire relation**.
 
 ```sql
-create function employees_in(dname varchar(20))
+create function instructor_of(dept_name varchar(20))
 returns table (
     id varchar(5),
     name varchar(20),
@@ -58,12 +84,24 @@ returns table (
 )
 return table
     (select id, name, dept_name, salary
-     from employee
-     where employee.dept_name = employees_in.dname);
+     from instructor
+     where instructor.dept_name = instructor_of.dept_name);
+
+select * from table(instructor_of('Biology'));
 ```
 
-```sql
-select * from table(employees_in('Marketing'));
+In PostgreSQL, the function is called directly in `from`:
+
+```{.sql db="university"}
+create or replace function instructor_of(d_name varchar(20))
+returns table (id varchar(5), name varchar(20),
+               dept_name varchar(20), salary numeric(8,2)) as $$
+    select i.id, i.name, i.dept_name, i.salary
+    from instructor as i
+    where i.dept_name = d_name;
+$$ language sql;
+
+select * from instructor_of('Biology');
 ```
 
 ### Procedures
@@ -71,28 +109,44 @@ select * from table(employees_in('Marketing'));
 Where a function returns a value via `return`, a **procedure** passes results back through `out` parameters.
 
 ```sql
-create procedure emp_count_proc(
-    in dname varchar(20),
-    out e_count integer)
+create procedure dept_count_proc(
+    in dept_name varchar(20),
+    out d_count integer)
 begin
-    select count(*) into e_count
-    from employee
-    where employee.dept_name = emp_count_proc.dname;
+    select count(*) into d_count
+    from instructor
+    where instructor.dept_name = dept_count_proc.dept_name;
 end
+
+declare d_count integer;
+call dept_count_proc('Physics', d_count);
 ```
 
-```sql
-declare e_count integer;
-call emp_count_proc('Design', e_count);
+```{.sql db="university"}
+create or replace procedure dept_count_proc(
+    in d_name varchar(20),
+    out d_count integer) as $$
+begin
+    select count(*) into d_count
+    from instructor
+    where instructor.dept_name = d_name;
+end;
+$$ language plpgsql;
+
+call dept_count_proc('Physics', null);
 ```
 
-> 📌 SQL:1999 allows **overloading** — multiple functions/procedures can share a name as long as their parameter count or types differ.
+::: {.callout-note title="Note"}
+SQL:1999 allows **overloading** — multiple functions/procedures can share a name as long as their parameter count or types differ.
+:::
 
 ---
 
 ## Procedural Language Constructs
 
-> ⚠️ Most databases implement their own dialect of these — syntax varies across systems.
+::: {.callout-note title="Note"}
+Most databases implement their own dialect of these — syntax varies across systems.
+:::
 
 ### Loops
 
@@ -117,6 +171,28 @@ do
 end for;
 ```
 
+The `for` loop above, run in PostgreSQL as a function that returns the total:
+
+```{.sql db="university"}
+create or replace function total_budget() returns numeric as $$
+declare
+    total numeric := 0;
+    r record;
+begin
+    for r in select budget from department loop
+        total := total + r.budget;
+    end loop;
+    return total;
+end;
+$$ language plpgsql;
+
+select total_budget();
+```
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>fetch next row</b></div><span>into r</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>add</b></div><span>total := total + r.budget</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>repeat</b></div><span>until no rows remain</span></div></div>
+```
+
 ### Conditionals
 
 ```sql
@@ -133,8 +209,8 @@ end if;
 ```sql
 -- simple case: match a variable against fixed values
 case dept_name
-    when 'Sales' then ...
-    when 'Design' then ...
+    when 'Biology' then ...
+    when 'Physics' then ...
     else ...
 end case;
 
@@ -146,19 +222,49 @@ case
 end case;
 ```
 
+A searched `case` on the university dataset (inside a query, `case` ends with `end`):
+
+```{.sql db="university"}
+select name, salary,
+       case
+           when salary > 100000 then 'high'
+           when salary > 50000 then 'medium'
+           else 'low'
+       end as band
+from instructor;
+```
+
 ### Exception Handling
 
 ```sql
-declare seat_unavailable condition;
-declare exit handler for seat_unavailable
+declare out_of_classroom_seats condition;
+declare exit handler for out_of_classroom_seats
 begin
     ...
-    signal seat_unavailable;
+    signal out_of_classroom_seats;
     ...
 end
 ```
 
 The `exit` handler terminates the enclosing `begin...end` block when the condition fires. Other handler behaviors are also possible (e.g., continue instead of exit).
+
+In PostgreSQL, an `exception` section handles the error (and `raise exception` signals your own):
+
+```{.sql db="university"}
+create or replace function add_instructor(i_id varchar(5), i_name varchar(20),
+                                          d_name varchar(20), sal numeric)
+returns text as $$
+begin
+    insert into instructor values (i_id, i_name, d_name, sal);
+    return 'added ' || i_name;
+exception
+    when unique_violation then
+        return 'id ' || i_id || ' already exists';
+end;
+$$ language plpgsql;
+
+select add_instructor('63395', 'Copy', 'Biology', 50000);   -- id already exists
+```
 
 ---
 
@@ -172,13 +278,8 @@ Defining a trigger means specifying three things:
 2. **Timing** — `BEFORE` or `AFTER` the event
 3. **Action** — what to actually do
 
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    E["Event: INSERT / UPDATE / DELETE"] --> T1["BEFORE trigger — validate or modify values first"]
-    E --> OP["Database operation executes"]
-    OP --> T2["AFTER trigger — update other tables, audit, alert"]
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>Event</b></div><span>insert / update / delete</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>BEFORE trigger</b></div><span>validate or modify values first</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Database operation</b></div><span>executes</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>AFTER trigger</b></div><span>update other tables, audit, alert</span></div></div>
 ```
 
 ### BEFORE vs. AFTER
@@ -192,7 +293,7 @@ graph LR
 
 | Type | Behavior |
 |---|---|
-| **Row-level** | Fires once **per affected row**. A 10% raise across 100 employees fires the trigger 100 times. |
+| **Row-level** | Fires once **per affected row**. A 10% raise across 100 instructors fires the trigger 100 times. |
 | **Statement-level** | Fires **once per statement**, regardless of how many rows were touched — uses `referencing old table` / `referencing new table` to access all affected rows at once via transition tables. More efficient for bulk updates. |
 
 ### Example: BEFORE trigger (data cleanup)
@@ -200,7 +301,7 @@ graph LR
 Convert blank grades to `null` before they're written:
 
 ```sql
-create trigger setnull_trigger before update of takes
+create trigger setnull_trigger before update of grade on takes
 referencing new row as nrow
 for each row
 when (nrow.grade = ' ')
@@ -209,12 +310,38 @@ begin atomic
 end;
 ```
 
+In PostgreSQL a trigger calls a **trigger function**:
+
+```{.sql db="university"}
+create or replace function setnull_grade() returns trigger as $$
+begin
+    if new.grade = ' ' then
+        new.grade := null;
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists setnull_trigger on takes;
+create trigger setnull_trigger
+before update of grade on takes
+for each row
+execute function setnull_grade();
+```
+
+```{.sql db="university"}
+begin;
+update takes set grade = ' ' where id = '1000' and course_id = '642';
+select id, course_id, grade from takes where id = '1000' and course_id = '642';
+rollback;
+```
+
 ### Example: AFTER trigger (cross-table maintenance)
 
 Update a student's earned credits whenever a failing/blank grade turns into a pass:
 
 ```sql
-create trigger credits_earned after update of grade on (takes)
+create trigger credits_earned after update of grade on takes
 referencing new row as nrow
 referencing old row as orow
 for each row
@@ -228,6 +355,39 @@ begin atomic
 end;
 ```
 
+```{.sql db="university"}
+create or replace function credits_earned() returns trigger as $$
+begin
+    update student
+    set tot_cred = tot_cred +
+        (select credits from course where course.course_id = new.course_id)
+    where student.id = new.id;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists credits_earned on takes;
+create trigger credits_earned
+after update of grade on takes
+for each row
+when (new.grade <> 'F' and new.grade is not null
+      and (old.grade = 'F' or old.grade is null))
+execute function credits_earned();
+```
+
+```{.sql db="university"}
+begin;
+select tot_cred from student where id = '1000';
+update takes set grade = 'F' where id = '1000' and course_id = '642';
+update takes set grade = 'B' where id = '1000' and course_id = '642';   -- F becomes a pass
+select tot_cred from student where id = '1000';                         -- 3 credits added
+rollback;
+```
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Update</th><th>old → new grade</th><th>Trigger fires?</th></tr><tr><td>set grade = 'F'</td><td>C- → F</td><td>no: new grade is F</td></tr><tr><td>set grade = 'B'</td><td>F → B</td><td>yes: tot_cred + 3</td></tr></table></div>
+```
+
 - `referencing old row as` — access pre-update values (deletes & updates)
 - `referencing new row as` — access post-update values (inserts & updates)
 - Triggers can be scoped to specific columns: `after update of grade on takes`
@@ -236,14 +396,14 @@ end;
 
 ## Using Triggers Wisely
 
-### ✅ Good Uses
+### Good Uses
 
 - Logging changes to a history/audit table
 - Recording metadata an application can't see (who ran it, when, from where)
 - Simple, self-contained validation
 - Keeping denormalized or derived values in sync
 
-### ❌ Danger Signs
+### When to Avoid Triggers
 
 | Risk | Why it hurts |
 |---|---|

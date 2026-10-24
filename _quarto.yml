@@ -87,6 +87,7 @@ book:
         - weeks/week_3/joins.qmd
         - weeks/week_3/intermediate_sql.qmd
         - weeks/week_3/advanced_sql.qmd
+        - weeks/week_3/sql_examples.qmd
     - part: '**Week-04**'
       chapters:
         - weeks/week_4/01_relational_algebra_and_calculus.qmd
@@ -102,6 +103,8 @@ book:
           text: Extraneous attributes & Canonical cover
         - href: weeks/week_5/04.qmd
           text: Lossless Join & Dependency preservation
+        - href: weeks/week_5/05.qmd
+          text: "Example: LIS Dataset"
     - part: '**Week-06**'
       chapters:
         - weeks/week_6/01_intro_to_normalization.qmd

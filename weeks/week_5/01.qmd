@@ -6,20 +6,38 @@ format:
         code-fold: false
 ---
 
+## The Instructor–Department Relation
+
+The Week 5 pages use one table from the **university** dataset: `instructor` joined with `department`.
+
+```{.sql db="university"}
+select id, name, salary, dept_name, building, budget
+from instructor natural join department
+order by dept_name;
+```
+
+To keep the notation short (as in exam questions), its columns are written as letters. `F` is skipped because $F$ names the set of functional dependencies.
+
+| Letter | A | B | C | D | E | G |
+|---|---|---|---|---|---|---|
+| **Column** | `ID` | `name` | `salary` | `dept_name` | `building` | `budget` |
+
+$$R = (A, B, C, D, E, G) \qquad F = \{A \rightarrow B,\ A \rightarrow C,\ A \rightarrow D,\ D \rightarrow E,\ D \rightarrow G\}$$
+
+An instructor's ID determines their name, salary and department; a department determines its building and budget.
+
+---
+
 ## Redundancy and Anomalies
 
 A relational schema should reflect real-world structure, avoid storing the same fact twice, and stay easy to update correctly. When a schema fails at this, two related problems show up: **redundancy** and **anomalies**.
 
 ### A Bad Schema
 
-```
-instructor_with_department(ID, name, salary, dept_name, building, budget)
-```
+- A, B, C (`ID`, `name`, `salary`) — belong purely to the instructor, no repetition
+- D, E, G (`dept_name`, `building`, `budget`) — belong to the *department*
 
-- `ID`, `name`, `salary` — belong purely to the instructor, no repetition
-- `dept_name`, `building`, `budget` — belong to the *department*
-
-Since a department has many instructors, `building` and `budget` get copied once per instructor in that department. That repetition is **redundancy** — the same data item stored in multiple places.
+Since a department has many instructors, E and G get copied once per instructor in that department. That repetition is **redundancy** — the same data item stored in multiple places.
 
 Here's what that looks like with actual rows:
 
@@ -30,27 +48,39 @@ Here's what that looks like with actual rows:
 | 103 | Gold | 87000 | Comp. Sci. | Taylor Hall | 100000 |
 | 104 | Katz | 75000 | Comp. Sci. | Taylor Hall | 100000 |
 
-Notice `Taylor Hall` and `100000` repeat for every Comp. Sci. instructor — that's the redundancy in action.
+Notice `Taylor Hall` and `100000` repeat for every Comp. Sci. instructor — that's the redundancy in action. In the university dataset, Statistics has 6 instructors, so its building and budget appear 6 times.
 
 ### Anomalies
 
-Redundancy causes **anomalies** — inconsistencies triggered by insert, delete, or update operations. Using the same table:
+Redundancy causes **anomalies** — inconsistencies triggered by insert, delete, or update operations:
 
-| Anomaly | What Goes Wrong | On This Table |
+| Anomaly | What Goes Wrong | In R |
 |---|---|---|
-| **Insertion** | Can't add a record without unrelated data | To add a brand-new "Physics" department with no instructors yet, we can't — there's no row to put it in until a physics instructor is hired |
-| **Deletion** | Deleting one record erases unrelated info | If Wu (row 102) resigns and we delete that row, we lose the fact that Finance's building is Painter Hall and its budget is 120000 — nowhere else stores that |
-| **Update** | One fact change needs many row updates | If Comp. Sci.'s budget rises to 110000, we must update rows 101, 103, *and* 104 — miss one, and the table now claims two different budgets for the same department |
+| **Insertion** | Can't add a record without unrelated data | Civil Eng., History and Math have no instructors, so their E and G cannot be stored |
+| **Deletion** | Deleting one record erases unrelated info | Finance has one instructor; deleting that row loses Finance's E and G |
+| **Update** | One fact change needs many row updates | Changing Statistics' budget (G) means updating 6 rows |
+
+The insertion anomaly on the data:
+
+```{.sql db="university"}
+select dept_name from department
+where dept_name not in (select dept_name from instructor);
+```
 
 ### Why This Happens — and the Fix
 
-`dept_name` uniquely decides `building` and `budget` (a department can't have two budgets). This dependency is exactly what forces `building`/`budget` to repeat across instructor rows:
+D (`dept_name`) uniquely decides E and G (a department can't have two budgets). This dependency is exactly what forces E and G to repeat across instructor rows:
 
-**Dependency → Redundancy → Anomaly**
 
-The fix is to **decompose** the table so each fact is stored exactly once — e.g., split `instructor_with_department` into `instructor(ID, name, salary, dept_name)` and `department(dept_name, building, budget)`. (Covered in detail under Lossless Join Decomposition.)
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>Dependency</b></div><span>D → E, D → G</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Redundancy</b></div><span>E and G copied per instructor</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Anomaly</b></div><span>insert, delete, update problems</span></div></div>
+```
 
-Removing redundancy this way is what makes a schema easier to maintain: updates touch a single row, deletions don't silently destroy unrelated facts, and inserts don't need unrelated data just to go through. This is the core motivation behind everything else in normalization theory.
+The fix is to **decompose** R so each fact is stored exactly once: $R_1 = (A, B, C, D)$ = `instructor` and $R_2 = (D, E, G)$ = `department`. (Covered in detail under Lossless Join Decomposition.)
+
+```{=html}
+<div class="flow"><div class="box"><b>R₁ = instructor</b><span>A, B, C, D</span></div><div class="box grey"><b>R₂ = department</b><span>D, E, G</span></div></div>
+```
 
 ---
 
@@ -68,27 +98,37 @@ holds if, for any legal instance of $R$, two tuples that agree on $\alpha$ must 
 
 $$t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]$$
 
-**Example:** in `instructor_with_department`, we expect:
+**Example:** in R we expect $D \rightarrow E$ and $D \rightarrow G$, since a department has exactly one building and one budget. We would *not* expect $D \rightarrow C$ — a department tells you nothing about one specific instructor's salary.
 
+Check $D \rightarrow EG$ on the data: no department appears with two different (building, budget) pairs.
+
+```{.sql db="university"}
+select dept_name
+from instructor natural join department
+group by dept_name
+having count(distinct (building, budget)) > 1;
 ```
-dept_name → building
-dept_name → budget
-```
 
-since a department has exactly one building and one budget. We would *not* expect `dept_name → salary` — a department tells you nothing about one specific instructor's salary.
-
-> **Note:** An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. If the current rows happen to satisfy `name → ID` by coincidence (no two instructors currently share a name), that doesn't mean the FD genuinely holds.
+::: {.callout-note title="Note"}
+An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. If the current rows happen to satisfy $B \rightarrow A$ (no two instructors currently share a name), that doesn't mean the FD genuinely holds.
+:::
 
 ### Keys, Redefined Using FDs
 
 - $K$ is a **superkey** for $R$ if and only if $K \rightarrow R$ (K determines every attribute in R)
 - $K$ is a **candidate key** for $R$ if and only if $K \rightarrow R$, **and** no proper subset $\alpha \subset K$ also satisfies $\alpha \rightarrow R$ (K is minimal)
 
+In R: $A \rightarrow R$, so A (`ID`) is a candidate key; $AB$ is a superkey but not a candidate key; D is not a superkey.
+
 ### Trivial FDs
 
 An FD $\alpha \rightarrow \beta$ is **trivial** if $\beta \subseteq \alpha$ — it's automatically true for any relation and tells us nothing new.
 
 ```
-ID, name → ID     -- trivial (ID is already on the left)
-name → name       -- trivial
+AB → A     -- trivial (A is already on the left)
+B → B      -- trivial
+```
+
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
 ```
