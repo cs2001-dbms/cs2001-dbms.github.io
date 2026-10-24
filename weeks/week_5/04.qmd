@@ -6,21 +6,6 @@ format:
         code-fold: false
 ---
 
-All examples on this page use the university wide table from the previous pages, with its canonical cover from the last page:
-
-```
-inst_dept(ID, name, salary, dept_name, building, budget)   -- instructor natural join department
-Fc = { ID → name, salary, dept_name ;  dept_name → building, budget }
-```
-
-To run the queries below, first create the wide table as a view:
-
-```sql
-create view inst_dept as
-select id, name, salary, dept_name, building, budget
-from instructor natural join department;
-```
-
 ## Lossless Join Decomposition
 
 ::: {.callout-note title="Key idea"}
@@ -51,53 +36,48 @@ This condition is sufficient whenever all our constraints are FDs. If other kind
 <div class="flow steps"><div class="step"><div class="box"><b>1 · cover R</b></div><span>R₁ ∪ R₂ = R</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · overlap</b></div><span>R₁ ∩ R₂ ≠ ∅</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · key test</b></div><span>R₁ ∩ R₂ → R₁ or R₂</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>all 3 hold</b></div><span>lossless</span></div></div>
 ```
 
-### Worked Example: Splitting `inst_dept`
+### Worked Example
 
-**A good split:** `instructor(ID, name, salary, dept_name)` and `department(dept_name, building, budget)` — exactly the dataset’s two real tables.
+The university example: $R = (A, B, C, D, E, G)$ = (`ID`, `name`, `salary`, `dept_name`, `building`, `budget`), $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$. Run this once to create R as a view:
 
-```{=html}
-<div class="flow"><div class="box"><b>instructor</b><span>ID, name, salary, dept_name</span></div><div class="box grey"><b>department</b><span>dept_name, building, budget</span></div></div>
+```{.sql db="university"}
+create or replace view inst_dept as
+select id, name, salary, dept_name, building, budget
+from instructor natural join department;
 ```
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Check</th><th>instructor ∩ department = {dept_name}</th><th>Holds?</th></tr><tr><td>R₁ ∪ R₂ = R</td><td>all six columns appear</td><td><span class="tick">✓</span></td></tr><tr><td>R₁ ∩ R₂ ≠ ∅</td><td>dept_name</td><td><span class="tick">✓</span></td></tr><tr><td>key test</td><td>dept_name → building, budget, so dept_name → department</td><td><span class="tick">✓</span></td></tr></table></div>
-```
+**A good split:** $R_1 = (A, B, C, D)$ and $R_2 = (D, E, G)$ — exactly the dataset's `instructor` and `department` tables.
 
-Joining the two pieces back gives exactly the original rows:
+The shared attribute is $D$, which *is* a key of $R_2$ ($D \rightarrow EG$). Joining them back gives exactly the 50 original rows:
 
-```sql
+```{.sql db="university"}
 select count(*)
-from (select distinct id, name, salary, dept_name from inst_dept) r1
-     join (select distinct dept_name, building, budget from inst_dept) r2
+from (select distinct id, name, salary, dept_name from inst_dept) as r1
+     join (select distinct dept_name, building, budget from inst_dept) as r2
      using (dept_name);
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>count</th></tr><tr><td>50</td></tr></table></div><div class="rows-note">(1 row) · the same 50 rows as inst_dept</div>
-```
+**A bad split:** $R_1 = (A, B, D)$ and $R_2 = (C, D, E, G)$
 
-**A bad split:** `R1(ID, name, dept_name)` and `R2(dept_name, salary, building, budget)`
+The shared attribute is again $D$ — but now $D$ isn't a key of either piece (a department has many instructors and many salaries). Joining them back gives **182** rows instead of 50:
 
-The shared attribute is again `dept_name` — but now `dept_name` is not a key of `R2` (a department has many salaries) and not a key of `R1` (a department has many instructors). Projecting the data onto these two tables and joining them back on `dept_name` gives:
-
-```sql
+```{.sql db="university"}
 select count(*)
-from (select distinct id, name, dept_name from inst_dept) r1
-     join (select distinct dept_name, salary, building, budget from inst_dept) r2
+from (select distinct id, name, dept_name from inst_dept) as r1
+     join (select distinct dept_name, salary, building, budget from inst_dept) as r2
      using (dept_name);
 ```
 
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>count</th></tr><tr><td>182</td></tr></table></div><div class="rows-note">(1 row) · instead of 50</div>
-```
+For Biology, which has two instructors:
 
-Looking only at Biology, which has two instructors:
+| A (ID) | B (name) | C (salary) | D (dept_name) | |
+|---|---|---|---|---|
+| 80759 | Queiroz | 45538.32 | Biology | original |
+| 80759 | Queiroz | 77036.18 | Biology | spurious |
+| 81991 | Valtchev | 45538.32 | Biology | spurious |
+| 81991 | Valtchev | 77036.18 | Biology | original |
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>ID</th><th>name</th><th>salary</th><th>dept_name</th><th>row</th></tr><tr><td>80759</td><td>Queiroz</td><td>45538.32</td><td>Biology</td><td>original</td></tr><tr><td>80759</td><td>Queiroz</td><td>77036.18</td><td>Biology</td><td><b>spurious</b></td></tr><tr><td>81991</td><td>Valtchev</td><td>45538.32</td><td>Biology</td><td><b>spurious</b></td></tr><tr><td>81991</td><td>Valtchev</td><td>77036.18</td><td>Biology</td><td>original</td></tr></table></div>
-```
-
-The join matches *every* Biology instructor in `R1` with *every* Biology salary in `R2` — creating combinations that never existed in the original data. This decomposition is lossy, and it also fails to preserve `ID → salary`.
+The join matches *every* Biology row of $R_1$ with *every* Biology row of $R_2$ — creating combinations that never existed in the original data.
 
 ::: {.callout-note title="Note"}
 The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
@@ -119,11 +99,12 @@ If this fails, catching a violation of some original FD needs an expensive join 
 
 ### A Quick Contrast
 
-Same table `inst_dept`, same $F_c$:
+$R = (A, B, C, D, E, G)$, $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Decomposition</th><th>Dependency Preserving?</th></tr><tr><td><code>instructor(ID, name, salary, dept_name)</code>, <code>department(dept_name, building, budget)</code></td><td>Yes — <code>ID → name, salary, dept_name</code> sits inside instructor and <code>dept_name → building, budget</code> inside department</td></tr><tr><td><code>R1(ID, name, salary, dept_name)</code>, <code>R2(ID, building, budget)</code></td><td>No — <code>dept_name → building</code> can’t be checked without joining, since <code>dept_name</code> and <code>building</code> now live in different tables (the split is still lossless: ID is a key of both)</td></tr></table></div>
-```
+| Decomposition | Dependency Preserving? |
+|---|---|
+| $R_1=(A,B,C,D),\ R_2=(D,E,G)$ | Yes — `A→BCD` sits inside $R_1$ and `D→EG` inside $R_2$ |
+| $R_1=(A,B,C,D),\ R_2=(A,E,G)$ | No — `D→E` can't be checked without joining, since `D` and `E` now live in different tables |
 
 Same relation, same FDs — the *choice* of split decides the outcome.
 
@@ -135,29 +116,23 @@ Same relation, same FDs — the *choice* of split decides the outcome.
 4. If the right-hand-side attributes ($\beta$) are now inside `result`, the FD is preserved without needing a join.
 
 ```{=html}
-<div class="flow steps"><div class="step"><div class="box"><b>1 · start</b></div><span>result = α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · each Rᵢ</b></div><span>(result ∩ Rᵢ)⁺ ∩ Rᵢ</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · repeat</b></div><span>until result stops growing</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>4 · β ⊆ result?</b></div><span>preserved</span></div></div>
+<div class="flow steps"><div class="step"><div class="box"><b>1 · start</b></div><span>result = α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · each Rᵢ</b></div><span>add (result ∩ Rᵢ)⁺ ∩ Rᵢ</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · repeat</b></div><span>until result stops growing</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>4 · β ⊆ result?</b></div><span>preserved</span></div></div>
 ```
 
 Run this check on every FD in $F$ to confirm the whole decomposition preserves dependencies.
 
-### Worked Example: an FD Spread Across Two Tables
+### Worked Example
 
-Decomposition: `instructor(ID, name, salary, dept_name)`, `department(dept_name, building, budget)`.
+Decomposition $R_1 = (A, B, C, D)$, $R_2 = (D, E, G)$. `A → G` (ID → budget) is in $F^+$, but $A$ and $G$ never sit in the same piece. Is it preserved?
 
-`ID → budget` is in $F^+$, but `ID` and `budget` never sit in the same table. Is it still preserved?
+| Round | Piece Checked | Closure Computed | Result So Far |
+|---|---|---|---|
+| Start | — | — | `{A}` |
+| 1 | $R_1=(A,B,C,D)$ | `(A)+ = ABCDEG`, keep only `A,B,C,D` | `{A,B,C,D}` |
+| 1 | $R_2=(D,E,G)$ | `(D)+ = DEG`, keep only `D,E,G` | `{A,B,C,D,E,G}` |
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Round</th><th>Piece Checked</th><th>Closure Computed</th><th>Result So Far</th></tr><tr><td>Start</td><td>—</td><td>—</td><td><code>{ID}</code></td></tr><tr><td>1</td><td>instructor</td><td>(ID)⁺ = every column, keep only instructor’s columns</td><td><code>{ID, name, salary, dept_name}</code></td></tr><tr><td>1</td><td>department</td><td>(dept_name)⁺ = dept_name, building, budget, keep department’s columns</td><td><code>{ID, name, salary, dept_name, building, budget}</code></td></tr></table></div>
-```
-
-`result` now contains `budget` — so `ID → budget` is preserved: checking `ID → dept_name` in `instructor` and `dept_name → budget` in `department` is enough.
-
-### Worked Example: an FD That Is Lost
-
-Decomposition: `R1(ID, name, salary, dept_name)`, `R2(ID, building, budget)`. Check `dept_name → building`:
+`result` now contains `G` — so `A → G` is preserved. For the second decomposition, $R_1 = (A, B, C, D)$, $R_2 = (A, E, G)$, the same check for `D → E` never adds `E` (`D` is not in $R_2$), so `D → E` is lost.
 
 ```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Round</th><th>Piece Checked</th><th>Closure Computed</th><th>Result So Far</th></tr><tr><td>Start</td><td>—</td><td>—</td><td><code>{dept_name}</code></td></tr><tr><td>1</td><td>R1</td><td>(dept_name)⁺ = dept_name, building, budget, keep only R1’s columns</td><td><code>{dept_name}</code></td></tr><tr><td>1</td><td>R2</td><td>result ∩ R2 = {} → nothing to add</td><td><code>{dept_name}</code></td></tr></table></div>
+<script type="module" src="../../assets/sql_runner.js"></script>
 ```
-
-`building` never enters `result`, so `dept_name → building` is **not preserved**. In practice: a new Biology instructor could be inserted into `R2` with building `Watson`, while the other Biology instructors say `Candlestick`. Neither table on its own breaks a rule; only a join of `R1` and `R2` reveals that Biology now has two buildings.

@@ -6,41 +6,27 @@ format:
         code-fold: false
 ---
 
-Throughout this page we use the wide table from the previous page, built from the **university dataset**:
-
-```
-inst_dept(ID, name, salary, dept_name, building, budget)   -- instructor natural join department
-```
-
-with the functional dependencies
-
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>FD</th><th>In words</th></tr><tr><td><code>ID → name</code></td><td>an instructor’s ID gives their name</td></tr><tr><td><code>ID → salary</code></td><td>… and their salary</td></tr><tr><td><code>ID → dept_name</code></td><td>… and their department</td></tr><tr><td><code>dept_name → building</code></td><td>a department is in one building</td></tr><tr><td><code>dept_name → budget</code></td><td>a department has one budget</td></tr></table></div>
-```
-
 ## Armstrong's Axioms
 
 Given a set of FDs $F$, these three rules let us mechanically derive new FDs that logically follow from it:
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Axiom</th><th>Rule</th><th>Intuition</th><th>On the university FDs</th></tr><tr><td><b>Reflexivity</b></td><td>if β ⊆ α, then α → β</td><td>A set of attributes always determines its own subsets</td><td><code>ID, name → name</code></td></tr><tr><td><b>Augmentation</b></td><td>if α → β, then γα → γβ</td><td>Adding the same extra attributes to both sides keeps an FD valid</td><td><code>dept_name → budget</code> gives <code>salary, dept_name → salary, budget</code></td></tr><tr><td><b>Transitivity</b></td><td>if α → β and β → γ, then α → γ</td><td>If A determines B, and B determines C, then A determines C</td><td><code>ID → dept_name</code> and <code>dept_name → budget</code> give <code>ID → budget</code></td></tr></table></div>
-```
+| Axiom | Rule | Intuition |
+|---|---|---|
+| **Reflexivity** | if $\beta \subseteq \alpha$, then $\alpha \rightarrow \beta$ | A set of attributes always determines its own subsets |
+| **Augmentation** | if $\alpha \rightarrow \beta$, then $\gamma\alpha \rightarrow \gamma\beta$ | Adding the same extra attributes to both sides keeps an FD valid |
+| **Transitivity** | if $\alpha \rightarrow \beta$ and $\beta \rightarrow \gamma$, then $\alpha \rightarrow \gamma$ | If A determines B, and B determines C, then A determines C |
 
 Applying these repeatedly to $F$ gives every FD **logically implied** by $F$ — this full set is the closure $F^+$, and $F \subseteq F^+$.
 
 ### Worked Example
 
-Derive `ID → budget` (“an instructor’s ID tells you their department’s budget”):
+For $R = (A, B, C, D, E, G)$ with $F = \{A \rightarrow B,\ A \rightarrow C,\ A \rightarrow D,\ D \rightarrow E,\ D \rightarrow G\}$ (the university example from the first page):
 
-```{=html}
-<div class="flow steps"><div class="step"><div class="box"><b>ID</b></div><span>80759 (Queiroz)</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>dept_name</b></div><span>Biology</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>budget</b></div><span>647610.55</span></div></div>
-```
+$$A \rightarrow G \quad \text{(by transitivity, since } A \rightarrow D \text{ and } D \rightarrow G\text{)}$$
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>FD</th><th>Reason</th></tr><tr><td>1</td><td><code>ID → dept_name</code></td><td>given</td></tr><tr><td>2</td><td><code>dept_name → budget</code></td><td>given</td></tr><tr><td>3</td><td><code>ID → budget</code></td><td>transitivity of 1 and 2</td></tr></table></div>
-```
+In words: an instructor's ID (A) determines their department's budget (G).
 
-This wasn't stated directly in $F$, but follows logically — and is therefore part of $F^+$. On the data: Queiroz (80759) is in Biology, Biology’s budget is 647610.55, and that is the only budget that ever appears with ID 80759.
+This wasn't stated directly in $F$, but follows logically — and is therefore part of $F^+$.
 
 ::: {.callout-note title="Note"}
 Computing all of $F^+$ this way (repeatedly applying axioms until nothing new appears) works, but is expensive. **Attribute closure**, covered next, is the practical shortcut.
@@ -50,9 +36,11 @@ Computing all of $F^+$ this way (repeatedly applying axioms until nothing new ap
 
 These follow from the three basic axioms — not new rules, just useful shortcuts:
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Rule</th><th>Statement</th><th>On the university FDs</th></tr><tr><td><b>Union</b></td><td>if α → β and α → γ, then α → βγ</td><td><code>dept_name → building</code> and <code>dept_name → budget</code> give <code>dept_name → building, budget</code></td></tr><tr><td><b>Decomposition</b></td><td>if α → βγ, then α → β and α → γ</td><td><code>ID → name, salary</code> gives <code>ID → salary</code></td></tr><tr><td><b>Pseudotransitivity</b></td><td>if α → β and γβ → δ, then αγ → δ</td><td><code>ID → dept_name</code> and <code>salary, dept_name → budget</code> give <code>ID, salary → budget</code></td></tr></table></div>
-```
+| Rule | Statement |
+|---|---|
+| **Union** | if $\alpha \rightarrow \beta$ and $\alpha \rightarrow \gamma$, then $\alpha \rightarrow \beta\gamma$ |
+| **Decomposition** | if $\alpha \rightarrow \beta\gamma$, then $\alpha \rightarrow \beta$ and $\alpha \rightarrow \gamma$ |
+| **Pseudotransitivity** | if $\alpha \rightarrow \beta$ and $\gamma\beta \rightarrow \delta$, then $\alpha\gamma \rightarrow \delta$ |
 
 ---
 
@@ -73,66 +61,48 @@ Instead of computing the entire $F^+$, we usually just want to know: what does *
 
 ### Worked Example
 
-Compute $ID^+$ for `inst_dept`:
+For the same $R$ and $F$, compute $A^+$:
 
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>Result</th><th>Why</th></tr><tr><td>1</td><td><code>ID</code></td><td>starting point</td></tr><tr><td>2</td><td><code>ID, name, salary, dept_name</code></td><td><code>ID → name</code>, <code>ID → salary</code>, <code>ID → dept_name</code> apply</td></tr><tr><td>3</td><td><code>ID, name, salary, dept_name, building, budget</code></td><td><code>dept_name</code> is now in the result, so <code>dept_name → building</code> and <code>dept_name → budget</code> apply</td></tr><tr><td>4</td><td>no change</td><td>stop</td></tr></table></div>
-```
+| Step | Result | Why |
+|---|---|---|
+| 1 | `A` | starting point |
+| 2 | `ABCD` | $A \rightarrow B$, $A \rightarrow C$ and $A \rightarrow D$ apply |
+| 3 | `ABCDEG` | $D \subseteq$ result, so $D \rightarrow E$ and $D \rightarrow G$ apply |
 
-$ID^+$ = every attribute of `inst_dept`. The closures of some other attributes:
-
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>α</th><th>α⁺</th><th>What it means</th></tr><tr><td><code>dept_name</code></td><td><code>dept_name, building, budget</code></td><td>a department tells you its building and budget, not who works there</td></tr><tr><td><code>name</code></td><td><code>name</code></td><td>under F, a name determines nothing else</td></tr><tr><td><code>building</code></td><td><code>building</code></td><td>Candlestick holds both Biology and Finance</td></tr></table></div>
-```
+$A^+ = ABCDEG$ — every attribute in $R$. By comparison, $D^+ = DEG$: a department determines only its building and budget.
 
 ### Superkeys and Candidate Keys, via Closure
 
 - $K$ is a **superkey** of $R$ if $K^+ \supseteq R$ (contains every attribute)
 - $K$ is a **candidate key** of $R$ if $K^+ \supseteq R$ **and** no proper subset of $K$ also satisfies this (minimal)
 
-**Applying this to `ID`:** $ID^+ = R$, so `ID` is a superkey. It has no proper non-empty subset, so it is minimal, making it a **candidate key**.
-
-```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>K</th><th>K⁺ = every attribute?</th><th>Superkey?</th><th>Candidate key?</th></tr><tr><td><code>ID</code></td><td>yes</td><td><span class="tick">✓</span></td><td><span class="tick">✓</span> a single attribute is always minimal</td></tr><tr><td><code>ID, name</code></td><td>yes</td><td><span class="tick">✓</span></td><td><span class="cross">✗</span> ID alone is enough</td></tr><tr><td><code>dept_name</code></td><td>no</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr><tr><td><code>name, dept_name</code></td><td>no: name, dept_name, building, budget</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr></table></div>
-```
+**Applying this to $A$:** $A^+ = R$, so $A$ is a superkey. It is a single attribute, so it is minimal, making it a **candidate key**. $AB$ is also a superkey, but not a candidate key.
 
 ### Prime and Non-Prime Attributes
 
 - **Prime attribute**: belongs to *some* candidate key
 - **Non-prime attribute**: belongs to *no* candidate key
 
-`ID` is the only candidate key of `inst_dept`, so `ID` is the only **prime** attribute; `name`, `salary`, `dept_name`, `building`, `budget` are **non-prime** — each of them is simply *determined by* the key, not part of it.
+So in R: `A` is the only **prime** attribute; `B`, `C`, `D`, `E`, `G` are **non-prime** — each of them is simply *determined by* the key, not part of it.
 
-Compare this with the data. Counting distinct values per column of the 50-row table:
+On the data, every `ID` is distinct, as a key must be:
 
-```sql
-select count(*), count(distinct id), count(distinct name),
-       count(distinct salary), count(distinct dept_name),
-       count(distinct building), count(distinct budget)
-from instructor natural join department;
+```{.sql db="university"}
+select count(*) as rows, count(distinct id) as distinct_ids
+from instructor;
 ```
-
-```{=html}
-<div class="out-label">Output</div><div class="table-wrap"><table class="jt res"><tr><th>count</th><th>id</th><th>name</th><th>salary</th><th>dept_name</th><th>building</th><th>budget</th></tr><tr><td>50</td><td>50</td><td>50</td><td>50</td><td>17</td><td>14</td><td>17</td></tr></table></div><div class="rows-note">(1 row)</div>
-```
-
-`name` and `salary` are also unique **today** (50 distinct values in 50 rows), yet they are not keys: no FD makes them determine the other columns, and a second instructor with the same name or salary could be hired tomorrow. Keys come from the FDs, not from the current data.
 
 ### Formula: Maximum Number of Superkeys
 
-Given a relation with $N$ total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys.
+Given a relation with $N$ total attributes, the number of possible superkeys depends directly on the number of candidate keys and the size of those keys. 
 
 ### Case 1: Only 1 Candidate Key (Single Attribute)
 If the relation has only one candidate key, and that key consists of a single attribute (e.g., Key = $\{A_1\}$):
 $$\text{Total Superkeys} = 2^{N-1}$$
 
-**University:** `inst_dept` has $N = 6$ and the single key `ID`, so it has $2^{5} = 32$ superkeys: `ID` together with any subset of the other five attributes.
-
 ### Case 2: Only 1 Candidate Key (Composite Key)
 If the relation has only one candidate key, and that key is a composite key formed by $k$ attributes:
 $$\text{Total Superkeys} = 2^{N-k}$$
-
-**University:** `takes(ID, course_id, sec_id, semester, year, grade)` has $N = 6$ and the key `(ID, course_id, sec_id, semester, year)` with $k = 5$, so it has $2^{1} = 2$ superkeys: the key, and the key plus `grade`.
 
 ### Case 3: Every Single Attribute is a Candidate Key
 If the relation has $N$ candidate keys (meaning every single attribute in the relation is its own independent candidate key):
@@ -154,8 +124,16 @@ $$\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}$$
 If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from $(m+n)$ to the number of attributes in their absolute union: $|\text{Key}_1 \cup \text{Key}_2|$.
 :::
 
+**Example:** $R = (A, B, C, D, E, G)$ has $n = 6$ attributes; candidate key $A$ has $k = 1$. Number of superkeys: $2^{(6-1)} = 2^5 = 32$.
+
 ### Why Attribute Closure Matters
 
+| Use Case | How | In Plain English |
+|---|---|---|
+| Test if $\alpha$ is a superkey | Check $\alpha^+ \supseteq R$ | Compute what $\alpha$ determines — if it covers every column in the table, $\alpha$ is enough to identify a row |
+| Test if $\alpha \rightarrow \beta$ holds | Check $\beta \subseteq \alpha^+$ | Compute what $\alpha$ determines, then see if $\beta$ shows up in that list |
+| Compute all of $F^+$ | For every $\gamma \subseteq R$, output $\gamma \rightarrow S$ for each $S \subseteq \gamma^+$ | Try every possible set of columns, work out what each one determines, and write down all those dependencies |
+
 ```{=html}
-<div class="table-wrap"><table class="jt res"><tr><th>Use Case</th><th>How</th><th>In Plain English</th><th>On inst_dept</th></tr><tr><td>Test if α is a superkey</td><td>Check α⁺ ⊇ R</td><td>Compute what α determines — if it covers every column in the table, α is enough to identify a row</td><td>ID⁺ = every column → ID is a superkey</td></tr><tr><td>Test if α → β holds</td><td>Check β ⊆ α⁺</td><td>Compute what α determines, then see if β shows up in that list</td><td>does <code>ID → building</code> hold? building ∈ ID⁺, so yes</td></tr><tr><td>Compute all of F⁺</td><td>For every γ ⊆ R, output γ → S for each S ⊆ γ⁺</td><td>Try every possible set of columns, work out what each one determines, and write down all those dependencies</td><td>possible, but there are 2<sup>6</sup> = 64 subsets of columns to try</td></tr></table></div>
+<script type="module" src="../../assets/sql_runner.js"></script>
 ```
