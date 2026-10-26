@@ -12,11 +12,27 @@ format:
 
 In the previous section, DDL acted as our architect—building the empty structure of our `student` table. Now, it's time for **DML (Data Manipulation Language)** to move the furniture in! DML handles all the inserting, modifying, and deleting of the *actual data rows*.
 
+In this lesson's schema, each row is one student's enrollment in a course during a term. A student taking multiple courses appears in multiple rows; `(roll_no, course, term)` identifies an enrollment record.
+
 Let's start with an empty table:
 
 | roll_no | name | level | course | term | grade |
 |---|---|---|---|---|---|
 | *(empty)* | | | | | |
+
+The SQL playground starts with a fresh in-memory database on this page; it does not carry the table created in the previous lesson into this page. Run this setup block first to create the table used by the examples below.
+
+```{.sql db="test_db"}
+CREATE TABLE student (
+  roll_no varchar(10),
+  name varchar(50) NOT NULL,
+  level varchar(20),
+  course varchar(50) NOT NULL,
+  term varchar(10) NOT NULL,
+  grade char(1),
+  PRIMARY KEY (roll_no, course, term)
+);
+```
 
 ### 1. `INSERT`: Adding New Records
 A new student, Pravin, has just enrolled. We need to add him to our database.
@@ -41,6 +57,8 @@ VALUES
 | roll_no | name | level | course | term | grade |
 |---|---|---|---|---|---|
 | 26f10 | Pravin | Degree | DBMS | 27t1 | S |
+| 26f11 | Alice | Degree | Math | 27t1 | B |
+| 26f12 | Bob | Diploma | Physics | 27t1 | C |
 
 ### 2. `UPDATE`: Modifying Existing Data
 Oops! We made a mistake. Pravin actually got an 'A' grade, not an 'S'. We don't delete his record; we just `UPDATE` it.
@@ -48,10 +66,15 @@ Oops! We made a mistake. Pravin actually got an 'A' grade, not an 'S'. We don't 
 ```{.sql db="test_db"}
 UPDATE student 
 SET grade = 'A'
-WHERE roll_no = '26f10';
+WHERE roll_no = '26f10'
+  AND course = 'DBMS'
+  AND term = '27t1';
 ```
-> **[WARNING]**
-> Always, *always* use a `WHERE` clause with `UPDATE`! 
+::: {.callout-warning}
+## Check the `WHERE` clause
+
+Without a `WHERE` clause, `UPDATE` changes **every row** in the table. Here the key is `(roll_no, course, term)`, so include all three values when you mean to change one enrollment rather than every course record for that student.
+:::
 
 **What happens if you forget the `WHERE` clause?**
 If you simply ran `UPDATE student SET grade = 'A';`, it would ignore the individual student and change the grade of **every single student** in the entire database to an 'A'! 
@@ -68,15 +91,23 @@ If you simply ran `UPDATE student SET grade = 'A';`, it would ignore the individ
 | roll_no | name | level | course | term | grade |
 |---|---|---|---|---|---|
 | 26f10 | Pravin | Degree | DBMS | 27t1 | **A** |
+| 26f11 | Alice | Degree | Math | 27t1 | B |
+| 26f12 | Bob | Diploma | Physics | 27t1 | C |
 
 ### 3. `DELETE`: Removing Records
-Pravin has decided to transfer to another school. We need to remove his record completely.
+Pravin drops his DBMS enrollment for term `27t1`. We need to remove that enrollment record.
 
 ```{.sql db="test_db"}
 DELETE FROM student 
-WHERE roll_no = '26f10';
+WHERE roll_no = '26f10'
+  AND course = 'DBMS'
+  AND term = '27t1';
 ```
-*(Just like `UPDATE`, forgetting the `WHERE` clause here would delete everyone!)*
+::: {.callout-warning}
+## Check before deleting
+
+Without a `WHERE` clause, `DELETE` removes **every row** from the table. Include the full enrollment key when you mean to delete one course record rather than every record for that student.
+:::
 
 ---
 
@@ -173,15 +204,16 @@ If you have 2 Instructors and 2 Courses:
 Imagine if you had 1,000 instructors and 1,000 courses—you'd instantly generate **1 million rows**! Most of these combinations are nonsense (Alice doesn't teach every single course).
 
 ### Fixing the Cross Join
-To fix this, we use the `WHERE` clause to filter the massive Cross Join down to only the combinations that make sense (e.g., linking the instructor to the specific course they actually teach):
+To keep only meaningful combinations, connect each table using the actual relationship columns. In the university schema, `instructor` does not have a `course_id`; the `teaches` table connects an instructor's `id` to a `course_id`.
 
-```.sql
-SELECT *
-FROM instructor AS i, course AS c
-WHERE i.course_id = c.course_id 
-  AND i.dept_name = 'Biology';
+```{.sql db="university"}
+SELECT DISTINCT i.name AS instructor_name, c.title AS course_title
+FROM instructor AS i
+JOIN teaches AS t ON t.id = i.id
+JOIN course AS c ON c.course_id = t.course_id
+WHERE i.dept_name = 'Biology';
 ```
-*(Notice how we used `AS i` and `AS c` to give our tables nicknames? This makes our `WHERE` clause much easier to read!)*
+The join conditions match instructor IDs first, then course IDs. `DISTINCT` avoids repeating the same instructor/course pair when that instructor teaches multiple sections of the course. The aliases `i`, `t`, and `c` make the relationships easier to read.
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>

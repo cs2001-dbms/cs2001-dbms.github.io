@@ -5,3 +5,6 @@ eval_script.py
 /docs/
 /site_libs/
 ds_playground.qmd
+_site/
+.quarto/
+_freeze/quarto-linux-amd64.deb

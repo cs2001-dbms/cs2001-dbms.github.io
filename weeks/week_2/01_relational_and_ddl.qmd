@@ -11,7 +11,7 @@ format:
 ## What is a Relational Database?
 
 Before diving into commands, let's build some intuition. Imagine a school register. You have a list of students, their roll numbers, and the courses they are taking. 
-In a **Relational Database**, we store data in structured **tables** (also called *relations*). Every row represents a single entity (like one specific student), and every column represents an attribute of that entity (like their name or grade).
+In a **Relational Database**, we store data in structured **tables** (also called *relations*). Each row represents one record, and each column represents an attribute of that record. In our Week 2 `student` table, a row records one student's enrollment in one course during one term; the same student can therefore appear in several rows.
 
 The true power of relational databases isn't just storing tables—it's how we can *relate* them using Keys, and slice them using mathematical operations!
 
@@ -35,17 +35,17 @@ In a database, we need a way to uniquely identify every row so we don't confuse 
 
 ---
 
-## Relational Queries & The Pure Language
+## Relational Queries & The Pure Languages
 
 How do we ask a database for information? We use a **Query Language**. 
 
-There's a fundamental difference in how these languages work:
+There is a fundamental difference in how query languages describe a request:
 
-- **Imperative Languages** (like Python or Java): You must write step-by-step instructions on *how* to find the data.
+- **Procedural Languages**: You describe *what* data you want and the sequence of operations to get it. Relational Algebra (RA) is procedural.
 
-- **Declarative Languages**: You simply describe *what* data you want, and the system figures out the best way to get it. 
+- **Declarative Languages**: You describe *what* data should be returned, and the database chooses how to retrieve it. Tuple Relational Calculus (TRC), Domain Relational Calculus (DRC), and SQL are declarative.
 
-Before modern SQL existed, computer scientists created "pure" theoretical languages to prove databases could work. **Relational Algebra** is one of these pure languages. It uses mathematical symbols to describe exactly how to slice and dice tables.
+RA, TRC, and DRC are mathematical ways to describe queries. They help us reason precisely about query meaning; a database can use those ideas to choose an efficient execution plan.
 
 ---
 
@@ -55,9 +55,17 @@ Relational Algebra gives us **Relational Operators**—surgical tools to extract
 
 ### The Big Two: Select vs. Project
 
-- **Select ($\sigma$)**: Filters **Rows**. It scans horizontally. (e.g., "Find all students who got an 'A'").
+- **Select ($\sigma$)**: Filters **rows** using a condition. Think horizontally: keep the records that match (e.g., "Find students who got an 'A'").
 
-- **Project ($\pi$)**: Filters **Columns**. It scans vertically. (e.g., "I only need to see Names and Roll Numbers").
+- **Project ($\pi$)**: Keeps specified **columns**. Think vertically: keep only the details you need (e.g., "Show names and roll numbers").
+
+For example, first select students with an A, then project their names and roll numbers:
+
+$$
+\pi_{roll\_no,\ name}(\sigma_{grade='A'}(student))
+$$
+
+The expression inside is evaluated first: selection narrows the rows, and projection shapes the result. In classical relational algebra, relations are sets, so duplicate rows are removed.
 
 ```{mermaid}
 %%{init: {'theme': 'neutral'}}%%
@@ -94,6 +102,212 @@ graph LR
 | **Set Difference** | $-$ | Returns items in the first set but NOT in the second. | "Students taking Physics but NOT taking Chemistry." |
 | **Cartesian Product** | $\times$ | Combines *every* row of one table with *every* row of another. | Matching every color of a shirt with every size available. |
 | **Natural Join** | $\bowtie$ | Connects two tables seamlessly based on matching columns. | Linking the `Student` table to the `Grades` table. |
+
+**Two rules to remember:** Union, intersection, and difference require *union-compatible* relations: the inputs must have the same number of columns, with compatible types in corresponding positions. A natural join matches every same-named attribute, so check the schemas; when the intended match is not obvious, use a join with an explicit condition instead.
+
+## Translation Workshop: SQL, RA, TRC, and DRC
+
+We can understand one database question more deeply by expressing it in four languages. Think of SQL as the request given to a librarian, Relational Algebra as a sequence of operations for finding the answer, and TRC or DRC as a precise description of which answers qualify.
+
+For the examples below, use the relation `student(roll_no, name, level, course, term, grade)` from the DML lesson. Attribute order matters when writing a DRC relation-membership condition.
+
+### A Reliable Translation Recipe
+
+Before writing any syntax, mark three parts of the English request:
+
+1. **Target:** Which attributes should appear in the answer? These become SQL `SELECT` columns, RA projection ($\pi$), constrained output attributes in TRC, and free variables in DRC.
+2. **Source:** Which relation contains the needed facts? This becomes SQL `FROM`, the input to RA, a tuple-membership condition in TRC, or a relation-membership atom in DRC.
+3. **Conditions:** Which rows qualify? These become SQL `WHERE`, RA selection ($\sigma$), and logical predicates in TRC and DRC.
+
+Then assemble the query:
+
+- **SQL:** Write `SELECT`, `FROM`, and `WHERE` in that order. Read it as result, source, and filter.
+- **RA:** Start with the source relation, select qualifying rows, then project the target columns. Read nested expressions from the inside out.
+- **TRC:** Use a tuple variable for a row, constrain its attributes, and specify the output attributes.
+- **DRC:** Assign a variable to each attribute in the source schema, put the requested variables in the output, and quantify the remaining variables.
+
+In both calculi, the vertical bar `|` means **such that**. The symbol $\exists$ means **there exists**; $\land$, $\lor$, and $\neg$ mean **and**, **or**, and **not**. A calculus query must be safe: its output values must be restricted to values drawn from the database, so the answer is finite.
+
+### Example 1: Filter and Return One Attribute
+
+**Request:** Find the names of students enrolled in `DBMS` who received an `A`.
+
+**Step 1: Identify the target.** We only want `name`.
+
+**Step 2: Identify the source.** Both facts are in `student`.
+
+**Step 3: Combine the conditions.** A qualifying row must have `course = 'DBMS'` **and** `grade = 'A'`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT name FROM student WHERE course = 'DBMS' AND grade = 'A';` |
+| **RA** | $\pi_{name}(\sigma_{course='DBMS'\ \land\ grade='A'}(student))$ |
+| **TRC** | $\{\langle s[name]\rangle \mid s\in student \land s[course]='DBMS' \land s[grade]='A'\}$ |
+| **DRC** | $\{\langle n\rangle \mid \exists r,l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land c='DBMS' \land g='A')\}$ |
+
+**Read the RA from the inside out:** begin with `student`, select the rows satisfying both conditions, then project `name`. In TRC, $s$ represents an entire input row, and the one-field output tuple $\langle s[name]\rangle$ returns only its name. In the DRC expression, $r,n,l,c,t,g$ correspond in order to the six attributes in the schema. Only $n$ is returned; the other values are existentially quantified.
+
+### Example 2: Translate SQL into DRC, Then Back Again
+
+Start with this SQL query:
+
+```sql
+SELECT DISTINCT roll_no, course
+FROM student
+WHERE level = 'Degree';
+```
+
+Translate it in small steps:
+
+1. The output is `roll_no` and `course`, so assign those positions the variables $r$ and $c$.
+2. The relation has six attributes in the order `(roll_no, name, level, course, term, grade)`, so write its tuple as $\langle r,n,l,c,t,g\rangle$.
+3. `level = 'Degree'` becomes the predicate $l='Degree'$.
+4. Return $r$ and $c$. Existentially quantify the other four variables.
+
+The resulting DRC query is:
+
+$$
+\{\langle r,c\rangle \mid \exists n,l,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land l='Degree')\}
+$$
+
+The same request in the other languages is:
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT roll_no, course FROM student WHERE level = 'Degree';` |
+| **RA** | $\pi_{roll\_no,\ course}(\sigma_{level='Degree'}(student))$ |
+| **TRC** | $\{\langle s[roll\_no],s[course]\rangle \mid s\in student \land s[level]='Degree'\}$ |
+| **DRC** | $\{\langle r,c\rangle \mid \exists n,l,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land l='Degree')\}$ |
+
+**Now translate DRC back to SQL:** the free variables inside $\langle r,c\rangle$ become the `SELECT` list (`roll_no, course`). The relation atom tells us `FROM student`. The remaining predicate $l='Degree'$ becomes `WHERE level = 'Degree'`. This mapping works in reverse because each part has a clear role.
+
+### Example 3: Negation, Set Difference, and `NOT EXISTS`
+
+The same recipe also works when a request uses **not**.
+
+**Request:** Find the roll numbers and names of students who have no row with an `A` grade.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT s.roll_no, s.name FROM student AS s WHERE NOT EXISTS (SELECT 1 FROM student AS a WHERE a.roll_no = s.roll_no AND a.grade = 'A');` |
+| **RA** | $\pi_{roll\_no,name}(student) - \pi_{roll\_no,name}(\sigma_{grade='A'}(student))$ |
+| **TRC** | $\{\langle s[roll\_no],s[name]\rangle \mid s\in student \land \neg\exists a\in student\ (a[roll\_no]=s[roll\_no] \land a[grade]='A')\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student) \land \neg\exists l_2,c_2,t_2,g_2\ (\langle r,n,l_2,c_2,t_2,g_2\rangle\in student \land g_2='A')\}$ |
+
+The RA expression starts with every `(roll_no, name)` pair and subtracts the pairs that appear in an A-grade row. In TRC and DRC, the negated existential says that **no matching A-grade row exists**. SQL expresses that same idea with the correlated `NOT EXISTS` subquery: the inner query checks for an A row with the same roll number as the outer row.
+
+### Example 4: Alternatives with `OR` and `IN`
+
+**Request:** Find the roll numbers and names of students who received either an `A` or an `S` in `DBMS` during term `27t1`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT roll_no, name FROM student WHERE course = 'DBMS' AND term = '27t1' AND grade IN ('A', 'S');` |
+| **RA** | $\pi_{roll\_no,name}(\sigma_{course='DBMS'\land term='27t1'\land(grade='A'\lor grade='S')}(student))$ |
+| **TRC** | $\{\langle s[roll\_no],s[name]\rangle \mid s\in student \land s[course]='DBMS' \land s[term]='27t1' \land (s[grade]='A'\lor s[grade]='S')\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land c='DBMS' \land t='27t1' \land (g='A'\lor g='S'))\}$ |
+
+`IN ('A', 'S')` is SQL shorthand for the parenthesized `OR` condition. Parentheses matter: they make clear that the student must meet the course and term conditions, and then have either grade.
+
+### Example 5: Students Enrolled in Both Courses
+
+**Request:** Find the roll numbers and names of students with an enrollment in both `DBMS` and `Math`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT d.roll_no, d.name FROM student AS d WHERE d.course = 'DBMS' AND EXISTS (SELECT 1 FROM student AS m WHERE m.roll_no = d.roll_no AND m.course = 'Math');` |
+| **RA** | $\pi_{roll\_no,name}(\sigma_{course='DBMS'}(student))\ \cap\ \pi_{roll\_no,name}(\sigma_{course='Math'}(student))$ |
+| **TRC** | $\{\langle d[roll\_no],d[name]\rangle \mid d\in student \land d[course]='DBMS' \land \exists m\in student\ (m[roll\_no]=d[roll\_no] \land m[course]='Math')\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l_1,t_1,g_1,l_2,t_2,g_2\ (\langle r,n,l_1,'DBMS',t_1,g_1\rangle\in student \land \langle r,n,l_2,'Math',t_2,g_2\rangle\in student)\}$ |
+
+This is an intersection: a `(roll_no, name)` pair must appear among DBMS enrollments **and** among Math enrollments. The SQL `EXISTS` subquery performs the same membership check. Since `course` and `term` identify an enrollment rather than a person, checking only `roll_no` lets the two courses be in different terms.
+
+### Example 6: One Course but Not Another
+
+**Request:** Find the roll numbers and names of students enrolled in `DBMS` but not in `Math`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT d.roll_no, d.name FROM student AS d WHERE d.course = 'DBMS' AND NOT EXISTS (SELECT 1 FROM student AS m WHERE m.roll_no = d.roll_no AND m.course = 'Math');` |
+| **RA** | $\pi_{roll\_no,name}(\sigma_{course='DBMS'}(student)) - \pi_{roll\_no,name}(\sigma_{course='Math'}(student))$ |
+| **TRC** | $\{\langle d[roll\_no],d[name]\rangle \mid d\in student \land d[course]='DBMS' \land \neg\exists m\in student\ (m[roll\_no]=d[roll\_no] \land m[course]='Math')\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land c='DBMS') \land \neg\exists l_2,t_2,g_2\ (\langle r,n,l_2,'Math',t_2,g_2\rangle\in student)\}$ |
+
+Unlike Example 3, which excludes a grade for the same student, this query excludes a different **course**. The comparison shows how the meaning of `NOT EXISTS` comes from the columns used to match the inner and outer rows.
+
+### Example 7: Students Taking Every Required Course
+
+This advanced example introduces one additional relation: `required_course(course)`, which lists the courses every student is expected to take.
+
+**Request:** Find the roll numbers and names of students enrolled in every course in `required_course`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT s.roll_no, s.name FROM student AS s WHERE NOT EXISTS (SELECT 1 FROM required_course AS r WHERE NOT EXISTS (SELECT 1 FROM student AS e WHERE e.roll_no = s.roll_no AND e.course = r.course));` |
+| **RA** | $\pi_{roll\_no,name}(student\ \bowtie\ (\pi_{roll\_no,course}(student)\div required\_course))$ |
+| **TRC** | $\{\langle s[roll\_no],s[name]\rangle \mid s\in student \land \forall q\in required\_course\ \exists e\in student\ (e[roll\_no]=s[roll\_no] \land e[course]=q[course])\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student) \land \forall q\ (\langle q\rangle\in required\_course \rightarrow \exists l_2,t_2,g_2\ (\langle r,n,l_2,q,t_2,g_2\rangle\in student))\}$ |
+
+The word **every** signals universal quantification ($\forall$) or relational division ($\div$). The SQL uses “there is no required course for which no matching enrollment exists”: two `NOT EXISTS` checks express the same universal condition. If `required_course` is empty, the condition is true for every student with at least one row in `student`; this is the usual vacuous-truth behavior of “every.”
+
+### Example 8: Inequality and SQL `NULL`
+
+**Request:** Find the roll numbers and names of students in `DBMS` whose grade is not `C`.
+
+| Language | Query |
+|---|---|
+| **SQL** | `SELECT DISTINCT roll_no, name FROM student WHERE course = 'DBMS' AND grade <> 'C';` |
+| **RA** | $\pi_{roll\_no,name}(\sigma_{course='DBMS'\land grade\ne 'C'}(student))$ |
+| **TRC** | $\{\langle s[roll\_no],s[name]\rangle \mid s\in student \land s[course]='DBMS' \land s[grade]\ne 'C'\}$ |
+| **DRC** | $\{\langle r,n\rangle \mid \exists l,c,t,g\ (\langle r,n,l,c,t,g\rangle\in student \land c='DBMS' \land g\ne 'C')\}$ |
+
+These classical relational expressions use two-valued logic and assume the compared grade is present. In SQL, if `grade` is `NULL`, `grade <> 'C'` is `UNKNOWN`, not `TRUE`, so that row is filtered out. To include missing grades, add `OR grade IS NULL` in SQL; classical RA, TRC, and DRC do not model SQL `NULL` without an extension.
+
+### Example 9: Count Rows per Course
+
+**Request:** Count how many enrollment records exist for each course.
+
+```sql
+SELECT course, COUNT(*) AS enrollment_count
+FROM student
+GROUP BY course;
+```
+
+This is a useful boundary case: classical RA, TRC, and DRC return sets of rows but do not directly include aggregate functions such as `COUNT`. Extended relational algebra and practical SQL add aggregation operators. Also notice that this counts **enrollment records**, not unique students; for unique students, use `COUNT(DISTINCT roll_no)`.
+
+### Example 10: Sort a Result
+
+**Request:** List the distinct course names in alphabetical order.
+
+```sql
+SELECT DISTINCT course
+FROM student
+ORDER BY course;
+```
+
+RA, TRC, and DRC describe unordered sets, so they can express which course names belong in the result but not their display order. `ORDER BY` is a SQL presentation feature, not a filter on which rows qualify.
+
+### Patterns to Keep
+
+| English clue | SQL | RA | TRC / DRC |
+|---|---|---|---|
+| “and” | `AND` | $\land$ inside $\sigma$ | $\land$ |
+| “or” | `OR` | $\lor$ inside $\sigma$ | $\lor$ |
+| “not” / “no matching row” | `NOT` / `NOT EXISTS` | Set difference | $\neg$ / $\neg\exists$ |
+| Return selected attributes | `SELECT` | $\pi$ | Put them in the output; quantify other variables |
+| A row belongs to a relation | `FROM` | Relation as operator input | Tuple/domain relation-membership atom |
+
+**Duplicate reminder:** Classical RA and the calculi use set semantics, so duplicate answers are not repeated. SQL usually keeps duplicates unless `DISTINCT` is requested; the examples use `DISTINCT` where needed to match the mathematical result.
+
+### Practice: Translate Both Ways
+
+Try each request in SQL, RA, TRC, and DRC. For every calculus expression, write down which variables are returned and which are quantified.
+
+1. Find the roll numbers and names of students in `Math` who received either a `B` or a `C` during `27t1`.
+2. Find students enrolled in both `DBMS` and `Physics` by adapting Example 5.
+3. Translate Example 7 into plain English, then explain what changes if “every required course” becomes “at least one required course.”
+
+**Check your work:** For Exercise 1, combine `course = 'Math'`, `term = '27t1'`, and `(grade = 'B' OR grade = 'C')`. Exercise 2 uses the same intersection pattern with `Physics`. Exercise 3 needs $\forall$ (or double `NOT EXISTS`); “at least one” uses $\exists$ (or a single `EXISTS`).
 
 ---
 
@@ -151,9 +365,11 @@ We use `CREATE TABLE` to bring a new table into existence. Let's create a `stude
 CREATE TABLE student (
     roll_no varchar(10),
     name varchar(50) NOT NULL,
-    age int CHECK (age > 10),
-    email varchar(100) UNIQUE,
-    primary key (roll_no)
+    level varchar(20),
+    course varchar(50) NOT NULL,
+    term varchar(10) NOT NULL,
+    grade char(1),
+    primary key (roll_no, course, term)
 );
 ```
 
@@ -161,11 +377,9 @@ CREATE TABLE student (
 
 - `name` cannot be left blank (`NOT NULL`).
 
-- `age` must be greater than 10. If someone tries to insert a 9-year-old, the database will block it!
+- `(roll_no, course, term)` is a **composite primary key**: it identifies one student's enrollment record. A roll number can appear in multiple rows for different courses or terms.
 
-- `email` must be `UNIQUE` across all students.
-
-- `roll_no` is our `PRIMARY KEY`.
+- `name`, `course`, and `term` are required for each enrollment record.
 
 ### 2. The `ALTER` Command
 What if we built our table, but later realized we forgot to add a phone number column? We use `ALTER` to carefully modify the blueprint without destroying the table.

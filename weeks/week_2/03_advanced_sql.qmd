@@ -27,7 +27,7 @@ Sometimes, a simple `=` or `>` isn't enough. What if you only remember that an i
 
 - `LIKE '___'` (three underscores) : Matches any string of exactly three characters (e.g., "Cat", "Dog").
 
-```.sql
+```{.sql db="university"}
 SELECT name
 FROM instructor
 WHERE name LIKE '%dar%'; 
@@ -57,7 +57,7 @@ WHERE dept_name IN ('Comp Sci', 'Biology');
 
 ## Dealing with the Unknown: `NULL`
 
-In databases, what happens when we simply *don't know* a value? For example, a new student hasn't been assigned a dorm yet. We don't enter "0" or "None" because those are actual values. Instead, we use `NULL`.
+In databases, what happens when we simply *don't know* a value? For example, an instructor's salary may be missing. We don't enter "0" or "None" because those are actual values. Instead, we use `NULL`.
 
 `NULL` signifies a missing or unknown value. It is **not** empty text, and it is **not** the number zero.
 
@@ -66,16 +66,16 @@ Because `NULL` means "unknown", we cannot use standard mathematical operators li
 
 If you ask SQL: `WHERE dorm = NULL`, the result is practically "Unknown = Unknown?", which doesn't make sense! Instead, we must use the special `IS` operator.
 
-```.sql 
--- Find students who haven't been assigned a dorm yet
-SELECT name 
-FROM student
-WHERE dorm IS NULL;
+```{.sql db="university"}
+-- Find instructors whose salary is unknown
+SELECT name, salary
+FROM instructor
+WHERE salary IS NULL;
 
--- Find students who HAVE a dorm
-SELECT name 
-FROM student
-WHERE dorm IS NOT NULL;
+-- Find instructors whose salary is known
+SELECT name, salary
+FROM instructor
+WHERE salary IS NOT NULL;
 ```
 
 ### Three-Valued Logic
@@ -112,6 +112,8 @@ Imagine Query A returns `[Alice, Bob, Charlie]` and Query B returns `[Bob, Charl
 | **EXCEPT** | Keeps what is in Set A, but *subtracts* anything found in Set B. | `[Alice]` |
 
 > **Note:** By default, these operations remove duplicate rows. If you want to keep duplicates, add the `ALL` keyword (e.g., `UNION ALL`).
+
+For `UNION`, `INTERSECT`, and `EXCEPT`, both queries must return the same number of columns in corresponding, compatible types. The column names do not have to match, but the positions must represent compatible kinds of values.
 
 ---
 
@@ -160,7 +162,7 @@ HAVING avg(salary) > 42000;
 
 ## The SQL Execution Order
 
-When you write a complex SQL query, the database does *not* read it from top to bottom! It processes the clauses in a very specific order. Understanding this order is the ultimate secret to mastering SQL.
+When you write a complex SQL query, its clauses are not evaluated in the order they appear in the text. The sequence below is the **logical query-processing model**: it helps explain what a query means and why some clauses can refer to certain values. The optimizer may choose a different physical execution plan while preserving the result.
 
 ```{mermaid}
 %%{init: {'theme': 'neutral'}}%%
@@ -176,12 +178,12 @@ flowchart TD
 
 **Step-by-Step Narrative:**
 
-1. **`FROM`**: The engine goes to the tables to gather the raw data.
-2. **`WHERE`**: It filters out the individual rows that don't meet the criteria.
-3. **`GROUP BY`**: It takes the surviving rows and sorts them into buckets.
-4. **`HAVING`**: It looks at the buckets, calculates the aggregates, and throws away any buckets that fail the test.
-5. **`SELECT`**: It finally decides which columns to show you on the screen.
-6. **`ORDER BY`**: It alphabetizes or sorts the final output for you.
+1. **`FROM`**: Determine the source tables and combinations of rows.
+2. **`WHERE`**: Keep rows whose conditions evaluate to `TRUE`.
+3. **`GROUP BY`**: Form groups from the remaining rows.
+4. **`HAVING`**: Keep groups whose conditions evaluate to `TRUE`.
+5. **`SELECT`**: Produce the requested output expressions.
+6. **`ORDER BY`**: Sort the result for presentation.
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
