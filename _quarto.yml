@@ -10,7 +10,7 @@ project:
     - "assets/*"
 
 website:
-  site-url: "https://seek.onlinedegree.iitm.ac.in/courses/ns_26t2_cs1902"
+  site-url: "https://seek.onlinedegree.iitm.ac.in/courses/ns_26t3_cs2001"
   description: "Course materials for CS2001 Database Management Systems"
   announcement:
     icon: info-circle
