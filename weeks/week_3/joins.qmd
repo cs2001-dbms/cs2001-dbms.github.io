@@ -8,45 +8,50 @@ format:
 
 A **join** takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that's then *filtered* down to only the pairs that actually make sense together.
 
+Every join (except cross join) is a **join type** plus a **join condition**:
 
-
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    J["Join"] --> C["Cross Join — no condition, full Cartesian product"]
-    J --> I["Inner Join — keep only matching rows"]
-    I --> EQ["Equi-Join — match on equality"]
-    EQ --> N["Natural Join — equi-join + auto-drop duplicate column"]
-    J --> O["Outer Join — keep unmatched rows too, fill with null"]
-    O --> L["Left Outer"]
-    O --> R["Right Outer"]
-    O --> F["Full Outer"]
+```{=html}
+<div class="flow"><div class="box"><b>Join type</b><span>which rows are kept</span></div><div class="arrow">+</div><div class="box grey"><b>Join condition</b><span>which rows match</span></div></div><div class="flow-label">Join types</div><div class="flow"><div class="box"><b>inner</b><span>matching rows only</span></div><div class="box"><b>left outer</b><span>+ unmatched left rows</span></div><div class="box"><b>right outer</b><span>+ unmatched right rows</span></div><div class="box"><b>full outer</b><span>+ unmatched rows of both</span></div></div><div class="flow-label">Join conditions</div><div class="flow"><div class="box grey"><b>natural</b><span>all same-named columns</span></div><div class="box grey"><b>using (A, ...)</b><span>only the listed columns</span></div><div class="box grey"><b>on &lt;predicate&gt;</b><span>any condition</span></div></div>
 ```
 
 ---
 
 ## Sample Data
 
-To see the difference between join types, imagine two small tables:
+The joins on this page use small relations from the three course datasets. Run each block to see the rows that will be joined.
 
-**`movie`**
+**University:** the courses offered in Fall 2009 and the courses offered in Spring 2008. Run this block once to create them as two views, then look at them:
 
-| movie_id | title |
-|---|---|
-| M1 | Inception |
-| M2 | Arrival |
-| M3 | Dune |
+```{.sql db="university"}
+create or replace view fall_2009 as
+    select distinct s.course_id, c.title
+    from section as s join course as c on s.course_id = c.course_id
+    where s.semester = 'Fall' and s.year = 2009;
 
-**`review`**
+create or replace view spring_2008 as
+    select distinct course_id, building
+    from section
+    where semester = 'Spring' and year = 2008;
 
-| movie_id | rating |
-|---|---|
-| M1 | 9 |
-| M2 | 8 |
-| M4 | 7 |
+select * from fall_2009;     -- 7 courses
+select * from spring_2008;   -- 9 courses
+```
 
-Notice: `Dune (M3)` has no review, and the review for `M4` doesn't match any movie. This mismatch is exactly what different join types handle differently.
+Only course `237` is in both: 6 Fall courses have no Spring match, and 8 Spring courses have no Fall match. This mismatch is exactly what different join types handle differently.
+
+**LIS:** faculty, and the library members who are faculty:
+
+```{.sql db="lis"}
+select id, faculty_fname, faculty_lname from faculty;
+select member_no, id from members where member_class = 'Faculty';
+```
+
+**FLIS:** the teams and the referees:
+
+```{.sql db="flis"}
+select team_id, name from teams;
+select referee_id, name from referees;
+```
 
 ---
 
@@ -54,15 +59,22 @@ Notice: `Dune (M3)` has no review, and the review for `M4` doesn't match any mov
 
 Returns the **full Cartesian product** — every row of one table paired with every row of the other, no filtering at all.
 
-```sql
+```{.sql db="university"}
 -- Explicit
-select * from movie cross join review;
+select * from fall_2009 cross join spring_2008;
 
 -- Implicit (comma syntax)
-select * from movie, review;
+select * from fall_2009, spring_2008;
 ```
 
-With 3 movies and 3 reviews, this produces **9 rows** — almost all of them meaningless pairings.
+With 7 Fall courses and 9 Spring courses, this produces **63 rows** — almost all of them meaningless pairings.
+
+The same on another dataset: every team paired with every referee (6 × 7 = 42 rows):
+
+```{.sql db="flis"}
+select count(*)
+from teams cross join referees;
+```
 
 ---
 
@@ -75,23 +87,21 @@ Keeps only the rows where the join condition is satisfied on **both sides**.
 | **Equi-Join** | Explicit equality condition (`on a.x = b.x`) | Both `x` columns kept |
 | **Natural Join** | Equality assumed on same-named columns | Duplicate column auto-dropped |
 
-```sql
--- Equi-join
-select * from movie inner join review
-on movie.movie_id = review.movie_id;
+```{.sql db="university"}
+-- Equi-join (course_id appears twice)
+select * from fall_2009 inner join spring_2008
+on fall_2009.course_id = spring_2008.course_id;
 
--- Natural join (same result, but movie_id appears once)
-select * from movie natural join review;
+-- Natural join (same row, but course_id appears once)
+select * from fall_2009 natural join spring_2008;
 ```
 
-**Result** (only matching `movie_id`s survive):
+Only course `237` survives. The other Fall and Spring courses all **disappear** — this is the information loss outer joins solve.
 
-| movie_id | title | rating |
-|---|---|---|
-| M1 | Inception | 9 |
-| M2 | Arrival | 8 |
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th><th>what happens</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td><td>in both: kept</td></tr><tr><td>105</td><td>Image Processing</td><td>–</td><td>no Spring match: dropped</td></tr><tr><td>158</td><td>–</td><td>Taylor</td><td>no Fall match: dropped</td></tr></table></div>
+```
 
-`M3` (no review) and `M4` (no movie) both **disappear** — this is the information loss outer joins solve.
 
 ---
 
@@ -99,64 +109,87 @@ select * from movie natural join review;
 
 Outer joins keep the inner join result **plus** the unmatched rows from one or both sides, filling missing columns with `null`.
 
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · inner join</b></div><span>matching rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · add unmatched</b></div><span>from the left, right or both</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · fill</b></div><span>missing columns with null</span></div></div>
+```
+
 ### Left Outer Join
 
 Keeps **all rows from the left table**, even unmatched ones.
 
-```sql
-select * from movie natural left outer join review;
+```{.sql db="university"}
+select * from fall_2009 natural left outer join spring_2008;
 ```
 
-| movie_id | title | rating |
-|---|---|---|
-| M1 | Inception | 9 |
-| M2 | Arrival | 8 |
-| M3 | Dune | null |
+All 7 Fall courses are kept; the 6 with no Spring match get `null` for `building`.
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td></tr><tr><td>105</td><td>Image Processing</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td></tr><tr><td>242</td><td>Rock and Roll</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td></tr><tr><td>…</td><td></td><td></td></tr></table></div>
+```
+
+
+The same on another dataset: every faculty member with their library member number. The faculty member who is not a library member is kept, with `null`:
+
+```{.sql db="lis"}
+select f.faculty_fname, f.faculty_lname, m.member_no
+from faculty as f left outer join members as m
+on m.id = f.id;
+```
 
 ### Right Outer Join
 
 Keeps **all rows from the right table**, even unmatched ones.
 
-```sql
-select * from movie natural right outer join review;
+```{.sql db="university"}
+select * from fall_2009 natural right outer join spring_2008;
 ```
 
-| movie_id | title | rating |
-|---|---|---|
-| M1 | Inception | 9 |
-| M2 | Arrival | 8 |
-| M4 | null | 7 |
+All 9 Spring courses are kept; the 8 with no Fall match get `null` for `title`.
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td></tr><tr><td>158</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td></tr><tr><td>345</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td></tr><tr><td>…</td><td></td><td></td></tr></table></div>
+```
+
+
+The same on another dataset: every department with its instructors, including the departments that have none:
+
+```{.sql db="university"}
+select dept_name, id, name
+from instructor natural right outer join department;
+```
 
 ### Full Outer Join
 
 Keeps **everything from both sides** — the union of left and right outer joins.
 
-```sql
-select * from movie natural full outer join review;
+```{.sql db="university"}
+select * from fall_2009 natural full outer join spring_2008;
 ```
 
-| movie_id | title | rating |
-|---|---|---|
-| M1 | Inception | 9 |
-| M2 | Arrival | 8 |
-| M3 | Dune | null |
-| M4 | null | 7 |
+1 matched course + 6 Fall-only + 8 Spring-only = **15 rows**.
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>course_id</th><th>title</th><th>building</th><th>came from</th></tr><tr><td>237</td><td>Surfing</td><td>Power</td><td>both</td></tr><tr><td>105</td><td>Image Processing</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Fall only</td></tr><tr><td>158</td><td><span style="color:var(--dbms-muted)"><i>null</i></span></td><td>Taylor</td><td>Spring only</td></tr><tr><td>…</td><td></td><td></td><td></td></tr></table></div>
+```
+
 
 ### Using Explicit Conditions
 
 Joins can also use `on` (any condition) or `using` (shared column names), instead of `natural`:
 
-```sql
+```{.sql db="university"}
 -- Explicit condition
-select * from movie left outer join review
-on movie.movie_id = review.movie_id;
+select * from fall_2009 left outer join spring_2008
+on fall_2009.course_id = spring_2008.course_id;
 
 -- Shared column shorthand
-select * from movie full outer join review
-using (movie_id);
+select * from fall_2009 full outer join spring_2008
+using (course_id);
 ```
 
-> 💡 `on` works with *any* condition (even inequality!). `natural` and `using` both rely on matching column names — `using` lets you name exactly which shared column(s) to join on, while `natural` matches on **all** identically-named columns.
+::: {.callout-note title="Key idea"}
+`on` works with *any* condition (even inequality!). `natural` and `using` both rely on matching column names — `using` lets you name exactly which shared column(s) to join on, while `natural` matches on **all** identically-named columns.
+:::
 
 ---
 
@@ -165,14 +198,11 @@ using (movie_id);
 | Join | Unmatched left rows kept? | Unmatched right rows kept? |
 |---|:---:|:---:|
 | Cross Join | n/a (no matching) | n/a |
-| Inner Join | ❌ | ❌ |
-| Left Outer | ✅ | ❌ |
-| Right Outer | ❌ | ✅ |
-| Full Outer | ✅ | ✅ |
-
----
+| Inner Join | ✗ | ✗ |
+| Left Outer | ✓ | ✗ |
+| Right Outer | ✗ | ✓ |
+| Full Outer | ✓ | ✓ |
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
 ```
-

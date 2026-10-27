@@ -6,13 +6,17 @@ format:
         code-fold: false
 ---
 
-## Nested Subqueries
-
 A **subquery** is simply a `select-from-where` block placed *inside* another query. SQL lets you nest subqueries in the `WHERE`, `FROM`, and `SELECT` clauses.
 
 - `select`  :  Must return a single scalar value.
 - `from`  :  Can return any valid relation (table).
 - `where`  :  Used in expressions like `Attribute <operation> (subquery)`.
+
+```{=html}
+<div class="flow"><div class="box"><b>where</b><span>Attribute &lt;operation&gt; (subquery)</span></div><div class="box"><b>from</b><span>any valid relation (table)</span></div><div class="box"><b>select</b><span>a single scalar value</span></div></div>
+```
+
+All examples on this page run on the course datasets: press **Run** on any query to see its result.
 
 ---
 
@@ -22,18 +26,18 @@ Typically used to test **set membership**, **set comparison**, and **set cardina
 
 ### Set Membership: `IN` / `NOT IN`
 
-*Example:* Find employees who worked on Project A **and** Project B.
+*Example:* Find courses offered in Fall 2009 **and** in Spring 2008.
 
-```sql
-select distinct emp_id
-from assignment
-where project = 'Project A' and
-      emp_id in (select emp_id
-                 from assignment
-                 where project = 'Project B');
+```{.sql db="university"}
+select distinct course_id
+from section
+where semester = 'Fall' and year = 2009 and
+      course_id in (select course_id
+                    from section
+                    where semester = 'Spring' and year = 2008);
 ```
 
-> Swap `in` for `not in` to find employees on Project A **but not** Project B.
+> Swap `in` for `not in` to find courses offered in Fall 2009 **but not** in Spring 2008.
 
 ### Set Comparison: `SOME` and `ALL`
 
@@ -42,26 +46,34 @@ where project = 'Project A' and
 | **`some`** | True if comparison holds for **at least one** row in subquery | $\exists\, t \in r : F \langle\text{comp}\rangle\, t$ |
 | **`all`** | True if comparison holds for **every** row in subquery | $\forall\, t \in r : F \langle\text{comp}\rangle\, t$ |
 
-> 📌 \<comp\> can be: <, ≤, >, ≥, =, ≠
+::: {.callout-note title="Note"}
+\<comp\> can be: <, ≤, >, ≥, =, ≠
+:::
 
-*Example:* Employees earning more than **some** employee in Sales:
+*Example:* Instructors earning more than **some** instructor in Biology:
 
-```sql
-select name
-from employee
+```{.sql db="university"}
+select name, salary
+from instructor
 where salary > some (select salary
-                      from employee
-                      where dept_name = 'Sales');
+                     from instructor
+                     where dept_name = 'Biology');
 ```
 
-*Example:* Employees earning more than **all** employees in Sales:
+*Example:* Instructors earning more than **all** instructors in Biology:
 
-```sql
-select name
-from employee
+```{.sql db="university"}
+select name, salary
+from instructor
 where salary > all (select salary
-                     from employee
-                     where dept_name = 'Sales');
+                    from instructor
+                    where dept_name = 'Biology');
+```
+
+**How the result is decided.** Biology has two salaries: 45538.32 and 77036.18.
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Instructor</th><th>salary</th><th>&gt; some</th><th>&gt; all</th></tr><tr><td>Gutierrez</td><td>45310.53</td><td>✗</td><td>✗</td></tr><tr><td>Murata</td><td>61387.56</td><td>✓ (beats 45538.32)</td><td>✗</td></tr><tr><td>Romero</td><td>79070.08</td><td>✓</td><td>✓ (beats both)</td></tr></table></div>
 ```
 
 ### Test for Empty Sets: `EXISTS`
@@ -69,31 +81,43 @@ where salary > all (select salary
 - `exists r` is true if `r` is non-empty.
 - `not exists r` is true if `r` is empty.
 
-*Example:* Find projects active in both Q1 2025 and Q2 2025, using a **correlated subquery** (inner query refers to the outer query's variable).
+*Example:* Find courses offered in both Fall 2009 and Spring 2008, using a **correlated subquery** (inner query refers to the outer query's variable).
 
-```sql
-select project_id
-from timeline as S
-where quarter = 'Q1' and year = 2025 and
+```{.sql db="university"}
+select course_id
+from section as S
+where semester = 'Fall' and year = 2009 and
       exists (select *
-              from timeline as T
-              where quarter = 'Q2' and year = 2025
-                    and S.project_id = T.project_id);
+              from section as T
+              where semester = 'Spring' and year = 2008
+                    and S.course_id = T.course_id);
 ```
 
 - `S` is the **correlation name** (outer query variable)
 - The inner query referencing `S` is the **correlated subquery**
 
-*Example:* Find employees who have worked on **all** projects in the Marketing department (uses `not exists` + set difference logic):
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>take a row S</b></div><span>a Fall 2009 section</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>run the subquery</b></div><span>Spring 2008 rows with the same course_id</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>non-empty?</b></div><span>exists is true: keep S</span></div></div>
+```
 
-```sql
-select distinct S.emp_id, S.name
-from employee as S
+*Example:* Find teams that have played against **all** other teams (uses `not exists` + set difference logic):
+
+```{.sql db="flis"}
+select t.name
+from teams as t
 where not exists (
-    (select project_id from project where dept_name = 'Marketing')
+    (select team_id from teams where team_id <> t.team_id)
     except
-    (select T.project_id from assignment as T where S.emp_id = T.emp_id)
+    (select guest_team_id from matches where host_team_id = t.team_id
+     union
+     select host_team_id from matches where guest_team_id = t.team_id)
 );
+```
+
+For each team, "all other teams" **minus** "teams it has played" must be empty:
+
+```{=html}
+<div class="table-wrap"><table class="jt res"><tr><th>Team</th><th>Other teams not yet played</th><th>Kept?</th></tr><tr><td>Amigos</td><td>none (empty)</td><td>✓</td></tr><tr><td>Thunder</td><td>Rainbow</td><td>✗</td></tr><tr><td>Rainbow</td><td>Thunder, All Stars, Arawali</td><td>✗</td></tr></table></div>
 ```
 
 ### Test for Duplicates: `UNIQUE`
@@ -101,13 +125,25 @@ where not exists (
 `unique (subquery)` is true if the subquery's result has **no duplicate rows**.
 
 ```sql
-select T.project_id
-from project as T
-where unique (select R.project_id
-              from assignment as R
-              where T.project_id = R.project_id and R.year = 2025);
+select t.name
+from teams as t
+where unique (select m.host_team_id
+              from matches as m
+              where m.host_team_id = t.team_id);
 ```
-*(Finds projects staffed by at most one employee in 2025.)*
+*(Finds teams that hosted at most one match.)*
+
+::: {.callout-note title="Note"}
+PostgreSQL does not implement `unique`. The same query, written with a count, runs on the dataset:
+:::
+
+```{.sql db="flis"}
+select t.name
+from teams as t
+where (select count(*)
+       from matches as m
+       where m.host_team_id = t.team_id) <= 1;
+```
 
 ---
 
@@ -115,14 +151,18 @@ where unique (select R.project_id
 
 A subquery can stand in for a table, letting you filter on an **aggregate** without `HAVING`.
 
-*Example:* Average salary of departments where average salary exceeds $60,000:
+*Example:* Average salary of departments where average salary exceeds 90,000:
 
-```sql
+```{.sql db="university"}
 select dept_name, avg_salary
-from (select dept_name, avg(salary) as avg_salary
-      from employee
+from (select dept_name, round(avg(salary), 2) as avg_salary
+      from instructor
       group by dept_name) as dept_avg
-where avg_salary > 60000;
+where avg_salary > 90000;
+```
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>inner query</b></div><span>one row per department</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>as dept_avg</b></div><span>name the result</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>outer where</b></div><span>keep avg_salary &gt; 90000</span></div></div>
 ```
 
 ### The `WITH` Clause
@@ -131,10 +171,10 @@ where avg_salary > 60000;
 
 *Example:* Find the name of the department that has the maximum budget.
 
-```sql
+```{.sql db="university"}
 with max_budget(value) as
     (select max(budget) from department)
-select department.name
+select department.dept_name
 from department, max_budget
 where department.budget = max_budget.value;
 ```
@@ -143,10 +183,14 @@ Multiple `with` blocks can be chained for multi-step logic:
 
 *Example:* Find the names of the departments whose total salary expense is greater than the average total salary expense across all departments.
 
-```sql
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>dept_total</b></div><span>total salary per department</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>dept_total_avg</b></div><span>average of those totals</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>final select</b></div><span>departments above the average</span></div></div>
+```
+
+```{.sql db="university"}
 with dept_total(dept_name, value) as
     (select dept_name, sum(salary)
-     from employee
+     from instructor
      group by dept_name),
 dept_total_avg(value) as
     (select avg(value) from dept_total)
@@ -161,105 +205,125 @@ where dept_total.value > dept_total_avg.value;
 
 A **scalar subquery** returns exactly one value, used wherever a single value is expected.
 
-```sql
+```{.sql db="university"}
 select dept_name,
        (select count(*)
-        from employee
-        where department.dept_name = employee.dept_name) as num_employees
+        from instructor
+        where department.dept_name = instructor.dept_name) as num_instructors
 from department;
 ```
 
-> ⚠️ If the subquery returns more than one row, this causes a **runtime error**.
+::: {.callout-note title="Note"}
+If the subquery returns more than one row, this causes a **runtime error**.
+:::
 
 ---
 
 ## Modifying the Database
 
-```{mermaid}
-%%{init: {'theme': 'neutral'}}%%
-graph LR
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    M["Database Modification"] --> D["DELETE — remove tuples"]
-    M --> I["INSERT — add tuples"]
-    M --> U["UPDATE — change values"]
+```{=html}
+<div class="flow"><div class="box grey"><b>Database modification</b><span>delete · insert · update</span></div><div class="box"><b>DELETE</b><span>remove tuples</span></div><div class="box"><b>INSERT</b><span>add tuples</span></div><div class="box"><b>UPDATE</b><span>change values</span></div></div>
 ```
+
+These statements change the dataset. Each example is wrapped in `begin; … rollback;` so the data is restored after you run it.
 
 ### Deletion
 
-```sql
--- Delete all employees
-delete from employee;
+```{.sql db="university"}
+begin;
+-- Delete all instructors
+delete from instructor;
 
--- Delete employees from one department
-delete from employee where dept_name = 'Finance';
+-- Delete instructors from one department
+delete from instructor where dept_name = 'Finance';
 
--- Delete employees in departments located in a specific building
-delete from employee
+-- Delete instructors in departments located in a specific building
+delete from instructor
 where dept_name in (select dept_name
-                     from department
-                     where building = 'Tower B');
+                    from department
+                    where building = 'Taylor');
+rollback;
 ```
 
-**Tricky case:** Delete employees earning less than the average salary.
+**Tricky case:** Delete instructors earning less than the average salary.
 
-```sql
-delete from employee
-where salary < (select avg(salary) from employee);
+```{.sql db="university"}
+begin;
+delete from instructor
+where salary < (select avg(salary) from instructor);
+select count(*) from instructor;
+rollback;
 ```
 
-> ⚠️ As rows are deleted, the average changes! Solution: **(1)** computing the average and identifying all rows to delete *first*, then **(2)** deleting them — without recomputing mid-way.
+::: {.callout-note title="Note"}
+As rows are deleted, the average changes! Solution: **(1)** computing the average and identifying all rows to delete *first*, then **(2)** deleting them — without recomputing mid-way.
+:::
+
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>phase 1</b></div><span>compute the average once</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>phase 1</b></div><span>mark every row below it</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>phase 2</b></div><span>delete the marked rows</span></div></div>
+```
 
 ### Insertion
 
-```sql
+```{.sql db="university"}
+begin;
 insert into course
 values ('CS-437', 'Database Systems', 'Comp. Sci.', 4);
 
--- with tot_creds set to null
+-- with tot_cred set to null
 insert into student
 values ('3003', 'Green', 'Finance', null);
 
 -- insert from another query's results
 insert into student
 select id, name, dept_name, 0
-from employee;
+from instructor
+where id not in (select id from student);
+rollback;
 ```
 
-> 📌 The entire `select-from-where` is evaluated **before** any row is inserted — otherwise `insert into table1 select * from table1` would loop infinitely.
+::: {.callout-note title="Note"}
+The entire `select-from-where` is evaluated **before** any row is inserted — otherwise `insert into table1 select * from table1` would loop infinitely.
+:::
 
 ### Updates
 
-**Conditional updates** — give a 3% raise above $100K, 5% below (order matters!):
+**Conditional updates** — give a 3% raise above 100,000, 5% below (order matters!):
 
-```sql
-update employee set salary = salary * 1.03 where salary > 100000;
-update employee set salary = salary * 1.05 where salary <= 100000;
+```{.sql db="university"}
+begin;
+update instructor set salary = salary * 1.03 where salary > 100000;
+update instructor set salary = salary * 1.05 where salary <= 100000;
+rollback;
 ```
 
 Cleaner with a **`case`** statement (single pass, no ordering issues):
 
-```sql
-update employee
+```{.sql db="university"}
+begin;
+update instructor
 set salary = case
     when salary <= 100000 then salary * 1.05
     else salary * 1.03
 end;
+rollback;
 ```
 
 **Updates with scalar subqueries** — recompute total credits per student:
 
-```sql
+```{.sql db="university"}
+begin;
 update student S
-set tot_creds = (select sum(credits)
-                  from takes, course
-                  where takes.course_id = course.course_id and
-                        S.id = takes.id and
-                        takes.grade <> 'F' and
-                        takes.grade is not null);
+set tot_cred = (select sum(credits)
+                from takes, course
+                where takes.course_id = course.course_id and
+                      S.id = takes.id and
+                      takes.grade <> 'F' and
+                      takes.grade is not null);
+rollback;
 ```
 *(Find the total credits earned by each student (excluding failed or uncollected grades) and update their record in the student table.)*
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
 ```
-
