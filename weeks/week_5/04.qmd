@@ -8,7 +8,9 @@ format:
 
 ## Lossless Join Decomposition
 
-> 💡 **In plain English:** if you split a table in two, you should be able to join the pieces back together and get *exactly* the original table back — not extra, made-up rows, and not missing ones.
+::: {.callout-note title="Key idea"}
+If you split a table in two, you should be able to join the pieces back together and get *exactly* the original table back — not extra, made-up rows, and not missing ones.
+:::
 
 For $R$ decomposed into $R_1, R_2$, this must hold for every legal instance:
 
@@ -20,7 +22,9 @@ $$R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_
 
 In other words: the attribute(s) shared between the two pieces must be enough, on their own, to act as a key for at least one of the two pieces.
 
-> ⚠️ This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn't guaranteed to be necessary.
+::: {.callout-note title="Note"}
+This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn't guaranteed to be necessary.
+:::
 
 **Full checklist for a lossless decomposition:**
 
@@ -28,45 +32,64 @@ In other words: the attribute(s) shared between the two pieces must be enough, o
 - $R_1 \cap R_2 \neq \phi$ — the two pieces actually share something in common
 - $R_1 \cap R_2 \rightarrow R_1$ or $R_1 \cap R_2 \rightarrow R_2$ — that shared part is a key on at least one side
 
-### Worked Example: Supplier-Parts
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · cover R</b></div><span>R₁ ∪ R₂ = R</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · overlap</b></div><span>R₁ ∩ R₂ ≠ ∅</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · key test</b></div><span>R₁ ∩ R₂ → R₁ or R₂</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>all 3 hold</b></div><span>lossless</span></div></div>
+```
 
-`Supplier_Parts(S#, Sname, City, P#, Qty)`, with `S# → Sname, City` and `(S#, P#) → Qty`.
+### Worked Example
 
-Here's a sample instance:
+The university example: $R = (A, B, C, D, E, G)$ = (`ID`, `name`, `salary`, `dept_name`, `building`, `budget`), $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$. Run this once to create R as a view:
 
-| S# | Sname | City | P# | Qty |
+```{.sql db="university"}
+create or replace view inst_dept as
+select id, name, salary, dept_name, building, budget
+from instructor natural join department;
+```
+
+**A good split:** $R_1 = (A, B, C, D)$ and $R_2 = (D, E, G)$ — exactly the dataset's `instructor` and `department` tables.
+
+The shared attribute is $D$, which *is* a key of $R_2$ ($D \rightarrow EG$). Joining them back gives exactly the 50 original rows:
+
+```{.sql db="university"}
+select count(*)
+from (select distinct id, name, salary, dept_name from inst_dept) as r1
+     join (select distinct dept_name, building, budget from inst_dept) as r2
+     using (dept_name);
+```
+
+**A bad split:** $R_1 = (A, B, D)$ and $R_2 = (C, D, E, G)$
+
+The shared attribute is again $D$ — but now $D$ isn't a key of either piece (a department has many instructors and many salaries). Joining them back gives **182** rows instead of 50:
+
+```{.sql db="university"}
+select count(*)
+from (select distinct id, name, dept_name from inst_dept) as r1
+     join (select distinct dept_name, salary, building, budget from inst_dept) as r2
+     using (dept_name);
+```
+
+For Biology, which has two instructors:
+
+| A (ID) | B (name) | C (salary) | D (dept_name) | |
 |---|---|---|---|---|
-| S1 | Smith | London | P1 | 300 |
-| S1 | Smith | London | P2 | 200 |
-| S2 | Jones | Paris | P1 | 400 |
-| S2 | Jones | Paris | P2 | 300 |
+| 80759 | Queiroz | 45538.32 | Biology | original |
+| 80759 | Queiroz | 77036.18 | Biology | spurious |
+| 81991 | Valtchev | 45538.32 | Biology | spurious |
+| 81991 | Valtchev | 77036.18 | Biology | original |
 
-**A bad split:** `Supplier(S#, Sname, City, Qty)` and `Parts(P#, Qty)`
+The join matches *every* Biology row of $R_1$ with *every* Biology row of $R_2$ — creating combinations that never existed in the original data.
 
-The shared attribute here is `Qty` — and `Qty` isn't a key of either piece. Projecting our sample data onto these two tables and joining them back on `Qty` gives:
-
-| S# | Sname | City | P# | Qty | |
-|---|---|---|---|---|---|
-| S1 | Smith | London | P1 | 300 | ✅ original |
-| S1 | Smith | London | P2 | 300 | ❌ spurious |
-| S2 | Jones | Paris | P1 | 300 | ❌ spurious |
-| S2 | Jones | Paris | P2 | 300 | ✅ original |
-| S1 | Smith | London | P2 | 200 | ✅ original |
-| S2 | Jones | Paris | P1 | 400 | ✅ original |
-
-Both suppliers happened to have a `Qty = 300` row, so the join matches *every* `Qty = 300` row in `Supplier` with *every* `Qty = 300` row in `Parts` — creating two fabricated combinations that never existed in the original data. This decomposition is lossy, and it also fails to preserve `(S#, P#) → Qty`.
-
-**A good split:** `Supplier(S#, Sname, City)` and `Parts(S#, P#, Qty)`
-
-The shared attribute is `S#`, which *is* a key of `Supplier`. Joining these two projections back together on `S#` reconstructs exactly the original four rows — no more, no less. Lossless, and every dependency is preserved too.
-
-> 📌 The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
+::: {.callout-note title="Note"}
+The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
+:::
 
 ---
 
 ## Dependency Preservation
 
-> 💡 **In plain English:** after splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition "preserves dependencies."
+::: {.callout-note title="Key idea"}
+After splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition "preserves dependencies."
+:::
 
 Let $F_i$ be the set of FDs from $F^+$ that only involve attributes inside $R_i$. A decomposition into $R_1, ..., R_n$ **preserves dependencies** if:
 
@@ -76,12 +99,12 @@ If this fails, catching a violation of some original FD needs an expensive join 
 
 ### A Quick Contrast
 
-$R = (A,B,C)$, $F = \{A \rightarrow B,\ B \rightarrow C\}$
+$R = (A, B, C, D, E, G)$, $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$
 
 | Decomposition | Dependency Preserving? |
 |---|---|
-| $R_1=(A,B),\ R_2=(B,C)$ | Yes — both `A→B` and `B→C` sit fully inside one piece each |
-| $R_1=(A,B),\ R_2=(A,C)$ | No — `B→C` can't be checked without joining, since `B` and `C` now live in different tables |
+| $R_1=(A,B,C,D),\ R_2=(D,E,G)$ | Yes — `A→BCD` sits inside $R_1$ and `D→EG` inside $R_2$ |
+| $R_1=(A,B,C,D),\ R_2=(A,E,G)$ | No — `D→E` can't be checked without joining, since `D` and `E` now live in different tables |
 
 Same relation, same FDs — the *choice* of split decides the outcome.
 
@@ -92,27 +115,24 @@ Same relation, same FDs — the *choice* of split decides the outcome.
 3. Repeat step 2, cycling through every $R_i$, until `result` stops growing.
 4. If the right-hand-side attributes ($\beta$) are now inside `result`, the FD is preserved without needing a join.
 
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · start</b></div><span>result = α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · each Rᵢ</b></div><span>add (result ∩ Rᵢ)⁺ ∩ Rᵢ</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · repeat</b></div><span>until result stops growing</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>4 · β ⊆ result?</b></div><span>preserved</span></div></div>
+```
+
 Run this check on every FD in $F$ to confirm the whole decomposition preserves dependencies.
 
 ### Worked Example
 
-$R(A,B,C,D)$, $F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}$
-
-Decomposition: $R_1(A,B),\ R_2(B,C),\ R_3(C,D)$
-
-`A→B`, `B→C`, `C→D` each sit fully inside one piece, so they're automatically preserved. The one worth checking is `D→A`:
+Decomposition $R_1 = (A, B, C, D)$, $R_2 = (D, E, G)$. `A → G` (ID → budget) is in $F^+$, but $A$ and $G$ never sit in the same piece. Is it preserved?
 
 | Round | Piece Checked | Closure Computed | Result So Far |
 |---|---|---|---|
-| Start | — | — | `{D}` |
-| 1 | $R_1=(A,B)$ | `result ∩ R1 = {}` → nothing to add | `{D}` |
-| 1 | $R_2=(B,C)$ | `result ∩ R2 = {}` → nothing to add | `{D}` |
-| 1 | $R_3=(C,D)$ | `(D)+ = ABCD`, keep only `C,D` | `{C,D}` |
-| 2 | $R_2=(B,C)$ | `(C)+ = ABCD`, keep only `B,C` | `{B,C,D}` |
-| 2 | $R_1=(A,B)$ | `(B)+ = ABCD`, keep only `A,B` | `{A,B,C,D}` |
+| Start | — | — | `{A}` |
+| 1 | $R_1=(A,B,C,D)$ | `(A)+ = ABCDEG`, keep only `A,B,C,D` | `{A,B,C,D}` |
+| 1 | $R_2=(D,E,G)$ | `(D)+ = DEG`, keep only `D,E,G` | `{A,B,C,D,E,G}` |
 
-`result` now contains `A` — so `D → A` is preserved. Every FD in $F$ checks out, so this decomposition is dependency preserving.
+`result` now contains `G` — so `A → G` is preserved. For the second decomposition, $R_1 = (A, B, C, D)$, $R_2 = (A, E, G)$, the same check for `D → E` never adds `E` (`D` is not in $R_2$), so `D → E` is lost.
 
-
-
-
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```

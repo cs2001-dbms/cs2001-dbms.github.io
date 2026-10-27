@@ -12,7 +12,9 @@ We already have **attribute closure** ($\alpha^+$) as our go-to tool for testing
 
 ## Extraneous Attributes
 
-> 💡 **In plain English:** an extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
+::: {.callout-note title="Key idea"}
+An extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
+:::
 
 An attribute can be dead weight on either side of an FD:
 
@@ -27,15 +29,17 @@ An attribute can be dead weight on either side of an FD:
 
 ### Example — Extraneous on the Left
 
-$F = \{A \rightarrow C,\ AB \rightarrow C\}$
+Using the university letters (A = `ID`, C = `salary`, D = `dept_name`, E = `building`, G = `budget`):
 
-Is $B$ extraneous in $AB \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $B$ was dead weight.
+$F = \{A \rightarrow C,\ AD \rightarrow C\}$ — "ID → salary" and "ID, dept_name → salary"
+
+Is $D$ extraneous in $AD \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $D$ was dead weight: salary depends on the instructor, not on the department.
 
 ### Example — Extraneous on the Right
 
-$F = \{A \rightarrow C,\ AB \rightarrow CD\}$
+$F = \{D \rightarrow E,\ AD \rightarrow EG\}$ — "dept_name → building" and "ID, dept_name → building, budget"
 
-Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ AB \rightarrow D\}$. Compute $AB^+$ under this reduced set: it comes out to $ABCD$ — which still contains $C$. So $C$ was always derivable anyway, and was extraneous in the original FD.
+Is $E$ extraneous in $AD \rightarrow EG$? Drop it, leaving $\{D \rightarrow E,\ AD \rightarrow G\}$. Compute $AD^+$ under this reduced set: it comes out to $ADEG$ — which still contains $E$. So $E$ was extraneous: the building already comes through the department.
 
 ---
 
@@ -43,7 +47,9 @@ Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ 
 
 ### Equivalence of FD Sets
 
-> 💡 **In plain English:** two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
+::: {.callout-note title="Key idea"}
+Two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
+:::
 
 $F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hold:
 
@@ -54,7 +60,9 @@ Only if both hold are $F$ and $G$ truly equivalent.
 
 ### Canonical Cover
 
-> 💡 **In plain English:** the canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
+::: {.callout-note title="Key idea"}
+The canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
+:::
 
 $F_c$ is a canonical cover of $F$ if:
 
@@ -68,18 +76,24 @@ $F_c$ is a canonical cover of $F$ if:
 2. Look at each remaining FD and test both sides for extraneous attributes; remove any that are found.
 3. Repeat steps 1–2 until nothing changes.
 
-> ⚠️ Removing an extraneous attribute can create a *new* opportunity to merge left-hand sides that didn't match before — so keep looping until the set is stable.
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · merge</b></div><span>same left side → one FD</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · test</b></div><span>each attribute, left and right</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · remove</b></div><span>extraneous attributes</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>4 · repeat</b></div><span>until nothing changes</span></div></div>
+```
+
+::: {.callout-note title="Note"}
+Removing an extraneous attribute can create a *new* opportunity to merge left-hand sides that didn't match before — so keep looping until the set is stable.
+:::
 
 ### Worked Example
 
-$R = (A, B, C)$, $F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ AB \rightarrow C\}$
+$R = (A, D, E)$ = (`ID`, `dept_name`, `building`), $F = \{A \rightarrow DE,\ D \rightarrow E,\ A \rightarrow D,\ AD \rightarrow E\}$
 
-1. **Merge:** $A \rightarrow BC$ and $A \rightarrow B$ share a left side → combine into $A \rightarrow BC$. Set is now $\{A \rightarrow BC,\ B \rightarrow C,\ AB \rightarrow C\}$.
-2. **Left-side check:** is $A$ extraneous in $AB \rightarrow C$? Drop it — $B \rightarrow C$ is already in the set, so yes. Set is now $\{A \rightarrow BC,\ B \rightarrow C\}$.
-3. **Right-side check:** is $C$ extraneous in $A \rightarrow BC$? Drop it and check — $A \rightarrow B$ and $B \rightarrow C$ together still give $A \rightarrow C$ by transitivity. So yes, $C$ was extraneous.
+1. **Merge:** $A \rightarrow DE$ and $A \rightarrow D$ share a left side → combine into $A \rightarrow DE$. Set is now $\{A \rightarrow DE,\ D \rightarrow E,\ AD \rightarrow E\}$.
+2. **Left-side check:** is $A$ extraneous in $AD \rightarrow E$? Drop it — $D \rightarrow E$ is already in the set, so yes. Set is now $\{A \rightarrow DE,\ D \rightarrow E\}$.
+3. **Right-side check:** is $E$ extraneous in $A \rightarrow DE$? Drop it and check — $A \rightarrow D$ and $D \rightarrow E$ together still give $A \rightarrow E$ by transitivity. So yes, $E$ was extraneous.
 
-**Canonical cover:** $\{A \rightarrow B,\ B \rightarrow C\}$ — the smallest set that says exactly what the original four FDs said.
+**Canonical cover:** $\{A \rightarrow D,\ D \rightarrow E\}$ — the smallest set that says exactly what the original four FDs said: an instructor belongs to a department, and the building comes through the department.
 
-
-
-
+```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
+```
