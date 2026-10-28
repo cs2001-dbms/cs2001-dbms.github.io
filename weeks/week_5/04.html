@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -50,9 +85,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-7917d30a2dcfbd5fc5314cdb78636109.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -411,6 +446,11 @@ window.Quarto = {
   <a href="../../weeks/week_3/advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/sql_examples.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Examples</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -706,12 +746,12 @@ window.Quarto = {
   <li><a href="#lossless-join-decomposition" id="toc-lossless-join-decomposition" class="nav-link active" data-scroll-target="#lossless-join-decomposition">Lossless Join Decomposition</a>
   <ul class="collapse">
   <li><a href="#worked-example-supplier-parts" id="toc-worked-example-supplier-parts" class="nav-link" data-scroll-target="#worked-example-supplier-parts">Worked Example: Supplier-Parts</a></li>
+  <li><a href="#worked-example-decomposing-into-three-relations" id="toc-worked-example-decomposing-into-three-relations" class="nav-link" data-scroll-target="#worked-example-decomposing-into-three-relations">Worked Example: Decomposing into Three Relations</a></li>
   </ul></li>
   <li><a href="#dependency-preservation" id="toc-dependency-preservation" class="nav-link" data-scroll-target="#dependency-preservation">Dependency Preservation</a>
   <ul class="collapse">
-  <li><a href="#a-quick-contrast" id="toc-a-quick-contrast" class="nav-link" data-scroll-target="#a-quick-contrast">A Quick Contrast</a></li>
-  <li><a href="#how-to-test-it" id="toc-how-to-test-it" class="nav-link" data-scroll-target="#how-to-test-it">How to Test It</a></li>
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example">Worked Example</a></li>
+  <li><a href="#note" id="toc-note" class="nav-link" data-scroll-target="#note"><strong>Note</strong></a></li>
+  <li><a href="#worked-example-dependency-preservation-step-by-step" id="toc-worked-example-dependency-preservation-step-by-step" class="nav-link" data-scroll-target="#worked-example-dependency-preservation-step-by-step">Worked Example: Dependency Preservation Step-by-Step</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/04.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -873,141 +913,182 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>📌 The lesson: it’s not <em>whether</em> you split a table, it’s <em>where</em> you split it. The same table can be decomposed well or badly.</p>
 </blockquote>
+<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Test Lossless Join &amp; Dependency Preservation">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Try it yourself: Test Lossless Join &amp; Dependency Preservation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Click <strong>Run</strong> below to verify that decomposing <code>R(S, Sname, City, P, Qty)</code> into <code>R1(S, Sname, City)</code> and <code>R2(S, P, Qty)</code> is <strong>lossless</strong> and <strong>dependency preserving</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-check="lossless-join, dependency-preservation"><pre class="sourceCode numberSource fd number-lines code-with-copy"><code class="sourceCode"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a>R(S, Sname, City, P, Qty)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>S -&gt; Sname, City</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>SP -&gt; Qty</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a>Decompose: R1(S, Sname, City), R2(S, P, Qty)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>(You can click <strong>Edit</strong> to try the bad split <code>R1(S, Sname, City, Qty), R2(P, Qty)</code> and see the lossy diagnosis!)</em></p>
+</div>
+</div>
+</div>
+</section>
+<section id="worked-example-decomposing-into-three-relations" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-decomposing-into-three-relations">Worked Example: Decomposing into Three Relations</h3>
+<p>A relation <span class="math inline">\(R(A, B, C, D)\)</span> with functional dependencies: <span class="math display">\[FD = \{ A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D\}\]</span></p>
+<p>is decomposed into three relations as follows: <span class="math display">\[R_1(A, B),\ R_2(B, C),\ R_3(C, D)\]</span></p>
+<p>We test for a lossless decomposition progressively in this exact order:</p>
+<ul>
+<li><p><strong>Step 1: Attribute Union Check:</strong> <span class="math display">\[R_1 \cup R_2 \cup R_3 = \{A, B, C, D\} = R\]</span> All original attributes are accounted for (nothing is lost).</p></li>
+<li><p><strong>Step 2: First Natural Join (<span class="math inline">\(R_1 \bowtie R_2\)</span>):</strong></p>
+<ul>
+<li>Shared attributes: <span class="math inline">\(R_1 \cap R_2 = \{ B \}\)</span></li>
+<li>Compute closure of shared attributes under <span class="math inline">\(FD\)</span>: <span class="math display">\[B^+ = BCD\]</span></li>
+<li>Since <span class="math inline">\(BCD \supseteq \{ B, C \} = R_2\)</span>, <span class="math inline">\(B\)</span> is a superkey of <span class="math inline">\(R_2\)</span>.</li>
+<li>Therefore, <span class="math inline">\(R_1 \bowtie R_2\)</span> is lossless, producing intermediate relation: <span class="math display">\[R_{12}(A, B, C)\]</span></li>
+</ul></li>
+<li><p><strong>Step 3: Second Natural Join (<span class="math inline">\(R_{12} \bowtie R_3\)</span>):</strong></p>
+<ul>
+<li>Shared attributes: <span class="math inline">\(R_{12} \cap R_3 = \{ C \}\)</span></li>
+<li>Compute closure of shared attributes under <span class="math inline">\(FD\)</span>: <span class="math display">\[C^+ = CD\]</span></li>
+<li>Since <span class="math inline">\(CD \supseteq \{ C, D \} = R_3\)</span>, <span class="math inline">\(C\)</span> is a superkey of <span class="math inline">\(R_3\)</span>.</li>
+<li>Therefore, <span class="math inline">\(R_{12} \bowtie R_3\)</span> is lossless, producing: <span class="math display">\[R_{123}(A, B, C, D) = R\]</span></li>
+</ul></li>
+</ul>
+<p><span class="math inline">\(\therefore\)</span> The 3-way decomposition is <strong>Lossless</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Verify 3-Way Lossless Join">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Try it yourself: Verify 3-Way Lossless Join
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Click <strong>Run</strong> below to trace each progressive natural join step live:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-check="lossless-join"><pre class="sourceCode numberSource fd number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a>R(A, B, C, D)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a>A -&gt; B</span>
+<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a>B -&gt; C</span>
+<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a>C -&gt; D</span>
+<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-label="7"></a>Decompose: R1(A, B), R2(B, C), R3(C, D)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>💡 <strong>Join Order Matters:</strong> We are not restricted to joining strictly <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span> first. If <span class="math inline">\(R_1 \bowtie R_2\)</span> fails the superkey condition, the algorithm searches for any pair of relations that can be joined losslessly. If a failed join occurs, no intermediate relation is created because merging them would generate spurious tuples.</p>
+</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Non-Sequential Pairwise Join Example">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Try it yourself: Non-Sequential Pairwise Join Example
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In this example, <span class="math inline">\(R_1 \bowtie R_2\)</span> cannot be joined first because their shared attribute <span class="math inline">\(A\)</span> is not a superkey (<span class="math inline">\(A^+ = \{A\}\)</span>). However, <span class="math inline">\(R_2\)</span> and <span class="math inline">\(R_3\)</span> share <span class="math inline">\(\{A, D\}\)</span>, where <span class="math inline">\((AD)^+ = \{A, D, E, F\} \supseteq R_2\)</span>. Thus <span class="math inline">\(R_2 \bowtie R_3\)</span> joins losslessly into <span class="math inline">\(R_{23}\)</span>, which then joins losslessly with <span class="math inline">\(R_1\)</span>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-check="lossless-join"><pre class="sourceCode numberSource fd number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a>R(A, B, C, D, E, F)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a>AB -&gt; C</span>
+<span id="cb3-4"><a href="#cb3-4" aria-label="4"></a>E -&gt; F</span>
+<span id="cb3-5"><a href="#cb3-5" aria-label="5"></a>AC -&gt; B</span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a>BC -&gt; A</span>
+<span id="cb3-7"><a href="#cb3-7" aria-label="7"></a>B -&gt; D</span>
+<span id="cb3-8"><a href="#cb3-8" aria-label="8"></a>AD -&gt; E</span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-label="10"></a>Decompose: R1(A, B, C), R2(A, D, F), R3(A, C, D, E)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <hr>
 </section>
 </section>
 <section id="dependency-preservation" class="level2">
 <h2 class="anchored" data-anchor-id="dependency-preservation">Dependency Preservation</h2>
+<ul>
+<li>When a relation is decomposed, it is important to ensure that functional dependencies that held in original relation are still maintained.</li>
+<li>It helps to prevent anomalies and ensures data integrity.</li>
+<li>If <span class="math inline">\(F_i\)</span> represents the dependencies preserved locally in each subrelation <span class="math inline">\(R_i\)</span>, we define <span class="math inline">\(F' = \bigcup F_i\)</span>. The decomposition preserves dependencies iff all dependencies in <span class="math inline">\(F\)</span> can be derived from <span class="math inline">\(F'\)</span>: <span class="math display">\[(F_1 \cup F_2 \cup \cdots \cup F_k)^+ = F^+\]</span></li>
+</ul>
+<section id="note" class="level3">
+<h3 class="anchored" data-anchor-id="note"><strong>Note</strong></h3>
 <blockquote class="blockquote">
-<p>💡 <strong>In plain English:</strong> after splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition “preserves dependencies.”</p>
+<p>📌 <strong>Lossless Decomposition and Dependency Preservation are independent of each other.</strong> - A decomposition can be lossless but lose dependencies. - A decomposition can preserve dependencies but be lossy. - Good normalization algorithms (like 3NF synthesis) guarantee both properties at the same time.</p>
 </blockquote>
-<p>Let <span class="math inline">\(F_i\)</span> be the set of FDs from <span class="math inline">\(F^+\)</span> that only involve attributes inside <span class="math inline">\(R_i\)</span>. A decomposition into <span class="math inline">\(R_1, ..., R_n\)</span> <strong>preserves dependencies</strong> if:</p>
-<p><span class="math display">\[(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+\]</span></p>
-<p>If this fails, catching a violation of some original FD needs an expensive join across tables.</p>
-<section id="a-quick-contrast" class="level3">
-<h3 class="anchored" data-anchor-id="a-quick-contrast">A Quick Contrast</h3>
-<p><span class="math inline">\(R = (A,B,C)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C\}\)</span></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Decomposition</th>
-<th>Dependency Preserving?</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(R_1=(A,B),\ R_2=(B,C)\)</span></td>
-<td>Yes — both <code>A→B</code> and <code>B→C</code> sit fully inside one piece each</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(R_1=(A,B),\ R_2=(A,C)\)</span></td>
-<td>No — <code>B→C</code> can’t be checked without joining, since <code>B</code> and <code>C</code> now live in different tables</td>
-</tr>
-</tbody>
-</table>
-<p>Same relation, same FDs — the <em>choice</em> of split decides the outcome.</p>
+<hr>
 </section>
-<section id="how-to-test-it" class="level3">
-<h3 class="anchored" data-anchor-id="how-to-test-it">How to Test It</h3>
-<ol type="1">
-<li>Start with <code>result</code> set to just the left-hand-side attributes (<span class="math inline">\(\alpha\)</span>) of the FD you’re checking.</li>
-<li>Go through each piece <span class="math inline">\(R_i\)</span> of the decomposition. Take the attributes <code>result</code> shares with <span class="math inline">\(R_i\)</span>, compute their closure under the <em>full</em> <span class="math inline">\(F\)</span>, then keep only the attributes that also belong to <span class="math inline">\(R_i\)</span>. Add anything new to <code>result</code>.</li>
-<li>Repeat step 2, cycling through every <span class="math inline">\(R_i\)</span>, until <code>result</code> stops growing.</li>
-<li>If the right-hand-side attributes (<span class="math inline">\(\beta\)</span>) are now inside <code>result</code>, the FD is preserved without needing a join.</li>
-</ol>
-<p>Run this check on every FD in <span class="math inline">\(F\)</span> to confirm the whole decomposition preserves dependencies.</p>
+<section id="worked-example-dependency-preservation-step-by-step" class="level3">
+<h3 class="anchored" data-anchor-id="worked-example-dependency-preservation-step-by-step">Worked Example: Dependency Preservation Step-by-Step</h3>
+<p>A relation <span class="math inline">\(R(A, B, C, D)\)</span> with functional dependencies: <span class="math display">\[FD = \{ A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}\]</span></p>
+<p>is decomposed into three relations as follows: <span class="math display">\[R_1(A, B),\ R_2(B, C),\ R_3(C, D)\]</span></p>
+<section id="step-1-find-local-functional-dependencies-f_i-for-each-r_i" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-find-local-functional-dependencies-f_i-for-each-r_i">Step 1: Find Local Functional Dependencies (<span class="math inline">\(F_i\)</span> for each <span class="math inline">\(R_i\)</span>)</h4>
+<ul>
+<li><span class="math inline">\(F_1 = \{ A \rightarrow B,\ B \rightarrow A \}\)</span> based on <span class="math inline">\(R_1(A, B)\)</span></li>
+<li><span class="math inline">\(F_2 = \{ B \rightarrow C,\ C \rightarrow B \}\)</span> based on <span class="math inline">\(R_2(B, C)\)</span></li>
+<li><span class="math inline">\(F_3 = \{ C \rightarrow D,\ D \rightarrow C \}\)</span> based on <span class="math inline">\(R_3(C, D)\)</span></li>
+</ul>
 </section>
-<section id="worked-example" class="level3">
-<h3 class="anchored" data-anchor-id="worked-example">Worked Example</h3>
-<p><span class="math inline">\(R(A,B,C,D)\)</span>, <span class="math inline">\(F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}\)</span></p>
-<p>Decomposition: <span class="math inline">\(R_1(A,B),\ R_2(B,C),\ R_3(C,D)\)</span></p>
-<p><code>A→B</code>, <code>B→C</code>, <code>C→D</code> each sit fully inside one piece, so they’re automatically preserved. The one worth checking is <code>D→A</code>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Round</th>
-<th>Piece Checked</th>
-<th>Closure Computed</th>
-<th>Result So Far</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Start</td>
-<td>—</td>
-<td>—</td>
-<td><code>{D}</code></td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td><span class="math inline">\(R_1=(A,B)\)</span></td>
-<td><code>result ∩ R1 = {}</code> → nothing to add</td>
-<td><code>{D}</code></td>
-</tr>
-<tr class="odd">
-<td>1</td>
-<td><span class="math inline">\(R_2=(B,C)\)</span></td>
-<td><code>result ∩ R2 = {}</code> → nothing to add</td>
-<td><code>{D}</code></td>
-</tr>
-<tr class="even">
-<td>1</td>
-<td><span class="math inline">\(R_3=(C,D)\)</span></td>
-<td><code>(D)+ = ABCD</code>, keep only <code>C,D</code></td>
-<td><code>{C,D}</code></td>
-</tr>
-<tr class="odd">
-<td>2</td>
-<td><span class="math inline">\(R_2=(B,C)\)</span></td>
-<td><code>(C)+ = ABCD</code>, keep only <code>B,C</code></td>
-<td><code>{B,C,D}</code></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><span class="math inline">\(R_1=(A,B)\)</span></td>
-<td><code>(B)+ = ABCD</code>, keep only <code>A,B</code></td>
-<td><code>{A,B,C,D}</code></td>
-</tr>
-</tbody>
-</table>
-<p><code>result</code> now contains <code>A</code> — so <code>D → A</code> is preserved. Every FD in <span class="math inline">\(F\)</span> checks out, so this decomposition is dependency preserving.</p>
+<section id="step-2-combine-local-dependencies-f-f_1-cup-f_2-cup-f_3" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-combine-local-dependencies-f-f_1-cup-f_2-cup-f_3">Step 2: Combine Local Dependencies (<span class="math inline">\(F' = F_1 \cup F_2 \cup F_3\)</span>)</h4>
+<p><span class="math display">\[F' = \{ A \rightarrow B,\ B \rightarrow A,\ B \rightarrow C,\ C \rightarrow B,\ C \rightarrow D,\ D \rightarrow C \}\]</span></p>
+</section>
+<section id="step-3-check-each-original-dependency-against-f" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-check-each-original-dependency-against-f">Step 3: Check Each Original Dependency Against <span class="math inline">\(F'\)</span></h4>
+<ul>
+<li><span class="math inline">\(A \rightarrow B\)</span> is directly in <span class="math inline">\(F_1\)</span> (preserved)</li>
+<li><span class="math inline">\(B \rightarrow C\)</span> is directly in <span class="math inline">\(F_2\)</span> (preserved)</li>
+<li><span class="math inline">\(C \rightarrow D\)</span> is directly in <span class="math inline">\(F_3\)</span> (preserved)</li>
+</ul>
+<p>Now, <span class="math inline">\(D \rightarrow A\)</span> is missing from <span class="math inline">\(F'\)</span>.</p>
+<p>Let’s take <span class="math inline">\(D^+\)</span> closure on <span class="math inline">\(F'\)</span>: 1. Start with <span class="math inline">\(D^+ = \{ D \}\)</span> 2. Using <span class="math inline">\(D \rightarrow C \in F_3 \implies \{ D, C \}\)</span> 3. Using <span class="math inline">\(C \rightarrow B \in F_2 \implies \{ D, C, B \}\)</span> 4. Using <span class="math inline">\(B \rightarrow A \in F_1 \implies \{ D, C, B, A \} = DCBA\)</span></p>
+<p>Since <span class="math inline">\(A \in D^+\)</span>, the dependency <span class="math inline">\(D \rightarrow A\)</span> is preserved after decomposing it!</p>
+<p><span class="math inline">\(\therefore\)</span> All functional dependencies are preserved, so this decomposition is <strong>Dependency Preserving</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Verify the Dependency Preservation Algorithm">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Try it yourself: Verify the Dependency Preservation Algorithm
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Click <strong>Run</strong> to compute the dependency preservation audit and progressive lossless join steps live:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-check="dependency-preservation, lossless-join"><pre class="sourceCode numberSource fd number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a>R(A, B, C, D)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a>A -&gt; B</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a>B -&gt; C</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>C -&gt; D</span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>D -&gt; A</span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a>Decompose: R1(A, B), R2(B, C), R3(C, D)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<script type="module" src="../../assets/fd_runner.js"></script>
 
 
 
+</section>
 </section>
 </section>
 
 </main> <!-- /main -->
-<script type="module">
-(function() {
-  const path = window.location.pathname.toLowerCase();
-  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
-  const isWeek5Or6 = path.includes('week_5') || path.includes('week_6') || path.includes('functional_dependencies') || path.includes('normalization') || document.querySelector('.fd') || document.querySelector('.normalization');
-  
-  const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
-  const baseUri = document.baseURI || window.location.href;
-
-  if (isWeek2Or3 || document.querySelector('.ds')) {
-    const cssUrl = new URL(offset + 'assets/sql_runner.css', baseUri).href;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = cssUrl;
-    document.head.appendChild(link);
-
-    const scriptUrl = new URL(offset + 'assets/sql_runner.js', baseUri).href;
-    import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
-  }
-
-  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
-    const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
-    import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
-  }
-})();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

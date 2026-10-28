@@ -461,7 +461,14 @@
   function renderSchemaTable(container, tblName, schema) {
     const title = document.createElement('div');
     title.className = 'sql-runner-section-title';
-    title.innerHTML = `${ICONS.columns} <span>Table Schema: <strong>${tblName}</strong> (${schema.columns.length} columns)</span>`;
+    title.innerHTML = ICONS.columns;
+    const titleSpan = document.createElement('span');
+    titleSpan.appendChild(document.createTextNode(' Table Schema: '));
+    const strongTbl = document.createElement('strong');
+    strongTbl.textContent = tblName;
+    titleSpan.appendChild(strongTbl);
+    titleSpan.appendChild(document.createTextNode(` (${schema.columns.length} columns)`));
+    title.appendChild(titleSpan);
     container.appendChild(title);
 
     const table = document.createElement('table');
@@ -502,12 +509,26 @@
       }
 
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><strong>${colName}</strong></td>
-        <td><code>${dataType}</code></td>
-        <td>${isNullable === 'YES' ? 'YES' : 'NO'}</td>
-        <td>${badgesHtml || '—'}</td>
-      `;
+      const tdCol = document.createElement('td');
+      const strongCol = document.createElement('strong');
+      strongCol.textContent = colName;
+      tdCol.appendChild(strongCol);
+      tr.appendChild(tdCol);
+
+      const tdType = document.createElement('td');
+      const codeType = document.createElement('code');
+      codeType.textContent = dataType;
+      tdType.appendChild(codeType);
+      tr.appendChild(tdType);
+
+      const tdNull = document.createElement('td');
+      tdNull.textContent = isNullable === 'YES' ? 'YES' : 'NO';
+      tr.appendChild(tdNull);
+
+      const tdKey = document.createElement('td');
+      tdKey.innerHTML = badgesHtml || '<span class="sql-runner-muted">—</span>';
+      tr.appendChild(tdKey);
+
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -519,7 +540,14 @@
 
     const title = document.createElement('div');
     title.className = 'sql-runner-section-title';
-    title.innerHTML = `${ICONS.table} <span>Current Data: <strong>${tblName}</strong> (${data.total} total row${data.total === 1 ? '' : 's'}${data.total > 20 ? ', showing first 20' : ''})</span>`;
+    title.innerHTML = ICONS.table;
+    const titleSpan = document.createElement('span');
+    titleSpan.appendChild(document.createTextNode(' Current Data: '));
+    const strongTbl = document.createElement('strong');
+    strongTbl.textContent = tblName;
+    titleSpan.appendChild(strongTbl);
+    titleSpan.appendChild(document.createTextNode(` (${data.total} total row${data.total === 1 ? '' : 's'}${data.total > 20 ? ', showing first 20' : ''})`));
+    title.appendChild(titleSpan);
     container.appendChild(title);
 
     if (data.rows.length === 0) {
@@ -580,7 +608,14 @@
 
       const msg = document.createElement('div');
       msg.className = 'sql-runner-msg-box success';
-      msg.innerHTML = `${ICONS.check} Table '<strong>${tblName}</strong>' ${action === 'CREATE' ? 'created' : 'altered'} successfully (${elapsed} ms)`;
+      msg.innerHTML = ICONS.check;
+      const msgSpan = document.createElement('span');
+      msgSpan.appendChild(document.createTextNode(" Table '"));
+      const strongTbl = document.createElement('strong');
+      strongTbl.textContent = tblName;
+      msgSpan.appendChild(strongTbl);
+      msgSpan.appendChild(document.createTextNode(`' ${action === 'CREATE' ? 'created' : 'altered'} successfully (${elapsed} ms)`));
+      msg.appendChild(msgSpan);
       container.appendChild(msg);
 
       if (schema && schema.columns.length > 0) {
@@ -589,7 +624,10 @@
         // Action button to preview data
         const previewBtn = document.createElement('button');
         previewBtn.className = 'sql-runner-quick-btn';
-        previewBtn.innerHTML = `${ICONS.eye} <span>View Data: SELECT * FROM ${tblName}</span>`;
+        previewBtn.innerHTML = ICONS.eye;
+        const btnSpan = document.createElement('span');
+        btnSpan.textContent = ` View Data: SELECT * FROM ${tblName}`;
+        previewBtn.appendChild(btnSpan);
         previewBtn.addEventListener('click', async () => {
           previewBtn.disabled = true;
           const data = await getTableData(db, tblName);
@@ -607,12 +645,25 @@
 
       const msg = document.createElement('div');
       msg.className = 'sql-runner-msg-box success';
-      msg.innerHTML = `${ICONS.check} Table '<strong>${tblName}</strong>' dropped (${elapsed} ms)`;
+      msg.innerHTML = ICONS.check;
+      const msgSpan = document.createElement('span');
+      msgSpan.appendChild(document.createTextNode(" Table '"));
+      const strongTbl = document.createElement('strong');
+      strongTbl.textContent = tblName;
+      msgSpan.appendChild(strongTbl);
+      msgSpan.appendChild(document.createTextNode(`' dropped (${elapsed} ms)`));
+      msg.appendChild(msgSpan);
       container.appendChild(msg);
 
       const info = document.createElement('div');
       info.className = 'sql-runner-section-title';
-      info.innerHTML = `${ICONS.database} <span>Remaining tables in database: <strong>${tables.join(', ') || 'None'}</strong></span>`;
+      info.innerHTML = ICONS.database;
+      const infoSpan = document.createElement('span');
+      infoSpan.appendChild(document.createTextNode(' Remaining tables in database: '));
+      const strongTables = document.createElement('strong');
+      strongTables.textContent = tables.join(', ') || 'None';
+      infoSpan.appendChild(strongTables);
+      info.appendChild(infoSpan);
       container.appendChild(info);
       return;
     }
@@ -626,7 +677,10 @@
 
       const msg = document.createElement('div');
       msg.className = 'sql-runner-msg-box success';
-      msg.innerHTML = `${ICONS.check} ${action.split(' ')[0]} statement executed successfully (${elapsed} ms${affectedText})`;
+      msg.innerHTML = ICONS.check;
+      const msgSpan = document.createElement('span');
+      msgSpan.textContent = ` ${action.split(' ')[0]} statement executed successfully (${elapsed} ms${affectedText})`;
+      msg.appendChild(msgSpan);
       container.appendChild(msg);
 
       // Automatically show current state of the modified table!
@@ -639,7 +693,11 @@
 
     // 4. Standard Queries (e.g. SELECT)
     if (!results || results.length === 0) {
-      container.innerHTML = `<div class="sql-runner-msg-box success">${ICONS.check} Query executed successfully (${elapsed} ms)</div>`;
+      const msgBox = document.createElement('div');
+      msgBox.className = 'sql-runner-msg-box success';
+      msgBox.innerHTML = ICONS.check;
+      msgBox.appendChild(document.createTextNode(` Query executed successfully (${elapsed} ms)`));
+      container.appendChild(msgBox);
       return;
     }
 
@@ -648,7 +706,11 @@
     if (selectResults.length === 0) {
       const totalAffected = results.reduce((acc, r) => acc + (r.affectedRows || 0), 0);
       const affectedText = totalAffected > 0 ? ` • ${totalAffected} row${totalAffected === 1 ? '' : 's'} affected` : '';
-      container.innerHTML = `<div class="sql-runner-msg-box success">${ICONS.check} Statement executed successfully (${elapsed} ms${affectedText})</div>`;
+      const msgBox = document.createElement('div');
+      msgBox.className = 'sql-runner-msg-box success';
+      msgBox.innerHTML = ICONS.check;
+      msgBox.appendChild(document.createTextNode(` Statement executed successfully (${elapsed} ms${affectedText})`));
+      container.appendChild(msgBox);
       return;
     }
 
@@ -663,7 +725,8 @@
       if (res.rows.length === 0) {
         const emptyDiv = document.createElement("div");
         emptyDiv.className = "sql-runner-msg-box success";
-        emptyDiv.innerHTML = `${ICONS.check} 0 rows returned (${elapsed} ms)`;
+        emptyDiv.innerHTML = ICONS.check;
+        emptyDiv.appendChild(document.createTextNode(` 0 rows returned (${elapsed} ms)`));
         container.appendChild(emptyDiv);
         return;
       }
@@ -763,7 +826,14 @@
     const badge = document.createElement('span');
     badge.className = 'sql-runner-badge';
     badge.title = `Target Database: ${label}`;
-    badge.innerHTML = `<span class="sql-runner-icon">${ICONS.database}</span><span class="sql-runner-db-name">${label}</span>`;
+    const badgeIcon = document.createElement('span');
+    badgeIcon.className = 'sql-runner-icon';
+    badgeIcon.innerHTML = ICONS.database;
+    const badgeName = document.createElement('span');
+    badgeName.className = 'sql-runner-db-name';
+    badgeName.textContent = label;
+    badge.appendChild(badgeIcon);
+    badge.appendChild(badgeName);
     leftDiv.appendChild(badge);
 
     // Right controls: Edit + Run
@@ -949,16 +1019,19 @@
 
       outputPanel.style.display = 'block';
       statusEl.className = 'sql-runner-status';
-      statusEl.innerHTML = `<span class="sql-runner-spinner"></span> Initializing ${activeLabel}...`;
+      statusEl.innerHTML = '<span class="sql-runner-spinner"></span>';
+      statusEl.appendChild(document.createTextNode(` Initializing ${activeLabel}...`));
       outputBody.innerHTML = '';
       runBtn.disabled = true;
 
       try {
         const db = await getDB(activeDs, (msg) => {
-          statusEl.innerHTML = `<span class="sql-runner-spinner"></span> ${msg}`;
+          statusEl.innerHTML = '<span class="sql-runner-spinner"></span>';
+          statusEl.appendChild(document.createTextNode(` ${msg}`));
         });
 
-        statusEl.innerHTML = `<span class="sql-runner-spinner"></span> Running on ${activeLabel}...`;
+        statusEl.innerHTML = '<span class="sql-runner-spinner"></span>';
+        statusEl.appendChild(document.createTextNode(` Running on ${activeLabel}...`));
 
         const { results, elapsed } = await executeSQL(db, query);
         await renderResultsWithInspection(outputBody, db, query, { results, elapsed });
@@ -966,14 +1039,21 @@
         statusEl.className = 'sql-runner-status success';
         const hasRows = results && results.some(r => r.rows && r.rows.length > 0);
         const rowCount = hasRows ? results.reduce((acc, r) => acc + (r.rows ? r.rows.length : 0), 0) : 0;
-        statusEl.innerHTML = hasRows 
-          ? `${ICONS.check} ${rowCount} row${rowCount === 1 ? '' : 's'} (${elapsed} ms)`
-          : `${ICONS.check} Done (${elapsed} ms)`;
+        statusEl.innerHTML = ICONS.check;
+        statusEl.appendChild(document.createTextNode(
+          hasRows 
+            ? ` ${rowCount} row${rowCount === 1 ? '' : 's'} (${elapsed} ms)`
+            : ` Done (${elapsed} ms)`
+        ));
 
       } catch (err) {
         statusEl.className = 'sql-runner-status error';
         statusEl.textContent = 'Query Error';
-        outputBody.innerHTML = `<div class="sql-runner-msg-box error">${err.message}</div>`;
+        outputBody.innerHTML = '';
+        const errBox = document.createElement('div');
+        errBox.className = 'sql-runner-msg-box error';
+        errBox.textContent = err && err.message ? err.message : String(err);
+        outputBody.appendChild(errBox);
       } finally {
         runBtn.disabled = false;
       }

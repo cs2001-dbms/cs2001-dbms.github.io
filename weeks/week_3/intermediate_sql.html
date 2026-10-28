@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-7917d30a2dcfbd5fc5314cdb78636109.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -444,6 +444,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_3/advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/sql_examples.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Examples</span></a>
   </div>
 </li>
       </ul>
@@ -804,40 +809,46 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="views">Views</h2>
 <section id="why-views" class="level3">
 <h3 class="anchored" data-anchor-id="why-views">Why Views?</h3>
-<p>Not everyone should see the full picture. Suppose someone needs an employee’s name and department, but <strong>not</strong> their salary. Instead of trusting every query to remember to hide the salary column, define it once:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> employee;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Not everyone should see the full picture. Suppose someone needs an instructor’s name and department, but <strong>not</strong> their salary. Instead of trusting every query to remember to hide the salary column, define it once:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> instructor;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A <strong>view</strong> is exactly this — a saved query that behaves like a “virtual table.” It’s not real stored data; it’s a name attached to a query expression that gets substituted in wherever the view is used.</p>
+<div class="flow steps"><div class="step"><div class="box"><b>instructor</b></div><span>id, name, dept_name, salary</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>view</b></div><span>select id, name, dept_name</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>user query</b></div><span>sees only 3 columns</span></div></div>
 </section>
 <section id="creating-a-view" class="level3">
 <h3 class="anchored" data-anchor-id="creating-a-view">Creating a View</h3>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">view</span> v <span class="kw">as</span> <span class="op">&lt;</span><span class="kw">query</span> expression<span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="co">-- A view of employees without salary</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">view</span> staff_directory <span class="kw">as</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> employee;</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="co">-- A view of instructors without salary</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> faculty <span class="kw">as</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-label="3"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> instructor;</span>
 <span id="cb3-4"><a href="#cb3-4" aria-label="4"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-label="5"></a><span class="co">-- Use it like a table</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a><span class="kw">select</span> name <span class="kw">from</span> staff_directory <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Marketing'</span>;</span>
+<span id="cb3-6"><a href="#cb3-6" aria-label="6"></a><span class="kw">select</span> name <span class="kw">from</span> faculty <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span>
 <span id="cb3-7"><a href="#cb3-7" aria-label="7"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-label="8"></a><span class="co">-- A view with computed columns</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a><span class="kw">create</span> <span class="kw">view</span> dept_salary_totals(dept_name, total_salary) <span class="kw">as</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-label="9"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> dept_salary_totals(dept_name, total_salary) <span class="kw">as</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-label="10"></a><span class="kw">select</span> dept_name, <span class="fu">sum</span>(salary)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a><span class="kw">from</span> employee</span>
-<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a><span class="kw">group</span> <span class="kw">by</span> dept_name;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-11"><a href="#cb3-11" aria-label="11"></a><span class="kw">from</span> instructor</span>
+<span id="cb3-12"><a href="#cb3-12" aria-label="12"></a><span class="kw">group</span> <span class="kw">by</span> dept_name;</span>
+<span id="cb3-13"><a href="#cb3-13" aria-label="13"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-label="14"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> dept_salary_totals;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="views-built-on-views" class="level3">
 <h3 class="anchored" data-anchor-id="views-built-on-views">Views Built on Views</h3>
 <p>Views can refer other views, not just base tables:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">view</span> marketing_2025_projects <span class="kw">as</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">select</span> project.project_id, lead_emp_id, building, room_number</span>
-<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a><span class="kw">from</span> project, assignment</span>
-<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a><span class="kw">where</span> project.project_id <span class="op">=</span> assignment.project_id</span>
-<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>  <span class="kw">and</span> project.dept_name <span class="op">=</span> <span class="st">'Marketing'</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>  <span class="kw">and</span> assignment.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2025</span>;</span>
-<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a><span class="kw">create</span> <span class="kw">view</span> marketing_2025_tower_b <span class="kw">as</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-label="9"></a><span class="kw">select</span> project_id, room_number</span>
-<span id="cb4-10"><a href="#cb4-10" aria-label="10"></a><span class="kw">from</span> marketing_2025_projects</span>
-<span id="cb4-11"><a href="#cb4-11" aria-label="11"></a><span class="kw">where</span> building <span class="op">=</span> <span class="st">'Tower B'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> physics_fall_2006 <span class="kw">as</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">select</span> course.course_id, sec_id, building, room_number</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a><span class="kw">from</span> course, section</span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a><span class="kw">where</span> course.course_id <span class="op">=</span> section.course_id</span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a>  <span class="kw">and</span> course.dept_name <span class="op">=</span> <span class="st">'Physics'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-label="6"></a>  <span class="kw">and</span> section.semester <span class="op">=</span> <span class="st">'Fall'</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-label="7"></a>  <span class="kw">and</span> section.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2006</span>;</span>
+<span id="cb4-8"><a href="#cb4-8" aria-label="8"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-label="9"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> physics_fall_2006_taylor <span class="kw">as</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-label="10"></a><span class="kw">select</span> course_id, room_number</span>
+<span id="cb4-11"><a href="#cb4-11" aria-label="11"></a><span class="kw">from</span> physics_fall_2006</span>
+<span id="cb4-12"><a href="#cb4-12" aria-label="12"></a><span class="kw">where</span> building <span class="op">=</span> <span class="st">'Taylor'</span>;</span>
+<span id="cb4-13"><a href="#cb4-13" aria-label="13"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-label="14"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> physics_fall_2006_taylor;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>v1</code> <strong>depends directly on</strong> <code>v2</code> if <code>v2</code> appears in <code>v1</code>’s definition.</li>
 <li><code>v1</code> <strong>depends on</strong> <code>v2</code> if there’s any chain of dependency leading from <code>v1</code> to <code>v2</code>.</li>
@@ -851,14 +862,18 @@ window.Quarto = {
     find a view reference v_i in the expression
     replace v_i with v_i's defining query
 until no view references remain</code></pre>
+<div class="flow steps"><div class="step"><div class="box"><b>physics_fall_2006_taylor</b></div><span>the query you write</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>physics_fall_2006</b></div><span>replaced by its definition</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>course, section</b></div><span>only base tables remain</span></div></div>
 <p>This terminates as long as no view is recursive.</p>
 </section>
 <section id="updating-views" class="level3">
 <h3 class="anchored" data-anchor-id="updating-views">Updating Views</h3>
 <p>Inserting into a view secretly inserts into the underlying table:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="kw">insert</span> <span class="kw">into</span> staff_directory <span class="kw">values</span> (<span class="st">'E501'</span>, <span class="st">'Lee'</span>, <span class="st">'Design'</span>);</span>
-<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="co">-- Translates to:</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="co">-- insert into employee values ('E501', 'Lee', 'Design', null);</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">insert</span> <span class="kw">into</span> faculty <span class="kw">values</span> (<span class="st">'30765'</span>, <span class="st">'Green'</span>, <span class="st">'Biology'</span>);</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="co">-- Translates to:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a><span class="co">-- insert into instructor values ('30765', 'Green', 'Biology', null);</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> instructor <span class="kw">where</span> <span class="kw">id</span> <span class="op">=</span> <span class="st">'30765'</span>;</span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>But this only works cleanly for <em>simple</em> views</strong> — most databases require:</p>
 <ul>
 <li><code>from</code> clause has exactly <strong>one</strong> base table</li>
@@ -867,6 +882,8 @@ until no view references remain</code></pre>
 <li>No <code>group by</code> or <code>having</code></li>
 </ul>
 <p>If a view joins multiple tables, an insert can be <strong>ambiguous</strong> (e.g., which department’s row gets the new value if several departments share a building?) — and some inserts that satisfy the view’s <em>output</em> can violate its <code>where</code> clause entirely, making the update meaningless to translate.</p>
+<p>Try inserting into the <code>dept_salary_totals</code> view (it has <code>group by</code>), and the database refuses:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">insert</span> <span class="kw">into</span> dept_salary_totals <span class="kw">values</span> (<span class="st">'Music'</span>, <span class="dv">100000</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="materialized-views" class="level3">
 <h3 class="anchored" data-anchor-id="materialized-views">Materialized Views</h3>
@@ -901,6 +918,18 @@ until no view references remain</code></pre>
 </tr>
 </tbody>
 </table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">materialized</span> <span class="kw">view</span> dept_count <span class="kw">as</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a><span class="kw">select</span> dept_name, <span class="fu">count</span>(<span class="op">*</span>) <span class="kw">as</span> num_instructors</span>
+<span id="cb8-4"><a href="#cb8-4" aria-label="4"></a><span class="kw">from</span> instructor <span class="kw">group</span> <span class="kw">by</span> dept_name;</span>
+<span id="cb8-5"><a href="#cb8-5" aria-label="5"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-label="6"></a><span class="kw">insert</span> <span class="kw">into</span> instructor <span class="kw">values</span> (<span class="st">'30765'</span>, <span class="st">'Green'</span>, <span class="st">'Biology'</span>, <span class="dv">72000</span>);</span>
+<span id="cb8-7"><a href="#cb8-7" aria-label="7"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> dept_count <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;   <span class="co">-- still the old count</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-label="8"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-label="9"></a><span class="kw">refresh</span> <span class="kw">materialized</span> <span class="kw">view</span> dept_count;</span>
+<span id="cb8-10"><a href="#cb8-10" aria-label="10"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> dept_count <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;   <span class="co">-- now updated</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-label="11"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="flow steps"><div class="step"><div class="box"><b>create</b></div><span>Biology: 2 stored</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>insert into instructor</b></div><span>table has 3, view still says 2</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>refresh</b></div><span>view shows 3</span></div></div>
 </section>
 </section>
 <section id="transactions" class="level2">
@@ -915,11 +944,17 @@ until no view references remain</code></pre>
 <li><code>rollback work</code> — undo everything since the transaction began</li>
 </ul></li>
 </ul>
+<div class="flow"><div class="box"><b>begin</b><span>start the unit of work</span></div><div class="box"><b>statements</b><span>queries and updates</span></div><div class="box"><b>commit work</b><span>make changes permanent</span></div><div class="box grey"><b>rollback work</b><span>undo everything</span></div></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a><span class="kw">update</span> instructor <span class="kw">set</span> salary <span class="op">=</span> salary <span class="op">*</span> <span class="fl">1.10</span> <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Physics'</span>;</span>
+<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a><span class="kw">select</span> name, salary <span class="kw">from</span> instructor <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Physics'</span>;   <span class="co">-- raised</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a><span class="kw">rollback</span> <span class="kw">work</span>;</span>
+<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a><span class="kw">select</span> name, salary <span class="kw">from</span> instructor <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Physics'</span>;   <span class="co">-- back to the original</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="integrity-constraints" class="level2">
 <h2 class="anchored" data-anchor-id="integrity-constraints">Integrity Constraints</h2>
-<p>Constraints stop <em>valid-looking but wrong</em> changes from silently corrupting the database — e.g., “an employee’s salary must be at least $15/hour” or “every customer must have a phone number.”</p>
+<p>Constraints stop <em>valid-looking but wrong</em> changes from silently corrupting the database — e.g., “an instructor’s salary must be greater than 29000” or “every instructor must have a name.”</p>
 <section id="on-a-single-relation" class="level3">
 <h3 class="anchored" data-anchor-id="on-a-single-relation">On a Single Relation</h3>
 <table class="caption-top table">
@@ -952,44 +987,63 @@ until no view references remain</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="co">-- not null</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-label="2"></a>name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-label="3"></a>budget <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>) <span class="kw">not</span> <span class="kw">null</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-label="4"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-label="5"></a><span class="co">-- check: restrict allowed values</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-label="6"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
-<span id="cb7-7"><a href="#cb7-7" aria-label="7"></a>    project_id <span class="dt">varchar</span>(<span class="dv">8</span>),</span>
-<span id="cb7-8"><a href="#cb7-8" aria-label="8"></a>    status <span class="dt">varchar</span>(<span class="dv">10</span>),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-label="9"></a>    <span class="kw">primary</span> <span class="kw">key</span> (project_id),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-label="10"></a>    <span class="kw">check</span> (status <span class="kw">in</span> (<span class="st">'Active'</span>, <span class="st">'On Hold'</span>, <span class="st">'Completed'</span>, <span class="st">'Cancelled'</span>))</span>
-<span id="cb7-11"><a href="#cb7-11" aria-label="11"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The university dataset already has these constraints. Each insert below breaks one of them, so the database rejects it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="co">-- not null: name is required</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a><span class="kw">insert</span> <span class="kw">into</span> instructor <span class="kw">values</span> (<span class="st">'30767'</span>, <span class="kw">null</span>, <span class="st">'Biology'</span>, <span class="dv">50000</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="co">-- check: salary &gt; 29000</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a><span class="kw">insert</span> <span class="kw">into</span> instructor <span class="kw">values</span> (<span class="st">'30768'</span>, <span class="st">'Low'</span>, <span class="st">'Biology'</span>, <span class="dv">20000</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="co">-- check: semester in ('Fall', 'Winter', 'Spring', 'Summer')</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-label="2"></a><span class="kw">insert</span> <span class="kw">into</span> section <span class="kw">values</span> (<span class="st">'105'</span>, <span class="st">'9'</span>, <span class="st">'Autumn'</span>, <span class="dv">2009</span>, <span class="kw">null</span>, <span class="kw">null</span>, <span class="kw">null</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Creating a new table with a <code>check</code> constraint (in the practice workspace):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-db="test_db"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="kw">drop</span> <span class="kw">table</span> <span class="cf">if</span> <span class="kw">exists</span> fixture;</span>
+<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">table</span> fixture (</span>
+<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a>    match_num <span class="dt">varchar</span>(<span class="dv">5</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a>    status <span class="dt">varchar</span>(<span class="dv">10</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a>    <span class="kw">primary</span> <span class="kw">key</span> (match_num),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-label="6"></a>    <span class="kw">check</span> (status <span class="kw">in</span> (<span class="st">'Scheduled'</span>, <span class="st">'Played'</span>, <span class="st">'Postponed'</span>, <span class="st">'Cancelled'</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-label="7"></a>);</span>
+<span id="cb13-8"><a href="#cb13-8" aria-label="8"></a><span class="kw">insert</span> <span class="kw">into</span> fixture <span class="kw">values</span> (<span class="st">'M0001'</span>, <span class="st">'Played'</span>);      <span class="co">-- accepted</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-label="9"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fixture;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A value outside the list is rejected by the <code>check</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-db="test_db"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="kw">insert</span> <span class="kw">into</span> fixture <span class="kw">values</span> (<span class="st">'M0002'</span>, <span class="st">'Abandoned'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
 <section id="referential-integrity" class="level2">
 <h2 class="anchored" data-anchor-id="referential-integrity">Referential Integrity</h2>
-<p>Ensures a value referenced in one table <strong>actually exists</strong> in the table it points to. If <code>'Design'</code> appears as a department name in <code>employee</code>, there must be a matching row for <code>'Design'</code> in <code>department</code>.</p>
+<p>Ensures a value referenced in one table <strong>actually exists</strong> in the table it points to. If <code>'Biology'</code> appears as a department name in <code>instructor</code>, there must be a matching row for <code>'Biology'</code> in <code>department</code>.</p>
 <blockquote class="blockquote">
 <p><strong>Formal definition:</strong> If <code>A</code> is the primary key of relation <code>S</code>, then <code>A</code> is a <strong>foreign key</strong> of relation <code>R</code> if every value of <code>A</code> appearing in <code>R</code> also appears in <code>S</code>.</p>
 </blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="co">-- 'Music' is not in department, so this is rejected</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="kw">insert</span> <span class="kw">into</span> instructor <span class="kw">values</span> (<span class="st">'30769'</span>, <span class="st">'Lee'</span>, <span class="st">'Music'</span>, <span class="dv">50000</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="cascading-actions" class="level3">
 <h3 class="anchored" data-anchor-id="cascading-actions">Cascading Actions</h3>
 <p>What should happen when a referenced row is deleted or updated?</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
-<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a>    project_id <span class="dt">char</span>(<span class="dv">5</span>) <span class="kw">primary</span> <span class="kw">key</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a>    title <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-label="4"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">references</span> department</span>
-<span id="cb8-5"><a href="#cb8-5" aria-label="5"></a>);</span>
-<span id="cb8-6"><a href="#cb8-6" aria-label="6"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-label="7"></a><span class="co">-- with explicit cascading behavior</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-label="8"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
-<span id="cb8-9"><a href="#cb8-9" aria-label="9"></a>    <span class="op">..</span>.</span>
-<span id="cb8-10"><a href="#cb8-10" aria-label="10"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
-<span id="cb8-11"><a href="#cb8-11" aria-label="11"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (dept_name) <span class="kw">references</span> department</span>
-<span id="cb8-12"><a href="#cb8-12" aria-label="12"></a>        <span class="kw">on</span> <span class="kw">delete</span> <span class="kw">cascade</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-label="13"></a>        <span class="kw">on</span> <span class="kw">update</span> <span class="kw">cascade</span>,</span>
-<span id="cb8-14"><a href="#cb8-14" aria-label="14"></a>    <span class="op">..</span>.</span>
-<span id="cb8-15"><a href="#cb8-15" aria-label="15"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-db="test_db"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="kw">drop</span> <span class="kw">table</span> <span class="cf">if</span> <span class="kw">exists</span> project_cascade;</span>
+<span id="cb16-2"><a href="#cb16-2" aria-label="2"></a><span class="kw">drop</span> <span class="kw">table</span> <span class="cf">if</span> <span class="kw">exists</span> project;</span>
+<span id="cb16-3"><a href="#cb16-3" aria-label="3"></a><span class="kw">drop</span> <span class="kw">table</span> <span class="cf">if</span> <span class="kw">exists</span> department;</span>
+<span id="cb16-4"><a href="#cb16-4" aria-label="4"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-label="5"></a><span class="kw">create</span> <span class="kw">table</span> department (</span>
+<span id="cb16-6"><a href="#cb16-6" aria-label="6"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">primary</span> <span class="kw">key</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-label="7"></a>    building <span class="dt">varchar</span>(<span class="dv">15</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-label="8"></a>);</span>
+<span id="cb16-9"><a href="#cb16-9" aria-label="9"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-label="10"></a><span class="kw">create</span> <span class="kw">table</span> project (</span>
+<span id="cb16-11"><a href="#cb16-11" aria-label="11"></a>    project_id <span class="dt">char</span>(<span class="dv">5</span>) <span class="kw">primary</span> <span class="kw">key</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-label="12"></a>    title <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-label="13"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">references</span> department</span>
+<span id="cb16-14"><a href="#cb16-14" aria-label="14"></a>);</span>
+<span id="cb16-15"><a href="#cb16-15" aria-label="15"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-label="16"></a><span class="co">-- with explicit cascading behavior</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-label="17"></a><span class="kw">create</span> <span class="kw">table</span> project_cascade (</span>
+<span id="cb16-18"><a href="#cb16-18" aria-label="18"></a>    project_id <span class="dt">char</span>(<span class="dv">5</span>) <span class="kw">primary</span> <span class="kw">key</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-label="19"></a>    title <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb16-20"><a href="#cb16-20" aria-label="20"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb16-21"><a href="#cb16-21" aria-label="21"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (dept_name) <span class="kw">references</span> department</span>
+<span id="cb16-22"><a href="#cb16-22" aria-label="22"></a>        <span class="kw">on</span> <span class="kw">delete</span> <span class="kw">cascade</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-label="23"></a>        <span class="kw">on</span> <span class="kw">update</span> <span class="kw">cascade</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-label="24"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -1016,17 +1070,22 @@ until no view references remain</code></pre>
 </tr>
 </tbody>
 </table>
+<p>The university dataset uses these actions. Deleting a department sets its instructors’ <code>dept_name</code> to <code>null</code> (<code>set null</code>), and deleting a student removes their <code>takes</code> rows (<code>cascade</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb17-2"><a href="#cb17-2" aria-label="2"></a><span class="kw">delete</span> <span class="kw">from</span> department <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Biology'</span>;</span>
+<span id="cb17-3"><a href="#cb17-3" aria-label="3"></a><span class="kw">select</span> <span class="kw">id</span>, name, dept_name <span class="kw">from</span> instructor <span class="kw">where</span> <span class="kw">id</span> <span class="kw">in</span> (<span class="st">'80759'</span>, <span class="st">'81991'</span>);</span>
+<span id="cb17-4"><a href="#cb17-4" aria-label="4"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-chicken-and-egg-problem" class="level3">
 <h3 class="anchored" data-anchor-id="the-chicken-and-egg-problem">The Chicken-and-Egg Problem</h3>
 <p>Self-referencing constraints can deadlock a single insert. Consider:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">table</span> employee (</span>
-<span id="cb9-2"><a href="#cb9-2" aria-label="2"></a>    <span class="kw">id</span> <span class="dt">char</span>(<span class="dv">10</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-label="3"></a>    name <span class="dt">char</span>(<span class="dv">40</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-label="4"></a>    manager_id <span class="dt">char</span>(<span class="dv">10</span>),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-label="5"></a>    <span class="kw">primary</span> <span class="kw">key</span> (<span class="kw">id</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-label="6"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (manager_id) <span class="kw">references</span> employee</span>
-<span id="cb9-7"><a href="#cb9-7" aria-label="7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">table</span> employee (</span>
+<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a>    <span class="kw">id</span> <span class="dt">char</span>(<span class="dv">10</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a>    name <span class="dt">char</span>(<span class="dv">40</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-label="4"></a>    manager_id <span class="dt">char</span>(<span class="dv">10</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-label="5"></a>    <span class="kw">primary</span> <span class="kw">key</span> (<span class="kw">id</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-label="6"></a>    <span class="kw">foreign</span> <span class="kw">key</span> (manager_id) <span class="kw">references</span> employee</span>
+<span id="cb18-7"><a href="#cb18-7" aria-label="7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>How do you insert the very first employee if their manager must already exist? Three options:</p>
 <ol type="1">
 <li>Insert the manager <em>before</em> the employee who reports to them.</li>
@@ -1076,44 +1135,74 @@ until no view references remain</code></pre>
 </tr>
 </tbody>
 </table>
-<blockquote class="blockquote">
-<p>💡 Subtracting two dates/times gives you an <code>interval</code>; adding an <code>interval</code> to a date/time shifts it forward or backward.</p>
-</blockquote>
+<div class="callout callout-style-default callout-note callout-titled" title="Key idea">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Key idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Subtracting two dates/times gives you an <code>interval</code>; adding an <code>interval</code> to a date/time shifts it forward or backward.</p>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-db="flis"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="kw">select</span> match_num, match_date,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a>       match_date <span class="op">+</span> <span class="dt">interval</span> <span class="st">'7 days'</span> <span class="kw">as</span> rematch_date,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a>       <span class="dt">date</span> <span class="st">'2020-12-31'</span> <span class="op">-</span> match_date <span class="kw">as</span> days_to_year_end</span>
+<span id="cb19-4"><a href="#cb19-4" aria-label="4"></a><span class="kw">from</span> matches;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="indexes" class="level3">
 <h3 class="anchored" data-anchor-id="indexes">Indexes</h3>
 <p>An <strong>index</strong> is a shortcut structure that lets the database jump straight to matching rows instead of scanning the whole table.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">table</span> student (</span>
-<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a>    <span class="kw">id</span> <span class="dt">varchar</span>(<span class="dv">5</span>),</span>
-<span id="cb10-3"><a href="#cb10-3" aria-label="3"></a>    name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-label="4"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-label="5"></a>    tot_cred <span class="dt">numeric</span>(<span class="dv">3</span>,<span class="dv">0</span>) <span class="kw">default</span> <span class="dv">0</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-label="6"></a>    <span class="kw">primary</span> <span class="kw">key</span> (<span class="kw">id</span>)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-label="7"></a>);</span>
-<span id="cb10-8"><a href="#cb10-8" aria-label="8"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-label="9"></a><span class="kw">create</span> <span class="kw">index</span> student_id_index <span class="kw">on</span> student(<span class="kw">id</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> student <span class="kw">where</span> <span class="kw">id</span> <span class="op">=</span> <span class="st">'12345'</span>;</span>
-<span id="cb11-2"><a href="#cb11-2" aria-label="2"></a><span class="co">-- with the index above, this skips a full table scan</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">index</span> <span class="cf">if</span> <span class="kw">not</span> <span class="kw">exists</span> student_name_index <span class="kw">on</span> student(name);</span>
+<span id="cb20-2"><a href="#cb20-2" aria-label="2"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-label="3"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> student <span class="kw">where</span> name <span class="op">=</span> <span class="st">'Manber'</span>;</span>
+<span id="cb20-4"><a href="#cb20-4" aria-label="4"></a><span class="co">-- with the index above, this skips a full table scan</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="user-defined-types-udt" class="level3">
 <h3 class="anchored" data-anchor-id="user-defined-types-udt">User-Defined Types (UDT)</h3>
 <p>Like a <code>typedef</code> in C — gives a meaningful name to an existing type.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">type</span> dollars <span class="kw">as</span> <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>) final;</span>
-<span id="cb12-2"><a href="#cb12-2" aria-label="2"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-label="3"></a><span class="kw">create</span> <span class="kw">table</span> department (</span>
-<span id="cb12-4"><a href="#cb12-4" aria-label="4"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-label="5"></a>    building <span class="dt">varchar</span>(<span class="dv">15</span>),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-label="6"></a>    budget dollars</span>
-<span id="cb12-7"><a href="#cb12-7" aria-label="7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">type</span> dollars <span class="kw">as</span> <span class="dt">numeric</span>(<span class="dv">12</span>,<span class="dv">2</span>) final;</span>
+<span id="cb21-2"><a href="#cb21-2" aria-label="2"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-label="3"></a><span class="kw">create</span> <span class="kw">table</span> department (</span>
+<span id="cb21-4"><a href="#cb21-4" aria-label="4"></a>    dept_name <span class="dt">varchar</span>(<span class="dv">20</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-label="5"></a>    building <span class="dt">varchar</span>(<span class="dv">15</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-label="6"></a>    budget dollars</span>
+<span id="cb21-7"><a href="#cb21-7" aria-label="7"></a>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled" title="Note">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This <code>create type … final</code> form is standard SQL and does not run in PostgreSQL. A <strong>domain</strong> (next) does the same job and runs on the dataset.</p>
+</div>
+</div>
 </section>
 <section id="domains" class="level3">
 <h3 class="anchored" data-anchor-id="domains">Domains</h3>
 <p>Similar to UDTs, but domains can carry their own <strong>constraints</strong>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">domain</span> person_name <span class="dt">char</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>;</span>
-<span id="cb13-2"><a href="#cb13-2" aria-label="2"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-label="3"></a><span class="kw">create</span> <span class="kw">domain</span> degree_level <span class="dt">varchar</span>(<span class="dv">10</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-label="4"></a>    <span class="kw">constraint</span> degree_level_test</span>
-<span id="cb13-5"><a href="#cb13-5" aria-label="5"></a>    <span class="kw">check</span> (<span class="fu">value</span> <span class="kw">in</span> (<span class="st">'Bachelors'</span>, <span class="st">'Masters'</span>, <span class="st">'Doctorate'</span>));</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-db="test_db"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1" aria-label="1"></a><span class="kw">drop</span> <span class="kw">table</span> <span class="cf">if</span> <span class="kw">exists</span> visitor;</span>
+<span id="cb22-2"><a href="#cb22-2" aria-label="2"></a><span class="kw">drop</span> <span class="kw">domain</span> <span class="cf">if</span> <span class="kw">exists</span> person_name;</span>
+<span id="cb22-3"><a href="#cb22-3" aria-label="3"></a><span class="kw">drop</span> <span class="kw">domain</span> <span class="cf">if</span> <span class="kw">exists</span> member_kind;</span>
+<span id="cb22-4"><a href="#cb22-4" aria-label="4"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-label="5"></a><span class="kw">create</span> <span class="kw">domain</span> person_name <span class="dt">varchar</span>(<span class="dv">20</span>) <span class="kw">not</span> <span class="kw">null</span>;</span>
+<span id="cb22-6"><a href="#cb22-6" aria-label="6"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-label="7"></a><span class="kw">create</span> <span class="kw">domain</span> member_kind <span class="dt">varchar</span>(<span class="dv">10</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-label="8"></a>    <span class="kw">constraint</span> member_kind_test</span>
+<span id="cb22-9"><a href="#cb22-9" aria-label="9"></a>    <span class="kw">check</span> (<span class="fu">value</span> <span class="kw">in</span> (<span class="st">'Student'</span>, <span class="st">'Faculty'</span>, <span class="st">'Staff'</span>));</span>
+<span id="cb22-10"><a href="#cb22-10" aria-label="10"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-label="11"></a><span class="kw">create</span> <span class="kw">table</span> visitor (name person_name, kind member_kind);</span>
+<span id="cb22-12"><a href="#cb22-12" aria-label="12"></a><span class="kw">insert</span> <span class="kw">into</span> visitor <span class="kw">values</span> (<span class="st">'Asha'</span>, <span class="st">'Student'</span>);   <span class="co">-- accepted</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-label="13"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> visitor;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A value the domain does not allow is rejected:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-db="test_db"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1" aria-label="1"></a><span class="kw">insert</span> <span class="kw">into</span> visitor <span class="kw">values</span> (<span class="st">'Ravi'</span>, <span class="st">'Guest'</span>);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="large-object-types" class="level3">
 <h3 class="anchored" data-anchor-id="large-object-types">Large Object Types</h3>
@@ -1136,9 +1225,19 @@ until no view references remain</code></pre>
 </tr>
 </tbody>
 </table>
-<blockquote class="blockquote">
-<p>📌 A query returns a <strong>pointer</strong> to a large object, not the object itself — the actual data is fetched separately.</p>
-</blockquote>
+<div class="callout callout-style-default callout-note callout-titled" title="Note">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A query returns a <strong>pointer</strong> to a large object, not the object itself — the actual data is fetched separately.</p>
+</div>
+</div>
 <hr>
 </section>
 </section>
@@ -1203,19 +1302,36 @@ until no view references remain</code></pre>
 </section>
 <section id="granting-privileges" class="level3">
 <h3 class="anchored" data-anchor-id="granting-privileges">Granting Privileges</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-label="1"></a><span class="kw">grant</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">to</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1" aria-label="1"></a><span class="kw">grant</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">to</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>&lt;user list&gt;</code> can be a specific user, <code>public</code> (everyone), or a <strong>role</strong>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1" aria-label="1"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> employee <span class="kw">to</span> U1, U2, U3;</span>
-<span id="cb15-2"><a href="#cb15-2" aria-label="2"></a><span class="kw">grant</span> <span class="kw">insert</span>, <span class="kw">update</span> <span class="kw">on</span> project <span class="kw">to</span> U1;</span>
-<span id="cb15-3"><a href="#cb15-3" aria-label="3"></a><span class="kw">grant</span> <span class="kw">all</span> <span class="kw">privileges</span> <span class="kw">on</span> department <span class="kw">to</span> admin_user;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>📌 The grantor must already <strong>hold</strong> the privilege themselves (or be the DBA). Granting a privilege on a <em>view</em> does <strong>not</strong> automatically grant privileges on the tables underneath it.</p>
-</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb25-2"><a href="#cb25-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">role</span> u1;  <span class="kw">create</span> <span class="kw">role</span> u2;  <span class="kw">create</span> <span class="kw">role</span> admin_user;</span>
+<span id="cb25-3"><a href="#cb25-3" aria-label="3"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> instructor <span class="kw">to</span> u1, u2;</span>
+<span id="cb25-4"><a href="#cb25-4" aria-label="4"></a><span class="kw">grant</span> <span class="kw">insert</span>, <span class="kw">update</span> <span class="kw">on</span> course <span class="kw">to</span> u1;</span>
+<span id="cb25-5"><a href="#cb25-5" aria-label="5"></a><span class="kw">grant</span> <span class="kw">all</span> <span class="kw">privileges</span> <span class="kw">on</span> department <span class="kw">to</span> admin_user;</span>
+<span id="cb25-6"><a href="#cb25-6" aria-label="6"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled" title="Note">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The grantor must already <strong>hold</strong> the privilege themselves (or be the DBA). Granting a privilege on a <em>view</em> does <strong>not</strong> automatically grant privileges on the tables underneath it.</p>
+</div>
+</div>
 </section>
 <section id="revoking-privileges" class="level3">
 <h3 class="anchored" data-anchor-id="revoking-privileges">Revoking Privileges</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1" aria-label="1"></a><span class="kw">revoke</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">from</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb17-1"><a href="#cb17-1" aria-label="1"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> U1, U2, U3;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1" aria-label="1"></a><span class="kw">revoke</span> <span class="op">&lt;</span><span class="kw">privilege</span> <span class="kw">list</span><span class="op">&gt;</span> <span class="kw">on</span> <span class="op">&lt;</span>relation <span class="kw">or</span> <span class="kw">view</span><span class="op">&gt;</span> <span class="kw">from</span> <span class="op">&lt;</span><span class="fu">user</span> <span class="kw">list</span><span class="op">&gt;</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb27-2"><a href="#cb27-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">role</span> u1;  <span class="kw">create</span> <span class="kw">role</span> u2;</span>
+<span id="cb27-3"><a href="#cb27-3" aria-label="3"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">to</span> u1, u2;</span>
+<span id="cb27-4"><a href="#cb27-4" aria-label="4"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> u1, u2;</span>
+<span id="cb27-5"><a href="#cb27-5" aria-label="5"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>revoke all from ...</code> removes every privilege the user holds.</li>
 <li>Revoking from <code>public</code> removes the privilege from everyone <strong>except</strong> users who were granted it explicitly elsewhere.</li>
@@ -1226,41 +1342,63 @@ until no view references remain</code></pre>
 <section id="roles" class="level3">
 <h3 class="anchored" data-anchor-id="roles">Roles</h3>
 <p>Roles bundle privileges so you don’t have to grant the same set repeatedly.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">role</span> instructor;</span>
-<span id="cb18-2"><a href="#cb18-2" aria-label="2"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> takes <span class="kw">to</span> instructor;</span>
-<span id="cb18-3"><a href="#cb18-3" aria-label="3"></a><span class="kw">grant</span> instructor <span class="kw">to</span> amit;       <span class="co">-- amit inherits the privileges of 'instructor'</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-label="4"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-label="5"></a><span class="co">-- Roles can inherit from other roles</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-label="6"></a><span class="kw">create</span> <span class="kw">role</span> teaching_assistant;</span>
-<span id="cb18-7"><a href="#cb18-7" aria-label="7"></a><span class="kw">grant</span> teaching_assistant <span class="kw">to</span> instructor;   <span class="co">-- instructor now also gets TA's privileges</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-label="8"></a></span>
-<span id="cb18-9"><a href="#cb18-9" aria-label="9"></a><span class="co">-- Chains of roles</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-label="10"></a><span class="kw">create</span> <span class="kw">role</span> dean;</span>
-<span id="cb18-11"><a href="#cb18-11" aria-label="11"></a><span class="kw">grant</span> instructor <span class="kw">to</span> dean;</span>
-<span id="cb18-12"><a href="#cb18-12" aria-label="12"></a><span class="kw">grant</span> dean <span class="kw">to</span> satoshi;          <span class="co">-- satoshi inherits dean → instructor → TA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="flow steps"><div class="step"><div class="box"><b>teaching_assistant</b></div><span>privileges of a TA</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>instructor</b></div><span>gets TA privileges too</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>dean</b></div><span>gets instructor and TA privileges</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>satoshi</b></div><span>inherits the whole chain</span></div></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb28-1"><a href="#cb28-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb28-2"><a href="#cb28-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">role</span> instructor_role;</span>
+<span id="cb28-3"><a href="#cb28-3" aria-label="3"></a><span class="kw">create</span> <span class="kw">role</span> amit;</span>
+<span id="cb28-4"><a href="#cb28-4" aria-label="4"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> takes <span class="kw">to</span> instructor_role;</span>
+<span id="cb28-5"><a href="#cb28-5" aria-label="5"></a><span class="kw">grant</span> instructor_role <span class="kw">to</span> amit;       <span class="co">-- amit inherits the privileges of 'instructor_role'</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-label="6"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-label="7"></a><span class="co">-- Roles can inherit from other roles</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-label="8"></a><span class="kw">create</span> <span class="kw">role</span> teaching_assistant;</span>
+<span id="cb28-9"><a href="#cb28-9" aria-label="9"></a><span class="kw">grant</span> teaching_assistant <span class="kw">to</span> instructor_role;   <span class="co">-- instructor_role now also gets TA's privileges</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-label="10"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-label="11"></a><span class="co">-- Chains of roles</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-label="12"></a><span class="kw">create</span> <span class="kw">role</span> dean;</span>
+<span id="cb28-13"><a href="#cb28-13" aria-label="13"></a><span class="kw">create</span> <span class="kw">role</span> satoshi;</span>
+<span id="cb28-14"><a href="#cb28-14" aria-label="14"></a><span class="kw">grant</span> instructor_role <span class="kw">to</span> dean;</span>
+<span id="cb28-15"><a href="#cb28-15" aria-label="15"></a><span class="kw">grant</span> dean <span class="kw">to</span> satoshi;          <span class="co">-- satoshi inherits dean → instructor_role → TA</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-label="16"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="authorization-on-views" class="level3">
 <h3 class="anchored" data-anchor-id="authorization-on-views">Authorization on Views</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">view</span> geo_employees <span class="kw">as</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-label="2"></a>    (<span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> employee <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Geology'</span>);</span>
-<span id="cb19-3"><a href="#cb19-3" aria-label="3"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-label="4"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> geo_employees <span class="kw">to</span> geo_staff;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If <code>geo_staff</code> queries <code>geo_employees</code>, it works even if <code>geo_staff</code> has <strong>no</strong> direct permission on the underlying <code>employee</code> table — the view’s permissions are what matter, not the creator’s original access (though if the view’s <em>creator</em> lacked permission on <code>employee</code>, the view itself couldn’t have been created correctly in the first place).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb29-2"><a href="#cb29-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">view</span> geo_instructors <span class="kw">as</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-label="3"></a>    (<span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> instructor <span class="kw">where</span> dept_name <span class="op">=</span> <span class="st">'Geology'</span>);</span>
+<span id="cb29-4"><a href="#cb29-4" aria-label="4"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-label="5"></a><span class="kw">create</span> <span class="kw">role</span> geo_staff;</span>
+<span id="cb29-6"><a href="#cb29-6" aria-label="6"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> geo_instructors <span class="kw">to</span> geo_staff;</span>
+<span id="cb29-7"><a href="#cb29-7" aria-label="7"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If <code>geo_staff</code> queries <code>geo_instructors</code>, it works even if <code>geo_staff</code> has <strong>no</strong> direct permission on the underlying <code>instructor</code> table — the view’s permissions are what matter, not the creator’s original access (though if the view’s <em>creator</em> lacked permission on <code>instructor</code>, the view itself couldn’t have been created correctly in the first place).</p>
 </section>
 <section id="other-authorization-features" class="level3">
 <h3 class="anchored" data-anchor-id="other-authorization-features">Other Authorization Features</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1" aria-label="1"></a><span class="co">-- 'references' privilege needed to create a foreign key pointing at someone else's table</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-label="2"></a><span class="kw">grant</span> <span class="kw">references</span> (dept_name) <span class="kw">on</span> department <span class="kw">to</span> mariano;</span>
-<span id="cb20-3"><a href="#cb20-3" aria-label="3"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-label="4"></a><span class="co">-- Transferable privileges</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-label="5"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">to</span> amit <span class="kw">with</span> <span class="kw">grant</span> <span class="kw">option</span>;</span>
-<span id="cb20-6"><a href="#cb20-6" aria-label="6"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-label="7"></a><span class="co">-- Revoking with dependency handling</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-label="8"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> amit, satoshi <span class="kw">cascade</span>;   <span class="co">-- also revokes anything amit/satoshi granted onward</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-label="9"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> amit, satoshi <span class="kw">restrict</span>;  <span class="co">-- blocks the revoke if dependents exist</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>💡 The <code>references</code> privilege exists because a foreign key constraint can restrict what the <em>referenced</em> table’s owner is allowed to do (e.g., blocking a delete due to <code>on delete no action</code>) — so creating that link requires explicit permission.</p>
-</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb30-1"><a href="#cb30-1" aria-label="1"></a><span class="cf">begin</span>;</span>
+<span id="cb30-2"><a href="#cb30-2" aria-label="2"></a><span class="kw">create</span> <span class="kw">role</span> mariano;  <span class="kw">create</span> <span class="kw">role</span> amit;  <span class="kw">create</span> <span class="kw">role</span> satoshi;</span>
+<span id="cb30-3"><a href="#cb30-3" aria-label="3"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-label="4"></a><span class="co">-- 'references' privilege needed to create a foreign key pointing at someone else's table</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-label="5"></a><span class="kw">grant</span> <span class="kw">references</span> (dept_name) <span class="kw">on</span> department <span class="kw">to</span> mariano;</span>
+<span id="cb30-6"><a href="#cb30-6" aria-label="6"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-label="7"></a><span class="co">-- Transferable privileges</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-label="8"></a><span class="kw">grant</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">to</span> amit <span class="kw">with</span> <span class="kw">grant</span> <span class="kw">option</span>;</span>
+<span id="cb30-9"><a href="#cb30-9" aria-label="9"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-label="10"></a><span class="co">-- Revoking with dependency handling</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-label="11"></a><span class="kw">revoke</span> <span class="kw">select</span> <span class="kw">on</span> department <span class="kw">from</span> amit, satoshi <span class="kw">cascade</span>;   <span class="co">-- also revokes anything amit/satoshi granted onward</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-label="12"></a><span class="kw">rollback</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>revoke ... restrict</code> instead blocks the revoke if dependent privileges exist.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Key idea">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Key idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>references</code> privilege exists because a foreign key constraint can restrict what the <em>referenced</em> table’s owner is allowed to do (e.g., blocking a delete due to <code>on delete no action</code>) — so creating that link requires explicit permission.</p>
+</div>
+</div>
 <script type="module" src="../../assets/sql_runner.js"></script>
 
 
@@ -1269,32 +1407,6 @@ until no view references remain</code></pre>
 </section>
 
 </main> <!-- /main -->
-<script type="module">
-(function() {
-  const path = window.location.pathname.toLowerCase();
-  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
-  const isWeek5Or6 = path.includes('week_5') || path.includes('week_6') || path.includes('functional_dependencies') || path.includes('normalization') || document.querySelector('.fd') || document.querySelector('.normalization');
-  
-  const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
-  const baseUri = document.baseURI || window.location.href;
-
-  if (isWeek2Or3 || document.querySelector('.ds')) {
-    const cssUrl = new URL(offset + 'assets/sql_runner.css', baseUri).href;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = cssUrl;
-    document.head.appendChild(link);
-
-    const scriptUrl = new URL(offset + 'assets/sql_runner.js', baseUri).href;
-    import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
-  }
-
-  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
-    const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
-    import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
-  }
-})();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

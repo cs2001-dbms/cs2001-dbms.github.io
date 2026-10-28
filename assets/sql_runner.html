@@ -18,7 +18,14 @@
     import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
   }
 
-  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
+  const hasFD = isWeek5Or6 || document.querySelector('pre.fd, pre.normalization, div.fd, div.normalization, .sourceCode.fd, .sourceCode.normalization, code.fd, code.normalization, [compute], [data-compute], [op], [data-op]');
+  if (hasFD) {
+    const fdCssUrl = new URL(offset + 'assets/fd_runner.css', baseUri).href;
+    const fdLink = document.createElement('link');
+    fdLink.rel = 'stylesheet';
+    fdLink.href = fdCssUrl;
+    document.head.appendChild(fdLink);
+
     const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
     import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
   }

@@ -50,9 +50,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-7917d30a2dcfbd5fc5314cdb78636109.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -409,6 +409,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../weeks/week_3/advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/sql_examples.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Examples</span></a>
   </div>
 </li>
       </ul>
@@ -881,32 +886,6 @@ name → name       -- trivial</code></pre>
 </section>
 
 </main> <!-- /main -->
-<script type="module">
-(function() {
-  const path = window.location.pathname.toLowerCase();
-  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
-  const isWeek5Or6 = path.includes('week_5') || path.includes('week_6') || path.includes('functional_dependencies') || path.includes('normalization') || document.querySelector('.fd') || document.querySelector('.normalization');
-  
-  const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
-  const baseUri = document.baseURI || window.location.href;
-
-  if (isWeek2Or3 || document.querySelector('.ds')) {
-    const cssUrl = new URL(offset + 'assets/sql_runner.css', baseUri).href;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = cssUrl;
-    document.head.appendChild(link);
-
-    const scriptUrl = new URL(offset + 'assets/sql_runner.js', baseUri).href;
-    import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
-  }
-
-  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
-    const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
-    import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
-  }
-})();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

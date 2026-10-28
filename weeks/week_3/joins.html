@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a67a6d741c8d403394ab5be5f9b4cb63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-125ca5192e8ebe1a87573084f2c28608.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-7917d30a2dcfbd5fc5314cdb78636109.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-62b66d87aa2d2f67a7e8098caef9209a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": true,
@@ -113,9 +113,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
-<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
@@ -449,6 +446,11 @@ window.Quarto = {
   <a href="../../weeks/week_3/advanced_sql.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Advanced SQL</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../weeks/week_3/sql_examples.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">SQL Examples</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -779,90 +781,46 @@ window.Quarto = {
 
 
 <p>A <strong>join</strong> takes two tables and stitches them into one, based on some matching condition. Think of it as a Cartesian product (every row paired with every row) that’s then <em>filtered</em> down to only the pairs that actually make sense together.</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">%%{init: {'theme': 'neutral'}}%%
-graph TD
-    classDef default fill:#ffffff,stroke:#333,stroke-width:2px,color:#000000;
-    J["Join"] --&gt; C["Cross Join — no condition, full Cartesian product"]
-    J --&gt; I["Inner Join — keep only matching rows"]
-    I --&gt; EQ["Equi-Join — match on equality"]
-    EQ --&gt; N["Natural Join — equi-join + auto-drop duplicate column"]
-    J --&gt; O["Outer Join — keep unmatched rows too, fill with null"]
-    O --&gt; L["Left Outer"]
-    O --&gt; R["Right Outer"]
-    O --&gt; F["Full Outer"]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p>Every join (except cross join) is a <strong>join type</strong> plus a <strong>join condition</strong>:</p>
+<div class="flow"><div class="box"><b>Join type</b><span>which rows are kept</span></div><div class="arrow">+</div><div class="box grey"><b>Join condition</b><span>which rows match</span></div></div><div class="flow-label">Join types</div><div class="flow"><div class="box"><b>inner</b><span>matching rows only</span></div><div class="box"><b>left outer</b><span>+ unmatched left rows</span></div><div class="box"><b>right outer</b><span>+ unmatched right rows</span></div><div class="box"><b>full outer</b><span>+ unmatched rows of both</span></div></div><div class="flow-label">Join conditions</div><div class="flow"><div class="box grey"><b>natural</b><span>all same-named columns</span></div><div class="box grey"><b>using (A, ...)</b><span>only the listed columns</span></div><div class="box grey"><b>on &lt;predicate&gt;</b><span>any condition</span></div></div>
 <hr>
 <section id="sample-data" class="level2">
 <h2 class="anchored" data-anchor-id="sample-data">Sample Data</h2>
-<p>To see the difference between join types, imagine two small tables:</p>
-<p><strong><code>movie</code></strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-</tr>
-<tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-</tr>
-</tbody>
-</table>
-<p><strong><code>review</code></strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>rating</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>M1</td>
-<td>9</td>
-</tr>
-<tr class="even">
-<td>M2</td>
-<td>8</td>
-</tr>
-<tr class="odd">
-<td>M4</td>
-<td>7</td>
-</tr>
-</tbody>
-</table>
-<p>Notice: <code>Dune (M3)</code> has no review, and the review for <code>M4</code> doesn’t match any movie. This mismatch is exactly what different join types handle differently.</p>
+<p>The joins on this page use small relations from the three course datasets. Run each block to see the rows that will be joined.</p>
+<p><strong>University:</strong> the courses offered in Fall 2009 and the courses offered in Spring 2008. Run this block once to create them as two views, then look at them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> fall_2009 <span class="kw">as</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a>    <span class="kw">select</span> <span class="kw">distinct</span> s.course_id, c.title</span>
+<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a>    <span class="kw">from</span> section <span class="kw">as</span> s <span class="kw">join</span> course <span class="kw">as</span> c <span class="kw">on</span> s.course_id <span class="op">=</span> c.course_id</span>
+<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a>    <span class="kw">where</span> s.semester <span class="op">=</span> <span class="st">'Fall'</span> <span class="kw">and</span> s.<span class="dt">year</span> <span class="op">=</span> <span class="dv">2009</span>;</span>
+<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-label="6"></a><span class="kw">create</span> <span class="kw">or</span> <span class="kw">replace</span> <span class="kw">view</span> spring_2008 <span class="kw">as</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-label="7"></a>    <span class="kw">select</span> <span class="kw">distinct</span> course_id, building</span>
+<span id="cb1-8"><a href="#cb1-8" aria-label="8"></a>    <span class="kw">from</span> section</span>
+<span id="cb1-9"><a href="#cb1-9" aria-label="9"></a>    <span class="kw">where</span> semester <span class="op">=</span> <span class="st">'Spring'</span> <span class="kw">and</span> <span class="dt">year</span> <span class="op">=</span> <span class="dv">2008</span>;</span>
+<span id="cb1-10"><a href="#cb1-10" aria-label="10"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-label="11"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009;     <span class="co">-- 7 courses</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-label="12"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> spring_2008;   <span class="co">-- 9 courses</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Only course <code>237</code> is in both: 6 Fall courses have no Spring match, and 8 Spring courses have no Fall match. This mismatch is exactly what different join types handle differently.</p>
+<p><strong>LIS:</strong> faculty, and the library members who are faculty:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-db="lis"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="kw">select</span> <span class="kw">id</span>, faculty_fname, faculty_lname <span class="kw">from</span> faculty;</span>
+<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="kw">select</span> member_no, <span class="kw">id</span> <span class="kw">from</span> members <span class="kw">where</span> member_class <span class="op">=</span> <span class="st">'Faculty'</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>FLIS:</strong> the teams and the referees:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-db="flis"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">select</span> team_id, name <span class="kw">from</span> teams;</span>
+<span id="cb3-2"><a href="#cb3-2" aria-label="2"></a><span class="kw">select</span> referee_id, name <span class="kw">from</span> referees;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="cross-join" class="level2">
 <h2 class="anchored" data-anchor-id="cross-join">Cross Join</h2>
 <p>Returns the <strong>full Cartesian product</strong> — every row of one table paired with every row of the other, no filtering at all.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-label="1"></a><span class="co">-- Explicit</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">cross</span> <span class="kw">join</span> review;</span>
-<span id="cb1-3"><a href="#cb1-3" aria-label="3"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-label="4"></a><span class="co">-- Implicit (comma syntax)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-label="5"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie, review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>With 3 movies and 3 reviews, this produces <strong>9 rows</strong> — almost all of them meaningless pairings.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="co">-- Explicit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">cross</span> <span class="kw">join</span> spring_2008;</span>
+<span id="cb4-3"><a href="#cb4-3" aria-label="3"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-label="4"></a><span class="co">-- Implicit (comma syntax)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-label="5"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009, spring_2008;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With 7 Fall courses and 9 Spring courses, this produces <strong>63 rows</strong> — almost all of them meaningless pairings.</p>
+<p>The same on another dataset: every team paired with every referee (6 × 7 = 42 rows):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-db="flis"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">select</span> <span class="fu">count</span>(<span class="op">*</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-label="2"></a><span class="kw">from</span> teams <span class="kw">cross</span> <span class="kw">join</span> referees;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="inner-join" class="level2">
@@ -894,151 +852,195 @@ graph TD
 </tr>
 </tbody>
 </table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-label="1"></a><span class="co">-- Equi-join</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">inner</span> <span class="kw">join</span> review</span>
-<span id="cb2-3"><a href="#cb2-3" aria-label="3"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb2-4"><a href="#cb2-4" aria-label="4"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-label="5"></a><span class="co">-- Natural join (same result, but movie_id appears once)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-label="6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Result</strong> (only matching <code>movie_id</code>s survive):</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="co">-- Equi-join (course_id appears twice)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">inner</span> <span class="kw">join</span> spring_2008</span>
+<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="kw">on</span> fall_2009.course_id <span class="op">=</span> spring_2008.course_id;</span>
+<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a><span class="co">-- Natural join (same row, but course_id appears once)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">natural</span> <span class="kw">join</span> spring_2008;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Only course <code>237</code> survives. The other Fall and Spring courses all <strong>disappear</strong> — this is the information loss outer joins solve.</p>
+<div class="table-wrap">
+<table class="jt res caption-top table">
 <tbody>
 <tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
+<th data-quarto-table-cell-role="th">course_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">building</th>
+<th data-quarto-table-cell-role="th">what happens</th>
 </tr>
 <tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
+<td>237</td>
+<td>Surfing</td>
+<td>Power</td>
+<td>in both: kept</td>
+</tr>
+<tr class="odd">
+<td>105</td>
+<td>Image Processing</td>
+<td>–</td>
+<td>no Spring match: dropped</td>
+</tr>
+<tr class="even">
+<td>158</td>
+<td>–</td>
+<td>Taylor</td>
+<td>no Fall match: dropped</td>
 </tr>
 </tbody>
 </table>
-<p><code>M3</code> (no review) and <code>M4</code> (no movie) both <strong>disappear</strong> — this is the information loss outer joins solve.</p>
+</div>
 <hr>
 </section>
 <section id="outer-join" class="level2">
 <h2 class="anchored" data-anchor-id="outer-join">Outer Join</h2>
 <p>Outer joins keep the inner join result <strong>plus</strong> the unmatched rows from one or both sides, filling missing columns with <code>null</code>.</p>
+<div class="flow steps"><div class="step"><div class="box"><b>1 · inner join</b></div><span>matching rows</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · add unmatched</b></div><span>from the left, right or both</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · fill</b></div><span>missing columns with null</span></div></div>
 <section id="left-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="left-outer-join">Left Outer Join</h3>
 <p>Keeps <strong>all rows from the left table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb3-1"><a href="#cb3-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">natural</span> <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> spring_2008;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All 7 Fall courses are kept; the 6 with no Spring match get <code>null</code> for <code>building</code>.</p>
+<div class="table-wrap">
+<table class="jt res caption-top table">
 <tbody>
 <tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
+<th data-quarto-table-cell-role="th">course_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">building</th>
 </tr>
 <tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
+<td>237</td>
+<td>Surfing</td>
+<td>Power</td>
 </tr>
 <tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-<td>null</td>
+<td>105</td>
+<td>Image Processing</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+</tr>
+<tr class="even">
+<td>242</td>
+<td>Rock and Roll</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+</div>
+<p>The same on another dataset: every faculty member with their library member number. The faculty member who is not a library member is kept, with <code>null</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-db="lis"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-label="1"></a><span class="kw">select</span> f.faculty_fname, f.faculty_lname, m.member_no</span>
+<span id="cb8-2"><a href="#cb8-2" aria-label="2"></a><span class="kw">from</span> faculty <span class="kw">as</span> f <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> members <span class="kw">as</span> m</span>
+<span id="cb8-3"><a href="#cb8-3" aria-label="3"></a><span class="kw">on</span> m.<span class="kw">id</span> <span class="op">=</span> f.<span class="kw">id</span>;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="right-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="right-outer-join">Right Outer Join</h3>
 <p>Keeps <strong>all rows from the right table</strong>, even unmatched ones.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> spring_2008;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All 9 Spring courses are kept; the 8 with no Fall match get <code>null</code> for <code>title</code>.</p>
+<div class="table-wrap">
+<table class="jt res caption-top table">
 <tbody>
 <tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
+<th data-quarto-table-cell-role="th">course_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">building</th>
 </tr>
 <tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
+<td>237</td>
+<td>Surfing</td>
+<td>Power</td>
 </tr>
 <tr class="odd">
-<td>M4</td>
-<td>null</td>
-<td>7</td>
+<td>158</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+<td>Taylor</td>
+</tr>
+<tr class="even">
+<td>345</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+<td>Taylor</td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+</div>
+<p>The same on another dataset: every department with its instructors, including the departments that have none:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1" aria-label="1"></a><span class="kw">select</span> dept_name, <span class="kw">id</span>, name</span>
+<span id="cb10-2"><a href="#cb10-2" aria-label="2"></a><span class="kw">from</span> instructor <span class="kw">natural</span> <span class="kw">right</span> <span class="kw">outer</span> <span class="kw">join</span> department;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="full-outer-join" class="level3">
 <h3 class="anchored" data-anchor-id="full-outer-join">Full Outer Join</h3>
 <p>Keeps <strong>everything from both sides</strong> — the union of left and right outer joins.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">natural</span> <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>movie_id</th>
-<th>title</th>
-<th>rating</th>
-</tr>
-</thead>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1" aria-label="1"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">natural</span> <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> spring_2008;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>1 matched course + 6 Fall-only + 8 Spring-only = <strong>15 rows</strong>.</p>
+<div class="table-wrap">
+<table class="jt res caption-top table">
 <tbody>
 <tr class="odd">
-<td>M1</td>
-<td>Inception</td>
-<td>9</td>
+<th data-quarto-table-cell-role="th">course_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">building</th>
+<th data-quarto-table-cell-role="th">came from</th>
 </tr>
 <tr class="even">
-<td>M2</td>
-<td>Arrival</td>
-<td>8</td>
+<td>237</td>
+<td>Surfing</td>
+<td>Power</td>
+<td>both</td>
 </tr>
 <tr class="odd">
-<td>M3</td>
-<td>Dune</td>
-<td>null</td>
+<td>105</td>
+<td>Image Processing</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+<td>Fall only</td>
 </tr>
 <tr class="even">
-<td>M4</td>
-<td>null</td>
-<td>7</td>
+<td>158</td>
+<td><span style="color:var(--dbms-muted)"><em>null</em></span></td>
+<td>Taylor</td>
+<td>Spring only</td>
+</tr>
+<tr class="odd">
+<td>…</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 <section id="using-explicit-conditions" class="level3">
 <h3 class="anchored" data-anchor-id="using-explicit-conditions">Using Explicit Conditions</h3>
 <p>Joins can also use <code>on</code> (any condition) or <code>using</code> (shared column names), instead of <code>natural</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1" aria-label="1"></a><span class="co">-- Explicit condition</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-3"><a href="#cb6-3" aria-label="3"></a><span class="kw">on</span> movie.movie_id <span class="op">=</span> review.movie_id;</span>
-<span id="cb6-4"><a href="#cb6-4" aria-label="4"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-label="5"></a><span class="co">-- Shared column shorthand</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-label="6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> movie <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> review</span>
-<span id="cb6-7"><a href="#cb6-7" aria-label="7"></a><span class="kw">using</span> (movie_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<blockquote class="blockquote">
-<p>💡 <code>on</code> works with <em>any</em> condition (even inequality!). <code>natural</code> and <code>using</code> both rely on matching column names — <code>using</code> lets you name exactly which shared column(s) to join on, while <code>natural</code> matches on <strong>all</strong> identically-named columns.</p>
-</blockquote>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-db="university"><pre class="sourceCode numberSource sql number-lines code-with-copy"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1" aria-label="1"></a><span class="co">-- Explicit condition</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-label="2"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">left</span> <span class="kw">outer</span> <span class="kw">join</span> spring_2008</span>
+<span id="cb12-3"><a href="#cb12-3" aria-label="3"></a><span class="kw">on</span> fall_2009.course_id <span class="op">=</span> spring_2008.course_id;</span>
+<span id="cb12-4"><a href="#cb12-4" aria-label="4"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-label="5"></a><span class="co">-- Shared column shorthand</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-label="6"></a><span class="kw">select</span> <span class="op">*</span> <span class="kw">from</span> fall_2009 <span class="kw">full</span> <span class="kw">outer</span> <span class="kw">join</span> spring_2008</span>
+<span id="cb12-7"><a href="#cb12-7" aria-label="7"></a><span class="kw">using</span> (course_id);</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled" title="Key idea">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Key idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>on</code> works with <em>any</em> condition (even inequality!). <code>natural</code> and <code>using</code> both rely on matching column names — <code>using</code> lets you name exactly which shared column(s) to join on, while <code>natural</code> matches on <strong>all</strong> identically-named columns.</p>
+</div>
+</div>
 <hr>
 </section>
 </section>
@@ -1060,27 +1062,26 @@ graph TD
 </tr>
 <tr class="even">
 <td>Inner Join</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
 </tr>
 <tr class="odd">
 <td>Left Outer</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
 </tr>
 <tr class="even">
 <td>Right Outer</td>
-<td style="text-align: center;">❌</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr class="odd">
 <td>Full Outer</td>
-<td style="text-align: center;">✅</td>
-<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 </tbody>
 </table>
-<hr>
 <script type="module" src="../../assets/sql_runner.js"></script>
 
 
@@ -1088,32 +1089,6 @@ graph TD
 </section>
 
 </main> <!-- /main -->
-<script type="module">
-(function() {
-  const path = window.location.pathname.toLowerCase();
-  const isWeek2Or3 = path.includes('week_2') || path.includes('week_3') || path.includes('nested_subqueries') || path.includes('joins') || path.includes('intermediate_sql') || path.includes('advanced_sql') || path.includes('sql_examples');
-  const isWeek5Or6 = path.includes('week_5') || path.includes('week_6') || path.includes('functional_dependencies') || path.includes('normalization') || document.querySelector('.fd') || document.querySelector('.normalization');
-  
-  const offset = document.querySelector('meta[name="quarto:offset"]')?.getAttribute('content') || '../../';
-  const baseUri = document.baseURI || window.location.href;
-
-  if (isWeek2Or3 || document.querySelector('.ds')) {
-    const cssUrl = new URL(offset + 'assets/sql_runner.css', baseUri).href;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = cssUrl;
-    document.head.appendChild(link);
-
-    const scriptUrl = new URL(offset + 'assets/sql_runner.js', baseUri).href;
-    import(scriptUrl).catch(() => import('/assets/sql_runner.js'));
-  }
-
-  if (isWeek5Or6 || document.querySelector('.sourceCode.fd') || document.querySelector('.sourceCode.normalization')) {
-    const fdScriptUrl = new URL(offset + 'assets/fd_runner.js', baseUri).href;
-    import(fdScriptUrl).catch(() => import('/assets/fd_runner.js'));
-  }
-})();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
