@@ -159,8 +159,6 @@ format:
       light: flatly
       dark: darkly  
     css: assets/style.css
-    include-after-body:
-      - assets/sql_runner.html
     lightbox: true
     animations:
       hover: true  # Enable smooth hover transitions

@@ -88,6 +88,20 @@ We need to check if any non-prime attribute ($D$ or $E$) depends on a *proper su
 Since no non-prime attribute depends on a part of a candidate key, there is **no partial dependency**.
 **Conclusion**: Relation $R$ **is in 2NF**.
 
+::: {.callout-tip title="Try it yourself: Verify 2NF" collapse="true"}
+
+Click **Run** below to test for partial dependencies on proper subsets of candidate keys:
+
+```{.fd check="2nf"}
+R(A, B, C, D, E, F)
+
+AB -> CDE
+E -> F
+BF -> A
+C -> B
+```
+:::
+
 ---
 
 # 3NF (Third Normal Form)
@@ -121,3 +135,21 @@ Let's check each FD against the 3NF rules:
 - **$C \rightarrow B$**: $C$ is *not* a superkey. However, $B$ is a prime attribute! (Condition 3 holds - Passes).
 
 **Conclusion**: Since every functional dependency satisfies at least one of the 3NF conditions, the relation $R$ **is in 3NF**.
+
+::: {.callout-tip title="Try it yourself: Verify 3NF" collapse="true"}
+
+Click **Run** below to check Condition 1 (superkey) and Condition 2 (prime attribute):
+
+```{.fd check="3nf"}
+R(A, B, C, D, E, F)
+
+AB -> CDE
+E -> F
+BF -> A
+C -> B
+```
+:::
+
+```{=html}
+<script type="module" src="../../assets/fd_runner.js"></script>
+```

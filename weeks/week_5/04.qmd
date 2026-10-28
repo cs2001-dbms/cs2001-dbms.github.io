@@ -62,57 +62,159 @@ The shared attribute is `S#`, which *is* a key of `Supplier`. Joining these two 
 
 > 📌 The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
 
+::: {.callout-tip title="Try it yourself: Test Lossless Join & Dependency Preservation" collapse="true"}
+
+Click **Run** below to verify that decomposing `R(S, Sname, City, P, Qty)` into `R1(S, Sname, City)` and `R2(S, P, Qty)` is **lossless** and **dependency preserving**:
+
+```{.fd check="lossless-join, dependency-preservation"}
+R(S, Sname, City, P, Qty)
+
+S -> Sname, City
+SP -> Qty
+
+Decompose: R1(S, Sname, City), R2(S, P, Qty)
+```
+
+*(You can click **Edit** to try the bad split `R1(S, Sname, City, Qty), R2(P, Qty)` and see the lossy diagnosis!)*
+:::
+
+### Worked Example: Decomposing into Three Relations
+
+A relation $R(A, B, C, D)$ with functional dependencies:
+$$FD = \{ A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D\}$$
+
+is decomposed into three relations as follows:
+$$R_1(A, B),\ R_2(B, C),\ R_3(C, D)$$
+
+We test for a lossless decomposition progressively in this exact order:
+
+- **Step 1: Attribute Union Check:**
+  $$R_1 \cup R_2 \cup R_3 = \{A, B, C, D\} = R$$
+  All original attributes are accounted for (nothing is lost).
+
+- **Step 2: First Natural Join ($R_1 \bowtie R_2$):**
+  - Shared attributes: $R_1 \cap R_2 = \{ B \}$
+  - Compute closure of shared attributes under $FD$:
+    $$B^+ = BCD$$
+  - Since $BCD \supseteq \{ B, C \} = R_2$, $B$ is a superkey of $R_2$.
+  - Therefore, $R_1 \bowtie R_2$ is lossless, producing intermediate relation:
+    $$R_{12}(A, B, C)$$
+
+- **Step 3: Second Natural Join ($R_{12} \bowtie R_3$):**
+  - Shared attributes: $R_{12} \cap R_3 = \{ C \}$
+  - Compute closure of shared attributes under $FD$:
+    $$C^+ = CD$$
+  - Since $CD \supseteq \{ C, D \} = R_3$, $C$ is a superkey of $R_3$.
+  - Therefore, $R_{12} \bowtie R_3$ is lossless, producing:
+    $$R_{123}(A, B, C, D) = R$$
+
+$\therefore$ The 3-way decomposition is **Lossless**.
+
+::: {.callout-tip title="Try it yourself: Verify 3-Way Lossless Join" collapse="true"}
+
+Click **Run** below to trace each progressive natural join step live:
+
+```{.fd check="lossless-join"}
+R(A, B, C, D)
+
+A -> B
+B -> C
+C -> D
+
+Decompose: R1(A, B), R2(B, C), R3(C, D)
+```
+:::
+
+> 💡 **Join Order Matters:** We are not restricted to joining strictly $R_1$ and $R_2$ first. If $R_1 \bowtie R_2$ fails the superkey condition, the algorithm searches for any pair of relations that can be joined losslessly. If a failed join occurs, no intermediate relation is created because merging them would generate spurious tuples.
+
+::: {.callout-tip title="Try it yourself: Non-Sequential Pairwise Join Example" collapse="true"}
+
+In this example, $R_1 \bowtie R_2$ cannot be joined first because their shared attribute $A$ is not a superkey ($A^+ = \{A\}$). However, $R_2$ and $R_3$ share $\{A, D\}$, where $(AD)^+ = \{A, D, E, F\} \supseteq R_2$. Thus $R_2 \bowtie R_3$ joins losslessly into $R_{23}$, which then joins losslessly with $R_1$:
+
+```{.fd check="lossless-join"}
+R(A, B, C, D, E, F)
+
+AB -> C
+E -> F
+AC -> B
+BC -> A
+B -> D
+AD -> E
+
+Decompose: R1(A, B, C), R2(A, D, F), R3(A, C, D, E)
+```
+:::
+
 ---
 
 ## Dependency Preservation
 
-> 💡 **In plain English:** after splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition "preserves dependencies."
+- When a relation is decomposed, it is important to ensure that functional dependencies that held in original relation are still maintained.
+- It helps to prevent anomalies and ensures data integrity.
+- If $F_i$ represents the dependencies preserved locally in each subrelation $R_i$, we define $F' = \bigcup F_i$. The decomposition preserves dependencies iff all dependencies in $F$ can be derived from $F'$:
+  $$(F_1 \cup F_2 \cup \cdots \cup F_k)^+ = F^+$$
 
-Let $F_i$ be the set of FDs from $F^+$ that only involve attributes inside $R_i$. A decomposition into $R_1, ..., R_n$ **preserves dependencies** if:
+### **Note**
 
-$$(F_1 \cup F_2 \cup \cdots \cup F_n)^+ = F^+$$
+> 📌 **Lossless Decomposition and Dependency Preservation are independent of each other.**
+> - A decomposition can be lossless but lose dependencies.
+> - A decomposition can preserve dependencies but be lossy.
+> - Good normalization algorithms (like 3NF synthesis) guarantee both properties at the same time.
 
-If this fails, catching a violation of some original FD needs an expensive join across tables.
+---
 
-### A Quick Contrast
+### Worked Example: Dependency Preservation Step-by-Step
 
-$R = (A,B,C)$, $F = \{A \rightarrow B,\ B \rightarrow C\}$
+A relation $R(A, B, C, D)$ with functional dependencies:
+$$FD = \{ A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}$$
 
-| Decomposition | Dependency Preserving? |
-|---|---|
-| $R_1=(A,B),\ R_2=(B,C)$ | Yes — both `A→B` and `B→C` sit fully inside one piece each |
-| $R_1=(A,B),\ R_2=(A,C)$ | No — `B→C` can't be checked without joining, since `B` and `C` now live in different tables |
+is decomposed into three relations as follows:
+$$R_1(A, B),\ R_2(B, C),\ R_3(C, D)$$
 
-Same relation, same FDs — the *choice* of split decides the outcome.
+#### Step 1: Find Local Functional Dependencies ($F_i$ for each $R_i$)
 
-### How to Test It
+- $F_1 = \{ A \rightarrow B,\ B \rightarrow A \}$ based on $R_1(A, B)$
+- $F_2 = \{ B \rightarrow C,\ C \rightarrow B \}$ based on $R_2(B, C)$
+- $F_3 = \{ C \rightarrow D,\ D \rightarrow C \}$ based on $R_3(C, D)$
 
-1. Start with `result` set to just the left-hand-side attributes ($\alpha$) of the FD you're checking.
-2. Go through each piece $R_i$ of the decomposition. Take the attributes `result` shares with $R_i$, compute their closure under the *full* $F$, then keep only the attributes that also belong to $R_i$. Add anything new to `result`.
-3. Repeat step 2, cycling through every $R_i$, until `result` stops growing.
-4. If the right-hand-side attributes ($\beta$) are now inside `result`, the FD is preserved without needing a join.
+#### Step 2: Combine Local Dependencies ($F' = F_1 \cup F_2 \cup F_3$)
 
-Run this check on every FD in $F$ to confirm the whole decomposition preserves dependencies.
+$$F' = \{ A \rightarrow B,\ B \rightarrow A,\ B \rightarrow C,\ C \rightarrow B,\ C \rightarrow D,\ D \rightarrow C \}$$
 
-### Worked Example
+#### Step 3: Check Each Original Dependency Against $F'$
 
-$R(A,B,C,D)$, $F = \{A \rightarrow B,\ B \rightarrow C,\ C \rightarrow D,\ D \rightarrow A\}$
+- $A \rightarrow B$ is directly in $F_1$ (preserved)
+- $B \rightarrow C$ is directly in $F_2$ (preserved)
+- $C \rightarrow D$ is directly in $F_3$ (preserved)
 
-Decomposition: $R_1(A,B),\ R_2(B,C),\ R_3(C,D)$
+Now, $D \rightarrow A$ is missing from $F'$.
 
-`A→B`, `B→C`, `C→D` each sit fully inside one piece, so they're automatically preserved. The one worth checking is `D→A`:
+Let's take $D^+$ closure on $F'$:
+1. Start with $D^+ = \{ D \}$
+2. Using $D \rightarrow C \in F_3 \implies \{ D, C \}$
+3. Using $C \rightarrow B \in F_2 \implies \{ D, C, B \}$
+4. Using $B \rightarrow A \in F_1 \implies \{ D, C, B, A \} = DCBA$
 
-| Round | Piece Checked | Closure Computed | Result So Far |
-|---|---|---|---|
-| Start | — | — | `{D}` |
-| 1 | $R_1=(A,B)$ | `result ∩ R1 = {}` → nothing to add | `{D}` |
-| 1 | $R_2=(B,C)$ | `result ∩ R2 = {}` → nothing to add | `{D}` |
-| 1 | $R_3=(C,D)$ | `(D)+ = ABCD`, keep only `C,D` | `{C,D}` |
-| 2 | $R_2=(B,C)$ | `(C)+ = ABCD`, keep only `B,C` | `{B,C,D}` |
-| 2 | $R_1=(A,B)$ | `(B)+ = ABCD`, keep only `A,B` | `{A,B,C,D}` |
+Since $A \in D^+$, the dependency $D \rightarrow A$ is preserved after decomposing it!
 
-`result` now contains `A` — so `D → A` is preserved. Every FD in $F$ checks out, so this decomposition is dependency preserving.
+$\therefore$ All functional dependencies are preserved, so this decomposition is **Dependency Preserving**.
 
+::: {.callout-tip title="Try it yourself: Verify the Dependency Preservation Algorithm" collapse="true"}
 
+Click **Run** to compute the dependency preservation audit and progressive lossless join steps live:
 
+```{.fd check="dependency-preservation, lossless-join"}
+R(A, B, C, D)
 
+A -> B
+B -> C
+C -> D
+D -> A
+
+Decompose: R1(A, B), R2(B, C), R3(C, D)
+```
+:::
+
+```{=html}
+<script type="module" src="../../assets/fd_runner.js"></script>
+```

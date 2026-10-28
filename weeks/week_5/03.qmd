@@ -12,47 +12,132 @@ We already have **attribute closure** ($\alpha^+$) as our go-to tool for testing
 
 ## Extraneous Attributes
 
+- An attribute of a functional dependency is said to be **extraneous** if we can remove it without changing the closure of the set of functional dependencies ($F^+$).
+
 > 💡 **In plain English:** an extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
 
-An attribute can be dead weight on either side of an FD:
+Let's consider a functional dependency $\alpha \rightarrow \beta$ in a set $F$:
 
-- **Extraneous on the left ($\alpha$):** attribute $A \in \alpha$ is extraneous in $\alpha \rightarrow \beta$ if the *rest* of the left side, without $A$, still determines $\beta$ on its own.
-- **Extraneous on the right ($\beta$):** attribute $A \in \beta$ is extraneous in $\alpha \rightarrow \beta$ if the *other* FDs in the set can already derive $A$ anyway — this one FD isn't needed to get it.
+1. **Condition 1 (Extraneous on the Left, $X \in \alpha$):**
 
-### How to Test
+  - If $X \in \alpha$, compute $(\alpha - \{X\})^+_F$.
+  - If $(\alpha - \{X\})^+_F$ contains $\beta$, then $X$ is an **extraneous attribute** on the LHS.
+  - Removing $X$ simplifies the dependency to $(\alpha - \{X\}) \rightarrow \beta$.
 
-**Left side:** Drop $A$ from $\alpha$. Compute $(\alpha - A)^+$. If $\beta$ is inside that result, $A$ was extraneous.
 
-**Right side:** Drop $A$ from $\beta$ (just for this one FD). Recompute $\alpha^+$ using this adjusted set. If $A$ still shows up in the result, it means the other FDs already covered it — so $A$ was extraneous.
+2. **Condition 2 (Extraneous on the Right, $X \in \beta$):**
+  - If $X \in \beta$, compute $\alpha^+$ using the modified set:
+   $$F' = (F - \{\alpha \rightarrow \beta\}) \cup \{\alpha \rightarrow (\beta - \{X\})\}$$
+  - If $\alpha^+_{F'}$ contains $X$, then $X$ is an **extraneous attribute** on the RHS.
+  - Removing $X$ simplifies the dependency to $\alpha \rightarrow (\beta - \{X\})$ (or eliminates the dependency entirely if $\beta - \{X\} = \emptyset$).
 
-### Example — Extraneous on the Left
+### Example - Extraneous on the Left (Condition 1)
 
 $F = \{A \rightarrow C,\ AB \rightarrow C\}$
 
-Is $B$ extraneous in $AB \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $B$ was dead weight.
+Is $B$ extraneous in $AB \rightarrow C$?
 
-### Example — Extraneous on the Right
+- Here $\alpha = AB$, $\beta = C$, and $X = B \in \alpha$.
+- Drop $B$ from $\alpha$ and compute $(AB - \{B\})^+ = A^+$.
+- Since $A^+ = AC$ already contains $\beta = C$, **$B$ is an extraneous attribute**.
+- We can replace $AB \rightarrow C$ with $A \rightarrow C$.
+
+### Example - Extraneous on the Right (Condition 2)
 
 $F = \{A \rightarrow C,\ AB \rightarrow CD\}$
 
-Is $C$ extraneous in $AB \rightarrow CD$? Drop it, leaving $\{A \rightarrow C,\ AB \rightarrow D\}$. Compute $AB^+$ under this reduced set: it comes out to $ABCD$ — which still contains $C$. So $C$ was always derivable anyway, and was extraneous in the original FD.
+Is $C$ extraneous in $AB \rightarrow CD$?
+
+- Here $\alpha = AB$, $\beta = CD$, and $X = C \in \beta$.
+- Form $F' = \{A \rightarrow C,\ AB \rightarrow D\}$.
+- Compute $AB^+$ under $F'$: $AB^+ = ABCD$.
+- Since $AB^+$ contains $X = C$, **$C$ is an extraneous attribute**.
+- We can replace $AB \rightarrow CD$ with $AB \rightarrow D$.
+
+::: {.callout-tip title="Try it yourself — Extraneous Attribute Checker" collapse="false"}
+
+Click **Run** to inspect any dependency and test whether specific LHS or RHS attributes are extraneous:
+
+```{.fd check="extraneous-attribute"}
+R(A, B, C, D)
+
+A -> C
+AB -> CD
+B -> C
+```
+:::
 
 ---
 
-## Equivalence & Canonical Cover
+## Equivalence of Functional Dependency
 
-### Equivalence of FD Sets
+Two sets of functional dependencies $F$ and $G$ are **equivalent** ($F \equiv G$) if and only if $F^+ = G^+$.
 
-> 💡 **In plain English:** two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
+This requires verifying two conditions:
 
-$F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hold:
+1. **$F$ covers $G$ ($G \subseteq F^+$):**
+   - All relations/dependencies in $G$ should be satisfied while taking the closure under $F$.
+   - For every $\alpha \rightarrow \beta \in G$, $\alpha^+_F$ must contain $\beta$.
+2. **$G$ covers $F$ ($F \subseteq G^+$):**
+   - All relations/dependencies in $F$ should be satisfied while taking the closure under $G$.
+   - For every $\alpha \rightarrow \beta \in F$, $\alpha^+_G$ must contain $\beta$.
 
-- **$F$ covers $G$**: everything in $G$ can be derived from $F$
-- **$G$ covers $F$**: everything in $F$ can be derived from $G$
+- If both conditions hold, **$F$ is equivalent to $G$** ($F \equiv G$).
 
-Only if both hold are $F$ and $G$ truly equivalent.
+---
 
-### Canonical Cover
+### Example
+
+Let $F_1 = \{ P \rightarrow Q,\ Q \rightarrow R,\ R \rightarrow P \}$ and $F_2 = \{ P \rightarrow R,\ Q \rightarrow R,\ R \rightarrow Q \}$.
+
+#### 1. Check if $F_1$ covers $F_2$ ($F_2 \subseteq F_1^+$)
+
+Taking attribute closures of LHS of $F_2$ using dependencies in $F_1$:
+
+- $P^+ = PQR$ (satisfies $P \rightarrow R$)
+- $Q^+ = QRP$ (satisfies $Q \rightarrow R$)
+- $R^+ = RPQ$ (satisfies $R \rightarrow Q$)
+
+**$F_1$ covers $F_2$** because by taking the closure on $F_1$, all dependencies in $F_2$ are satisfied.
+
+---
+
+### Example (continued)
+
+#### 2. Check if $F_2$ covers $F_1$ ($F_1 \subseteq F_2^+$)
+
+Taking attribute closures of LHS of $F_1$ using dependencies in $F_2$:
+
+- $P^+ = PQR$ (satisfies $P \rightarrow Q$)
+- $Q^+ = QR$ (satisfies $Q \rightarrow R$)
+- $R^+ = RQ$ (does **NOT** satisfy $R \rightarrow P$)
+
+**$F_2$ does not cover $F_1$** because taking the closure of $R$ under $F_2$ gives $R^+ = RQ$, which does not contain $P$, failing to satisfy $R \rightarrow P \in F_1$.
+
+**Conclusion:** Since $F_2$ does not cover $F_1$, **$F_1$ is NOT equivalent to $F_2$** ($F_1 \not\equiv F_2$).
+
+::: {.callout-tip title="Try it yourself — Equivalence Tester" collapse="false"}
+
+Click **Run** to verify covering in both directions with step-by-step closures:
+
+```{.fd check="equivalence"}
+R(P, Q, R)
+
+F1:
+P -> Q
+Q -> R
+R -> P
+
+F2:
+P -> R
+Q -> R
+R -> Q
+```
+:::
+
+---
+
+## Canonical Cover
 
 > 💡 **In plain English:** the canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
 
@@ -80,6 +165,21 @@ $R = (A, B, C)$, $F = \{A \rightarrow BC,\ B \rightarrow C,\ A \rightarrow B,\ A
 
 **Canonical cover:** $\{A \rightarrow B,\ B \rightarrow C\}$ — the smallest set that says exactly what the original four FDs said.
 
+::: {.callout-tip title="Try it yourself" collapse="true"}
 
+Click **Run** to compute the canonical cover $F_c$ and inspect the reduction steps:
 
+```{.fd check="canonical-cover"}
+R(A, B, C)
+
+A -> BC
+B -> C
+A -> B
+AB -> C
+```
+:::
+
+```{=html}
+<script type="module" src="../../assets/fd_runner.js"></script>
+```
 

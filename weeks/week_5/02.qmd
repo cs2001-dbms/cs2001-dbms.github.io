@@ -64,6 +64,23 @@ For $R = (A, B, C, G, H, I)$ with $F = \{A \rightarrow B,\ A \rightarrow C,\ CG 
 
 $(AG)^+ = ABCGHI$ — every attribute in $R$.
 
+::: {.callout-tip title="Try it yourself" collapse="true"}
+
+Click **Run** below, then toggle attributes in the pills bar to test different closures:
+
+```{.fd check="closure"}
+R(A, B, C, G, H, I)
+
+A -> B
+A -> C
+CG -> H
+CG -> I
+B -> H
+
+Query: AG
+```
+:::
+
 ### Superkeys and Candidate Keys, via Closure
 
 - $K$ is a **superkey** of $R$ if $K^+ \supseteq R$ (contains every attribute)
@@ -128,3 +145,7 @@ $$\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}$$
 | Test if $\alpha$ is a superkey | Check $\alpha^+ \supseteq R$ | Compute what $\alpha$ determines — if it covers every column in the table, $\alpha$ is enough to identify a row |
 | Test if $\alpha \rightarrow \beta$ holds | Check $\beta \subseteq \alpha^+$ | Compute what $\alpha$ determines, then see if $\beta$ shows up in that list |
 | Compute all of $F^+$ | For every $\gamma \subseteq R$, output $\gamma \rightarrow S$ for each $S \subseteq \gamma^+$ | Try every possible set of columns, work out what each one determines, and write down all those dependencies |
+
+```{=html}
+<script type="module" src="../../assets/fd_runner.js"></script>
+```
