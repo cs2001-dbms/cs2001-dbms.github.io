@@ -10,15 +10,22 @@ project:
     - "assets/*"
 
 website:
-  site-url: "https://seek.onlinedegree.iitm.ac.in/courses/ns_26t3_cs2001"
+  site-url: "https://cs2001-dbms.github.io"
   description: "Course materials for CS2001 Database Management Systems"
   announcement:
     icon: info-circle
     dismissable: true
     content: "**Welcome!** Scroll to the bottom of any chapter to ask questions, review, and get answers!"
-    type: secondary
+    type: primary
   reader-mode: true
-
+  open-graph:
+    image: assets/cover.png
+    locale: en_US
+    site-name: "DBMS(CS2001) Course - IIT Madras"
+  twitter-card:
+    card-style: summary_large_image
+    image: assets/cover.png
+    
 comments:
   giscus:
     repo: cs2001-dbms/cs2001-dbms.github.io
@@ -30,17 +37,31 @@ comments:
 
 book:
   title: "Database Management Systems"
+  site-url: "https://cs2001-dbms.github.io"
+  google-analytics:
+    tracking-id: "G-BPJFKX0E32"
+    anonymize-ip: false
+  cookie-consent:
+    type: implied
+    style: interstitial
+    palette: light
+    language: en
+    prefs-text: "Cookie Preferences"
+    privacy-url: ""
   page-navigation: true
   date-format: long
   repo-url: https://github.com/cs2001-dbms/cs2001-dbms.github.io
   repo-actions: [edit, issue]
   page-footer: 
     center: "© CS2001 - Database Management Systems"
+    
   search:
     location: sidebar
     type: textbox
     keyboard-shortcut: f
     copy-button: true
+    show-item-context: tree
+
   sidebar:
     title: "DBMS [CS2001]"
     logo: assets/cover.png
@@ -150,6 +171,7 @@ book:
 
 format:
   html:
+    bread-crumbs: true
     grid:
       sidebar-width: 240px
       body-width: 1020px
@@ -181,6 +203,7 @@ format:
     code-line-numbers: true
     code-link: true
     code-overflow: wrap
+    callout-appearance: minimal
 
     format-links: false
     reader-mode: true

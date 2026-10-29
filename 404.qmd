@@ -1,0 +1,6 @@
+---
+title: "Page Not Found"
+---
+
+The page you requested could not be found. 
+Try using the search bar in the sidebar or return to the [home page](index.qmd).
