@@ -74,6 +74,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../weeks/week_6/01_intro_to_normalization.html" rel="next">
 <link href="../../weeks/week_5/03.html" rel="prev">
 <link href="../../assets/logo.ico" rel="icon">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -98,6 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "keyboard-shortcut": [
     "f"
   ],
+  "show-item-context": "tree",
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -112,6 +115,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BPJFKX0E32"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-BPJFKX0E32', { 'anonymize_ip': false});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"interstitial",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -313,7 +343,7 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-secondary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
+    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-primary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p><strong>Welcome!</strong> Scroll to the bottom of any chapter to ask questions, review, and get answers!</p>
 </div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
   <nav class="quarto-secondary-nav">
@@ -913,10 +943,10 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>📌 The lesson: it’s not <em>whether</em> you split a table, it’s <em>where</em> you split it. The same table can be decomposed well or badly.</p>
 </blockquote>
-<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Test Lossless Join &amp; Dependency Preservation">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Try it yourself: Test Lossless Join &amp; Dependency Preservation">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Tip</span>Try it yourself: Test Lossless Join &amp; Dependency Preservation
@@ -960,10 +990,10 @@ window.Quarto = {
 </ul></li>
 </ul>
 <p><span class="math inline">\(\therefore\)</span> The 3-way decomposition is <strong>Lossless</strong>.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Verify 3-Way Lossless Join">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Try it yourself: Verify 3-Way Lossless Join">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Tip</span>Try it yourself: Verify 3-Way Lossless Join
@@ -986,10 +1016,10 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>💡 <strong>Join Order Matters:</strong> We are not restricted to joining strictly <span class="math inline">\(R_1\)</span> and <span class="math inline">\(R_2\)</span> first. If <span class="math inline">\(R_1 \bowtie R_2\)</span> fails the superkey condition, the algorithm searches for any pair of relations that can be joined losslessly. If a failed join occurs, no intermediate relation is created because merging them would generate spurious tuples.</p>
 </blockquote>
-<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Non-Sequential Pairwise Join Example">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Try it yourself: Non-Sequential Pairwise Join Example">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Tip</span>Try it yourself: Non-Sequential Pairwise Join Example
@@ -1056,10 +1086,10 @@ window.Quarto = {
 <p>Let’s take <span class="math inline">\(D^+\)</span> closure on <span class="math inline">\(F'\)</span>: 1. Start with <span class="math inline">\(D^+ = \{ D \}\)</span> 2. Using <span class="math inline">\(D \rightarrow C \in F_3 \implies \{ D, C \}\)</span> 3. Using <span class="math inline">\(C \rightarrow B \in F_2 \implies \{ D, C, B \}\)</span> 4. Using <span class="math inline">\(B \rightarrow A \in F_1 \implies \{ D, C, B, A \} = DCBA\)</span></p>
 <p>Since <span class="math inline">\(A \in D^+\)</span>, the dependency <span class="math inline">\(D \rightarrow A\)</span> is preserved after decomposing it!</p>
 <p><span class="math inline">\(\therefore\)</span> All functional dependencies are preserved, so this decomposition is <strong>Dependency Preserving</strong>.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Try it yourself: Verify the Dependency Preservation Algorithm">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Try it yourself: Verify the Dependency Preservation Algorithm">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Tip</span>Try it yourself: Verify the Dependency Preservation Algorithm
@@ -1175,7 +1205,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/cs2001-dbms\.github\.io");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1600,7 +1630,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/04.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_5/04.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

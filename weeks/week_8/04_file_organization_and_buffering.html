@@ -39,6 +39,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../../weeks/week_9/01_indexing.html" rel="next">
 <link href="../../weeks/week_8/03_disk_performance_math.html" rel="prev">
 <link href="../../assets/logo.ico" rel="icon">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -63,6 +65,7 @@ ul.task-list li input[type="checkbox"] {
   "keyboard-shortcut": [
     "f"
   ],
+  "show-item-context": "tree",
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -77,6 +80,33 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-BPJFKX0E32"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-BPJFKX0E32', { 'anonymize_ip': false});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"interstitial",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -278,7 +308,7 @@ window.Quarto = {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-secondary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
+    <div id="quarto-announcement" data-announcement-id="409d8d5e74284bfd2ab46f0e8e7a37f9" class="alert alert-primary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
 <p><strong>Welcome!</strong> Scroll to the bottom of any chapter to ask questions, review, and get answers!</p>
 </div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
   <nav class="quarto-secondary-nav">
@@ -794,10 +824,10 @@ window.Quarto = {
 <section id="replacement-policies" class="level3">
 <h3 class="anchored" data-anchor-id="replacement-policies">Replacement Policies</h3>
 <p>If the buffer is completely full of blocks, and we need to fetch a new one from the disk, which old block should we evict (throw out) to make room? This is determined by a <strong>Replacement Policy</strong>.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Least Recently Used (LRU)">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Least Recently Used (LRU)">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Tip</span>Least Recently Used (LRU)
@@ -808,10 +838,10 @@ window.Quarto = {
 <p><strong>Intuition:</strong> If you haven’t looked at a block in a long time, you probably won’t need it again soon.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-important callout-titled" title="Most Recently Used (MRU)">
+<div class="callout callout-style-simple callout-important no-icon callout-titled" title="Most Recently Used (MRU)">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
-<i class="callout-icon"></i>
+<i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
 <span class="screen-reader-only">Important</span>Most Recently Used (MRU)
@@ -919,7 +949,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/cs2001-dbms\.github\.io");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1344,7 +1374,7 @@ window.Quarto = {
     </div>   
     <div class="nav-footer-center">
 <p>© CS2001 - Database Management Systems</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/04_file_organization_and_buffering.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/edit/main/weeks/week_8/04_file_organization_and_buffering.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/cs2001-dbms/cs2001-dbms.github.io/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
