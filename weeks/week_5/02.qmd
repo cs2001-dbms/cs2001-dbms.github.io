@@ -24,7 +24,7 @@ For $R = (A, B, C, D, E, G)$ with $F = \{A \rightarrow B,\ A \rightarrow C,\ A \
 
 $$A \rightarrow G \quad \text{(by transitivity, since } A \rightarrow D \text{ and } D \rightarrow G\text{)}$$
 
-In words: an instructor's ID (A) determines their department's budget (G).
+In words: `ID → dept_name` and `dept_name → budget`, so `ID → budget` — an instructor's ID determines their department's budget.
 
 This wasn't stated directly in $F$, but follows logically — and is therefore part of $F^+$.
 
@@ -66,24 +66,41 @@ For the same $R$ and $F$, compute $A^+$:
 | Step | Result | Why |
 |---|---|---|
 | 1 | `A` | starting point |
-| 2 | `ABCD` | $A \rightarrow B$, $A \rightarrow C$ and $A \rightarrow D$ apply |
-| 3 | `ABCDEG` | $D \subseteq$ result, so $D \rightarrow E$ and $D \rightarrow G$ apply |
+| 2 | `ABCD` | $A \rightarrow B$, $A \rightarrow C$ and $A \rightarrow D$ apply: `ID` gives `name`, `salary`, `dept_name` |
+| 3 | `ABCDEG` | $D \subseteq$ result, so $D \rightarrow E$ and $D \rightarrow G$ apply: `dept_name` gives `building`, `budget` |
 
-$A^+ = ABCDEG$ — every attribute in $R$. By comparison, $D^+ = DEG$: a department determines only its building and budget.
+$A^+ = ABCDEG$ — `ID` determines every column of $R$. By comparison, $D^+ = DEG$: `dept_name` determines only `building` and `budget`.
+
+::: {.callout-tip title="Try it yourself: Attribute Closure (α⁺)" collapse="true"}
+
+Click **Run**, then toggle attributes in the pills bar to test different closures (try $D$ to get $D^+ = DEG$).
+
+```{.fd check="closure"}
+R(A, B, C, D, E, G)
+
+A -> B
+A -> C
+A -> D
+D -> E
+D -> G
+
+Query: A
+```
+:::
 
 ### Superkeys and Candidate Keys, via Closure
 
 - $K$ is a **superkey** of $R$ if $K^+ \supseteq R$ (contains every attribute)
 - $K$ is a **candidate key** of $R$ if $K^+ \supseteq R$ **and** no proper subset of $K$ also satisfies this (minimal)
 
-**Applying this to $A$:** $A^+ = R$, so $A$ is a superkey. It is a single attribute, so it is minimal, making it a **candidate key**. $AB$ is also a superkey, but not a candidate key.
+**Applying this to `ID` (A):** $A^+ = R$, so `ID` is a superkey. It is a single attribute, so it is minimal, making it a **candidate key**. `{ID, name}` (AB) is also a superkey, but not a candidate key.
 
 ### Prime and Non-Prime Attributes
 
 - **Prime attribute**: belongs to *some* candidate key
 - **Non-prime attribute**: belongs to *no* candidate key
 
-So in R: `A` is the only **prime** attribute; `B`, `C`, `D`, `E`, `G` are **non-prime** — each of them is simply *determined by* the key, not part of it.
+So in R: `ID` (A) is the only **prime** attribute; `name`, `salary`, `dept_name`, `building`, `budget` (B, C, D, E, G) are **non-prime** — each of them is simply *determined by* the key, not part of it.
 
 On the data, every `ID` is distinct, as a key must be:
 
@@ -124,7 +141,11 @@ $$\text{Max Superkeys} = 2^{N-m} + 2^{N-n} - 2^{N-(m+n)}$$
 If the two candidate keys share overlapping attributes, the exponent in the subtraction term changes from $(m+n)$ to the number of attributes in their absolute union: $|\text{Key}_1 \cup \text{Key}_2|$.
 :::
 
-**Example:** $R = (A, B, C, D, E, G)$ has $n = 6$ attributes; candidate key $A$ has $k = 1$. Number of superkeys: $2^{(6-1)} = 2^5 = 32$.
+**Example:** $R = (A, B, C, D, E, G)$ has $n = 6$ attributes; candidate key `ID` (A) has $k = 1$. Number of superkeys: $2^{(6-1)} = 2^5 = 32$.
+
+**Example (two candidate keys, no common attribute):** if $R = (A, B, C, D, E, G)$ has candidate keys $A$ ($m = 1$) and $BC$ ($n = 2$), the number of superkeys is $2^{6-1} + 2^{6-2} - 2^{6-3} = 32 + 16 - 8 = 40$.
+
+**Example (two candidate keys sharing an attribute):** if the candidate keys are $AB$ and $BC$, they share $B$, so the union $AB \cup BC = ABC$ has 3 attributes. The number of superkeys is $2^{6-2} + 2^{6-2} - 2^{6-3} = 16 + 16 - 8 = 24$.
 
 ### Why Attribute Closure Matters
 
@@ -136,4 +157,5 @@ If the two candidate keys share overlapping attributes, the exponent in the subt
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
+<script type="module" src="../../assets/fd_runner.js"></script>
 ```

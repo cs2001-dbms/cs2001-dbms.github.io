@@ -624,7 +624,7 @@ body.quarto-dark .error-msg {
 </script>
 
 <script type="module">
-import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.2.16/dist/index.js";
 
 let databases = {};
 let pyodide = null;
@@ -843,9 +843,19 @@ async function getDB(dsId) {
     return databases[dsId];
   }
   if (dsId === "test_db") {
-    databases[dsId] = new PGlite("idb://playground-test-db");
+    try {
+      databases[dsId] = new PGlite("idb://playground-test-db");
+      await databases[dsId].waitReady;
+    } catch (idbErr) {
+      console.warn("Workspace storage corrupted, auto-resetting...", idbErr);
+      try { indexedDB.deleteDatabase("/pglite/playground-test-db"); } catch(_) {}
+      try { indexedDB.deleteDatabase("playground-test-db"); } catch(_) {}
+      databases[dsId] = new PGlite("idb://playground-test-db");
+      await databases[dsId].waitReady;
+    }
   } else {
     databases[dsId] = new PGlite();
+    await databases[dsId].waitReady;
     try {
       var r = await fetch("datasets/" + dsId + ".sql");
       if (r.ok) { var sql = await r.text(); if (sql.trim().length > 0) { sql = sanitizeSQL(sql); await databases[dsId].exec(sql); } }

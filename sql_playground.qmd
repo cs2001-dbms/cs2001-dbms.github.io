@@ -605,7 +605,7 @@ body.quarto-dark .error-msg {
 </script>
 
 <script type="module">
-import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite@0.2.16/dist/index.js";
 
 let db;
 let currentDataset = "";
@@ -807,7 +807,18 @@ async function initDB(dsId) {
   try {
     if (db) { await db.close(); db = null; }
     if (dsId === "test_db") {
-      db = new PGlite("idb://playground-test-db");
+      // Auto-recover corrupted IDB workspace (stale postmaster.pid from old engine)
+      try {
+        db = new PGlite("idb://playground-test-db");
+        await db.waitReady;
+      } catch (idbErr) {
+        console.warn("Workspace storage corrupted, auto-resetting...", idbErr);
+        try { indexedDB.deleteDatabase("/pglite/playground-test-db"); } catch(_) {}
+        try { indexedDB.deleteDatabase("playground-test-db"); } catch(_) {}
+        db = new PGlite("idb://playground-test-db");
+        await db.waitReady;
+        editor.setValue("-- Your workspace was reset due to a storage compatibility error.\n-- This happens once when upgrading the database engine.\n\n", -1);
+      }
       if (!editor.getValue().trim()) {
         editor.setValue("-- Welcome to your persistent workspace.\n-- Tables and data you create here will be saved across reloads.\n\n", -1);
       }
@@ -817,6 +828,7 @@ async function initDB(dsId) {
       return;
     }
     db = new PGlite();
+    await db.waitReady;
     try {
       var candidateUrls = [
         "datasets/" + dsId + ".sql",

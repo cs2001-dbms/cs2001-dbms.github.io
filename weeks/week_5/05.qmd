@@ -15,43 +15,39 @@ format:
 ## Setting Up the Table
 
 ```{=html}
-<p>Six rows are real issues from the LIS dataset; one more row is added as history (copy …337B issued again). Run this block once to build the table used by every query on this page:</p>
+<p>The table holds six real issues taken from the LIS dataset (<b>book_issue</b> joined with <b>members</b>, <b>book_copies</b> and <b>book_catalogue</b>), plus one history row (copy …337B issued again). The datasets are read-only, so the table is built in the <b>workspace</b>. Run this block first; every later query on this page uses it. Running it again simply rebuilds the table.</p>
 
 ```
 
-```{.sql db="lis"}
+```{.sql db="test_db"}
 drop table if exists issue_record;
 
-create table issue_record as
-select bi.member_no    as a,
-       coalesce(s.student_fname || ' ' || s.student_lname,
-                f.faculty_fname || ' ' || f.faculty_lname) as b,
-       bi.accession_no as c,
-       bc.isbn_no      as d,
-       cat.title       as e,
-       bi.doi          as g
-from book_issue as bi
-     join members as m          on m.member_no = bi.member_no
-     left join students as s    on s.roll_no = m.roll_no
-     left join faculty as f     on f.id = m.id
-     join book_copies as bc     on bc.accession_no = bi.accession_no
-     join book_catalogue as cat on cat.isbn_no = bc.isbn_no
-where bi.accession_no in ('9789386551337A', '9789386551337B', '9789386551337C',
-                          '9789332543553B', '9789332543553C', '9789351199380A');
+create table issue_record (
+    a varchar(10),   -- member_no
+    b varchar(50),   -- member_name
+    c varchar(20),   -- accession_no
+    d varchar(20),   -- isbn
+    e varchar(100),  -- title
+    g date           -- date_of_issue
+);
 
+insert into issue_record values
+('M0060', 'Sanchita saha',  '9789386551337B', '9789386551337', 'Coding For Beginners In Easy Steps',  '2021-07-01'),
+('M0045', 'Surendra Malik', '9789386551337C', '9789386551337', 'Coding For Beginners In Easy Steps',  '2021-07-02'),
+('M0020', 'Suresh Singh',   '9789386551337A', '9789386551337', 'Coding For Beginners In Easy Steps',  '2021-07-03'),
+('M0048', 'Rahul Singh',    '9789332543553B', '9789332543553', 'Programming in C',                    '2021-08-01'),
+('M0045', 'Surendra Malik', '9789332543553C', '9789332543553', 'Programming in C',                    '2021-08-01'),
+('M0001', 'Vikas Das',      '9789351199380A', '9789351199380', 'Advanced Database Management System', '2021-08-01'),
 -- the added history row: copy ...337B issued again
-insert into issue_record
-values ('M0020', 'Suresh Singh', '9789386551337B', '9789386551337',
-        'Coding For Beginners In Easy Steps', '2021-08-05');
+('M0020', 'Suresh Singh',   '9789386551337B', '9789386551337', 'Coding For Beginners In Easy Steps',  '2021-08-05');
 
 select * from issue_record order by g, c;
 ```
 
 ```{=html}
 
-<div class="panel"><h4>issue_record: R = (A, B, C, D, E, G)</h4><div class="table-wrap"><table class="jt res" style="font-size:0.85rem"><tr><th>A (member_no)</th><th>B (member_name)</th><th>C (accession_no)</th><th>D (isbn)</th><th>E (title)</th><th>G (date)</th></tr><tr><td>M0060</td><td>Sanchita saha</td><td>9789386551337B</td><td>9789386551337</td><td>Coding For Beginners In Easy Steps</td><td>2021-07-01</td></tr><tr><td>M0045</td><td>Surendra Malik</td><td>9789386551337C</td><td>9789386551337</td><td>Coding For Beginners In Easy Steps</td><td>2021-07-02</td></tr><tr><td>M0020</td><td>Suresh Singh</td><td>9789386551337A</td><td>9789386551337</td><td>Coding For Beginners In Easy Steps</td><td>2021-07-03</td></tr><tr><td>M0048</td><td>Rahul Singh</td><td>9789332543553B</td><td>9789332543553</td><td>Programming in C</td><td>2021-08-01</td></tr><tr><td>M0045</td><td>Surendra Malik</td><td>9789332543553C</td><td>9789332543553</td><td>Programming in C</td><td>2021-08-01</td></tr><tr><td>M0001</td><td>Vikas Das</td><td>9789351199380A</td><td>9789351199380</td><td>Advanced Database Management System</td><td>2021-08-01</td></tr><tr><td>M0020</td><td>Suresh Singh</td><td>9789386551337B</td><td>9789386551337</td><td>Coding For Beginners In Easy Steps</td><td>2021-08-05</td></tr></table></div></div>
 <p><b>The functional dependencies</b> the library states:</p>
-<div class="table-wrap"><table class="jt res"><tr><th>FD</th><th>In words</th></tr><tr><td>A → B</td><td>a member number determines the member’s name</td></tr><tr><td>AG → B</td><td>member number and date determine the name</td></tr><tr><td>C → DE</td><td>a copy determines its isbn and title</td></tr><tr><td>D → E</td><td>an isbn determines the title</td></tr><tr><td>CG → AB</td><td>a copy on a given date was issued to one member (number and name)</td></tr></table></div>
+<div class="table-wrap"><table class="jt res"><tr><th>FD</th><th>With attribute names</th></tr><tr><td>A → B</td><td>member_no → member_name</td></tr><tr><td>AG → B</td><td>member_no, date_of_issue → member_name</td></tr><tr><td>C → DE</td><td>accession_no → isbn, title</td></tr><tr><td>D → E</td><td>isbn → title</td></tr><tr><td>CG → AB</td><td>accession_no, date_of_issue → member_no, member_name</td></tr></table></div>
 <p><b>F = { A → B, AG → B, C → DE, D → E, CG → AB }</b>. F is deliberately not minimal: some of these FDs are redundant and will be removed when we compute the canonical cover.</p>
 ```
 
@@ -60,7 +56,7 @@ select * from issue_record order by g, c;
 ```{=html}
 <p>A good design stores each fact <b>once</b>. A fact is repeated when a table contains an FD whose left side is <b>not a key</b>: every row sharing that left side must repeat the right side.</p>
 <div class="flow-label">How</div><div class="flow steps"><div class="step"><div class="box"><b>find an FD</b></div><span>α → β in F</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>is α a key?</b></div><span>no: only CG is a key</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>count rows</b></div><span>sharing the same α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>each row</b></div><span>repeats β</span></div></div>
-<div class="table-wrap"><table class="jt res"><tr><th>FD with a non-key left side</th><th>Fact stored</th><th>Times stored here</th></tr><tr><td>D → E</td><td>“9789386551337 is <i>Coding For Beginners In Easy Steps</i>”</td><td>4 (once per issue of that book)</td></tr><tr><td>A → B</td><td>“M0045 is Surendra Malik”</td><td>2</td></tr><tr><td>A → B</td><td>“M0020 is Suresh Singh”</td><td>2</td></tr></table></div>
+<div class="table-wrap"><table class="jt res"><tr><th>FD with a non-key left side</th><th>Fact stored</th><th>Times stored here</th></tr><tr><td>D → E<br><small>isbn → title</small></td><td>“9789386551337 is <i>Coding For Beginners In Easy Steps</i>”</td><td>4 (once per issue of that book)</td></tr><tr><td>A → B<br><small>member_no → member_name</small></td><td>“M0045 is Surendra Malik”</td><td>2</td></tr><tr><td>A → B<br><small>member_no → member_name</small></td><td>“M0020 is Suresh Singh”</td><td>2</td></tr></table></div>
 <div class="panel"><h4>The three anomalies on this table</h4><div class="table-wrap"><table class="jt res"><tr><th>Anomaly</th><th>What happens in issue_record</th><th>Root cause</th></tr><tr><td><b>Update</b></td><td>Correct the title of 9789386551337 in one row only → the same isbn now has two titles.</td><td>D → E is stored 4 times</td></tr><tr><td><b>Insertion</b></td><td>A new book arrives but nobody has borrowed it. Its isbn and title cannot be stored: every row needs a copy (C) and an issue date (G), which are part of the key.</td><td>book facts are tied to issue facts</td></tr><tr><td><b>Deletion</b></td><td>Delete M0060’s only issue → the fact “M0060 is Sanchita saha” disappears from the database.</td><td>member facts are tied to issue facts</td></tr></table></div></div>
 ```
 
@@ -80,7 +76,7 @@ select * from issue_record order by g, c;
 
 ```
 
-```{.sql db="lis"}
+```{.sql db="test_db"}
 select count(*)
 from (select distinct a, b, g from issue_record) as r1
      join (select distinct g, c, d, e from issue_record) as r2
@@ -94,6 +90,23 @@ from (select distinct a, b, g from issue_record) as r1
 <p>More rows is <b>less</b> information: we can no longer tell which of the 13 rows are real. G is not a key of either part, so the split is <b>lossy</b>. The lossless-join test shown later avoids this.</p>
 ```
 
+::: {.callout-tip title="Try it yourself: Lossless Join Check (split on date)" collapse="true"}
+
+Click **Run** to see why splitting on G (date_of_issue) alone is lossy: G is not a key of either part.
+
+```{.fd check="lossless-join"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+
+Decompose: R1(A, B, G), R2(C, D, E, G)
+```
+:::
+
 ## 4. Functional Dependencies
 
 ```{=html}
@@ -102,7 +115,7 @@ from (select distinct a, b, g from issue_record) as r1
 
 ```
 
-```{.sql db="lis"}
+```{.sql db="test_db"}
 -- does A → B hold on these rows?  (no output = no violation)
 select a from issue_record
 group by a having count(distinct b) > 1;
@@ -114,15 +127,15 @@ group by c having count(distinct a) > 1;
 
 ```{=html}
 
-<div class="table-wrap"><table class="jt res"><tr><th>Check on the 7 rows</th><th>Result</th><th>Why</th></tr><tr><td>A → B</td><td>✓ satisfied</td><td>M0045 and M0020 each appear twice, always with the same name</td></tr><tr><td>D → E</td><td>✓ satisfied</td><td>each isbn always has the same title</td></tr><tr><td>C → A ?</td><td>✗ violated</td><td>copy …337B: M0060 on 07-01, M0020 on 08-05</td></tr><tr><td>A → C ?</td><td>✗ violated</td><td>M0045 has two different copies</td></tr><tr><td>G → A ?</td><td>✗ violated</td><td>three members on 2021-08-01</td></tr></table></div>
-<p><b>Trivial FD:</b> α → β is trivial if β ⊆ α. Example: <b>CG → C</b> always holds, in every table, so it says nothing about the library.</p>
+<div class="table-wrap"><table class="jt res"><tr><th>Check on the 7 rows</th><th>Result</th><th>Why</th></tr><tr><td>A → B<br><small>member_no → member_name</small></td><td>✓ satisfied</td><td>M0045 and M0020 each appear twice, always with the same name</td></tr><tr><td>D → E<br><small>isbn → title</small></td><td>✓ satisfied</td><td>each isbn always has the same title</td></tr><tr><td>C → A<br><small>accession_no → member_no</small> ?</td><td>✗ violated</td><td>copy …337B: M0060 on 07-01, M0020 on 08-05</td></tr><tr><td>A → C<br><small>member_no → accession_no</small> ?</td><td>✗ violated</td><td>M0045 has two different copies</td></tr><tr><td>G → A<br><small>date_of_issue → member_no</small> ?</td><td>✗ violated</td><td>three members on 2021-08-01</td></tr></table></div>
+<p><b>Trivial FD:</b> α → β is trivial if β ⊆ α. Example: <b>CG → C</b> (accession_no, date_of_issue → accession_no) always holds, in every table, so it says nothing about the library.</p>
 ```
 
 ## 5. Armstrong’s Axioms
 
 ```{=html}
 <p>Armstrong’s axioms derive the FDs that follow from F; they are <b>sound</b> and <b>complete</b>.</p>
-<p>Derive <b>CG → E</b> (“a copy on a date determines the title”):</p>
+<p>Derive <b>CG → E</b>, i.e. accession_no, date_of_issue → title (“a copy on a date determines the title”):</p>
 <div class="table-wrap"><table class="jt res"><tr><th>Step</th><th>FD</th><th>Reason</th></tr><tr><td>1</td><td>CG → C</td><td>reflexivity (C ⊆ CG)</td></tr><tr><td>2</td><td>C → DE</td><td>given</td></tr><tr><td>3</td><td>CG → DE</td><td>transitivity of 1 and 2</td></tr><tr><td>4</td><td>CG → E</td><td>decomposition of 3</td></tr></table></div>
 ```
 
@@ -135,6 +148,23 @@ group by c having count(distinct a) > 1;
 <div class="table-wrap"><table class="jt res"><tr><th>α</th><th>α⁺</th><th>Meaning</th></tr><tr><td>C</td><td>CDE</td><td>a copy tells you its isbn and title, not who has it</td></tr><tr><td>A</td><td>AB</td><td>a member number tells you only the name</td></tr><tr><td>D</td><td>DE</td><td>an isbn tells you the title</td></tr><tr><td>G</td><td>G</td><td>a date alone tells you nothing</td></tr></table></div>
 ```
 
+::: {.callout-tip title="Try it yourself: Attribute Closure (α⁺)" collapse="true"}
+
+Click **Run**, then toggle attributes in the pills bar to compute C⁺, A⁺, D⁺ and G⁺ from the table above.
+
+```{.fd check="closure"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+
+Query: CG
+```
+:::
+
 ## 7. Keys and Testing FDs with Closure
 
 ```{=html}
@@ -144,6 +174,21 @@ group by c having count(distinct a) > 1;
 <div class="table-wrap"><table class="jt res"><tr><th>Term</th><th>Here</th></tr><tr><td>candidate key</td><td>CG (accession_no, date_of_issue)</td></tr><tr><td>prime attributes</td><td>C, G</td></tr><tr><td>non-prime attributes</td><td>A, B, D, E</td></tr><tr><td>number of superkeys</td><td>every superset of CG: 2⁴ = 16</td></tr></table></div>
 <p>In real terms: one issue is identified by <b>which copy</b> and <b>which day</b>.</p>
 ```
+
+::: {.callout-tip title="Try it yourself: Candidate Keys" collapse="true"}
+
+Click **Run** to confirm that CG is the only candidate key, with C and G as the prime attributes.
+
+```{.fd check="candidate-keys"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+```
+:::
 
 ## 8. Extraneous Attributes and Canonical Cover
 
@@ -156,18 +201,48 @@ group by c having count(distinct a) > 1;
 <p>F<sub>c</sub> says exactly what F says, with no redundant attribute. Each FD of F<sub>c</sub> describes one real thing: A → B a member, C → D a copy, D → E a book, CG → A an issue. That is the blueprint for the decomposition that follows. Note that C → DE was redundant because the title depends on the <b>isbn</b>, not directly on the copy.</p>
 ```
 
+::: {.callout-tip title="Try it yourself: Extraneous Attribute Check" collapse="true"}
+
+Click **Run** to test each attribute of each FD in F, as in the table above.
+
+```{.fd check="extraneous-attribute"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+```
+:::
+
+::: {.callout-tip title="Try it yourself: Canonical Cover (F_c)" collapse="true"}
+
+Click **Run** to reduce F to F<sub>c</sub> = { A → B, C → D, D → E, CG → A } step by step.
+
+```{.fd check="canonical-cover"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+```
+:::
+
 ## 9. A Lossless-Join Decomposition
 
 ```{=html}
 <p>Splitting R into R₁, R₂ is <b>lossless</b> if the common columns are a key of at least one side: R₁ ∩ R₂ → R₁ or R₁ ∩ R₂ → R₂.</p>
 <div class="flow-label">How</div><div class="flow steps"><div class="step"><div class="box"><b>pick an FD</b></div><span>α → β from F<sub>c</sub></span></div><div class="arrow">→</div><div class="step"><div class="box"><b>split</b></div><span>(α ∪ β) and (R − β)</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>common part</b></div><span>is α, a key of the first table</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>repeat</b></div><span>on the remaining table</span></div></div>
-<div class="table-wrap"><table class="jt res"><tr><th>Split</th><th>Common</th><th>Why it is lossless</th></tr><tr><td>R → (A, B) + (A, C, D, E, G)</td><td>A</td><td>A → B, so A is a key of (A, B)</td></tr><tr><td>(A, C, D, E, G) → (D, E) + (A, C, D, G)</td><td>D</td><td>D → E, so D is a key of (D, E)</td></tr><tr><td>(A, C, D, G) → (C, D) + (A, C, G)</td><td>C</td><td>C → D, so C is a key of (C, D)</td></tr></table></div>
+<div class="table-wrap"><table class="jt res"><tr><th>Split</th><th>Common</th><th>Why it is lossless</th></tr><tr><td>R → (A, B) + (A, C, D, E, G)</td><td>A (member_no)</td><td>A → B, so A is a key of (A, B)</td></tr><tr><td>(A, C, D, E, G) → (D, E) + (A, C, D, G)</td><td>D (isbn)</td><td>D → E, so D is a key of (D, E)</td></tr><tr><td>(A, C, D, G) → (C, D) + (A, C, G)</td><td>C (accession_no)</td><td>C → D, so C is a key of (C, D)</td></tr></table></div>
 <div class="panel"><h4>The result: four tables, each about one thing</h4><div class="table-wrap"><table class="jt res"><tr><th>Schema</th><th>Real meaning</th><th>Key</th></tr><tr><td>(A, B)</td><td>member(member_no, member_name)</td><td>A</td></tr><tr><td>(C, D)</td><td>copy(accession_no, isbn)</td><td>C</td></tr><tr><td>(D, E)</td><td>book(isbn, title)</td><td>D</td></tr><tr><td>(A, C, G)</td><td>issue(member_no, accession_no, date)</td><td>CG</td></tr></table></div></div>
 <p>Check it: join the four projections back together.</p>
 
 ```
 
-```{.sql db="lis"}
+```{.sql db="test_db"}
 select count(*)
 from (select distinct a, b from issue_record) as member
      join (select distinct c, g, a from issue_record) as issue using (a)
@@ -181,18 +256,70 @@ from (select distinct a, b from issue_record) as member
 <p>This is very close to the real LIS dataset, which has members, book_copies, book_catalogue and book_issue. Every anomaly found at the start is gone: a title is stored once, a new book can be added with no issue, and deleting an issue keeps the member.</p>
 ```
 
+::: {.callout-tip title="Try it yourself: Lossless Join Check (four tables)" collapse="true"}
+
+Click **Run** to trace the lossless join of member, issue, copy and book step by step.
+
+```{.fd check="lossless-join"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+
+Decompose: R1(A, B), R2(C, D), R3(D, E), R4(A, C, G)
+```
+:::
+
 ## 10. Dependency Preservation
 
 ```{=html}
 <p>A decomposition <b>preserves dependencies</b> if every FD can be checked <b>inside one table</b>, without joining.</p>
-<div class="panel"><h4>The member / copy / book / issue decomposition</h4><div class="table-wrap"><table class="jt res"><tr><th>FD of F<sub>c</sub></th><th>Checked in</th></tr><tr><td>A → B</td><td>(A, B)</td></tr><tr><td>C → D</td><td>(C, D)</td></tr><tr><td>D → E</td><td>(D, E)</td></tr><tr><td>CG → A</td><td>(A, C, G)</td></tr></table></div><p style="margin:8px 0 0">Every FD lives in one table: <b>dependency preserving</b>.</p></div>
-<p>Now a different split, also lossless: <b>(C, D), (C, E), (A, C, G), (A, B)</b>. Here the title is stored with the copy instead of with the book. Is D → E preserved? When an FD is not inside one table, use the closure test:</p>
-<div class="flow-label">How</div><div class="flow steps"><div class="step"><div class="box"><b>start</b></div><span>result = α</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>for each table Rᵢ</b></div><span>add (result ∩ Rᵢ)⁺ ∩ Rᵢ</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>repeat</b></div><span>until result stops growing</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>β ⊆ result?</b></div><span>preserved, else lost</span></div></div>
-<div class="panel"><h4>Is D → E preserved? The closure test</h4><div class="table-wrap"><table class="jt res"><tr><th>Round</th><th>Table</th><th>(result ∩ Rᵢ)⁺ ∩ Rᵢ</th><th>result</th></tr><tr><td>start</td><td></td><td></td><td>D</td></tr><tr><td>1</td><td>(C, D)</td><td>{D}⁺ = DE, keep only C, D → D</td><td>D</td></tr><tr><td>1</td><td>(C, E), (A, C, G), (A, B)</td><td>D not in these tables</td><td>D</td></tr></table></div><p style="margin:8px 0 0">result stays {D} and never contains E: <b>D → E is not preserved</b>. D and E never meet in one table, and no chain of tables connects them.</p></div>
+<div class="panel"><h4>The member / copy / book / issue decomposition</h4><div class="table-wrap"><table class="jt res"><tr><th>FD of F<sub>c</sub></th><th>Checked in</th></tr><tr><td>A → B<br><small>member_no → member_name</small></td><td>member (A, B)</td></tr><tr><td>C → D<br><small>accession_no → isbn</small></td><td>copy (C, D)</td></tr><tr><td>D → E<br><small>isbn → title</small></td><td>book (D, E)</td></tr><tr><td>CG → A<br><small>accession_no, date_of_issue → member_no</small></td><td>issue (A, C, G)</td></tr></table></div><p style="margin:8px 0 0">Every FD lives in one table: <b>dependency preserving</b>.</p></div>
+<p>Now a different split, also lossless: <b>(C, D), (C, E), (A, C, G), (A, B)</b>. Here the title is stored with the copy instead of with the book. Is D → E (isbn → title) preserved? Use the F′ method: collect the FDs that hold inside each table, then take closures under their union F′.</p>
+<div class="flow-label">How</div><div class="flow steps"><div class="step"><div class="box"><b>local FDs</b></div><span>Fᵢ = FDs of F⁺ inside Rᵢ</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>combine</b></div><span>F′ = F₁ ∪ F₂ ∪ …</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>for each α → β in F</b></div><span>compute α⁺ under F′</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>β ⊆ α⁺?</b></div><span>preserved, else lost</span></div></div>
+<div class="panel"><h4>Is D → E preserved? The F′ method</h4><div class="table-wrap"><table class="jt res"><tr><th>Table</th><th>Local FDs</th></tr><tr><td>(C, D)</td><td>C → D</td></tr><tr><td>(C, E)</td><td>C → E (from C → D and D → E)</td></tr><tr><td>(A, C, G)</td><td>CG → A</td></tr><tr><td>(A, B)</td><td>A → B</td></tr></table></div><p style="margin:8px 0 0">F′ = { C → D, C → E, CG → A, A → B }. No FD in F′ has D alone on the left, so D⁺ under F′ = D, which does not contain E: <b>D → E is not preserved</b>. D and E never meet in one table.</p></div>
 <p>In practice, one isbn could be stored with two different titles, and no single table could catch it.</p>
 <p>A good decomposition is both <b>lossless</b> (no fake rows) and <b>dependency preserving</b> (every rule checkable in one table). The member / copy / book / issue design is both; the split that stores the title with the copy is lossless but not preserving.</p>
 ```
 
+::: {.callout-tip title="Try it yourself: Dependency Preservation Check (title with the book)" collapse="true"}
+
+Click **Run** to see that every FD is preserved when the title is stored with the book.
+
+```{.fd check="dependency-preservation"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+
+Decompose: R1(A, B), R2(C, D), R3(D, E), R4(A, C, G)
+```
+:::
+
+::: {.callout-tip title="Try it yourself: Dependency Preservation Check (title with the copy)" collapse="true"}
+
+Click **Run** to see that D → E (isbn → title) is lost when the title is stored with the copy.
+
+```{.fd check="dependency-preservation"}
+R(A, B, C, D, E, G)
+
+A -> B
+AG -> B
+C -> DE
+D -> E
+CG -> AB
+
+Decompose: R1(C, D), R2(C, E), R3(A, C, G), R4(A, B)
+```
+:::
+
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
+<script type="module" src="../../assets/fd_runner.js"></script>
 ```

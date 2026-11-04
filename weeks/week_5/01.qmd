@@ -24,7 +24,7 @@ To keep the notation short (as in exam questions), its columns are written as le
 
 $$R = (A, B, C, D, E, G) \qquad F = \{A \rightarrow B,\ A \rightarrow C,\ A \rightarrow D,\ D \rightarrow E,\ D \rightarrow G\}$$
 
-An instructor's ID determines their name, salary and department; a department determines its building and budget.
+In words: an instructor's `ID` determines their `name`, `salary` and `dept_name` (A → B, A → C, A → D); a `dept_name` determines its `building` and `budget` (D → E, D → G).
 
 ---
 
@@ -34,10 +34,10 @@ A relational schema should reflect real-world structure, avoid storing the same 
 
 ### A Bad Schema
 
-- A, B, C (`ID`, `name`, `salary`) — belong purely to the instructor, no repetition
-- D, E, G (`dept_name`, `building`, `budget`) — belong to the *department*
+- `ID`, `name`, `salary` (A, B, C) — belong purely to the instructor, no repetition
+- `dept_name`, `building`, `budget` (D, E, G) — belong to the *department*
 
-Since a department has many instructors, E and G get copied once per instructor in that department. That repetition is **redundancy** — the same data item stored in multiple places.
+Since a department has many instructors, its `building` and `budget` get copied once per instructor in that department. That repetition is **redundancy** — the same data item stored in multiple places.
 
 Here's what that looks like with actual rows:
 
@@ -56,9 +56,9 @@ Redundancy causes **anomalies** — inconsistencies triggered by insert, delete,
 
 | Anomaly | What Goes Wrong | In R |
 |---|---|---|
-| **Insertion** | Can't add a record without unrelated data | Civil Eng., History and Math have no instructors, so their E and G cannot be stored |
-| **Deletion** | Deleting one record erases unrelated info | Finance has one instructor; deleting that row loses Finance's E and G |
-| **Update** | One fact change needs many row updates | Changing Statistics' budget (G) means updating 6 rows |
+| **Insertion** | Can't add a record without unrelated data | Civil Eng., History and Math have no instructors, so their `building` and `budget` cannot be stored |
+| **Deletion** | Deleting one record erases unrelated info | Finance has one instructor; deleting that row loses Finance's `building` and `budget` |
+| **Update** | One fact change needs many row updates | Changing Statistics' `budget` means updating 6 rows |
 
 The insertion anomaly on the data:
 
@@ -69,14 +69,14 @@ where dept_name not in (select dept_name from instructor);
 
 ### Why This Happens — and the Fix
 
-D (`dept_name`) uniquely decides E and G (a department can't have two budgets). This dependency is exactly what forces E and G to repeat across instructor rows:
+`dept_name` uniquely decides `building` and `budget` (a department can't have two budgets). This dependency is exactly what forces `building` and `budget` to repeat across instructor rows:
 
 
 ```{=html}
-<div class="flow steps"><div class="step"><div class="box"><b>Dependency</b></div><span>D → E, D → G</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Redundancy</b></div><span>E and G copied per instructor</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Anomaly</b></div><span>insert, delete, update problems</span></div></div>
+<div class="flow steps"><div class="step"><div class="box"><b>Dependency</b></div><span>dept_name → building, budget</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Redundancy</b></div><span>building, budget copied per instructor</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>Anomaly</b></div><span>insert, delete, update problems</span></div></div>
 ```
 
-The fix is to **decompose** R so each fact is stored exactly once: $R_1 = (A, B, C, D)$ = `instructor` and $R_2 = (D, E, G)$ = `department`. (Covered in detail under Lossless Join Decomposition.)
+The fix is to **decompose** R so each fact is stored exactly once: $R_1 = (A, B, C, D)$ = `instructor(ID, name, salary, dept_name)` and $R_2 = (D, E, G)$ = `department(dept_name, building, budget)`. (Covered in detail under Lossless Join Decomposition.)
 
 ```{=html}
 <div class="flow"><div class="box"><b>R₁ = instructor</b><span>A, B, C, D</span></div><div class="box grey"><b>R₂ = department</b><span>D, E, G</span></div></div>
@@ -98,9 +98,16 @@ holds if, for any legal instance of $R$, two tuples that agree on $\alpha$ must 
 
 $$t_1[\alpha] = t_2[\alpha] \implies t_1[\beta] = t_2[\beta]$$
 
-**Example:** in R we expect $D \rightarrow E$ and $D \rightarrow G$, since a department has exactly one building and one budget. We would *not* expect $D \rightarrow C$ — a department tells you nothing about one specific instructor's salary.
+**Example:** in the instructor–department relation, a department has exactly one building and one budget, so we expect:
 
-Check $D \rightarrow EG$ on the data: no department appears with two different (building, budget) pairs.
+- `dept_name → building` (D → E)
+- `dept_name → budget` (D → G)
+
+Any two rows with the same `dept_name` (for example, the 6 Statistics instructors) must show the same `building` and the same `budget`.
+
+We would *not* expect `dept_name → salary` (D → C): one department has many instructors, and they are paid different salaries.
+
+Check `dept_name → building, budget` on the data — no department appears with two different (building, budget) pairs:
 
 ```{.sql db="university"}
 select dept_name
@@ -110,7 +117,7 @@ having count(distinct (building, budget)) > 1;
 ```
 
 ::: {.callout-note title="Note"}
-An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. If the current rows happen to satisfy $B \rightarrow A$ (no two instructors currently share a name), that doesn't mean the FD genuinely holds.
+An FD only "holds" if it's true for *every* legal instance of the schema, not just today's data. In the current data no two instructors share a name, so `name → ID` (B → A) happens to be satisfied. But the university could hire a second instructor with an existing name, so `name → ID` is not a genuine FD.
 :::
 
 ### Keys, Redefined Using FDs
@@ -118,17 +125,37 @@ An FD only "holds" if it's true for *every* legal instance of the schema, not ju
 - $K$ is a **superkey** for $R$ if and only if $K \rightarrow R$ (K determines every attribute in R)
 - $K$ is a **candidate key** for $R$ if and only if $K \rightarrow R$, **and** no proper subset $\alpha \subset K$ also satisfies $\alpha \rightarrow R$ (K is minimal)
 
-In R: $A \rightarrow R$, so A (`ID`) is a candidate key; $AB$ is a superkey but not a candidate key; D is not a superkey.
+In R:
+
+- `ID → name, salary, dept_name, building, budget` (A → R): an instructor's `ID` determines every column, so `ID` is a **candidate key**.
+- `{ID, name}` (AB) is a **superkey** but not a candidate key, because `ID` alone is already enough.
+- `dept_name` (D) is **not a superkey**: it determines only `building` and `budget`.
+
+::: {.callout-tip title="Try it yourself: Candidate Keys" collapse="true"}
+
+Click **Run** to find the candidate keys of R and see which attributes are prime and non-prime. The runner uses the letters: A = `ID`, B = `name`, C = `salary`, D = `dept_name`, E = `building`, G = `budget`.
+
+```{.fd check="candidate-keys"}
+R(A, B, C, D, E, G)
+
+A -> B
+A -> C
+A -> D
+D -> E
+D -> G
+```
+:::
 
 ### Trivial FDs
 
 An FD $\alpha \rightarrow \beta$ is **trivial** if $\beta \subseteq \alpha$ — it's automatically true for any relation and tells us nothing new.
 
 ```
-AB → A     -- trivial (A is already on the left)
-B → B      -- trivial
+ID, name → ID     -- trivial: ID is already on the left   (AB → A)
+name → name       -- trivial                              (B → B)
 ```
 
 ```{=html}
 <script type="module" src="../../assets/sql_runner.js"></script>
+<script type="module" src="../../assets/fd_runner.js"></script>
 ```

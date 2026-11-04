@@ -43,6 +43,20 @@ Every single attribute is a candidate key (and thus, a superkey).
 
 **Conclusion:** All functional dependencies satisfy the BCNF condition. The relation **is in BCNF**.
 
+::: {.callout-tip title="Try it yourself: Verify BCNF Success" collapse="true"}
+
+Click **Run** to check why all 4 functional dependencies satisfy BCNF:
+
+```{.fd check="bcnf, closure, all-nf"}
+R(A, B, C, D)
+
+A -> B
+B -> C
+C -> D
+D -> A
+```
+:::
+
 ## **BCNF Solved Example 2: Failure**
 
 Let's look back at the example from the 3NF chapter: 
@@ -55,6 +69,20 @@ Now let's check the FDs against the strict BCNF rule:
 - $C \rightarrow B$: Is $C$ a superkey? **No.**
 
 **Conclusion:** Because $E$ and $C$ are not superkeys, the relation **fails BCNF**, even though it was successfully in 3NF!
+
+::: {.callout-tip title="Try it yourself: Verify BCNF Failure" collapse="true"}
+
+Click **Run** below to inspect the BCNF violation diagnostics:
+
+```{.fd check="bcnf, closure, all-nf"}
+R(A, B, C, D, E, F)
+
+AB -> CDE
+E -> F
+BF -> A
+C -> B
+```
+:::
 
 ---
 
@@ -113,3 +141,7 @@ A relation schema $R$ is in 4NF if and only if the following conditions are sati
 2. It does not contain any **non-trivial multi-valued dependencies**.
 
 If a table violates 4NF due to $X \twoheadrightarrow Y$, we fix it by decomposing the table into two separate tables: one holding $(X, Y)$ and the other holding $(X, \text{everything else})$.
+
+```{=html}
+<script type="module" src="../../assets/fd_runner.js"></script>
+```

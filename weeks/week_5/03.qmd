@@ -12,53 +12,139 @@ We already have **attribute closure** ($\alpha^+$) as our go-to tool for testing
 
 ## Extraneous Attributes
 
+- An attribute of a functional dependency is said to be **extraneous** if we can remove it without changing the closure of the set of functional dependencies ($F^+$).
+
 ::: {.callout-note title="Key idea"}
 An extraneous attribute is dead weight — remove it, and the FD set means exactly the same thing. It was never pulling any weight to begin with.
 :::
 
-An attribute can be dead weight on either side of an FD:
+Let's consider a functional dependency $\alpha \rightarrow \beta$ in a set $F$:
 
-- **Extraneous on the left ($\alpha$):** attribute $A \in \alpha$ is extraneous in $\alpha \rightarrow \beta$ if the *rest* of the left side, without $A$, still determines $\beta$ on its own.
-- **Extraneous on the right ($\beta$):** attribute $A \in \beta$ is extraneous in $\alpha \rightarrow \beta$ if the *other* FDs in the set can already derive $A$ anyway — this one FD isn't needed to get it.
+1. **Condition 1 (Extraneous on the Left, $X \in \alpha$):**
+   - If $X \in \alpha$, compute $(\alpha - \{X\})^+_F$.
+   - If $(\alpha - \{X\})^+_F$ contains $\beta$, then $X$ is an **extraneous attribute** on the LHS.
+   - Removing $X$ simplifies the dependency to $(\alpha - \{X\}) \rightarrow \beta$.
 
-### How to Test
+2. **Condition 2 (Extraneous on the Right, $X \in \beta$):**
+   - If $X \in \beta$, compute $\alpha^+$ using the modified set:
+     $$F' = (F - \{\alpha \rightarrow \beta\}) \cup \{\alpha \rightarrow (\beta - \{X\})\}$$
+   - If $\alpha^+_{F'}$ contains $X$, then $X$ is an **extraneous attribute** on the RHS.
+   - Removing $X$ simplifies the dependency to $\alpha \rightarrow (\beta - \{X\})$ (or eliminates the dependency entirely if $\beta - \{X\} = \emptyset$).
 
-**Left side:** Drop $A$ from $\alpha$. Compute $(\alpha - A)^+$. If $\beta$ is inside that result, $A$ was extraneous.
+The examples use the university letters (A = `ID`, C = `salary`, D = `dept_name`, E = `building`, G = `budget`).
 
-**Right side:** Drop $A$ from $\beta$ (just for this one FD). Recompute $\alpha^+$ using this adjusted set. If $A$ still shows up in the result, it means the other FDs already covered it — so $A$ was extraneous.
-
-### Example — Extraneous on the Left
-
-Using the university letters (A = `ID`, C = `salary`, D = `dept_name`, E = `building`, G = `budget`):
+### Example - Extraneous on the Left (Condition 1)
 
 $F = \{A \rightarrow C,\ AD \rightarrow C\}$ — "ID → salary" and "ID, dept_name → salary"
 
-Is $D$ extraneous in $AD \rightarrow C$? Drop it and check $A^+$. Since $A^+ = AC$ already contains $C$, yes — $A$ alone was always enough. $D$ was dead weight: salary depends on the instructor, not on the department.
+Is $D$ extraneous in $AD \rightarrow C$?
 
-### Example — Extraneous on the Right
+- Here $\alpha = AD$, $\beta = C$, and $X = D \in \alpha$.
+- Drop $D$ from $\alpha$ and compute $(AD - \{D\})^+ = A^+$.
+- Since $A^+ = AC$ already contains $\beta = C$, **$D$ is an extraneous attribute**: salary depends on the instructor, not on the department.
+- We can replace $AD \rightarrow C$ with $A \rightarrow C$.
+
+### Example - Extraneous on the Right (Condition 2)
 
 $F = \{D \rightarrow E,\ AD \rightarrow EG\}$ — "dept_name → building" and "ID, dept_name → building, budget"
 
-Is $E$ extraneous in $AD \rightarrow EG$? Drop it, leaving $\{D \rightarrow E,\ AD \rightarrow G\}$. Compute $AD^+$ under this reduced set: it comes out to $ADEG$ — which still contains $E$. So $E$ was extraneous: the building already comes through the department.
+Is $E$ extraneous in $AD \rightarrow EG$?
+
+- Here $\alpha = AD$, $\beta = EG$, and $X = E \in \beta$.
+- Form $F' = \{D \rightarrow E,\ AD \rightarrow G\}$.
+- Compute $AD^+$ under $F'$: $AD^+ = ADEG$.
+- Since $AD^+$ contains $X = E$, **$E$ is an extraneous attribute**: the building already comes through the department.
+- We can replace $AD \rightarrow EG$ with $AD \rightarrow G$.
+
+::: {.callout-tip title="Try it yourself: Extraneous Attribute Check" collapse="true"}
+
+Click **Run** to test whether each LHS or RHS attribute is extraneous. Both examples above are in this set.
+
+```{.fd check="extraneous-attribute"}
+R(A, C, D, E, G)
+
+A -> C
+AD -> C
+D -> E
+AD -> EG
+```
+:::
 
 ---
 
-## Equivalence & Canonical Cover
-
-### Equivalence of FD Sets
+## Equivalence of Functional Dependency
 
 ::: {.callout-note title="Key idea"}
 Two FD sets are equivalent if they're just two different ways of writing down the same set of rules.
 :::
 
-$F$ and $G$ are **equivalent** if $F^+ = G^+$. This needs both directions to hold:
+Two sets of functional dependencies $F$ and $G$ are **equivalent** ($F \equiv G$) if and only if $F^+ = G^+$.
 
-- **$F$ covers $G$**: everything in $G$ can be derived from $F$
-- **$G$ covers $F$**: everything in $F$ can be derived from $G$
+This requires verifying two conditions:
 
-Only if both hold are $F$ and $G$ truly equivalent.
+1. **$F$ covers $G$ ($G \subseteq F^+$):**
+   - All relations/dependencies in $G$ should be satisfied while taking the closure under $F$.
+   - For every $\alpha \rightarrow \beta \in G$, $\alpha^+_F$ must contain $\beta$.
+2. **$G$ covers $F$ ($F \subseteq G^+$):**
+   - All relations/dependencies in $F$ should be satisfied while taking the closure under $G$.
+   - For every $\alpha \rightarrow \beta \in F$, $\alpha^+_G$ must contain $\beta$.
 
-### Canonical Cover
+- If both conditions hold, **$F$ is equivalent to $G$** ($F \equiv G$).
+
+---
+
+### Example
+
+Let $F_1 = \{ P \rightarrow Q,\ Q \rightarrow R,\ R \rightarrow P \}$ and $F_2 = \{ P \rightarrow R,\ Q \rightarrow R,\ R \rightarrow Q \}$.
+
+#### 1. Check if $F_1$ covers $F_2$ ($F_2 \subseteq F_1^+$)
+
+Taking attribute closures of LHS of $F_2$ using dependencies in $F_1$:
+
+- $P^+ = PQR$ (satisfies $P \rightarrow R$)
+- $Q^+ = QRP$ (satisfies $Q \rightarrow R$)
+- $R^+ = RPQ$ (satisfies $R \rightarrow Q$)
+
+**$F_1$ covers $F_2$** because by taking the closure on $F_1$, all dependencies in $F_2$ are satisfied.
+
+---
+
+### Example (continued)
+
+#### 2. Check if $F_2$ covers $F_1$ ($F_1 \subseteq F_2^+$)
+
+Taking attribute closures of LHS of $F_1$ using dependencies in $F_2$:
+
+- $P^+ = PQR$ (satisfies $P \rightarrow Q$)
+- $Q^+ = QR$ (satisfies $Q \rightarrow R$)
+- $R^+ = RQ$ (does **NOT** satisfy $R \rightarrow P$)
+
+**$F_2$ does not cover $F_1$** because taking the closure of $R$ under $F_2$ gives $R^+ = RQ$, which does not contain $P$, failing to satisfy $R \rightarrow P \in F_1$.
+
+**Conclusion:** Since $F_2$ does not cover $F_1$, **$F_1$ is NOT equivalent to $F_2$** ($F_1 \not\equiv F_2$).
+
+::: {.callout-tip title="Try it yourself: Equivalence Check (F ≡ G)" collapse="true"}
+
+Click **Run** to verify covering in both directions with step-by-step closures.
+
+```{.fd check="equivalence"}
+R(P, Q, R)
+
+F1:
+P -> Q
+Q -> R
+R -> P
+
+F2:
+P -> R
+Q -> R
+R -> Q
+```
+:::
+
+---
+
+## Canonical Cover
 
 ::: {.callout-note title="Key idea"}
 The canonical cover is the FD set with all the fat trimmed off — no whole dependency that another one already implies, and no attribute inside a dependency that isn't actually needed.
@@ -89,11 +175,25 @@ Removing an extraneous attribute can create a *new* opportunity to merge left-ha
 $R = (A, D, E)$ = (`ID`, `dept_name`, `building`), $F = \{A \rightarrow DE,\ D \rightarrow E,\ A \rightarrow D,\ AD \rightarrow E\}$
 
 1. **Merge:** $A \rightarrow DE$ and $A \rightarrow D$ share a left side → combine into $A \rightarrow DE$. Set is now $\{A \rightarrow DE,\ D \rightarrow E,\ AD \rightarrow E\}$.
-2. **Left-side check:** is $A$ extraneous in $AD \rightarrow E$? Drop it — $D \rightarrow E$ is already in the set, so yes. Set is now $\{A \rightarrow DE,\ D \rightarrow E\}$.
-3. **Right-side check:** is $E$ extraneous in $A \rightarrow DE$? Drop it and check — $A \rightarrow D$ and $D \rightarrow E$ together still give $A \rightarrow E$ by transitivity. So yes, $E$ was extraneous.
+2. **Left-side check:** is `ID` (A) extraneous in `ID, dept_name → building` ($AD \rightarrow E$)? Drop it — `dept_name → building` ($D \rightarrow E$) is already in the set, so yes. Set is now $\{A \rightarrow DE,\ D \rightarrow E\}$.
+3. **Right-side check:** is `building` (E) extraneous in `ID → dept_name, building` ($A \rightarrow DE$)? Drop it and check — `ID → dept_name` and `dept_name → building` together still give `ID → building` ($A \rightarrow E$) by transitivity. So yes, $E$ was extraneous.
 
 **Canonical cover:** $\{A \rightarrow D,\ D \rightarrow E\}$ — the smallest set that says exactly what the original four FDs said: an instructor belongs to a department, and the building comes through the department.
 
+::: {.callout-tip title="Try it yourself: Canonical Cover (F_c)" collapse="true"}
+
+Click **Run** to compute the canonical cover $F_c$ and inspect the reduction steps.
+
+```{.fd check="canonical-cover"}
+R(A, D, E)
+
+A -> DE
+D -> E
+A -> D
+AD -> E
+```
+:::
+
 ```{=html}
-<script type="module" src="../../assets/sql_runner.js"></script>
+<script type="module" src="../../assets/fd_runner.js"></script>
 ```
