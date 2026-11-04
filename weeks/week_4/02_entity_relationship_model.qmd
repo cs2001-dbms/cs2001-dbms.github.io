@@ -75,30 +75,15 @@ An ER diagram is a visual representation of the ER model. The standard notation 
 - **Double Rectangles**: Represent weak entity sets.
 - **Double Diamonds**: Represent identifying relationship sets for weak entity sets.
 
-## Worked Example: University Database
+See the [university schema example](04_university_schema_example.qmd) for a worked diagram.
 
-The university schema below ties together students, instructors, departments, courses, sections, classrooms, and time slots. Read it from the entity rectangles outward: identify what is stored, then follow each relationship diamond to see how records connect.
+## Ternary Relationships
 
-![University ER diagram](er_diagram.png){width=95%}
+A ternary relationship connects three entity sets in one fact. For example, `Assigns` can connect an instructor, a project, and a student to record which instructor assigned which project to which student.
 
-### Reading the Diagram
+![Ternary relationship connecting three entity sets](ternary_relationship.png){width=80%}
 
-| Concept | Where it appears | Meaning in this example |
-|---|---|---|
-| Strong entity and key | `department`, `instructor`, `student`, `course`, `classroom`, and `time_slot` rectangles; underlined attributes | Each strong entity has its own key, such as `ID`, `course_id`, or `dept_name`. An underlined attribute identifies an entity instance. |
-| Weak entity and identifying relationship | Double rectangle `section`; double diamond `sec_course` | A section is identified in the context of its course. Its `sec_id` is a partial key; together with the course key and the other section key attributes, it identifies a section offering. The double line indicates total participation: a section cannot exist without its course. |
-| 1:N relationships | `course_dept`, `inst_dept`, and `stud_dept` | The arrow marks the “at most one” side. For example, each course belongs to at most one department, while a department can be related to many courses. |
-| Advising relationship | `advisor` between `student` and `instructor` | The arrow toward `instructor` means each student has at most one advisor; an instructor may advise many students. |
-| M:N relationships | `teaches` and `takes` | Instructors may teach multiple sections and sections may involve multiple instructors where permitted by the schema; students take sections and each section can have many students. Double lines show total participation where present. |
-| Relationship attribute | `grade` connected to `takes` | A grade belongs to a student's enrollment in a section, not to the student or section by itself. |
-| Recursive relationship | `prereq` from `course` back to `course` | A course can require another course. The role labels `course_id` and `prereq_id` distinguish the course from its prerequisite. |
-| Scheduling relationships | `sec_time_slot` and `sec_class` | Each section is associated with a time slot and classroom; the arrows show the key constraints for those associations. |
-
-**How to read the symbols:** rectangles are entity sets, diamonds are relationships, and underlined attributes are keys. A double rectangle marks a weak entity; its identifying relationship is a double diamond. Arrows show key constraints (“at most one” on the arrow side), while double lines show total participation (“every entity on this side must participate”).
-
-**What this diagram does not show:** it is a core ER model, not an EER model. Composite, multivalued, and derived attributes are illustrated in [the attribute-types figure](attributes.png). Specialization/generalization, ternary relationships, and aggregation are introduced in [Advanced ER Concepts](03_advanced_er_concepts.qmd) with their own diagrams.
-
-> **Design check:** An arrow gives an “at most one” constraint, not a guarantee that a relationship exists. Use a double line when participation is mandatory. Always confirm both rules with the real requirements before translating an ER diagram into tables.
+Use one ternary relationship when the fact depends on all three participants together. Three separate binary relationships may lose which participants formed the original association. See [Advanced ER Concepts](03_advanced_er_concepts.qmd) for more detail.
 
 ---
 

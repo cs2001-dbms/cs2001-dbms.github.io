@@ -92,6 +92,7 @@ book:
         - weeks/week_4/01_relational_algebra_and_calculus.qmd
         - weeks/week_4/02_relational_algebra_examples.qmd
         - weeks/week_4/02_entity_relationship_model.qmd
+        - weeks/week_4/04_university_schema_example.qmd
         - weeks/week_4/03_advanced_er_concepts.qmd
     - part: '**Week-05**'
       chapters:

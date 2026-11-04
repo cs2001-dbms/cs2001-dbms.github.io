@@ -19,7 +19,7 @@ A **ternary relationship** is one relationship set whose instances simultaneousl
 
 **Why not replace it with three binary relationships?** Separate links such as “instructor works on project,” “student works on project,” and “instructor advises student” do not necessarily say which instructor assigned which project to which student. Joining those pairwise facts can create combinations that were never assigned. Decompose a ternary relationship only when the original constraints prove the decomposition preserves exactly the same facts.
 
-**How to model it:** Put all three participating entity sets at the same relationship diamond. When mapping to relations, create a relation containing their keys and any attributes of the relationship. The keys and constraints depend on the cardinalities on each role; do not assume all three foreign keys must always form the key without checking the requirements.
+**How to model it:** Put all three participating entity sets at the same relationship diamond. Attach attributes that describe the three-way association, such as `assigned_on`, to the relationship.
 
 ---
 
@@ -95,13 +95,3 @@ The labels in the three diagrams combine the two independent choices. Read them 
 Every superclass entity belongs to at least one subclass, and an entity may belong to more than one. For example, every university employee might be a faculty member, an administrator, or both. The existing figures do not include a dedicated diagram for this combination; the rule follows directly from **overlapping** plus **complete**.
 
 ---
-
-# Summary
-
-The concepts covered in the Entity-Relationship model can be summarized below. ER diagrams provide a standard language to communicate database schemas between developers, designers, and stakeholders.
-
-- Use a ternary relationship when one fact depends on three participants together; use aggregation when another relationship refers to a particular relationship instance.
-- Specialization creates subclasses from a superclass; generalization combines entity sets around their shared properties.
-- Disjointness controls whether an entity may be in multiple subclasses; completeness controls whether every superclass entity must be in at least one subclass.
-
-![ER Diagram Summary](summary.png)
