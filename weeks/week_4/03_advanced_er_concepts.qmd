@@ -7,14 +7,6 @@ format:
 
 ![](thumb_adv_er.png)
 
-## Learning Objectives
-
-After this chapter, students should be able to:
-
-- recognize when a relationship is ternary and when a relationship should be aggregated;
-- distinguish specialization from generalization;
-- specify and interpret disjoint/overlapping and complete/partial subclass constraints.
-
 The **Enhanced Entity-Relationship (EER) model** extends the basic ER model with constructs for richer constraints and abstractions. The most common are higher-degree relationships, aggregation, and superclass/subclass hierarchies. Use an extension only when it expresses a real requirement more clearly than the basic model.
 
 # Ternary Relationships
@@ -85,13 +77,6 @@ The labels in the three diagrams combine the two independent choices. Read them 
 - **Using aggregation when the relationship is not itself being related:** if a project only refers independently to an instructor and a student, a ternary relationship may be clearer.
 - **Leaving ISA constraints implicit:** document whether subclasses overlap and whether the specialization is complete.
 - **Putting attributes at the wrong level:** shared attributes belong to the superclass; role-specific attributes belong to a subclass; attributes describing an association belong to its relationship.
-
-### Review Questions
-
-1. How can you tell whether a fact is ternary, or whether it is an ordinary relationship between an entity and an existing relationship?
-2. A person may be a student, an instructor, both, or neither. Is this specialization disjoint or overlapping, complete or partial?
-3. Every account must be either checking or savings, never both. Which two constraints apply?
-4. Why can a set of three binary relationships fail to preserve a ternary assignment fact?
 
 ### 1. Overlapping and Partial
 

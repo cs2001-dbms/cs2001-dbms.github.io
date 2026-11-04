@@ -7,14 +7,6 @@ format:
 
 ![](thumb_er.png)
 
-## Learning Objectives
-
-After this chapter, students should be able to:
-
-- identify entity sets, relationship sets, attributes, candidate keys, and weak entities;
-- read cardinality, participation, and key constraints from a Chen-style ER diagram;
-- map strong/weak entities and common relationship types into relational tables with keys and foreign keys.
-
 # Introduction to Entity Sets
 
 The Entity-Relationship (ER) model is a high-level conceptual data model that helps in designing the schema of a database. It allows us to describe the data involved in a real-world enterprise in terms of objects and their relationships.
@@ -166,64 +158,3 @@ As discussed earlier, a weak entity set does not have a primary key and depends 
 ![Weak Entity Set Notation](weak_entity.png){width=80%}
 
 ---
-
-# Mapping an ER Design to Relational Tables
-
-ER modeling describes the concepts and constraints; relational mapping turns that design into tables, keys, and foreign keys. These are standard mapping rules, not a replacement for checking the actual business requirements.
-
-## Strong Entity Sets
-
-Create one relation for each strong entity set. Include its simple attributes (expand a composite attribute into its component attributes), and choose a candidate key as the primary key. A derived attribute is usually omitted and computed when needed; store it only when there is a deliberate performance reason and a plan to keep it consistent.
-
-For example, `Course(course_id, title, credits)` uses `course_id` as its primary key.
-
-## Weak Entity Sets
-
-Create a relation for the weak entity. Include its attributes, the primary key of its owner as a foreign key, and its partial key. The primary key combines the owner's key with the weak entity's partial key.
-
-For a section identified within a course, a possible mapping is `Section(course_id, sec_id, semester, year, building, room_number)`, with primary key `(course_id, sec_id, semester, year)` and `course_id` referencing `Course`. This is why the same `sec_id` may be reused for different courses or terms.
-
-## Relationship Sets
-
-| Relationship type | Common mapping rule | Example |
-|---|---|---|
-| 1:N | Put the primary key of the 1-side as a foreign key in the N-side relation. Store relationship attributes there too. | `Course` stores `dept_name` as a foreign key to `Department`. |
-| 1:1 | Put one side's key as a foreign key in the other; prefer the side with total participation. Add `UNIQUE` to enforce the 1:1 maximum and `NOT NULL` if participation is total on that side. | `Department` may store a unique, non-null chair `instructor_id`. |
-| M:N | Create a new relation containing the primary keys of both entity sets as foreign keys. Their combination is often the primary key; include relationship attributes. | `Takes(student_id, course_id, sec_id, semester, year, grade)`, keyed by the student key plus the section's composite key. |
-| Multivalued attribute | Create a separate relation with the owner key and one value per row. Their combination is usually the primary key. | `StudentPhone(student_id, phone_number)`. |
-| Ternary or higher-degree | Create a relation with foreign keys to every participating entity set, plus relationship attributes. Choose a key from the cardinality constraints. | `Assignment(instructor_id, student_id, project_id, assigned_on)`. |
-| Recursive | For 1:N, use a self-referencing foreign key. For M:N, use a separate relation with role-named foreign keys to the same entity table. | `Prerequisite(course_id, prerequisite_id)` has two foreign keys to `Course`. |
-
-For a 1:N relationship, placing the foreign key on the N-side avoids creating a separate table for each association. For M:N, a foreign key in just one of the two entity tables cannot represent all pairings; the relationship table is necessary.
-
-Foreign keys enforce that a referenced row exists, `UNIQUE` enforces an at-most-one constraint, and `NOT NULL` enforces that a foreign-key value is present. Some total-participation constraints (especially for M:N relationships) cannot be expressed by a simple foreign key alone and may need assertions, triggers, or application-level transaction rules, depending on the DBMS.
-
-## Mapping Specialization
-
-There is more than one valid way to map a superclass and its subclasses. Common strategies are:
-
-1. Create a superclass table and one table per subclass. Each subclass key is also a foreign key to the superclass. This naturally supports overlapping and partial specialization.
-2. Create one table for the whole hierarchy with a type discriminator. This is simple for disjoint specialization but may introduce many nullable subclass attributes.
-3. For a disjoint and complete specialization, create one table per subclass, repeating the superclass attributes in each. This avoids a separate superclass table but complicates shared references and updates.
-
-Choose a strategy by checking the disjointness/completeness rules, query patterns, and integrity constraints. No mapping strategy removes the need to enforce the original ER constraints.
-
-### Mapping Checklist
-
-- Does each entity relation have a primary key?
-- Does each weak entity key include its owner's key?
-- Are 1:N foreign keys placed on the many side?
-- Are M:N and multivalued facts stored in separate relations?
-- Are relationship attributes stored with the relationship they describe?
-- Can the chosen tables enforce the diagram's participation and cardinality constraints?
-
-## ER Design Review
-
-For the university diagram above, explain how you would map each of these facts:
-
-1. A department offers many courses, and each course belongs to one department.
-2. A student takes a section and receives a grade for that enrollment.
-3. A section number is unique only within its course offering.
-4. A course may list other courses as prerequisites.
-
-**Check your design:** Store the department key as a foreign key on the many-side `Course`; represent `takes` in its own relation with student and section keys plus `grade`; identify a section using the owner course key and its partial key (along with any term/section key components required by the schema); represent the recursive prerequisite relationship with two role-named foreign keys to `Course`.
