@@ -8,7 +8,9 @@ format:
 
 ## Lossless Join Decomposition
 
-> 💡 **In plain English:** if you split a table in two, you should be able to join the pieces back together and get *exactly* the original table back — not extra, made-up rows, and not missing ones.
+::: {.callout-note title="Key idea"}
+If you split a table in two, you should be able to join the pieces back together and get *exactly* the original table back — not extra, made-up rows, and not missing ones.
+:::
 
 For $R$ decomposed into $R_1, R_2$, this must hold for every legal instance:
 
@@ -20,7 +22,9 @@ $$R_1 \cap R_2 \rightarrow R_1 \quad \text{or} \quad R_1 \cap R_2 \rightarrow R_
 
 In other words: the attribute(s) shared between the two pieces must be enough, on their own, to act as a key for at least one of the two pieces.
 
-> ⚠️ This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn't guaranteed to be necessary.
+::: {.callout-note title="Note"}
+This condition is sufficient whenever all our constraints are FDs. If other kinds of constraints are in play, it isn't guaranteed to be necessary.
+:::
 
 **Full checklist for a lossless decomposition:**
 
@@ -28,54 +32,81 @@ In other words: the attribute(s) shared between the two pieces must be enough, o
 - $R_1 \cap R_2 \neq \phi$ — the two pieces actually share something in common
 - $R_1 \cap R_2 \rightarrow R_1$ or $R_1 \cap R_2 \rightarrow R_2$ — that shared part is a key on at least one side
 
-### Worked Example: Supplier-Parts
-
-`Supplier_Parts(S#, Sname, City, P#, Qty)`, with `S# → Sname, City` and `(S#, P#) → Qty`.
-
-Here's a sample instance:
-
-| S# | Sname | City | P# | Qty |
-|---|---|---|---|---|
-| S1 | Smith | London | P1 | 300 |
-| S1 | Smith | London | P2 | 200 |
-| S2 | Jones | Paris | P1 | 400 |
-| S2 | Jones | Paris | P2 | 300 |
-
-**A bad split:** `Supplier(S#, Sname, City, Qty)` and `Parts(P#, Qty)`
-
-The shared attribute here is `Qty` — and `Qty` isn't a key of either piece. Projecting our sample data onto these two tables and joining them back on `Qty` gives:
-
-| S# | Sname | City | P# | Qty | |
-|---|---|---|---|---|---|
-| S1 | Smith | London | P1 | 300 | ✅ original |
-| S1 | Smith | London | P2 | 300 | ❌ spurious |
-| S2 | Jones | Paris | P1 | 300 | ❌ spurious |
-| S2 | Jones | Paris | P2 | 300 | ✅ original |
-| S1 | Smith | London | P2 | 200 | ✅ original |
-| S2 | Jones | Paris | P1 | 400 | ✅ original |
-
-Both suppliers happened to have a `Qty = 300` row, so the join matches *every* `Qty = 300` row in `Supplier` with *every* `Qty = 300` row in `Parts` — creating two fabricated combinations that never existed in the original data. This decomposition is lossy, and it also fails to preserve `(S#, P#) → Qty`.
-
-**A good split:** `Supplier(S#, Sname, City)` and `Parts(S#, P#, Qty)`
-
-The shared attribute is `S#`, which *is* a key of `Supplier`. Joining these two projections back together on `S#` reconstructs exactly the original four rows — no more, no less. Lossless, and every dependency is preserved too.
-
-> 📌 The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
-
-::: {.callout-tip title="Try it yourself: Test Lossless Join & Dependency Preservation" collapse="true"}
-
-Click **Run** below to verify that decomposing `R(S, Sname, City, P, Qty)` into `R1(S, Sname, City)` and `R2(S, P, Qty)` is **lossless** and **dependency preserving**:
-
-```{.fd check="lossless-join, dependency-preservation"}
-R(S, Sname, City, P, Qty)
-
-S -> Sname, City
-SP -> Qty
-
-Decompose: R1(S, Sname, City), R2(S, P, Qty)
+```{=html}
+<div class="flow steps"><div class="step"><div class="box"><b>1 · cover R</b></div><span>R₁ ∪ R₂ = R</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>2 · overlap</b></div><span>R₁ ∩ R₂ ≠ ∅</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>3 · key test</b></div><span>R₁ ∩ R₂ → R₁ or R₂</span></div><div class="arrow">→</div><div class="step"><div class="box"><b>all 3 hold</b></div><span>lossless</span></div></div>
 ```
 
-*(You can click **Edit** to try the bad split `R1(S, Sname, City, Qty), R2(P, Qty)` and see the lossy diagnosis!)*
+### Worked Example: University Dataset
+
+The university example: $R = (A, B, C, D, E, G)$ = (`ID`, `name`, `salary`, `dept_name`, `building`, `budget`), $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$, i.e. `ID → name, salary, dept_name` and `dept_name → building, budget`. R is `instructor natural join department`.
+
+**A good split:** $R_1 = (A, B, C, D)$ = (`ID`, `name`, `salary`, `dept_name`) and $R_2 = (D, E, G)$ = (`dept_name`, `building`, `budget`) — exactly the dataset's `instructor` and `department` tables.
+
+The shared attribute is `dept_name` (D), which *is* a key of $R_2$: `dept_name → building, budget` ($D \rightarrow EG$). Joining them back gives exactly the 50 original rows:
+
+```{.sql db="university"}
+select count(*)
+from (select distinct id, name, salary, dept_name
+      from instructor natural join department) as r1
+     join (select distinct dept_name, building, budget
+           from instructor natural join department) as r2
+     using (dept_name);
+```
+
+**A bad split:** $R_1 = (A, B, D)$ = (`ID`, `name`, `dept_name`) and $R_2 = (C, D, E, G)$ = (`salary`, `dept_name`, `building`, `budget`)
+
+The shared attribute is again `dept_name` (D) — but now it isn't a key of either piece: a department has many instructors (so it is not a key of $R_1$) and many salaries (so it is not a key of $R_2$). Joining them back gives **182** rows instead of 50:
+
+```{.sql db="university"}
+select count(*)
+from (select distinct id, name, dept_name
+      from instructor natural join department) as r1
+     join (select distinct dept_name, salary, building, budget
+           from instructor natural join department) as r2
+     using (dept_name);
+```
+
+For Biology, which has two instructors:
+
+| A (ID) | B (name) | C (salary) | D (dept_name) | |
+|---|---|---|---|---|
+| 80759 | Queiroz | 45538.32 | Biology | original |
+| 80759 | Queiroz | 77036.18 | Biology | spurious |
+| 81991 | Valtchev | 45538.32 | Biology | spurious |
+| 81991 | Valtchev | 77036.18 | Biology | original |
+
+The join matches *every* Biology row of $R_1$ with *every* Biology row of $R_2$ — creating combinations that never existed in the original data.
+
+::: {.callout-note title="Note"}
+The lesson: it's not *whether* you split a table, it's *where* you split it. The same table can be decomposed well or badly.
+:::
+
+::: {.callout-tip title="Try it yourself: Lossless Join Check (good split)" collapse="true"}
+
+Click **Run** to verify that the good split $R_1(A, B, C, D)$, $R_2(D, E, G)$ is **lossless**.
+
+```{.fd check="lossless-join"}
+R(A, B, C, D, E, G)
+
+A -> BCD
+D -> EG
+
+Decompose: R1(A, B, C, D), R2(D, E, G)
+```
+:::
+
+::: {.callout-tip title="Try it yourself: Lossless Join Check (bad split)" collapse="true"}
+
+Click **Run** to see why the bad split $R_1(A, B, D)$, $R_2(C, D, E, G)$ is **lossy**.
+
+```{.fd check="lossless-join"}
+R(A, B, C, D, E, G)
+
+A -> BCD
+D -> EG
+
+Decompose: R1(A, B, D), R2(C, D, E, G)
+```
 :::
 
 ### Worked Example: Decomposing into Three Relations
@@ -110,9 +141,9 @@ We test for a lossless decomposition progressively in this exact order:
 
 $\therefore$ The 3-way decomposition is **Lossless**.
 
-::: {.callout-tip title="Try it yourself: Verify 3-Way Lossless Join" collapse="true"}
+::: {.callout-tip title="Try it yourself: Lossless Join Check (3-way)" collapse="true"}
 
-Click **Run** below to trace each progressive natural join step live:
+Click **Run** to trace each progressive natural join step.
 
 ```{.fd check="lossless-join"}
 R(A, B, C, D)
@@ -125,11 +156,13 @@ Decompose: R1(A, B), R2(B, C), R3(C, D)
 ```
 :::
 
-> 💡 **Join Order Matters:** We are not restricted to joining strictly $R_1$ and $R_2$ first. If $R_1 \bowtie R_2$ fails the superkey condition, the algorithm searches for any pair of relations that can be joined losslessly. If a failed join occurs, no intermediate relation is created because merging them would generate spurious tuples.
+::: {.callout-note title="Join Order Matters"}
+We are not restricted to joining strictly $R_1$ and $R_2$ first. If $R_1 \bowtie R_2$ fails the superkey condition, the algorithm searches for any pair of relations that can be joined losslessly. If a failed join occurs, no intermediate relation is created because merging them would generate spurious tuples.
+:::
 
-::: {.callout-tip title="Try it yourself: Non-Sequential Pairwise Join Example" collapse="true"}
+::: {.callout-tip title="Try it yourself: Lossless Join Check (join order)" collapse="true"}
 
-In this example, $R_1 \bowtie R_2$ cannot be joined first because their shared attribute $A$ is not a superkey ($A^+ = \{A\}$). However, $R_2$ and $R_3$ share $\{A, D\}$, where $(AD)^+ = \{A, D, E, F\} \supseteq R_2$. Thus $R_2 \bowtie R_3$ joins losslessly into $R_{23}$, which then joins losslessly with $R_1$:
+In this example, $R_1 \bowtie R_2$ cannot be joined first because their shared attribute $A$ is not a superkey ($A^+ = \{A\}$). However, $R_2$ and $R_3$ share $\{A, D\}$, where $(AD)^+ = \{A, D, E, F\} \supseteq R_2$. Thus $R_2 \bowtie R_3$ joins losslessly into $R_{23}$, which then joins losslessly with $R_1$.
 
 ```{.fd check="lossless-join"}
 R(A, B, C, D, E, F)
@@ -149,17 +182,24 @@ Decompose: R1(A, B, C), R2(A, D, F), R3(A, C, D, E)
 
 ## Dependency Preservation
 
+::: {.callout-note title="Key idea"}
+After splitting a table, can you still check all your original rules just by looking at each piece separately — or do you need to join tables back together first to catch a rule violation? If you can check everything locally, the decomposition "preserves dependencies."
+:::
+
 - When a relation is decomposed, it is important to ensure that functional dependencies that held in original relation are still maintained.
 - It helps to prevent anomalies and ensures data integrity.
 - If $F_i$ represents the dependencies preserved locally in each subrelation $R_i$, we define $F' = \bigcup F_i$. The decomposition preserves dependencies iff all dependencies in $F$ can be derived from $F'$:
   $$(F_1 \cup F_2 \cup \cdots \cup F_k)^+ = F^+$$
 
-### **Note**
+If this fails, catching a violation of some original FD needs an expensive join across tables.
 
-> 📌 **Lossless Decomposition and Dependency Preservation are independent of each other.**
-> - A decomposition can be lossless but lose dependencies.
-> - A decomposition can preserve dependencies but be lossy.
-> - Good normalization algorithms (like 3NF synthesis) guarantee both properties at the same time.
+::: {.callout-note title="Note"}
+**Lossless Decomposition and Dependency Preservation are independent of each other.**
+
+- A decomposition can be lossless but lose dependencies.
+- A decomposition can preserve dependencies but be lossy.
+- Good normalization algorithms (like 3NF synthesis) guarantee both properties at the same time.
+:::
 
 ---
 
@@ -190,6 +230,7 @@ $$F' = \{ A \rightarrow B,\ B \rightarrow A,\ B \rightarrow C,\ C \rightarrow B,
 Now, $D \rightarrow A$ is missing from $F'$.
 
 Let's take $D^+$ closure on $F'$:
+
 1. Start with $D^+ = \{ D \}$
 2. Using $D \rightarrow C \in F_3 \implies \{ D, C \}$
 3. Using $C \rightarrow B \in F_2 \implies \{ D, C, B \}$
@@ -199,11 +240,11 @@ Since $A \in D^+$, the dependency $D \rightarrow A$ is preserved after decomposi
 
 $\therefore$ All functional dependencies are preserved, so this decomposition is **Dependency Preserving**.
 
-::: {.callout-tip title="Try it yourself: Verify the Dependency Preservation Algorithm" collapse="true"}
+::: {.callout-tip title="Try it yourself: Dependency Preservation Check (worked example)" collapse="true"}
 
-Click **Run** to compute the dependency preservation audit and progressive lossless join steps live:
+Click **Run** to compute the local FDs, $F'$ and the closure check for each original dependency.
 
-```{.fd check="dependency-preservation, lossless-join"}
+```{.fd check="dependency-preservation"}
 R(A, B, C, D)
 
 A -> B
@@ -215,6 +256,46 @@ Decompose: R1(A, B), R2(B, C), R3(C, D)
 ```
 :::
 
+### Applying It to the University Example
+
+$R = (A, B, C, D, E, G)$, $F_c = \{A \rightarrow BCD,\ D \rightarrow EG\}$
+
+| Decomposition | Local FDs | Dependency Preserving? |
+|---|---|---|
+| $R_1=(A,B,C,D),\ R_2=(D,E,G)$ | $F_1 = \{A \rightarrow BCD\}$, $F_2 = \{D \rightarrow EG\}$ | Yes — `ID → name, salary, dept_name` and `dept_name → building, budget` are directly in $F'$ |
+| $R_1=(A,B,C,D),\ R_2=(A,E,G)$ | $F_1 = \{A \rightarrow BCD\}$, $F_2 = \{A \rightarrow EG\}$ | No — `dept_name → building, budget` (D → EG) is not in $F'$, and $D^+$ under $F'$ is just $D$ |
+
+In the second split, `dept_name` and `building` never sit in the same table, so checking that a department has one building needs a join. Same relation, same FDs — the *choice* of split decides the outcome.
+
+::: {.callout-tip title="Try it yourself: Dependency Preservation Check (good split)" collapse="true"}
+
+Click **Run** to see that both FDs of $F_c$ are preserved when $R_2 = (D, E, G)$.
+
+```{.fd check="dependency-preservation"}
+R(A, B, C, D, E, G)
+
+A -> BCD
+D -> EG
+
+Decompose: R1(A, B, C, D), R2(D, E, G)
+```
+:::
+
+::: {.callout-tip title="Try it yourself: Dependency Preservation Check (bad split)" collapse="true"}
+
+Click **Run** to see that `dept_name → building, budget` is lost when $R_2 = (A, E, G)$.
+
+```{.fd check="dependency-preservation"}
+R(A, B, C, D, E, G)
+
+A -> BCD
+D -> EG
+
+Decompose: R1(A, B, C, D), R2(A, E, G)
+```
+:::
+
 ```{=html}
+<script type="module" src="../../assets/sql_runner.js"></script>
 <script type="module" src="../../assets/fd_runner.js"></script>
 ```
