@@ -32,6 +32,8 @@ WHERE grade = 'A';
 | TRC | $\{t \mid \exists e\in Enrollment\ (t[course\_id]=e[course\_id]\land e[grade]='A')\}$ |
 | DRC | $\{\langle cid\rangle \mid \exists sid,g\ (\langle sid,cid,g\rangle\in Enrollment\land g='A')\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 **Translate:** selection becomes a predicate; projection becomes the output attributes. In DRC, list relation values in schema order: `student_id, course_id, grade`.
 
 ## Join and filter
@@ -52,6 +54,8 @@ WHERE c.title = 'DBMS' AND e.grade = 'A';
 | TRC | $\{t \mid \exists s\in Student\ \exists e\in Enrollment\ \exists c\in Course\ (t[name]=s[name]\land s[student\_id]=e[student\_id]\land e[course\_id]=c[course\_id]\land c[title]='DBMS'\land e[grade]='A')\}$ |
 | DRC | $\{\langle n\rangle \mid \exists sid,cid,g,title\ (\langle sid,n\rangle\in Student\land\langle sid,cid,g\rangle\in Enrollment\land\langle cid,title\rangle\in Course\land title='DBMS'\land g='A')\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 The joins match the shared IDs. The calculus equality predicates express those same join conditions.
 
 ## Alternative conditions
@@ -71,6 +75,8 @@ WHERE c.title = 'DBMS' AND e.grade IN ('A', 'S');
 | RA | $\pi_{name}(\sigma_{title='DBMS'\land(grade='A'\lor grade='S')}(Student\bowtie Enrollment\bowtie Course))$ |
 | TRC | $\{t \mid \exists s\in Student\ \exists e\in Enrollment\ \exists c\in Course\ (t[name]=s[name]\land s[student\_id]=e[student\_id]\land e[course\_id]=c[course\_id]\land c[title]='DBMS'\land(e[grade]='A'\lor e[grade]='S'))\}$ |
 | DRC | $\{\langle n\rangle \mid \exists sid,cid,g,title\ (\langle sid,n\rangle\in Student\land\langle sid,cid,g\rangle\in Enrollment\land\langle cid,title\rangle\in Course\land title='DBMS'\land(g='A'\lor g='S'))\}$ |
+
+: {tbl-colwidths="[20,80]"}
 
 `OR` in a selection becomes $\lor$ in the calculus predicate.
 
@@ -96,6 +102,8 @@ WHERE c.title = 'Math';
 | TRC | $\{t \mid \exists e\in Enrollment\ \exists c\in Course\ (t[student\_id]=e[student\_id]\land e[course\_id]=c[course\_id]\land(c[title]='DBMS'\lor c[title]='Math'))\}$ |
 | DRC | $\{\langle sid\rangle \mid \exists cid,g,title\ (\langle sid,cid,g\rangle\in Enrollment\land\langle cid,title\rangle\in Course\land(title='DBMS'\lor title='Math'))\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 `UNION` removes duplicates, matching the set results of RA and calculus.
 
 ## Intersection
@@ -120,6 +128,8 @@ WHERE c.title = 'Math';
 | TRC | $\{t \mid \exists e_1\in Enrollment\ \exists c_1\in Course\ \exists e_2\in Enrollment\ \exists c_2\in Course\ (t[student\_id]=e_1[student\_id]\land e_1[student\_id]=e_2[student\_id]\land e_1[course\_id]=c_1[course\_id]\land e_2[course\_id]=c_2[course\_id]\land c_1[title]='DBMS'\land c_2[title]='Math')\}$ |
 | DRC | $\{\langle sid\rangle \mid \exists cid_1,g_1,title_1,cid_2,g_2,title_2\ (\langle sid,cid_1,g_1\rangle\in Enrollment\land\langle cid_1,title_1\rangle\in Course\land title_1='DBMS'\land\langle sid,cid_2,g_2\rangle\in Enrollment\land\langle cid_2,title_2\rangle\in Course\land title_2='Math')\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 The two outputs are union-compatible: each contains student IDs. Intersection returns IDs present in both.
 
 ## Existential quantification
@@ -142,6 +152,8 @@ WHERE EXISTS (
 | TRC | $\{t \mid \exists s\in Student\ (t[student\_id]=s[student\_id]\land t[name]=s[name]\land\exists e\in Enrollment\ (e[student\_id]=s[student\_id]))\}$ |
 | DRC | $\{\langle sid,n\rangle \mid \langle sid,n\rangle\in Student\land\exists cid,g\ (\langle sid,cid,g\rangle\in Enrollment)\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 The enrollment tuple and its `course_id` and `grade` values are witnesses: they must exist, but are not part of the output.
 
 ## Comparisons
@@ -161,6 +173,8 @@ WHERE c.title = 'DBMS' AND e.grade <> 'C';
 | RA | $\pi_{student\_id,name}(\sigma_{title='DBMS'\land grade\ne 'C'}(Student\bowtie Enrollment\bowtie Course))$ |
 | TRC | $\{t \mid \exists s\in Student\ (t[student\_id]=s[student\_id]\land t[name]=s[name]\land\exists e\in Enrollment\ \exists c\in Course\ (e[student\_id]=s[student\_id]\land e[course\_id]=c[course\_id]\land c[title]='DBMS'\land e[grade]\ne 'C'))\}$ |
 | DRC | $\{\langle sid,n\rangle \mid \langle sid,n\rangle\in Student\land\exists cid,g,title\ (\langle sid,cid,g\rangle\in Enrollment\land\langle cid,title\rangle\in Course\land title='DBMS'\land g\ne 'C')\}$ |
+
+: {tbl-colwidths="[20,80]"}
 
 Comparisons such as $=$ and $\ne$ are predicates in both calculi. As in SQL, this classical example does not model `NULL`.
 
@@ -191,6 +205,8 @@ AND NOT EXISTS (
 | TRC | $\{t \mid \exists s\in Student\ (t[student\_id]=s[student\_id]\land t[name]=s[name]\land\exists e\in Enrollment\ \exists c\in Course\ (e[student\_id]=s[student\_id]\land e[course\_id]=c[course\_id]\land c[title]='DBMS')\land\neg\exists e_2\in Enrollment\ \exists c_2\in Course\ (e_2[student\_id]=s[student\_id]\land e_2[course\_id]=c_2[course\_id]\land c_2[title]='Math'))\}$ |
 | DRC | $\{\langle sid,n\rangle \mid \langle sid,n\rangle\in Student\land\exists cid,g,title\ (\langle sid,cid,g\rangle\in Enrollment\land\langle cid,title\rangle\in Course\land title='DBMS')\land\neg\exists cid_2,g_2,title_2\ (\langle sid,cid_2,g_2\rangle\in Enrollment\land\langle cid_2,title_2\rangle\in Course\land title_2='Math')\}$ |
 
+: {tbl-colwidths="[20,80]"}
+
 RA subtracts the matching student rows. TRC and DRC express the same exclusion with `NOT EXISTS`, written as $\neg\exists$.
 
 ## Division and “every”
@@ -217,6 +233,8 @@ WHERE NOT EXISTS (
 | RA | $\pi_{student\_id,name}(Student\bowtie(\pi_{student\_id,course\_id}(Enrollment)\div RequiredCourse))$ |
 | TRC | $\{t \mid \exists s\in Student\ (t[student\_id]=s[student\_id]\land t[name]=s[name]\land\forall r\in RequiredCourse\ \exists e\in Enrollment\ (e[student\_id]=s[student\_id]\land e[course\_id]=r[course\_id]))\}$ |
 | DRC | $\{\langle sid,n\rangle \mid \langle sid,n\rangle\in Student\land\forall rc\ (\langle rc\rangle\in RequiredCourse\rightarrow\exists cid,g\ (\langle sid,cid,g\rangle\in Enrollment\land cid=rc))\}$ |
+
+: {tbl-colwidths="[20,80]"}
 
 Division in RA corresponds to universal quantification: “for every required course, an enrollment exists.” The DRC implication excludes values outside `RequiredCourse`; equivalently, there must be no required course without an enrollment.
 
