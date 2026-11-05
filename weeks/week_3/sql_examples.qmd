@@ -8,21 +8,6 @@ format:
 
 Worked examples on **intermediate and advanced SQL** (views, functions, procedures and triggers) using the course datasets. Every query can be run: read the question, try writing it yourself, then press **Run**.
 
-| # | Example | Dataset | Uses |
-|---|---|---|---|
-| 1 | Book availability | lis | view with left join and group by |
-| 2 | Match results | flis | view with `case`, same table joined twice |
-| 3 | League table | flis | view defined on another view |
-| 4 | CS students only | lis | updatable view, `with check option` |
-| 5 | Issues per member type | lis | materialized view, `refresh` |
-| 6 | Books held by a member | lis | SQL function used in `where` |
-| 7 | Student GPA | university | PL/pgSQL function with `case` |
-| 8 | Issuing a book safely | lis | procedure with checks and `raise exception` |
-| 9 | No salary cuts | university | `before update` trigger |
-| 10 | One match per team per day | flis | `before insert` trigger that reads other rows |
-
----
-
 ## Views
 
 ### Example 1: Book availability

@@ -63,5 +63,18 @@ Sometimes LRU is a terrible idea! Consider a query using a **Nested Loop Join** 
 If the `Instructor` table is larger than our buffer, LRU will evict the beginning of the table just before we need to scan it again! In this specific scenario, **Most Recently Used (MRU)** is better. We evict the block we *just* finished reading, because in a looping scan, we won't need it again until the next full loop.
 :::
 
+::: {.callout-tip title="Try it yourself: MRU vs. LRU in Looping Scans" collapse="false"}
+Consider a repeated table scan over 4 blocks (`A, B, C, D`) with only 3 buffer slots. Use **Next** to step through the matrix, and toggle between the **LRU** and **MRU** tabs at the top to see how MRU prevents complete cache thrashing:
+
+```{.buffer check="buffer-pool" policy="mru" frames="3"}
+Sequence: A, B, C, D, B, A, C, D, A, B, C, D
+Frames: 3
+```
+:::
+
 ### Pinned Blocks
 Some operations are so critical that a block cannot be evicted under any circumstances, even if it's the LRU or MRU. For example, if a block is currently being actively updated by a transaction, the Buffer Manager will **Pin** the block, restricting it from being written back to disk prematurely.
+
+```{=html}
+<script type="module" src="../../assets/buffer_runner.js"></script>
+```

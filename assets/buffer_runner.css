@@ -1,0 +1,480 @@
+/* ==========================================================================
+   CS2001 DBMS - Table-Based Buffer Pool Simulator Styles (LRU & MRU)
+   Textbook Grid: Buffer Slots as Rows, Requests as Columns
+   Matching SQL Runner & FD Runner Layout & Button Patterns
+   ========================================================================== */
+
+:root {
+  --buf-radius-lg: 10px;
+  --buf-radius-md: 6px;
+  --buf-radius-sm: 4px;
+  --buf-border-color: rgba(0, 0, 0, 0.12);
+  --buf-bg-surface: #ffffff;
+  --buf-bg-subtle: #f8fafc;
+  --buf-bg-card: #f1f5f9;
+  --buf-text-main: #0f172a;
+  --buf-text-muted: #64748b;
+  --buf-primary: #2563eb;
+  --buf-primary-hover: #1d4ed8;
+  --buf-hit-bg: #ecfdf5;
+  --buf-hit-text: #065f46;
+  --buf-hit-border: #a7f3d0;
+  --buf-hit-badge: #10b981;
+  --buf-miss-bg: #fff7ed;
+  --buf-miss-text: #9a3412;
+  --buf-miss-border: #fed7aa;
+  --buf-miss-badge: #f97316;
+  --buf-active-col: rgba(37, 99, 235, 0.08);
+}
+
+body.quarto-dark {
+  --buf-border-color: rgba(255, 255, 255, 0.12);
+  --buf-bg-surface: #1e1e1e;
+  --buf-bg-subtle: #181818;
+  --buf-bg-card: #262626;
+  --buf-text-main: #e5e7eb;
+  --buf-text-muted: #9ca3af;
+  --buf-primary: #60a5fa;
+  --buf-primary-hover: #93c5fd;
+  --buf-hit-bg: rgba(16, 185, 129, 0.18);
+  --buf-hit-text: #34d399;
+  --buf-hit-border: rgba(16, 185, 129, 0.38);
+  --buf-hit-badge: #10b981;
+  --buf-miss-bg: rgba(249, 115, 22, 0.18);
+  --buf-miss-text: #fb923c;
+  --buf-miss-border: rgba(249, 115, 22, 0.38);
+  --buf-miss-badge: #f97316;
+  --buf-active-col: rgba(96, 165, 250, 0.14);
+}
+
+.buffer-runner-wrapper {
+  margin: 1.3rem 0 2rem 0;
+  border: 1px solid var(--buf-border-color);
+  border-radius: var(--buf-radius-lg);
+  background: var(--buf-bg-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+body.quarto-dark .buffer-runner-wrapper {
+  background: #1e1e1e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.buffer-runner-wrapper:focus-within {
+  border-color: var(--buf-primary);
+}
+
+/* Toolbar */
+.buffer-runner-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.5rem 0.85rem;
+  background: var(--buf-bg-subtle);
+  border-bottom: 1px solid var(--buf-border-color);
+  font-size: 0.82rem;
+}
+
+.buffer-runner-left,
+.buffer-runner-right {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+/* Badges */
+.buffer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--buf-bg-surface);
+  border: 1px solid var(--buf-border-color);
+  border-radius: var(--buf-radius-md);
+  padding: 0.22rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--buf-text-main);
+  user-select: none;
+}
+
+.buffer-badge-primary {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: var(--buf-primary);
+  font-weight: 600;
+}
+
+body.quarto-dark .buffer-badge-primary {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+/* Policy Tabs (LRU vs MRU) */
+.buffer-policy-tabs {
+  display: inline-flex;
+  align-items: center;
+  background: var(--buf-bg-card);
+  border-radius: var(--buf-radius-md);
+  padding: 2px;
+  gap: 2px;
+}
+
+.buffer-tab-pill {
+  padding: 0.22rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--buf-text-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.buffer-tab-pill:hover {
+  color: var(--buf-text-main);
+}
+
+.buffer-tab-pill.active {
+  background: var(--buf-bg-surface);
+  color: var(--buf-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Toolbar Buttons (matching SQL runner buttons) */
+.buffer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--buf-radius-md);
+  border: 1px solid var(--buf-border-color);
+  background: var(--buf-bg-surface);
+  color: var(--buf-text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.buffer-btn:hover:not(:disabled) {
+  background: var(--buf-bg-card);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+body.quarto-dark .buffer-btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.buffer-btn-primary {
+  background: var(--buf-primary);
+  color: #ffffff !important;
+  border-color: var(--buf-primary);
+}
+
+.buffer-btn-primary:hover:not(:disabled) {
+  background: var(--buf-primary-hover);
+  border-color: var(--buf-primary-hover);
+}
+
+.buffer-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Code Display Area */
+.buffer-runner-code-area {
+  position: relative;
+  background: var(--buf-bg-surface);
+  border-bottom: 1px solid var(--buf-border-color);
+}
+
+.buffer-runner-code-area .sourceCode,
+.buffer-runner-code-area pre {
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.buffer-runner-code-area pre > code {
+  font-size: 0.86rem;
+  padding: 0.75rem 1rem !important;
+  display: block;
+}
+
+/* Ace Editor Container */
+.buffer-runner-ace-container {
+  width: 100%;
+  font-family: 'Fira Code', monospace !important;
+  font-size: 0.88rem;
+}
+
+/* Fallback Textarea */
+.buffer-runner-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.88rem;
+  border: none;
+  background: var(--buf-bg-surface);
+  color: var(--buf-text-main);
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* Simulation Visualization Body */
+.buffer-body {
+  padding: 1rem 1.1rem;
+}
+
+/* Table Wrapper */
+.buffer-table-container {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border: 1.5px solid var(--buf-border-color);
+  border-radius: var(--buf-radius-md);
+  background: var(--buf-bg-surface);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Matrix Table */
+.buffer-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.buffer-matrix-table th,
+.buffer-matrix-table td {
+  padding: 0.55rem 0.75rem;
+  min-width: 46px;
+  height: 42px;
+  border: 1px solid var(--buf-border-color);
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+/* Leftmost Label Column */
+.buffer-matrix-table .col-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: left;
+  background: var(--buf-bg-card);
+  color: var(--buf-text-muted);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 105px;
+  border-right: 2px solid var(--buf-border-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Request Header Row */
+.buffer-matrix-table tr.row-requests th {
+  background: var(--buf-bg-card);
+  font-weight: 700;
+  color: var(--buf-text-main);
+  font-size: 0.95rem;
+}
+
+.buffer-matrix-table tr.row-requests th.step-active {
+  background: var(--buf-primary);
+  color: #ffffff !important;
+  position: relative;
+}
+
+/* Active Column Highlight */
+.buffer-matrix-table td.col-active {
+  background: var(--buf-active-col);
+}
+
+/* Future Steps (Blank until reached) */
+.buffer-matrix-table td.col-future {
+  background: var(--buf-bg-subtle);
+}
+
+.buffer-matrix-table th.col-future {
+  opacity: 0.4;
+}
+
+/* Cell Values */
+.buffer-cell-val {
+  font-weight: 600;
+  display: inline-block;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
+
+/* Cell Hit Highlight (Pointing directly to Hit) */
+.buffer-cell-hit {
+  background: var(--buf-hit-bg);
+  border: 2px solid var(--buf-hit-badge) !important;
+  color: var(--buf-hit-text);
+  font-weight: 800;
+  position: relative;
+  box-shadow: inset 0 0 0 1px var(--buf-hit-badge);
+}
+
+.buffer-cell-hit::after {
+  content: "HIT";
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  background: var(--buf-hit-badge);
+  color: #ffffff;
+  font-size: 0.58rem;
+  font-family: system-ui, sans-serif;
+  font-weight: 800;
+  padding: 0.05rem 0.3rem;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.buffer-cell-loaded {
+  background: rgba(37, 99, 235, 0.06);
+  font-weight: 700;
+}
+
+body.quarto-dark .buffer-cell-loaded {
+  background: rgba(96, 165, 250, 0.12);
+}
+
+/* Result Row (HIT / MISS) */
+.buffer-matrix-table tr.row-result td {
+  font-family: system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.status-badge-hit {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: var(--buf-hit-badge);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.status-badge-miss {
+  display: inline-block;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: var(--buf-miss-bg);
+  color: var(--buf-miss-text);
+  border: 1px solid var(--buf-miss-border);
+}
+
+/* Explanation Card */
+.buffer-explanation-card {
+  background: var(--buf-bg-subtle);
+  border: 1px solid var(--buf-border-color);
+  border-left: 4px solid var(--buf-primary);
+  border-radius: var(--buf-radius-md);
+  padding: 0.75rem 0.95rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.buffer-explanation-card.hit {
+  border-left-color: var(--buf-hit-badge);
+  background: var(--buf-hit-bg);
+}
+
+.buffer-explanation-card.miss {
+  border-left-color: var(--buf-miss-badge);
+  background: var(--buf-miss-bg);
+}
+
+.buffer-explanation-title {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.25rem;
+  color: var(--buf-text-main);
+}
+
+.buffer-explanation-body {
+  color: var(--buf-text-muted);
+  font-size: 0.83rem;
+}
+
+body.quarto-dark .buffer-explanation-body {
+  color: #cbd5e1;
+}
+
+/* Controls Bar (Previous and Next only) */
+.buffer-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--buf-border-color);
+}
+
+.buffer-step-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.buffer-kpis {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.buffer-kpi-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--buf-text-muted);
+}
+
+.buffer-kpi-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.buffer-kpi-hit {
+  background: var(--buf-hit-bg);
+  border: 1px solid var(--buf-hit-border);
+  color: var(--buf-hit-text);
+}
+
+.buffer-kpi-miss {
+  background: var(--buf-miss-bg);
+  border: 1px solid var(--buf-miss-border);
+  color: var(--buf-miss-text);
+}
+
+.buffer-kpi-ratio {
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: var(--buf-primary);
+}

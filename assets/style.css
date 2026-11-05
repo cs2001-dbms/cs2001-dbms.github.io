@@ -18,6 +18,8 @@ code,
 
 @import 'sql_runner.css';
 @import 'fd_runner.css';
+@import 'buffer_runner.css';
+@import 'tx_runner.css';
 
 
 /* Fix inline code in headings for dark mode */

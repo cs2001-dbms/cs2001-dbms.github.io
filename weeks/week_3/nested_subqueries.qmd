@@ -12,10 +12,6 @@ A **subquery** is simply a `select-from-where` block placed *inside* another que
 - `from`  :  Can return any valid relation (table).
 - `where`  :  Used in expressions like `Attribute <operation> (subquery)`.
 
-```{=html}
-<div class="flow"><div class="box"><b>where</b><span>Attribute &lt;operation&gt; (subquery)</span></div><div class="box"><b>from</b><span>any valid relation (table)</span></div><div class="box"><b>select</b><span>a single scalar value</span></div></div>
-```
-
 All examples on this page run on the course datasets: press **Run** on any query to see its result.
 
 ---
@@ -120,22 +116,6 @@ For each team, "all other teams" **minus** "teams it has played" must be empty:
 <div class="table-wrap"><table class="jt res"><tr><th>Team</th><th>Other teams not yet played</th><th>Kept?</th></tr><tr><td>Amigos</td><td>none (empty)</td><td>✓</td></tr><tr><td>Thunder</td><td>Rainbow</td><td>✗</td></tr><tr><td>Rainbow</td><td>Thunder, All Stars, Arawali</td><td>✗</td></tr></table></div>
 ```
 
-### Test for Duplicates: `UNIQUE`
-
-`unique (subquery)` is true if the subquery's result has **no duplicate rows**.
-
-```sql
-select t.name
-from teams as t
-where unique (select m.host_team_id
-              from matches as m
-              where m.host_team_id = t.team_id);
-```
-*(Finds teams that hosted at most one match.)*
-
-::: {.callout-note title="Note"}
-PostgreSQL does not implement `unique`. The same query, written with a count, runs on the dataset:
-:::
 
 ```{.sql db="flis"}
 select t.name
